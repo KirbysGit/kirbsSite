@@ -1,35 +1,43 @@
+// Imports.
 import React from 'react';
 import { ThemeProvider } from './theme/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
 import GlobalStyle from './theme/GlobalStyle';
+
+// Component Imports.
 import NavBar from './components/NavBar';
 import Hero from './components/Hero';
 import Section from './components/Section';
 import Footer from './components/Footer';
+import ScrollProgress from './components/ScrollProgress';
+import ConnectButton from './components/ConnectButton';
 
-// Import data
+// Data Imports.
 import education from './data/education';
 import projects from './data/projects';
 import experience from './data/experience';
 import skills from './data/skills';
 
-// Import CSS
+// CSS Imports.
 import './App.css'
 
+// App Component.
 function App() {
   return (
-    <ThemeProvider>
-      <GlobalStyle />
-      <ThemeToggle />
-      <NavBar />
-      <Hero />
-      <Section id="education" title="Education 🎓" content={education} />
-      <Section id="projects" title="Projects 💻" content={projects} />
-      <Section id="experience" title="Experience 📋" content={experience} />
-      <Section id="skills" title="Skills 📚" content={skills} />
-      <Footer />
+    <ThemeProvider> {/* Theme Provider. */}
+      <GlobalStyle /> {/* Global Style. */}
+      <ThemeToggle /> {/* Theme Toggle. */}
+      <NavBar /> {/* Nav Bar. */}
+      <ScrollProgress />
+      <Hero /> {/* Hero. */}
+      <Section id="experience" content={experience} /> {/* Experience. */}
+      <Section id="education" content={education} /> {/* Education. */}
+      <Section id="projects" content={projects} /> {/* Projects. */}
+      <Section id="skills" content={skills} /> {/* Skills. */}
+      <Footer /> {/* Footer. */}
     </ThemeProvider>
   );
 }
 
+// Export.
 export default App; 

@@ -1,5 +1,7 @@
+// Imports.
 import { createGlobalStyle } from 'styled-components';
 
+// Global Style.
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
@@ -10,8 +12,9 @@ const GlobalStyle = createGlobalStyle`
   body {
     background: ${({ theme }) => theme.background};
     color: ${({ theme }) => theme.text};
-    font-family: 'Inter', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     transition: all 0.3s ease;
+    min-height: 100vh;
   }
 
   section {
@@ -32,4 +35,5 @@ const GlobalStyle = createGlobalStyle`
   // Add any other global styles and transitions here
 `;
 
+// Export.
 export default GlobalStyle; 

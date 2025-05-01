@@ -1,0 +1,174 @@
+Education : 
+
+University of Central Florida
+Bachelor of Science in Computer Engineering, 3.5 BSCpE GPA Orlando, FL
+Relevant Coursework: 
+•   Computer Science I & II (Data Structures & Algorithms)
+•   Object Oriented Programming
+•   Processes of Object-Oriented Software
+•   Algorithms for Machine Learning
+•   Introduction to Deep Learning
+•   Enterprise Computing
+•   Engineering Analysis & Computation
+•   Concepts in Computer Science
+•   Computer Organization
+•   Computer Graphics
+•   ECE Design
+•   Massive Storage & Big Data
+•   Embedded Systems
+•   Operating System
+
+University of Florida (Dual-Enrollment) :
+•   Algebra MAC 1105
+•   Analytic Geometry & Calculus II 2312
+•   College Success SLS 1051
+
+Olympia High School : Windermere, FL 
+•   August 2017 – May 2021 – 4.9 GPA (Weighted)
+•   National Honor Society - 2019 - 2021
+•   Mu Alpha Theta - 2017 - 2021
+•   Project Lead The Way - 2017 - 2019
+    Biomedical Science & Human Body Systems
+    Conduct hands-on experiments to find solutions to real-life
+    medical challenges and become better collaborators.
+
+Experience : 
+
+Software Engineering Intern May 2024 – Present
+BitGo | Python, Django, React, PostgreSQL, Docker, Celery, AWS EC2, Gunicorn, Nginx, Git Remote
+•   Developed a periodic script management system using Django and React, integrating Google OAuth for 
+    secure user authentication and managing real-time updates with WebSockets.
+•   Utilized Celery for asynchronous task processing, ensuring efficient execution of background tasks.
+•   Configured PostgreSQL as the backend database, optimized static file handling with WhiteNoise to enhance 
+    performance and efficiency, and implemented SSL to secure all connections .
+•   Deployed the application on AWS EC2, utilizing Docker for containerization, Gunicorn as the application server, 
+    and Nginx as the reverse proxy, configuring each component to ensure efficient handling of user requests.
+•   Implemented various Python and Google App scripts to automate tasks for the IT team, streamlining operations 
+    and improving efficiency
+
+Bar Louie U.C.F. | September 2022 – Present | Server | Full-Time 
+•   Hired as a barback, tasked with assisting the bartenders by way of maintaining cleanliness of the bar top, restocking all necessary 
+    items such as liquors, kegs, and glasses and any other ingredients required for the signature beverages. 
+•   Acquired the role of Server after 6 months with the company, where the responsibilities then shifted to a customer service focus. 
+    Properly handled high-stress situations during high volume hours, regularly achieving $2500 dollars in sales while delivering 
+    exceptional dining experiences to hundreds of guests per shift.
+
+Hawkers Asian Street Fare | May 2022 – August 2022 | Host / HTO | Part-Time 
+•   Hired as a Host, tasked with greeting guests and assisting them with seating arrangements. Effectively managed reservation request 
+    and waitlist in a consistently high-volume environment with waits exceeding 4 hours. Coordinated reservations request to ensure a 
+    steady flow of guests.
+•   Acquired the role of HTO (Take Out) following my first month with the company, was responsible for all takeout orders with take-out 
+    comprising of 40% of the store’s total sales. Carefully prepared and packaged all orders while ensuring the food items remained well 
+    presented. Managed all cash, credit card, and digital payment transactions for take-out orders.
+
+Projects : 
+
+ShelfVision – Deep Learning-Based Retail Shelf Detection System
+• Designed and implemented ShelfVision, a full-stack custom object detection architecture tailored for dense retail shelf environments, leveraging PyTorch, Torchvision, ResNet-50, Feature Pyramid Network (FPN), and OpenCV.
+• Engineered dynamic anchor-to-ground truth matching, robust multi-scale training pipelines, and extensive visualization-driven debugging tools (anchor spread plots, loss curves, prediction overlays) to stabilize model training after initial baseline collapse (0 mAP → 0.0069 mAP).
+• Benchmarked ShelfVision against YOLOv5 on SKU-110K, demonstrating superior object localization, early-stage generalization, and resilience to dense object scenes despite constrained training resources.
+• Led all core model development efforts, including architecture design, anchor tuning, matching logic improvements, loss reweighting, training stabilization, post-processing optimization, and modular evaluation pipeline creation.
+
+UCF Club & Event Manager | MongoDB, Express, React, Node.js, Flutter, Tailwind, Heroku, Git	July 2024
+•	Acted as Technical Lead, responsible for overseeing the entire integration process and ensuring successful deployment in the development of a full-stack web and mobile application utilizing the MERN stack and Flutter.
+•	Leveraged MongoDB for secure, scalable data storage, effectively managing user authentication and handling critical data for club management and event registration.
+•	Built RESTful APIs with Express.js to streamline backend operations and ensure secure data transactions. 
+•	Developed a responsive and dynamic user interface using React.js, providing a seamless experience for web users.
+•	Deployed the application on Heroku, implemented responsive design with Tailwind CSS, and extended functionality to mobile with Flutter, demonstrating features in a live demo.
+
+Personal Contact Manager | Linux, Apache, MySQL, PHP, Bootstrap, Postman, Git, APIs	May 2024
+•	Served as Lead Developer for the Ocean-Life Contact Manager, employing the LAMP stack to oversee the entire project lifecycle, from initial planning and design through to development, deployment, and maintenance.
+•	Utilized MySQL for effective database management, ensuring data integrity and efficient query performance.
+•	Developed the backend using PHP and configured Apache for robust server deployment and reliable web service. 
+•	Ensured seamless client-server communication by testing API endpoints using Postman and SwaggerHub.
+
+Sonic Range Finder | Eagle CAD, PCB Design, Soldering, WEBENCH, MSP430G2553	April 2024
+•	Designed and developed the Sonic Range Finder, an embedded system utilizing precision sensors to measure distance and voltage, with real-time data processing and dynamic updates displayed on an LCD screen.
+•	Created 3.3V and 5V regulators using Eagle CAD and optimized circuit design through WEBENCH software. 
+•	Conducted precise soldering using stencils and a reflow oven to achieve reliable component connection.
+•	Programmed the MSP430G2553 microcontroller in the Code Composer Studio environment to accurately measure and display data on the LCD display, powered by a battery.
+
+Interdisciplinary Display for Engineering Analysis Statics Project (IDEAS) – University of Central Florida | December 2022
+•   Project tasked with selecting an engineering discipline related topic being applied in the world and conducting research dependent 
+    on the topic that could then be presented to a board of judges at the end of the semester. Required to construct a physical and 
+    functional model with a presentation that would display the engineering goal, procedure, design, related principles of engineering,
+    and provide a description of future directions that would be given to one who would wish to research the topic further.
+
+Great Naval Orange Race – University of Central Florida | April 2022
+•   Group project with the mission of planning, designing, creating, testing, and troubleshooting an amphibious vehicle that must 
+    traverse UCF’s Reflection Pond while holding and preventing an orange from getting wet while maintaining the integrity of the vehicle 
+    without colliding with any external terrain surrounding or within the pond.
+•   Was responsible for coding the Raspberry Pi board connected to our motor to efficiently travel around the semi-circle 
+    shaped pond responding to external extrema and effectively troubleshooting any errors leading up to the day of the race.
+
+PYTHON Capstone Project – University of Central Florida - December 2021
+•	As a part of my academic course work, completed a Python project to demonstrate my mastery in Python programming and problem-solving. Created an efficient user input-based tracker program that allows users to input, adjust, search, compute, compare, display (Using Turtle), and remove items from a list with each item consisting of multiple different categories that could also be changed, deleted, or created.
+
+
+Languages: 
+•	Python
+•	JavaScript
+•	HTML
+•	CSS
+•	SQL (PostgreSQL/SQLite)
+•	Java
+•	C
+
+Frameworks: 
+•	Django
+•	React.js
+•	Node.js
+•	Express
+•	Flutter
+•	MongoDB
+•	Tailwind
+•	Bootstrap
+
+Developer Tools: 
+•	Git
+•	Docker
+•	VS Code
+•	Figma
+•	Postman
+•	Eagle
+•	WEBENCH
+•	Celery
+•	Nginx
+•	Gunicorn
+•	WhiteNoise
+
+Libraries:
+•	Pandas
+•	NumPy
+•	OpenGL
+•	Matplotlib
+•	Pygame
+•	SciPy
+•	OpenCV (cvs)
+•	Torchvision
+•	YAML
+
+Technologies: 
+•	PCB Design
+•	Reflow Soldering
+•	MSP430G2553
+•	MSP430FR6989
+•	AWS EC2
+•	Heroku
+•	Restful APIs
+
+Clubs: 
+•	SHPE @ UCF
+•	Knight Hacks
+•	Institute of Electric and Electronic Engineers
+
+Languages:
+•	English (Fluent)
+•	Spanish (Business-Level)
+
+
+Others (Not Sure Where to Place) :
+•	Solidworks
+•	Microsoft 365 Suite
+•	Eclipse
+•	MARS

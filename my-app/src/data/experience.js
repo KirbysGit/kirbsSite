@@ -3,111 +3,158 @@ export default [
     heading: "Software Engineering Intern",
     company: "BitGo",
     location: "Remote",
+    summary: "Built a secure full-stack system using Django, React, and AWS for script management.",
+    logoUrl: "src/images/bitgoSmall.jpg",
     duration: {
       start: "May 2024",
       end: "Present"
     },
-    type: "Internship",
+    type: "Full-Time",
+    color: "#6C63FF",
     logo: "bitgo",
-    color: "#2563eb",
-    technologies: [
-      "Python",
-      "PostgreSQL",
-      "AWS",
-      "OAuth",
-      "WebSockets"
-    ],
+    theme: {
+      primary: "#0daddc",
+      background: "#2c3151",
+      text: "#fefefe",
+      accent: "#424244"
+    },
     responsibilities: [
       {
-        title: "Script Management System",
-        description: "Developed periodic script management system for automated tasks",
-        impact: "Reduced manual intervention by 75%"
+        title: "Full-Stack Development",
+        description: "Built a periodic script management system using Django and React, integrating Google OAuth for secure user authentication and managing real-time updates with WebSockets.",
+        impact: "Secure Authentication System"
       },
       {
-        title: "Authentication Integration",
-        description: "Integrated Google OAuth and WebSockets for real-time updates",
-        impact: "Improved user authentication security"
+        title: "Backend Optimization",
+        description: "Utilized Celery for asynchronous task processing, ensuring efficient execution of background tasks.",
+        impact: "Improved System Performance"
       },
       {
-        title: "Database & Cloud",
-        description: "Configured PostgreSQL and AWS deployment pipeline",
-        impact: "Achieved 99.9% uptime"
+        title: "Database & Security Implementation",
+        description: "Configured PostgreSQL as the backend database, optimized static file handling with WhiteNoise to enhance performance and efficiency, and implemented SSL to secure all connections.",
+        impact: "Enhanced Security & Performance"
       },
       {
-        title: "IT Automation",
-        description: "Implemented automation scripts for IT team operations",
-        impact: "Saved 10+ hours/week in manual tasks"
+        title: "DevOps & Deployment",
+        description: "Deployed the application on AWS EC2, utilizing Docker for containerization, Gunicorn as the application server, and Nginx as the reverse proxy, configuring each component to ensure efficient handling of user requests.",
+        impact: "Robust Production Environment"
       }
     ],
     skills: {
-      technical: ["Python", "PostgreSQL", "AWS", "OAuth", "WebSockets"],
-      soft: ["Problem Solving", "Communication", "Time Management"]
+      technical: [
+        "Python",
+        "Django",
+        "React",
+        "PostgreSQL",
+        "Docker",
+        "Celery",
+        "AWS EC2",
+        "Gunicorn",
+        "Nginx",
+        "Git",
+        "WebSockets",
+        "Google OAuth",
+        "SSL Implementation"
+      ],
+      soft: [
+        "Problem Solving",
+        "Technical Documentation",
+        "System Architecture",
+        "Performance Optimization",
+        "Security Implementation"
+      ]
     }
   },
   {
     heading: "Server",
-    company: "Bar Louie",
+    company: "Bar Louie U.C.F.",
     location: "Orlando, FL",
+    summary: "Progressed from barback to server, managing high-volume service and consistently achieving $2500 in sales per shift.",
+    logoUrl: "src/images/blSmall.png",
     duration: {
-      start: "January 2024",
+      start: "September 2022",
       end: "Present"
     },
-    type: "Part-Time",
+    type: "Full-Time",
+    color: "#FF6B6B",
     logo: "barlouie",
-    color: "#22c55e",
+    theme: {
+      primary: "#862131",
+      background: "#000000",
+      text: "#feffff",
+      accent: "#cbc0c4"
+    },
     responsibilities: [
       {
-        title: "Time Management",
-        description: "Balance 20 hours/week while maintaining internship",
-        impact: "Successfully managed dual commitments"
+        title: "Barback Role",
+        description: "Assisted bartenders by maintaining bar cleanliness, restocking liquors, kegs, glasses, and ingredients for signature beverages.",
+        impact: "Ensured smooth bar operations"
       },
       {
-        title: "High-Pressure Performance",
-        description: "Handle high-stress situations during peak hours",
-        impact: "Maintained 4.8/5 customer satisfaction"
-      },
-      {
-        title: "Sales & Service",
-        description: "Manage customer service and sales operations",
-        impact: "Consistently exceeded sales targets"
+        title: "Server Role",
+        description: "Handled high-stress situations during peak hours, consistently achieving $2500 in sales while delivering exceptional dining experiences to hundreds of guests per shift.",
+        impact: "Excellence in Customer Service"
       }
     ],
     skills: {
-      technical: ["POS Systems", "Inventory Management"],
-      soft: ["Customer Service", "Multitasking", "Team Collaboration"]
+      technical: [
+        "Inventory Management",
+        "POS Systems",
+        "Cash Handling"
+      ],
+      soft: [
+        "Customer Service",
+        "Time Management",
+        "Stress Management",
+        "Team Collaboration",
+        "Communication"
+      ]
     }
   },
   {
-    heading: "Host",
+    heading: "Host / HTO",
     company: "Hawkers Asian Street Fare",
     location: "Orlando, FL",
+    summary: "Managed guest relations and takeout operations contributing to 40% of store's total sales.",
+    logoUrl: "src/images/hawkersSmall.png",
     duration: {
-      start: "June 2023",
-      end: "December 2023"
+      start: "May 2022",
+      end: "August 2022"
     },
     type: "Part-Time",
+    color: "#4ECDC4",
     logo: "hawkers",
-    color: "#f59e0b",
+    theme: {
+      primary: "#fd5605",
+      background: "#287661",
+      text: "#ded4c1",
+      accent: "#f59428"
+    },
     responsibilities: [
       {
-        title: "Reservation Management",
-        description: "Managed reservations and digital waitlist system",
-        impact: "Reduced wait times by 30%"
+        title: "Host Role",
+        description: "Greeted guests and managed seating arrangements. Effectively handled reservation requests and waitlist in a high-volume environment with waits exceeding 4 hours.",
+        impact: "Efficient Guest Management"
       },
       {
-        title: "Order Coordination",
-        description: "Coordinated takeout orders and delivery services",
-        impact: "Handled 50+ daily orders"
-      },
-      {
-        title: "Payment Processing",
-        description: "Handled payment transactions and daily reconciliation",
-        impact: "Zero discrepancies in transactions"
+        title: "HTO (Take Out) Role",
+        description: "Managed all takeout orders, comprising 40% of store's total sales. Prepared and packaged orders while maintaining food presentation. Handled cash, credit card, and digital payment transactions.",
+        impact: "Revenue Generation"
       }
     ],
     skills: {
-      technical: ["POS Systems", "Digital Waitlist"],
-      soft: ["Organization", "Communication", "Problem Solving"]
+      technical: [
+        "Reservation Systems",
+        "Payment Processing",
+        "Order Management"
+      ],
+      soft: [
+        "Customer Service",
+        "Organization",
+        "Attention to Detail",
+        "Problem Solving",
+        "Multitasking"
+      ]
     }
   }
 ];

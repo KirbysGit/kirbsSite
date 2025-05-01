@@ -3,37 +3,85 @@ export default [
     heading: "University of Central Florida",
     location: "Orlando, FL",
     degree: "Bachelor of Science in Computer Engineering",
-    minor: "Minor in FinTech",
     duration: {
       start: "August 2021",
-      expected: "December 2025"
+      expected: "May 2025"
     },
-    gpa: "3.5",
+    gpa: "3.7",
     highlights: [
       {
         title: "Academic Achievements",
         items: [
-          "Dean's List 2021-2023",
-          "President's Honor Roll",
-          "Top 10% of Engineering Class"
+          "Dean's List 2021-2023 x3 ",
+          "President's Honor Roll 2023 - 2025 x3",
+          "Top 10% of Engineering Class",
         ]
       }
     ],
     coursework: {
-      current: [
+      current: [],
+      completed: [
         {
           code: "CNT4714",
           name: "Enterprise Computing",
-          description: "Client-server architecture, server-side scripting, database connectivity, multithreaded applications, and J2EE development."
+          grade: "A",
+          description: "Client-server architecture, server-side scripting (Servlets, JSP, PHP), JDBC and MySQL database connectivity, multi-threaded Java applications, J2EE development, SSL, and event-driven programming.",
+          skills: ["Java", "JSP", "Servlets", "JDBC", "J2EE", "MySQL", "SSL", "Event-Driven Programming"],
+          projects: [
+            {
+              id: "enterprise-computing-project",
+              title: "Enterprise Application Development",
+              description: "Full-stack enterprise application with J2EE",
+              skills: ["Java", "JSP", "Servlets", "MySQL"]
+            }
+          ]
+        },
+        {
+          code: "EEL4798",
+          name: "Massive Storage and Big Data",
+          grade: "A",
+          description: "Big data architectures & file storage systems. Infrastructures such as MapReduce and storage, with focus on system architecture, file storage, programming models, application development & performance evaluation.",
+          skills: ["Big Data", "MapReduce", "System Architecture", "File Storage", "Performance Evaluation"],
+          projects: [
+            {
+              id: "big-data-project",
+              title: "Distributed Data Processing System",
+              description: "Implemented MapReduce framework for large-scale data processing",
+              skills: ["Hadoop", "MapReduce", "Data Processing"]
+            }
+          ]
+        },
+        {
+          code: "EEL4810",
+          name: "Introduction to Deep Learning",
+          grade: "A",
+          description: "Fundamentals of Neural Networks and Deep Learning, with applications to autonomous cyber-physical systems, intelligent edge computing, and biomedical devices.",
+          skills: ["Neural Networks", "Deep Learning", "Cyber-Physical Systems", "Edge Computing", "Biomedical Applications"],
+          projects: [
+            {
+              id: "deep-learning-project",
+              title: "Neural Network Implementation",
+              description: "Custom neural network implementation for image classification",
+              skills: ["Python", "PyTorch", "Neural Networks"]
+            }
+          ]
         },
         {
           code: "EEL4915L",
           name: "Senior Design II",
-          description: "Execution of an electrical and computer engineering capstone project, including construction, testing, design review, demonstration, and final reporting.",
-          github: "https://github.com/TopelJL/Deployable-Security-Sytem"
-        }
-      ],
-      completed: [
+          grade: "A",
+          description: "Execution of electrical and computer engineering project including complete project design review, construction, testing and demonstration. Emphasis on design, prototyping, cost, functionality, presentation, team effort and final report.",
+          skills: ["Project Design", "Prototyping", "Testing", "Team Collaboration", "Technical Documentation"],
+          github: "https://github.com/TopelJL/Deployable-Security-Sytem",
+          projects: [
+            {
+              id: "senior-design-project",
+              title: "Deployable Security System",
+              description: "IoT-based security system with real-time monitoring",
+              skills: ["IoT", "Security", "Embedded Systems"]
+            }
+          ]
+        },
         {
           code: "EGN3211",
           name: "Engineering Analysis & Computation",
