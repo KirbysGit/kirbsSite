@@ -16,7 +16,7 @@ export default [
       primary: "#0daddc",
       background: "#2c3151",
       text: "#fefefe",
-      accent: "#424244"
+      accent: "rgb(122, 122, 134)"
     },
     responsibilities: [
       {
@@ -67,7 +67,7 @@ export default [
   },
   {
     heading: "Server",
-    company: "Bar Louie U.C.F.",
+    company: "Bar Louie",
     location: "Orlando, FL",
     summary: "Progressed from barback to server, managing high-volume service and consistently achieving $2500 in sales per shift.",
     logoUrl: "src/images/blSmall.png",

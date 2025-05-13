@@ -5,7 +5,7 @@ export default [
     degree: "Bachelor of Science in Computer Engineering",
     duration: {
       start: "August 2021",
-      expected: "May 2025"
+      end: "May 2025"
     },
     gpa: "3.7",
     highlights: [
