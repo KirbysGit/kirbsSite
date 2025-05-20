@@ -1,10 +1,11 @@
+// Imports.
 import React from 'react';
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronDown, FaChevronUp, FaFontAwesome, FaFontAwesomeAlt } from 'react-icons/fa';
 
-// Local Imports;
+// Local Imports.
 import MapPin from './MapPin';
 import CalendarHeatMap from './CalendarHeatMap';
 
@@ -15,64 +16,68 @@ const expandVariants = {
     exit: { opacity: 0, y:-10 },
 };
 
+// Function For Getting Duration Of Company In Years & Days.
 function getTenureDuration(startStr, endStr = "Present") {
-    const startDate = new Date(startStr);
-    const endDate = endStr.toLowerCase() === "present" ? new Date() : new Date(endStr);
+    const startDate = new Date(startStr);                                                   // Get Start Date Of Company Tenure.
+    const endDate = endStr.toLowerCase() === "present" ? new Date() : new Date(endStr);     // Get End Date of Company Tenure.
 
-    const diffInMs = endDate - startDate;
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-    const diffInYears = diffInDays / 365.25;
+    const diffInMs = endDate - startDate;                                                   // Take Difference Of Dates. Result in Milliseconds.
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));                        // Calculate The Ms Value Into Days.
+    const diffInYears = diffInDays / 365.25;                                                // Calculate the Days Value Into Years.
 
-    const years = Math.floor(diffInYears);
-    const days = Math.floor(diffInDays % 365.25);
+    const years = Math.floor(diffInYears);                                                  // Takes Rounded Down Value of Years.
+    const days = Math.floor(diffInDays % 365.25);                                           // Calculates The Days Remaining After Years.
 
-    return { years, days };
+    return { years, days };                                                                 // Return Values For # Of Years & Days At Company.
 };
 
-
+// ExperienceCard Component Declaration.
+// Takes In :
+//      - 'item' : Company.
+//      - 'isExpanded' : If Card Is Toggled.
+//      - 'onToggle' : For Animation Of Expanding Card Toggle.
+//      - 'index' : Index Per Card.
 const ExperienceCardComponent = ({ item, isExpanded, onToggle, index }) => {
+    const rowRef = useRef(null);                                                        // Creates Current Reference Point To Entire Row Per Experience Element.
+    const bulletRef = useRef(null);                                                     // Creates Current Reference Point To Bullet Element.
+    const [fillHeight, setFillHeight] = useState(0);                                    // Use State For Fill Height Of Progressive Scroll Bar.
 
-    const rowRef = useRef(null);
-    const bulletRef = useRef(null);
-    const [fillHeight, setFillHeight] = useState(0);
+    const {years, days} = getTenureDuration(item.duration.start, item.duration.end);    // Gets Tenure Duration Of Current Company.
 
-    const {years, days} = getTenureDuration(item.duration.start, item.duration.end);
-
+    // Used For Calculating Fill Of Bullet Scroll Bar.
     useEffect(() => {
+        const bullet = bulletRef.current;                                               // Creates Current Reference Point To Bullet Element.
+        const row = rowRef.current;                                                     // Creates Current Reference Point To Entire Row Per Experience Element.
 
-        const bullet = bulletRef.current;
-        const row = rowRef.current;
-
-        if(!bullet || !row) return;
+        if(!bullet || !row) return;                                                     // If No Bullet Or Row Reference, Exit Early.
 
         const handleScroll = () => { 
-            const rect = rowRef.current.getBoundingClientRect();
-            const screenHeight = window.innerHeight;
-            const rowCenter = rect.top + rect.height / 2;
-            const screenCenter = window.innerHeight / 2;
+            const rect = rowRef.current.getBoundingClientRect();                        // Calculates Bounding Box Of Row Element.
+            const screenHeight = window.innerHeight;                                    // Gets Full Height Of Viewport.
+            const rowCenter = rect.top + rect.height / 2;                               // Gets Center Of Row Element.
+            const screenCenter = window.innerHeight / 2;                                // Gets Center of Viewport.
 
-            let newHeight;
-            if (rowCenter < screenCenter) {
-                newHeight = 100;
-            } else {
-                const distanceToCenter = Math.abs(rowCenter - screenCenter);
-                const maxDistance = screenHeight / 2;
-                newHeight = (1 - Math.min(distanceToCenter / maxDistance, 1)) * 100;
+            let newHeight;                                                              // New Height Variable.
+            if (rowCenter < screenCenter) {                                             // If 'rowCenter' Is Above 'screenCenter',
+                newHeight = 100;                                                        // Fill Bar.
+            } else {                                                                    // Else,
+                const distanceToCenter = Math.abs(rowCenter - screenCenter);            // Find 'rowCenter' Distance Below 'screenCenter'.
+                const maxDistance = screenHeight / 2;                                   // Calculate Max Distance Of 'rowCenter' For Reference.
+                newHeight = (1 - Math.min(distanceToCenter / maxDistance, 1)) * 100;    // Set 'newHeight' To Percentage Of Bar Depending On Distance From Row Center.
             }
 
-            setFillHeight(prev => {
-                if (Math.abs(prev - newHeight) > 0.5) {
-                    return newHeight;
-                }
-
-                return prev;
+            setFillHeight(prev => {                                                     // Set Fill Height For Row.
+                if (Math.abs(prev - newHeight) > 0.5) {                                 // If Difference Of New Height Is Above 0.5,
+                    return newHeight;                                                   // Update Bar Fill.
+                }                                                                       // Do This To Prevent Constant Re-renders.
+                return prev;                                                            // Return Bar Fill.
             })
             
         }
 
-        handleScroll();
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        handleScroll();                                                                 // Call Handle Scroll Func.
+        window.addEventListener("scroll", handleScroll);                                // Update on Scroll.
+        return () => window.removeEventListener("scroll", handleScroll);                // Remove On Component Unmount.
     }, []);
 
     return (
@@ -161,9 +166,7 @@ const ExperienceCardComponent = ({ item, isExpanded, onToggle, index }) => {
                                             {years > 0 ? `${years} year${years > 1 ? 's' : ''}, ` : ''}
                                             {days} day{days !== 1 ? 's' : ''}
                                         </DateDescription>
-                                        <CalendarHeatMap 
-                                            item={item}
-                                        />
+                                        <CalendarHeatMap item={item} />
                                     </DateCard>
                                 </LocationAndDate>
                                 <RespHeader>Responsibilities of My Role</RespHeader>
@@ -293,7 +296,6 @@ const ExperienceCard = styled.div`
         transform: ${(props) => (props.$isExpanded ? 'none' : 'scale(1.02)')};                             
     }
 `
-const MotionExperienceCard = motion(ExperienceCard);
 
 const Job = styled.div`
     display: flex;
@@ -308,8 +310,6 @@ const Logo = styled.img`
     object-fit: contain;
     flex-shrink: 0;
 `
-const MotionLogo = motion(Logo);
-
 const JobTitle = styled.h1`
     display: flex;              /* Flex Layout. */
     margin: 0;                  /* No Interior Margin. */
@@ -335,7 +335,6 @@ const ExpandIcon = styled.span`
         color:rgb(199, 183, 183);
     }
 `
-const MotionExpandIcon = motion(ExpandIcon);
 
 // ------------ Expanded Experience Card ------------
 
@@ -343,7 +342,6 @@ const ExpandedCard = styled.div`
     cursor: default;
     padding: 1em
 `
-const MotionExpandedCard = motion(ExpandedCard);
 
 // ------------ Location & Date Grid ------------
 
@@ -417,7 +415,6 @@ const DateHeader = styled.h2`
     margin: 0;
     margin-bottom: 0.25em;
 `
-
 const DateDescription = styled.div`
     display: flex;
     justify-content: center;
@@ -497,7 +494,6 @@ const TechSkill = styled.li`
     }
 `
 // ------------ Soft Skills  ------------
-
 const SoftHeader = styled.h2`
 
 `
@@ -521,6 +517,15 @@ const SoftSkill = styled.li`
         transform: scale(1.04);
     }
 `
+
+// ------------ Motion Sets.  ------------
+
+const MotionExperienceCard = motion(ExperienceCard);
+const MotionLogo = motion(Logo);
+const MotionExpandIcon = motion(ExpandIcon);
+const MotionExpandedCard = motion(ExpandedCard);
+
+
 const MemoExperienceCard = React.memo(ExperienceCardComponent);
 
 export default MemoExperienceCard;
