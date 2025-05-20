@@ -2,21 +2,27 @@ export default [
   {
     heading: "Software Engineering Intern",
     company: "BitGo",
-    location: "Remote",
+    location: "Palo Alto, California, USA",
+    address: "2443 Ash Street, Palo Alto, California, United States",
+    locationCoords: [37.426443, -122.144116],
     summary: "Built a secure full-stack system using Django, React, and AWS for script management.",
     logoUrl: "src/images/bitgoSmall.jpg",
     duration: {
-      start: "May 2024",
+      start: "2024-05-14",
       end: "Present"
     },
     type: "Full-Time",
     color: "#6C63FF",
     logo: "bitgo",
     theme: {
-      primary: "#0daddc",
-      background: "#2c3151",
-      text: "#fefefe",
-      accent: "rgb(122, 122, 134)"
+      primary: "rgb(13, 173, 220)",                 // rgb(13, 173, 220)
+      background: "rgb(44, 49, 81)",              // rgb(44, 49, 81)
+      text: "rgb(254, 254, 254)",                    // rgb(254, 254, 254)
+      accent: "rgb(122, 122, 134)",       // border color
+      soft: "rgb(132, 159, 241)",         // light blue accent
+      mutedBackground: "rgb(48, 55, 90)", // alternative sectioning
+      highlight: "rgb(18, 223, 245)",    // flashy blue glow for animations
+      card: "rgb(17, 21, 75)"
     },
     responsibilities: [
       {
@@ -69,20 +75,26 @@ export default [
     heading: "Server",
     company: "Bar Louie",
     location: "Orlando, FL",
+    address: "4100 N Alafaya Trl Suite 167 & 173, Orlando, FL 32826",
+    locationCoords: [28.598249, -81.208343],
     summary: "Progressed from barback to server, managing high-volume service and consistently achieving $2500 in sales per shift.",
     logoUrl: "src/images/blSmall.png",
     duration: {
-      start: "September 2022",
+      start: "2022-10-26",
       end: "Present"
     },
     type: "Full-Time",
     color: "#FF6B6B",
     logo: "barlouie",
     theme: {
-      primary: "#862131",
-      background: "#000000",
-      text: "#feffff",
-      accent: "#cbc0c4"
+      primary: "rgb(134, 33, 49)",                  // rgb(134, 33, 49)
+      background: "rgb(0, 0, 0)",               // rgb(0, 0, 0)
+      text: "rgb(254, 255, 255)",                     // rgb(254, 255, 255)
+      accent: "rgb(203, 192, 196)",                   // border/pill
+      soft: "rgb(175, 96, 108)",           // soft rose red (primary-tint)
+      mutedBackground: "rgb(30, 20, 20)",  // warm black base
+      highlight: "rgb(232, 70, 90)",        // glow pop
+      card: "rgb(151, 45, 45)"
     },
     responsibilities: [
       {
@@ -114,21 +126,27 @@ export default [
   {
     heading: "Host / HTO",
     company: "Hawkers Asian Street Fare",
-    location: "Orlando, FL",
+    location: "Windermere, FL",
+    address: "9100 Conroy Windermere Rd Suite 110, Windermere, FL 34786",
+    locationCoords: [28.493264, -81.508917],
     summary: "Managed guest relations and takeout operations contributing to 40% of store's total sales.",
     logoUrl: "src/images/hawkersSmall.png",
     duration: {
-      start: "May 2022",
-      end: "August 2022"
+      start: "2022-05-12",
+      end: "2022-08-19"
     },
     type: "Part-Time",
     color: "#4ECDC4",
     logo: "hawkers",
     theme: {
-      primary: "#fd5605",
-      background: "#287661",
-      text: "#ded4c1",
-      accent: "#f59428"
+      primary: "rgb(253, 86, 5)",                   // rgb(253, 86, 5)
+      background: "rgb(40, 118, 97)",                // rgb(40, 118, 97)
+      text: "rgb(222, 212, 193)",                      // rgb(222, 212, 193)
+      accent: "rgb(245, 148, 40)",                    // bold orange
+      soft: "rgb(255, 163, 97)",            // light warm orange
+      mutedBackground: "rgb(38, 96, 82)",   // softer green
+      highlight: "rgb(255, 107, 58)",        // highlight/glow
+      card: "rgb(96, 202, 167)"
     },
     responsibilities: [
       {
