@@ -2,6 +2,7 @@ export default [
   {
     heading: "Software Engineering Intern",
     company: "BitGo",
+    category: "technology",
     location: "Palo Alto, California, USA",
     address: "2443 Ash Street, Palo Alto, California, United States",
     locationCoords: [37.426443, -122.144116],
@@ -22,6 +23,7 @@ export default [
       soft: "rgb(132, 159, 241)",         // light blue accent
       mutedBackground: "rgb(48, 55, 90)", // alternative sectioning
       highlight: "rgb(18, 223, 245)",    // flashy blue glow for animations
+      lightCard: "rgb(68, 75, 182)",
       card: "rgb(17, 21, 75)"
     },
     responsibilities: [
@@ -47,19 +49,20 @@ export default [
       }
     ],
     skills: {
-      technical: [
-        "Python",
-        "Django",
-        "React",
-        "PostgreSQL",
-        "Docker",
+      featured: [
+        { name:"Python", level: 90 },
+        { name:"Django", level:  80 },
+        { name:"React", level: 90 },
+        { name:"PostgreSQL", level: 50 },
+        { name:"AWS EC2", level: 30 },
+        { name: "Google OAuth", level: 60 }
+      ],
+      extra: [
         "Celery",
-        "AWS EC2",
         "Gunicorn",
         "Nginx",
         "Git",
         "WebSockets",
-        "Google OAuth",
         "SSL Implementation"
       ],
       soft: [
@@ -74,6 +77,7 @@ export default [
   {
     heading: "Server",
     company: "Bar Louie",
+    category: "service",
     location: "Orlando, FL",
     address: "4100 N Alafaya Trl Suite 167 & 173, Orlando, FL 32826",
     locationCoords: [28.598249, -81.208343],
@@ -94,7 +98,8 @@ export default [
       soft: "rgb(175, 96, 108)",           // soft rose red (primary-tint)
       mutedBackground: "rgb(30, 20, 20)",  // warm black base
       highlight: "rgb(232, 70, 90)",        // glow pop
-      card: "rgb(151, 45, 45)"
+      card: "rgb(151, 45, 45)",
+      lightCard: "rgb(192, 98, 98)"
     },
     responsibilities: [
       {
@@ -126,6 +131,7 @@ export default [
   {
     heading: "Host / HTO",
     company: "Hawkers Asian Street Fare",
+    category: "service",
     location: "Windermere, FL",
     address: "9100 Conroy Windermere Rd Suite 110, Windermere, FL 34786",
     locationCoords: [28.493264, -81.508917],
@@ -146,7 +152,8 @@ export default [
       soft: "rgb(255, 163, 97)",            // light warm orange
       mutedBackground: "rgb(38, 96, 82)",   // softer green
       highlight: "rgb(255, 107, 58)",        // highlight/glow
-      card: "rgb(96, 202, 167)"
+      card: "rgb(96, 202, 167)",
+      lightCard: "rgb(26, 185, 132)"
     },
     responsibilities: [
       {

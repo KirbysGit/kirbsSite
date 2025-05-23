@@ -2,12 +2,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { animate, motion, AnimatePresence } from 'framer-motion';
 import { FaChevronDown, FaChevronUp, FaFontAwesome, FaFontAwesomeAlt } from 'react-icons/fa';
 
 // Local Imports.
 import MapPin from './MapPin';
+import SkillSet from './SkillSet';
 import CalendarHeatMap from './CalendarHeatMap';
+import ResponsibilityGrid from './ResponsibilityGrid';
 
 // Animation Variants 4 Reference.
 const expandVariants = {
@@ -31,18 +33,63 @@ function getTenureDuration(startStr, endStr = "Present") {
     return { years, days };                                                                 // Return Values For # Of Years & Days At Company.
 };
 
+const formatDate = (dateStr) => {
+    if (dateStr.toLowerCase() === "present") return "Present";
+    return new Date(dateStr).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+};
+
 // ExperienceCard Component Declaration.
 // Takes In :
 //      - 'item' : Company.
 //      - 'isExpanded' : If Card Is Toggled.
 //      - 'onToggle' : For Animation Of Expanding Card Toggle.
 //      - 'index' : Index Per Card.
+
 const ExperienceCardComponent = ({ item, isExpanded, onToggle, index }) => {
     const rowRef = useRef(null);                                                        // Creates Current Reference Point To Entire Row Per Experience Element.
     const bulletRef = useRef(null);                                                     // Creates Current Reference Point To Bullet Element.
     const [fillHeight, setFillHeight] = useState(0);                                    // Use State For Fill Height Of Progressive Scroll Bar.
 
-    const {years, days} = getTenureDuration(item.duration.start, item.duration.end);    // Gets Tenure Duration Of Current Company.
+    const [countedYears, setCountedYears] = useState(0);                              // Use State For Counted Years in Date Card.
+    const [countedDays, setCountedDays] = useState(0);                                // Use State For Counted Days in Date Card.
+
+    const [isCompleted, setIsCompleted] = useState(false);
+
+    // Used For The Counting Days Feature.
+    useEffect(() => {
+        if (!isExpanded) {                                                                  // If Experience Card Is Not Expanded.
+            setCountedYears(0);                                                             // Reset Year Counter.
+            setCountedDays(0);                                                              // Reset Day Counter.
+            setIsCompleted(false);                                                          // Set Is Counter Completed To False.
+            return;                                                                         // Escape Counter.
+        }
+
+        const { years, days } = getTenureDuration(item.duration.start, item.duration.end);  // Gets Tenure Duration Per Company.
+        
+        let totalDays = years * 365 + days;                                                 // Gets Total Days To Count.
+
+        animate(0, totalDays, {                                                             // Animate Count, Starting At 0 To Total Days.
+            duration: 6,                                                                    // 6 Seconds To Count Up.
+            ease: "easeOut",                                                                // Count Starts Fast & Slows Down.
+            onUpdate: (latest) => {                                                         // Callback That Occurs On Every Animation Frame.
+                const total = Math.floor(latest);                                           // Round Current Val Down To Whole #.
+                const newYears = Math.floor(total/365);                                     // Convert Total Days Into Full Years.
+                const newDays = total % 365;                                                // Get Remaining Days After Years.
+
+                setCountedYears(newYears);                                                  // Set Counted Years Every Update.
+                setCountedDays(newDays);                                                    // Set Counted Days Every Update.
+
+                if (totalDays === total) {                                                  // If Counted All Days.
+                    setIsCompleted(true);                                                   // Set 'isCompleted' Value To True.
+                }
+            },
+        });
+
+    }, [isExpanded, item.duration.start, item.duration.end]);
 
     // Used For Calculating Fill Of Bullet Scroll Bar.
     useEffect(() => {
@@ -154,6 +201,11 @@ const ExperienceCardComponent = ({ item, isExpanded, onToggle, index }) => {
                                                 logo={item.logoUrl}
                                             />
                                         )}
+                                        {item.company === "BitGo" && (
+                                            <RemoteFlag>
+                                                For this role I was Remote & Based In Orlando, Florida.
+                                            </RemoteFlag>
+                                        )}
                                     </LocationCard>
 
                                     <DateCard
@@ -162,51 +214,21 @@ const ExperienceCardComponent = ({ item, isExpanded, onToggle, index }) => {
                                         <DateHeader>
                                             My Time At The Company.
                                         </DateHeader>
-                                        <DateDescription>
-                                            {years > 0 ? `${years} year${years > 1 ? 's' : ''}, ` : ''}
-                                            {days} day{days !== 1 ? 's' : ''}
-                                        </DateDescription>
+                                        <MotionDateDescription
+                                            animate={isCompleted ? { scale: 1.25, color: item.theme.highlight } : {}}
+                                            transition={{ type:"spring", stiffness: 500, damping: 10 }}
+                                        >
+                                            {countedYears > 0 ? `${countedYears} year${countedYears > 1 ? 's' : ''}, ` : ''}
+                                            {countedDays} day{countedDays !== 1 ? 's' : ''}
+                                        </MotionDateDescription>
+                                        <Start2End>
+                                            {formatDate(item.duration.start)} - {formatDate(item.duration.end)}
+                                        </Start2End>
                                         <CalendarHeatMap item={item} />
                                     </DateCard>
                                 </LocationAndDate>
-                                <RespHeader>Responsibilities of My Role</RespHeader>
-                                <RespCards>
-                                    {item.responsibilities.map((resp, rIndex) => (
-                                        <RespCard 
-                                            key={rIndex}
-                                            $bgColor={item.theme.accent}    
-                                        >
-                                            <RespTitle>{resp.title}</RespTitle>
-                                            <RespDesc>{resp.description}</RespDesc>
-                                            <RespImpact>{resp.impact}</RespImpact>
-                                        </RespCard>
-                                        ))}
-                                </RespCards>
-                                <SkillSet>
-                                    <div>
-                                        <TechHeader>
-                                            Technical Skills
-                                        </TechHeader>
-                                        <TechSkills>
-                                            {item.skills.technical.map((tech, tIndex) => (
-                                                    <TechSkill 
-                                                        $border={item.theme.primary}
-                                                        key={tIndex}    
-                                                    >{tech}</TechSkill>
-                                            ))}
-                                        </TechSkills>
-                                    </div>
-                                    <div>
-                                        <SoftHeader>
-                                            Soft Skills
-                                        </SoftHeader>
-                                        <SoftSkills>
-                                            {item.skills.soft.map((soft, sIndex) =>
-                                                <SoftSkill key={sIndex}>{soft}</SoftSkill>
-                                            )}
-                                        </SoftSkills>
-                                    </div>
-                                </SkillSet>
+                                <ResponsibilityGrid item={item} />
+                                <SkillSet item={item} />
                             </MotionExpandedCard>
                         )}  
                     </AnimatePresence>
@@ -223,7 +245,6 @@ const TimelineRow = styled.li`
     display: grid;                                      /* CSS Grid Style Display. */
     align-items: flex-start;                            /* Start Content From Beginning of Container. */
     grid-template-columns: clamp(24px, 4vw, 48px) 1fr;  /* Clamp Bullet Point to Adjust w/ Size */
-
 `
 // Styles 4 Bullet Column.
 const Bullet = styled.div.attrs(props => ({
@@ -296,7 +317,6 @@ const ExperienceCard = styled.div`
         transform: ${(props) => (props.$isExpanded ? 'none' : 'scale(1.02)')};                             
     }
 `
-
 const Job = styled.div`
     display: flex;
     flex-direction: column;
@@ -340,14 +360,14 @@ const ExpandIcon = styled.span`
 
 const ExpandedCard = styled.div`
     cursor: default;
-    padding: 1em
+    padding: 1em;
 `
 
 // ------------ Location & Date Grid ------------
 
 const LocationAndDate = styled.div`
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: flex-start;
 `
 // ------------ Location ------------
@@ -357,14 +377,14 @@ const LocationCard = styled.div`
     flex-direction: column;
     gap: 0.5rem;
     margin-top: 1rem;
-    margin-right: 1rem;
+    margin-right: 0.5em;
     padding: 1rem;
     border-radius: 16px;
     border: 3px solid white;
     background: ${(props) => props.$bg};
     color: ${(props) => props.$text};
     transition: box-shadow 0.3s ease;
-    max-width: 50%;
+    min-width: 50%;
 
     &:hover {
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
@@ -389,6 +409,11 @@ const LocationText = styled.p`
     display: flex;
     justify-content: center;
 `
+const RemoteFlag = styled.div`
+    display: flex;
+    margin-top: 0.5em;
+    justify-content: center;
+`
 // ------------ Date ------------
 
 const DateCard = styled.div`
@@ -397,7 +422,7 @@ const DateCard = styled.div`
     font-size: 1.2rem;
     gap: 0.5rem;
     margin-top: 1rem;
-    margin-right: 1rem;
+    margin-left: 0.5em;
     padding: 1rem;
     border-radius: 16px;
     border: 3px solid white;
@@ -419,104 +444,19 @@ const DateDescription = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 0;
-    margin-bottom: 0.5em;
-    font-size: 1.25em;
-`
-// ------------ Responsibilities ------------
-
-const RespHeader = styled.h2`
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    font-size: 1em;
-`
-const RespCards = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));
-`
-const RespCard = styled.div`
-    background-color: ${(props) => props.$bgColor};
-    display: flex;
-    flex-direction: column;
-    border-radius: 12px;
-    border: 1px solid white;
-    padding: 0.5em;
-    margin: 0.5em;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    &:hover {
-        transform: scale(1.02);
-    }
-`
-const RespTitle = styled.h1`
-    text-align: center;
+    margin-bottom: 0.1em;
     font-size: 1.5em;
-    margin: 0.25em 0em 0.25em 0em;
 `
-const RespDesc = styled.p`
-    font-size: 0.75em;
-    text-align: justify;
-    margin: 0 0.25em 0 0.25em;
-`
-const RespImpact = styled.p`
-    font-size: 0.5em;
-`
-
-// ------------ Skills  ------------
-
-const SkillSet = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-`
-// ------------ Technical Skills  ------------
-
-const TechHeader = styled.h2`
-
-`
-const TechSkills = styled.ul`
+const Start2End = styled.h2`
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0;
-    margin: 0.5rem 0;
-    list-style: none;
+    letter-spacing: 0.5px;
+    justify-content: center;
+    margin: 0;
+    margin-bottom: 0.25em;
+    font-size: 1.1em;
 `
-const TechSkill = styled.li`
-    border-radius: 24px;
-    border: 1px solid white;
-    padding: 0.5em;
-    white-space: nowrap;
-    border: 2px solid ${(props) => props.$border };
-    transition: transform 0.3 ease;
 
-    &:hover {
-        transform: scale(1.04);
-    }
-`
-// ------------ Soft Skills  ------------
-const SoftHeader = styled.h2`
 
-`
-const SoftSkills = styled.ul`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0;
-    margin: 0.5rem 0;
-    list-style: none;
-`
-const SoftSkill = styled.li`
-    border-radius: 24px;
-    border: 1px solid white;
-    padding: 0.5em;
-    white-space: nowrap;
-    border: 2px solid ${(props) => props.$border };
-    transition: transform 0.3 ease;
-
-    &:hover {
-        transform: scale(1.04);
-    }
-`
 
 // ------------ Motion Sets.  ------------
 
@@ -524,6 +464,7 @@ const MotionExperienceCard = motion(ExperienceCard);
 const MotionLogo = motion(Logo);
 const MotionExpandIcon = motion(ExpandIcon);
 const MotionExpandedCard = motion(ExpandedCard);
+const MotionDateDescription = motion(DateDescription);
 
 
 const MemoExperienceCard = React.memo(ExperienceCardComponent);

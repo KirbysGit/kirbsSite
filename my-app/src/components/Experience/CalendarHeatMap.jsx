@@ -21,7 +21,6 @@ const getDateRangeArray = (start, end) => {
 
     return dates;                                                                       // Return Date Array.
 }
-
 // Groups Dates Array By Month W/ Reduce.
 const groupDatesByMonth = (dates) => {
     return dates.reduce((acc, date) => {                            // Reduce Method To Process Each Item In An Array.
@@ -31,15 +30,6 @@ const groupDatesByMonth = (dates) => {
         return acc;                                                 // Return Grouped Result, For Next Iteration.
     }, {});
 };
-
-// Checks If Working Dates Was A Full Year.
-const isFullYear = (dates,  year) => {
-    const start = new Date(`${year}-01-01`);                                                   // Sets Start Date Of Year.
-    const end = new Date(`${year}-12-31`);                                                     // Sets End Date of Year.
-    const daysInYear = (end - start) / (1000 * 60 * 60 * 24) + 1;                              // Calculates All Days In A Calendar Year.
-    const daysInDates = dates.filter(date => date.getFullYear() === parseInt(year)).length;    // Counts How Many Dates In List Fall Within This Year.
-    return daysInDates >= daysInYear - 2;                                                      // Return If # Of Working Days Is Close Enough To A Full Year.
-}
 
 // CalendarHeatMap Component. Takes In Item.
 const CalendarHeatMap = ({ item }) => {
@@ -164,29 +154,27 @@ const CalendarHeatMap = ({ item }) => {
 const HeatMapContainer = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
     width: 100%;
 `;
 // ------------ Individual Year & Month Containers ------------
 const YearGroup = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 `;
 // ------------ Year Bars ------------
 const YearRow = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 0.5rem;
     background: ${(props) => props.$bg};
     border-radius: 12px;
     border: 1px solid white;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     transition: background 0.2s ease;
-
+    margin: 0 0.05em;
     &:hover {
-        background: ${( { $bg }) => darken(0.07, $bg)};
+        background: ${( { $bg }) => darken(0.125, $bg)};
     }
 `;
 // Year Label. E.g. 2025.
@@ -196,6 +184,7 @@ const YearLabel = styled.div`
     text-align: center;
     justify-self: center;
 `;
+
 // Expanding Arrows.
 const Arrow = styled.div`
     display: flex;
@@ -203,7 +192,6 @@ const Arrow = styled.div`
     color: white;
     margin-left: auto;
     margin-right: 0.2em;
-
     &:hover {
         opacity: 0.5;
         cursor: pointer;
