@@ -1,8 +1,25 @@
-STYLED NOTES - My Notes to Reference for UI Design 
+# STYLED NOTES - My Notes to Reference for UI Design 
 
-* Padding Interior, Margin Exterior.
+## Random Notes I Forget :
+Padding Interior, Margin Exterior.
 
-- VISUALS -
+
+# - VISUALS -
+| Property | Purpose | Example |
+| --- | --- | --- |
+| 'color' | 'Sets the text or SVG fill color.' | 'color: #ffffff;' |
+| 'background-color' | 'Fills an element's background.' | 'background-color: rgb(44, 49, 81);' |
+| '↳ Named' | 'Readable presets.' | 'background-color: black;' |
+| '↳ Hex' | 'Precise brand shades.' | 'background-color: #1a1a1a;' |
+| '↳ RGB' | 'Easy channel tweaks.' | 'background-color: rgb(255, 0, 0);' |
+| '↳ Transparent' | 'Overlays / Modals' | 'background-color: rgb(0, 0, 0, 0.5);' |
+| 'background-image' | 'Gradients, textures, photos.' | 'background-image: linear-gradient(135deg, #0cf, #09f);' |
+| 'border' | 'Adds an outline' | 'border: 2px solid #ffffff;' |
+| 'border-radius' | 'Creates depth/elevation.' | 'box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);' |
+
+
+
+
     - color                 (Text Color)
     - background-color      (Background Fill)
         - Named Colors : Black, White, Red.
@@ -187,4 +204,16 @@ STYLED NOTES - My Notes to Reference for UI Design
     box-shadow: offset-x offset-y blue radius spread-radius color inset;
 
 
+- JS FUNCTIONS -
+
+- accumulator - A container that collects and builds up a result as you loop through something.
+
+- .filter() - Creates a new array that incldues only the elements that pass a certain test.
+
+- .reduce() - 
+    - Starts as some initial value.
+    - On each iteration, you add or update it based on the current item.
+    - You return it to use again on the next item.
+    - At end you get one final result.
+    - Simple Example : "I'm carrying a bag (our accumulator), and on each step through the list, I decide what to drop into the bag."
     
