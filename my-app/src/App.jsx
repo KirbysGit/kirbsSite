@@ -1,19 +1,35 @@
 // Imports.
 import React from 'react';
+import {BrowserRouter, Routes, Route } from 'react-router-dom';
+// Local Imports.
 import Hero from './components/Hero/Hero';
 import About from './components/About/About';
+import GlobalStyle from './styles/GlobalStyle';
 import Education from './components/Education/Education';
 import Experience from './components/Experience/Experience';
-import GlobalStyle from './styles/GlobalStyle';
+import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
+
 // App Component.
 function App() {
   return (
     <>
       <GlobalStyle />
-      <Hero />
-      <Experience />
-      <Education />
-      <About />
+      <BrowserRouter>
+        <Routes>
+          <Route 
+            path="/"
+            element={
+              <>
+                <Hero />
+                <Experience />
+                <Education />
+                <About />
+              </>
+            }
+          />
+          <Route path="/ui-cheatsheet" element={<CheatSheet />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

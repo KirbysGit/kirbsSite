@@ -2,7 +2,8 @@
 import Typed from 'typed.js';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaMoon, FaSun } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaMoon, FaPaintBrush, FaSun } from 'react-icons/fa';
 import Particles from 'react-tsparticles';
 import React, { useEffect, useRef } from 'react';
 import { loadStarsPreset } from 'tsparticles-preset-stars';
@@ -90,6 +91,14 @@ const Hero = () => {
                 />
             </ParticlesContainer>
             
+            <Link to="/ui-cheatsheet">
+                <BrushBtn
+                    whileHover={{ rotate: 10, scale: 1.15 }}
+                    whileTap={{ scale:0.9 }}
+                >
+                    <FaPaintBrush />
+                </BrushBtn>
+            </Link>
             <MoonButton
                 whileHover={{ rotate: 20, scale: 1.2}}
                 whileTap={{ rotate: -20}}
@@ -199,5 +208,18 @@ const MoonButton = styled(motion.button)`
     align-items: center;
     font-size: 5rem;
 
+`
+
+const BrushBtn = styled(motion.button)`
+    position: absolute;
+    top: 10rem;
+    left: 10rem;
+    padding: .5rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 3rem;
+    cursor: pointer;
+    z-index: 999;
 `
 export default Hero;

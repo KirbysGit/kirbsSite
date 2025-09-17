@@ -1,16 +1,20 @@
+// Imports.
 import React from 'react';
 import { useState } from 'react';
 import Tilt from 'react-parallax-tilt';
 import { styled } from 'styled-components';
 
+// Component Declaration.
+// Takes In 'item'.
 const ResponsibilityGrid = ({ item }) => {
 
-    const [flipped, setFlipped] = useState({});
+    const [flipped, setFlipped] = useState({});     // Use State For Checking If Card Is Flipped.
 
-    const toggleFlip = (index) => {
-        setFlipped((prev) => ({
-            ...prev,
-            [index]: !prev[index]
+    // Toggle Flip Func.
+    const toggleFlip = (index) => {                 // Take Idx Of Card To Flip.
+        setFlipped((prev) => ({                     // Take Prev List.
+            ...prev,                                // Keep Existing Flags.
+            [index]: !prev[index]                   // Per Request Index Invert 'flipped' State.
         }));
     }
 

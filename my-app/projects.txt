@@ -63,7 +63,7 @@ Hawkers Asian Street Fare | May 2022 – August 2022 | Host / HTO | Part-Time
 
 Projects : 
 
-ShelfVision – Deep Learning-Based Retail Shelf Detection System
+ShelfVision – Deep Learning-Based Retail Shelf Detection System - https://github.com/KirbysGit/I2DLproj
 • Designed and implemented ShelfVision, a full-stack custom object detection architecture tailored for dense retail shelf environments, leveraging PyTorch, Torchvision, ResNet-50, Feature Pyramid Network (FPN), and OpenCV.
 • Engineered dynamic anchor-to-ground truth matching, robust multi-scale training pipelines, and extensive visualization-driven debugging tools (anchor spread plots, loss curves, prediction overlays) to stabilize model training after initial baseline collapse (0 mAP → 0.0069 mAP).
 • Benchmarked ShelfVision against YOLOv5 on SKU-110K, demonstrating superior object localization, early-stage generalization, and resilience to dense object scenes despite constrained training resources.
