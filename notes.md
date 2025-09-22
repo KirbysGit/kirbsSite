@@ -5,17 +5,17 @@ Padding Interior, Margin Exterior.
 
 
 # - VISUALS -
-| Property | Purpose | Example |
+| Property | What You Choose | Example |
 | --- | --- | --- |
-| 'color' | 'Sets the text or SVG fill color.' | 'color: #ffffff;' |
-| 'background-color' | 'Fills an element's background.' | 'background-color: rgb(44, 49, 81);' |
-| '↳ Named' | 'Readable presets.' | 'background-color: black;' |
-| '↳ Hex' | 'Precise brand shades.' | 'background-color: #1a1a1a;' |
-| '↳ RGB' | 'Easy channel tweaks.' | 'background-color: rgb(255, 0, 0);' |
-| '↳ Transparent' | 'Overlays / Modals' | 'background-color: rgb(0, 0, 0, 0.5);' |
-| 'background-image' | 'Gradients, textures, photos.' | 'background-image: linear-gradient(135deg, #0cf, #09f);' |
-| 'border' | 'Adds an outline' | 'border: 2px solid #ffffff;' |
-| 'border-radius' | 'Creates depth/elevation.' | 'box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);' |
+| color | Any CSS color. | color: #ffffff; |
+| background-color | Fills an element's background. | background-color: rgb(44, 49, 81); |
+| ↳ Named | Readable presets. | background-color: black; |
+| ↳ Hex | Precise brand shades. | background-color: #1a1a1a; |
+| ↳ RGB | Easy channel tweaks. | background-color: rgb(255, 0, 0); |
+| ↳ Transparent | Overlays / Modals | background-color: rgb(0, 0, 0, 0.5); |
+| background-image | Gradients, textures, photos. | background-image: linear-gradient(135deg, #0cf, #09f); |
+| border | Adds an outline. | border: 2px solid #ffffff; |
+| border-radius | Creates depth/elevation. | box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); |
 
 
 

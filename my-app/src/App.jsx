@@ -21,9 +21,9 @@ function App() {
             element={
               <>
                 <Hero />
+                <About />
                 <Experience />
                 <Education />
-                <About />
               </>
             }
           />

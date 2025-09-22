@@ -1,0 +1,42 @@
+// iPhone message container
+const MessageContainer = styled(motion.div)`
+    --bubble-scale: 2.5; /* Easy scaling ratio - change this to resize everything */
+    
+    padding: calc(0.5rem * var(--bubble-scale));
+    justify-self: center;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: calc(0.5rem * var(--bubble-scale));
+`;
+
+// iphone message bubble w/ scaling factor.
+const BubbleMsg = styled.p`
+    --bubble-scale: 2.5; 
+    
+    font-size: calc(30px * var(--bubble-scale));
+    line-height: 1.4;
+    margin: calc(1px * var(--bubble-scale)) 0;
+    padding: calc(8px * var(--bubble-scale)) calc(17px * var(--bubble-scale)) calc(6px * var(--bubble-scale)) calc(16px * var(--bubble-scale));
+    max-width: calc(380px * var(--bubble-scale));
+    position: relative;
+    border-radius: calc(18px * var(--bubble-scale));
+    
+    text-align: justify;
+    color: black;
+    align-self: flex-start;
+    background-color: #E5E5EA;
+    white-space: nowrap;
+    
+    &::after {
+        position: absolute;
+        content: "";
+        bottom: calc(-1px * var(--bubble-scale));
+        left: calc(-6px * var(--bubble-scale));
+        width: calc(15.515px * var(--bubble-scale));
+        height: calc(17.5px * var(--bubble-scale));
+        z-index: 1;
+        background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='15.515px' height='17.5px' viewBox='32.484 17.5 15.515 17.5' enable-background='new 32.484 17.5 15.515 17.5'><path fill='%23E5E5EA' d='M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'/></svg>") no-repeat;
+        background-size: calc(15.515px * var(--bubble-scale)) calc(17.5px * var(--bubble-scale));
+    }
+`;
