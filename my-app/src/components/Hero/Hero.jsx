@@ -100,7 +100,7 @@ const HeroContainer = styled.div`
     background: radial-gradient(ellipse at center, 
         rgba(20, 5, 40, 0.8) 0%, 
         rgba(0, 0, 0, 0.9) 30%, 
-        rgba(0, 0, 0, 1) 70%);
+        rgba(13, 7, 27, 1) 70%);
     
     /* Subtle starfield background */
     &::before {
@@ -127,6 +127,11 @@ const HeroContainer = styled.div`
         background-size: 200px 200px;
         animation: twinkle 4s ease-in-out infinite;
         opacity: 0.8;
+        
+        /* fade OUT near the bottom */
+        -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+                mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        pointer-events: none;
     }
     
     /* Breathing nebula effect */
@@ -149,6 +154,11 @@ const HeroContainer = styled.div`
                 rgba(0, 0, 0, 0.8) 100%);
         animation: breathe 10s ease-in-out infinite;
         opacity: 0.7;
+        
+        /* fade OUT near the bottom */
+        -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+                mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+        pointer-events: none;
     }
     
     @keyframes twinkle {
