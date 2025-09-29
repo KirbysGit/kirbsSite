@@ -6,6 +6,10 @@ import alwaysChillin from '@/images/alwaysChillin.jpg';
 import engineeringGuy from '@/images/engineeringGuy.jpg';
 import ucf4 from '@/images/ucf4.jpg';
 import secondHome from '@/images/secondHome.jpg';
+import campingTrip from '@/images/campingTrip.jpg';
+import lilG from '@/images/lilG.jpg';
+import mySetUp from '@/images/mySetUp.jpg';
+import sanduskySunset from '@/images/sanduskySunset.jpg';
 
 const About = () => {
     const [activeParagraph, setActiveParagraph] = useState(0);
@@ -127,14 +131,14 @@ const About = () => {
                             ref={el => paragraphRefs.current[0] = el}
                             $isActive={activeParagraph === 0}
                         >
-                            🏠 Back to day one, I was born and raised in Windermere, Florida. Outside of school, I spent basically all of my time either playing sports, video games, or just hanging out with my friends doing literally anything that sounded fun.
+                            🏠 So... back to day one, I was born and raised in Windermere, Florida. Outside of school, I spent basically all of my time doing one of the following: playing sports or video games, drawing, or just hanging out with my friends doing literally anything that sounded fun.
                         </StoryParagraph>
                         
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[1] = el}
                             $isActive={activeParagraph === 1}
                         >
-                            📚 School wasn't really my favorite, mostly because of the 7 a.m. mornings. I kept A's to stay out of trouble. Math and science clicked for me. English definitely did NOT, and honestly I still don't get why people use em-dashes.
+                            📚 School wasn't really my favorite, mostly because of the early mornings and boring homework. I kept my A's to stay out of trouble. Math and science were my strong suits. English definitely was NOT, and honestly I still understand where to use em-dashes.
                         </StoryParagraph>
 
                         
@@ -142,14 +146,14 @@ const About = () => {
                             ref={el => paragraphRefs.current[2] = el}
                             $isActive={activeParagraph === 2}
                         >
-                            🎨 I was always drawn to art, probably from my parents. I'd doodle in class and zone out, and I loved the design side of projects because it let me be creative. Led into my love for music too.
+                            🎨 I was always drawn to art, probably from my parents. I’d doodle in class and loved the design side of projects because it let me be creative. That same creative streak pulled me into music, too.
                         </StoryParagraph>
                         
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[3] = el}
                             $isActive={activeParagraph === 3}
                         >
-                            🎓 By the time I hit high school, my schedule was packed with sports, classes, and a couple of clubs. I didn't have a big plan for college at first. I just knew I would go, and I picked a school a few days before applying.
+                            🎓 By the time I hit high school, my schedule was packed with sports, classes, and a couple of clubs. I didn't really have a big plan for college at first. I just knew I would go, and I picked a school a few days before applying based on my scholarships.
                         </StoryParagraph>
                     </StoryText>
                 </TextContainer>
@@ -227,36 +231,36 @@ const About = () => {
                     <StoryTitle>My College Years ~<StoryDate>21' to 25'</StoryDate></StoryTitle>
                     <StoryText>
                         <StoryParagraph 
-                            ref={el => paragraphRefs.current[5] = el}
-                            $isActive={activeParagraph === 5}
+                            ref={el => paragraphRefs.current[4] = el}
+                            $isActive={activeParagraph === 4}
                             $isReversed={true}
                         >
                             🏫 I wasn't really set on any university, but UCF felt like the right fit. I came into UCF as a Mechanical Engineer just because I was good at STEM stuff and didn't stop until after I got through Statics and realized that I wasn't really in the mood for any more free-body diagrams.
                         </StoryParagraph>
                         
                         <StoryParagraph 
+                            ref={el => paragraphRefs.current[5] = el}
+                            $isActive={activeParagraph === 5}
+                            $isReversed={true}
+                        >
+                            🛠️ Freshman year flew by, but one Python class grabbed my attention. Then in my sophomore year I switched over to Computer Engineering so I could keep some hands-on work while learning to code.
+                        </StoryParagraph>
+
+                        
+                        <StoryParagraph 
                             ref={el => paragraphRefs.current[6] = el}
                             $isActive={activeParagraph === 6}
                             $isReversed={true}
                         >
-                            🛠️ Freshman year flew by, but one Python class grabbed my attention. Sophomore year I switched to Computer Engineering so I could keep some hands-on work while learning to code.
+                            🔒 College felt a lot like high school in terms of the routine. I was in class, studying, working, or at the gym most days. I joined a few clubs for the networking. It was a constant grind, but honestly I was addicted to it.
                         </StoryParagraph>
-
                         
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[7] = el}
                             $isActive={activeParagraph === 7}
                             $isReversed={true}
                         >
-                            🔒 College felt a lot like high school in terms of routine. I was in class, studying, working, or at the gym most days. I joined a few clubs mainly to hit workshops and networking events that looked useful.
-                        </StoryParagraph>
-                        
-                        <StoryParagraph 
-                            ref={el => paragraphRefs.current[8] = el}
-                            $isActive={activeParagraph === 8}
-                            $isReversed={true}
-                        >
-                            🚀 Those years were where I grew the most. Senior year was the best part because most classes were project based. I loved building from zero to one and riding the ups and downs of the process.
+                            🚀 These years were where I grew the most. But with my packed schedule, I realized I had lost track of what I was working towards. I was getting hooked on the dopamine of "I got stuff done today". I realized I needed to take a step back before I jumped into a job that didn't align with me.
                         </StoryParagraph>
                     </StoryText>
                 </TextContainer>
@@ -265,43 +269,30 @@ const About = () => {
 
             <StorySection>
                 <OverlappingImageContainer>
-                    <MapPinWrapper $side="left">
-                        <MapPin 
-                            item={{ theme: { primary: '#ff6b6b' } }}
-                            coords={[28.4958, -81.5359]}
-                            address="Windermere, Florida"
-                            link="https://www.google.com/maps/place/Windermere,+FL/@28.4958,-81.5359,15z"
-                            style="outdoors-v12"
-                            size="400x350"
-                            pitch={55}
-                            bearing={-40}
-                            zoom={13.8}
-                            pinSize="7rem"
-                            pinPosition={{ bottom: "42%", left: "33.75%" }}
-                            pulsePosition={{ top: "52.5%", left: "52.625%" }}
-                            showPulse={true}
-                            mapFilters="grayscale(20%) brightness(85%) contrast(110%)"
-                            borderRadius="20px"
-                        />
-                    </MapPinWrapper>
+                    <ImageCard 
+                        $position="top-left" 
+                        $image={campingTrip} 
+                        $alt="Camping Trip" />
+
+
                     <ImageCard 
                         $position="bottom-right" 
-                        $image={naturalAthlete}
-                        $alt="Natural Athlete"
+                        $image={lilG}
+                        $alt="Lil G"
                     >
                         <BubbleContainer $position="bottom-right">
                             <SpeechBubble $parentPosition="bottom-right">
-                                Clearly a natural athlete, photo speaks for itself. 💯
+                                a
                             </SpeechBubble>
                             <SpeechBubble $parentPosition="bottom-right">
-                                If you were wondering, Yes that was a home run. ⚾
+                                a
                             </SpeechBubble>
                         </BubbleContainer>
                     </ImageCard>
             
                     <ImageCard
                         $position="diagonal-down-left"
-                        $image={alwaysChillin}
+                        $image={mySetUp}
                         $alt="Always Chillin"
                     >
                         <BubbleContainer $position="bottom-left">
@@ -320,38 +311,36 @@ const About = () => {
                     <StoryTitle>Post-Grad Life ~<StoryDate>25' to Today</StoryDate></StoryTitle>
                     <StoryText>
                         <StoryParagraph 
-                            ref={el => paragraphRefs.current[0] = el}
-                            $isActive={activeParagraph === 0}
+                            ref={el => paragraphRefs.current[8] = el}
+                            $isActive={activeParagraph === 8}
                         >
-                            🏠 Back to day one, I was born and raised in Windermere, Florida. Outside of school, I spent basically all of my time either playing sports, video games, or just hanging out with my friends doing literally anything that sounded fun.
+                            Honestly, thus far post-grad has been weird. The momentum shift from full-time classes, internships, and part-time work to setting my own pace took adjusting. Having no built-in to-do list felt odd but also kind of freeing.
                         </StoryParagraph>
                         
                         <StoryParagraph 
-                            ref={el => paragraphRefs.current[1] = el}
-                            $isActive={activeParagraph === 1}
+                            ref={el => paragraphRefs.current[9] = el}
+                            $isActive={activeParagraph === 9}
                         >
-                            📚 School wasn't my thing, mostly because of the 7 a.m. mornings. I kept A's to stay out of trouble. Math and science clicked. English didn't, and honestly I still don't get why people use em-dashes.
+                            I took the Summer of 2025 to get clear on what I want for myself. I slowed down, cleaned up the mental clutter, and kept skills sharp by working on past projects, polishing my portfolio, and grinding that god awful LeetCode all while still working my serving job.
                         </StoryParagraph>
 
                         
                         <StoryParagraph 
-                            ref={el => paragraphRefs.current[2] = el}
-                            $isActive={activeParagraph === 2}
+                            ref={el => paragraphRefs.current[10] = el}
+                            $isActive={activeParagraph === 10}
                         >
-                            🎨 I was drawn to art, probably from my parents. I'd doodle in class and zone out, and I loved the design side of projects because it let me be creative.
+                            Now getting back into it, I’m in the job search. I don’t have it all mapped out (barely any of it, honestly), but I do know that I am drawn to software and I want to stay close to people, so maybe Tech Sales? Who knows.
                         </StoryParagraph>
                         
                         <StoryParagraph 
-                            ref={el => paragraphRefs.current[3] = el}
-                            $isActive={activeParagraph === 3}
+                            ref={el => paragraphRefs.current[11] = el}
+                            $isActive={activeParagraph === 11}
                         >
-                            🎓 By the time I hit high school, my schedule was packed with sports, classes, and a couple of clubs. I didn't have a big plan for college at first. I just knew I would go, and I picked a school a few days before applying.
+                            I do however know that I have big goals that I know I will achieve. So for now I’m taking my time, working on myself, and looking for a team I can grow with. Until I find it, I’ll keep getting better.
                         </StoryParagraph>
                     </StoryText>
                 </TextContainer>
             </StorySection>
-            
-
             
         </AboutContainer>
     );
@@ -369,6 +358,11 @@ const AboutContainer = styled.div`
     width: 100vw;
     padding-top: 4rem;
     overflow-x: hidden;
+
+    @media (max-width: 1600px) {
+        gap: 3rem;
+        padding-bottom: 4rem;
+    }
 `;
 
 const StorySection = styled.div`
@@ -552,7 +546,7 @@ const BubbleContainer = styled.div`
         }
         
         @media (max-width: 1599px) {
-            right: -120px;
+            right: -20px;
         }
     `}
     
