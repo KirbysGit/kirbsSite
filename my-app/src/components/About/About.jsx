@@ -1,5 +1,8 @@
+// basic imports.
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+
+// my images.
 import MapPin from '../Experience/MapPin';
 import naturalAthlete from '@/images/naturalAthlete.jpg';
 import alwaysChillin from '@/images/alwaysChillin.jpg';
@@ -12,6 +15,10 @@ import mySetUp from '@/images/mySetUp.jpg';
 import sanduskySunset from '@/images/sanduskySunset.jpg';
 
 const About = () => {
+    
+    // states.
+
+    // 
     const [activeParagraph, setActiveParagraph] = useState(0);
     const paragraphRefs = useRef([]);
 
@@ -71,8 +78,11 @@ const About = () => {
 
     return (
         <AboutContainer>
+            {/* Early Years */}
             <StorySection>
+
                 <OverlappingImageContainer>
+                    {/* pin of windermere */}
                     <MapPinWrapper $side="left">
                         <MapPin 
                             item={{ theme: { primary: '#ff6b6b' } }}
@@ -92,6 +102,8 @@ const About = () => {
                             borderRadius="20px"
                         />
                     </MapPinWrapper>
+
+                    {/* image of me hitting a dinger */}
                     <ImageCard 
                         $position="bottom-right" 
                         $image={naturalAthlete}
@@ -106,7 +118,8 @@ const About = () => {
                             </SpeechBubble>
                         </BubbleContainer>
                     </ImageCard>
-            
+
+                    {/* image of lebron james (me) */}
                     <ImageCard
                         $position="diagonal-down-left"
                         $image={alwaysChillin}
@@ -124,6 +137,7 @@ const About = () => {
                         </BubbleContainer>
                     </ImageCard>
                 </OverlappingImageContainer>
+                
                 <TextContainer>
                     <StoryTitle>The Early Years ~<StoryDate>03' to 21'</StoryDate></StoryTitle>
                     <StoryText>
@@ -131,14 +145,14 @@ const About = () => {
                             ref={el => paragraphRefs.current[0] = el}
                             $isActive={activeParagraph === 0}
                         >
-                            🏠 So... back to day one, I was born and raised in Windermere, Florida. Outside of school, I spent basically all of my time doing one of the following: playing sports or video games, drawing, or just hanging out with my friends doing literally anything that sounded fun.
+                            🏠 So... back to <span className="special-moment">day one</span>, I was born and raised in <span className="location">Windermere, Florida</span>. Outside of <span className="activity">school</span>, I spent basically all of my time doing one of the following: <span className="activity">playing sports</span>, <span className="activity">video games</span>, <span className="activity">drawing</span>, or just hanging out with my <span className="subject-good">friends</span> doing literally <span className="emphasis">anything that sounded fun</span>.
                         </StoryParagraph>
                         
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[1] = el}
                             $isActive={activeParagraph === 1}
                         >
-                            📚 School wasn't really my favorite, mostly because of the early mornings and boring homework. I kept my A's to stay out of trouble. Math and science were my strong suits. English definitely was NOT, and honestly I still understand where to use em-dashes.
+                            📚 School wasn't really my favorite, mostly because of the <span className="negative">early mornings</span> and <span className="negative">boring homework</span>. I kept my <span className="subject-good">A's</span> to stay out of trouble. <span className="subject-good">Math</span> and <span className="subject-good">science</span> were my strong suits. <span className="subject-bad">English</span> definitely was <span className="emphasis">NOT</span>, and honestly I still don't understand where to use <span className="skill">em-dashes</span>.
                         </StoryParagraph>
 
                         
@@ -146,22 +160,25 @@ const About = () => {
                             ref={el => paragraphRefs.current[2] = el}
                             $isActive={activeParagraph === 2}
                         >
-                            🎨 I was always drawn to art, probably from my parents. I’d doodle in class and loved the design side of projects because it let me be creative. That same creative streak pulled me into music, too.
+                            🎨 I was always drawn to <span className="activity">art</span>, probably from my <span className="subject-good">parents</span>. I'd <span className="activity">doodle</span> in class and loved the <span className="activity">design</span> side of projects because it let me be <span className="emphasis">creative</span>. That same <span className="emphasis">creative</span> streak pulled me into <span className="activity">music</span> too.
                         </StoryParagraph>
                         
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[3] = el}
                             $isActive={activeParagraph === 3}
                         >
-                            🎓 By the time I hit high school, my schedule was packed with sports, classes, and a couple of clubs. I didn't really have a big plan for college at first. I just knew I would go, and I picked a school a few days before applying based on my scholarships.
+                            🎓 By the time I hit <span className="special-moment">high school</span>, my schedule was packed with <span className="activity">sports</span>, <span className="activity">classes</span>, and a couple of <span className="activity">clubs</span>. I didn't really have a big plan for <span className="special-moment">college</span> at first. I just knew I would go, and I picked a school <span className="emphasis">a few days</span> before applying based on my <span className="subject-good">scholarships</span>.
                         </StoryParagraph>
                     </StoryText>
                 </TextContainer>
+
             </StorySection>
 
+            {/* My College Years */}
             <StorySection reverse>
-                <OverlappingImageContainer>
 
+                <OverlappingImageContainer>
+                    {/* pin of ucf */}
                     <MapPinWrapper $side="right">
                         <MapPin 
                             item={{ theme: { primary: '#ff6b6b' } }}
@@ -181,6 +198,8 @@ const About = () => {
                             borderRadius="20px"
                         />
                     </MapPinWrapper>
+
+                    {/* image of me in front of engienering building */}
                     <ImageCard 
                         $position="bottom-left" 
                         $image={engineeringGuy}
@@ -195,7 +214,8 @@ const About = () => {
                             </SpeechBubble>
                         </BubbleContainer>
                     </ImageCard>
-            
+
+                    {/* ucf aesthetic photo */}
                     <ImageCard
                         $position="diagonal-down-right"
                         $image={ucf4}
@@ -211,6 +231,7 @@ const About = () => {
                         </BubbleContainer>
                     </ImageCard>
 
+                    {/* the john */}
                     <ImageCard 
                         $position="diagonal-down-left-from-right" 
                         $image={secondHome}
@@ -227,6 +248,7 @@ const About = () => {
                     </ImageCard>
                     
                 </OverlappingImageContainer>
+
                 <TextContainer $isReversed={true}>
                     <StoryTitle>My College Years ~<StoryDate>21' to 25'</StoryDate></StoryTitle>
                     <StoryText>
@@ -235,7 +257,7 @@ const About = () => {
                             $isActive={activeParagraph === 4}
                             $isReversed={true}
                         >
-                            🏫 I wasn't really set on any university, but UCF felt like the right fit. I came into UCF as a Mechanical Engineer just because I was good at STEM stuff and didn't stop until after I got through Statics and realized that I wasn't really in the mood for any more free-body diagrams.
+                            🏫 I wasn't really set on any university, but <span className="ucf">UCF</span> felt like the right fit. I came into <span className="ucf">UCF</span> majoring in <span className="major">Mechanical Engineering</span> just because I was good at <span className="subject-good">STEM</span> stuff and didn't stop until after I got through <span className="emphasis">Statics</span> and realized that I wasn't really in the mood for any more free-body diagrams.
                         </StoryParagraph>
                         
                         <StoryParagraph 
@@ -243,7 +265,7 @@ const About = () => {
                             $isActive={activeParagraph === 5}
                             $isReversed={true}
                         >
-                            🛠️ Freshman year flew by, but one Python class grabbed my attention. Then in my sophomore year I switched over to Computer Engineering so I could keep some hands-on work while learning to code.
+                            🛠️ <span className="special-moment">Freshman year</span> flew by, but I do remember one <span className="python">Intro to Python</span> class being really <span className="subject-good">interesting</span> to me. Then in my <span className="special-moment">sophomore year</span> I switched over to <span className="major">Computer Engineering</span> so I could keep some <span className="skill">hands-on</span> work while learning to <span className="skill">code</span>.
                         </StoryParagraph>
 
                         
@@ -252,7 +274,7 @@ const About = () => {
                             $isActive={activeParagraph === 6}
                             $isReversed={true}
                         >
-                            🔒 College felt a lot like high school in terms of the routine. I was in class, studying, working, or at the gym most days. I joined a few clubs for the networking. It was a constant grind, but honestly I was addicted to it.
+                            🔒 College for me felt a lot like high school in terms of the <span className="skill">routine</span>. I was in <span className="activity">class</span>, <span className="activity">studying</span>, <span className="activity">working</span>, or at the <span className="activity">gym</span> most days. I joined a few <span className="activity">clubs</span> for the <span className="skill">networking</span>. It was a <span className="emphasis">constant grind</span>, but honestly I was <span className="emphasis">addicted</span> to it.
                         </StoryParagraph>
                         
                         <StoryParagraph 
@@ -260,7 +282,7 @@ const About = () => {
                             $isActive={activeParagraph === 7}
                             $isReversed={true}
                         >
-                            🚀 These years were where I grew the most. But with my packed schedule, I realized I had lost track of what I was working towards. I was getting hooked on the dopamine of "I got stuff done today". I realized I needed to take a step back before I jumped into a job that didn't align with me.
+                            🚀 These <span className="special-moment">years</span> were where I <span className="emphasis">grew</span> the most. But with my <span className="emphasis">packed schedule</span>, I realized I had <span className="negative">lost track</span> of what I was working towards. I was getting hooked on the <span className="emphasis">dopamine</span> of "I got stuff done today". I realized I needed to take a <span className="emphasis">step back</span> before I jumped into a <span className="major">job</span> that didn't <span className="subject-good">align</span> with me.
                         </StoryParagraph>
                     </StoryText>
                 </TextContainer>
@@ -268,28 +290,41 @@ const About = () => {
             </StorySection>
 
             <StorySection>
+
                 <OverlappingImageContainer>
+
+                    {/* image of the camp site */}
                     <ImageCard 
                         $position="top-left" 
                         $image={campingTrip} 
-                        $alt="Camping Trip" />
+                        $alt="Camping Trip" >
+                        <BubbleContainer $position="top-left">
+                            <SpeechBubble $parentPosition="bottom-left" $width="75%">
+                                Got some time to go camping with friends 🚗🏕️
+                            </SpeechBubble>
+                            <SpeechBubble $parentPosition="bottom-left" $width="max-content">
+                                St. George Island, FL 🌊
+                            </SpeechBubble>
+                        </BubbleContainer>
+                    </ImageCard>
 
-
+                    {/* image of lil g */}
                     <ImageCard 
                         $position="bottom-right" 
                         $image={lilG}
                         $alt="Lil G"
                     >
                         <BubbleContainer $position="bottom-right">
-                            <SpeechBubble $parentPosition="bottom-right">
-                                a
+                            <SpeechBubble $parentPosition="bottom-right" $width="max-content">
+                                My lil bro 🐕
                             </SpeechBubble>
-                            <SpeechBubble $parentPosition="bottom-right">
-                                a
+                            <SpeechBubble $parentPosition="bottom-right" $width="max-content">
+                                His name is Guinness 🍺
                             </SpeechBubble>
                         </BubbleContainer>
                     </ImageCard>
-            
+
+                    {/* image of the dream setup */}
                     <ImageCard
                         $position="diagonal-down-left"
                         $image={mySetUp}
@@ -297,15 +332,32 @@ const About = () => {
                     >
                         <BubbleContainer $position="bottom-left">
                             <SpeechBubble $parentPosition="bottom-left"
-                            $width="100%">
-                                Calm and collected under pressure. 🧘‍♂️
+                            $width="max-content">
+                                A look into my setup ⌨️🖱️
                             </SpeechBubble>
                             <SpeechBubble $parentPosition="bottom-left"
-                            $width="59%">
-                                Just called game. 🏀
+                            $width="max-content">
+                                Where the magic happens 🪄
                             </SpeechBubble>
                         </BubbleContainer>
                     </ImageCard>
+
+                    {/* sandusy sunset image*/}
+                    <ImageCard
+                        $position="sunset"
+                        $image={sanduskySunset}
+                        $alt="Sandusky Sunset"
+                    >
+                        <BubbleContainer $position="bottom-right" $width="75%">
+                            <SpeechBubble $parentPosition="bottom-right" $width="max-content">
+                                Sandusky, Ohio 📍
+                            </SpeechBubble>
+                            <SpeechBubble $parentPosition="bottom-right" $width="65%">
+                                Finally got some time to visit family 😄
+                            </SpeechBubble>
+                        </BubbleContainer>
+                    </ImageCard>
+                    
                 </OverlappingImageContainer>
                 <TextContainer>
                     <StoryTitle>Post-Grad Life ~<StoryDate>25' to Today</StoryDate></StoryTitle>
@@ -314,29 +366,28 @@ const About = () => {
                             ref={el => paragraphRefs.current[8] = el}
                             $isActive={activeParagraph === 8}
                         >
-                            Honestly, thus far post-grad has been weird. The momentum shift from full-time classes, internships, and part-time work to setting my own pace took adjusting. Having no built-in to-do list felt odd but also kind of freeing.
+                            🧑‍🎓 Honestly, thus far <span className="special-moment">post-grad</span> has been weird. The <span className="emphasis">momentum</span> shift from <span className="activity">full-time classes</span>, <span className="activity">internships</span>, and <span className="activity">part-time work</span> to setting my own pace took some <span className="emphasis">adjusting</span>. Having no built-in to-do list felt odd but also kind of <span className="subject-good">freeing</span>.
                         </StoryParagraph>
                         
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[9] = el}
                             $isActive={activeParagraph === 9}
                         >
-                            I took the Summer of 2025 to get clear on what I want for myself. I slowed down, cleaned up the mental clutter, and kept skills sharp by working on past projects, polishing my portfolio, and grinding that god awful LeetCode all while still working my serving job.
+                            ☀️ I took the <span className="special-moment">Summer of 2025</span> to get clear on what I want for myself. I <span className="emphasis">slowed down</span>, cleaned up the <span className="negative">mental clutter</span>, and kept <span className="skill">skills</span> sharp by working on <span className="activity">past projects</span>, polishing my <span className="activity">portfolio</span>, and grinding that <span className="negative">god awful LeetCode</span> all while still working my <span className="activity">serving job</span>.
                         </StoryParagraph>
 
-                        
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[10] = el}
                             $isActive={activeParagraph === 10}
                         >
-                            Now getting back into it, I’m in the job search. I don’t have it all mapped out (barely any of it, honestly), but I do know that I am drawn to software and I want to stay close to people, so maybe Tech Sales? Who knows.
+                            🔍 Now getting back into it, I'm in the <span className="emphasis">job search</span>. I don't have it all <span className="negative">mapped out</span> (barely any of it, honestly), but I do know that I am drawn to <span className="skill">software</span> and I want to stay close to <span className="subject-good">people</span>, so maybe <span className="major">Tech Sales</span>? Who knows.
                         </StoryParagraph>
                         
                         <StoryParagraph 
                             ref={el => paragraphRefs.current[11] = el}
                             $isActive={activeParagraph === 11}
                         >
-                            I do however know that I have big goals that I know I will achieve. So for now I’m taking my time, working on myself, and looking for a team I can grow with. Until I find it, I’ll keep getting better.
+                            🎯 I do however know that I have <span className="emphasis">big goals</span> that I know I will <span className="subject-good">achieve</span>. So for now I'm <span className="emphasis">taking my time</span>, working on <span className="skill">myself</span>, and looking for a <span className="subject-good">team</span> I can <span className="emphasis">grow</span> with. Until I find it, I'll keep <span className="emphasis">getting better</span>.
                         </StoryParagraph>
                     </StoryText>
                 </TextContainer>
@@ -359,10 +410,11 @@ const AboutContainer = styled.div`
     padding-top: 4rem;
     overflow-x: hidden;
 
+    gap: 1rem;
+    padding-bottom: 4rem;
+
     @media (max-width: 1600px) {
-        gap: 3rem;
-        padding-bottom: 4rem;
-    }
+        padding-bottom: 3rem;
 `;
 
 const StorySection = styled.div`
@@ -457,7 +509,7 @@ const ImageCard = styled.div`
     ${props => props.$position === 'top-left' && `
         top: 0;
         left: 0;
-        transform: translate(-20px, -20px);
+        transform: translate(40px, 40px);
     `}
     
     ${props => props.$position === 'bottom-right' && `
@@ -482,6 +534,12 @@ const ImageCard = styled.div`
         top: 75%;
         right: 0;
         transform: translate(-35px, 30px);
+    `}
+
+    ${props => props.$position === 'sunset' && `
+        top: 100%;
+        right: 0;
+        transform: translate(20px, 80px);
     `}
     
     ${props => props.$position === 'diagonal-down-left-from-right' && `
@@ -564,15 +622,17 @@ const BubbleContainer = styled.div`
     `}
     
     ${props => props.$position === 'bottom-right' && `
+        bottom: -15px;
+        right: -20px;
         
         @media (min-width: 1900px) {
             bottom: -10px;
-            right: -130px;
+            right: -10px;
         }
         
         @media (max-width: 1599px) {
-            bottom: -20px;
-            right: -150px;
+            bottom: -15px;
+            right: -35px;
         }
     `}
 `;
@@ -592,8 +652,8 @@ const SpeechBubble = styled.div`
     box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
     position: relative;
     
-    /* Right-align bubbles when parent is top-right */
-    ${props => props.$parentPosition === 'top-right' && `
+    /* Right-align bubbles when parent is top-right or bottom-right */
+    ${props => (props.$parentPosition === 'top-right' || props.$parentPosition === 'bottom-right') && `
         margin-left: auto;
     `}
     
@@ -746,6 +806,181 @@ const StoryParagraph = styled.p`
         to { 
             opacity: 1;
             transform: scaleY(1);
+        }
+    }
+    
+    /* Special styled words - Balanced Space Theme */
+    .location {
+        color: rgb(150, 220, 220);
+        font-weight: 500;
+        text-shadow: 0 0 20px rgba(100, 200, 200, 0.3);
+        transition: all 0.3s ease;
+        
+        &:hover {
+            color: rgb(180, 240, 240);
+            text-shadow: 0 0 25px rgba(100, 200, 200, 0.5);
+            letter-spacing: 0.3px;
+        }
+    }
+    
+    .special-moment {
+        background: linear-gradient(90deg, 
+            rgb(200, 180, 255) 0%,
+            rgb(150, 210, 255) 25%,
+            rgb(180, 200, 255) 50%,
+            rgb(150, 210, 255) 75%,
+            rgb(200, 180, 255) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 500;
+        text-shadow: 0 0 15px rgba(180, 200, 255, 0.25);
+        letter-spacing: 0.2px;
+    }
+    
+    .activity {
+        color: rgb(170, 220, 200);
+        font-weight: 500;
+        text-shadow: 0 0 18px rgba(150, 206, 180, 0.25);
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: rgb(190, 240, 220);
+            text-shadow: 0 0 22px rgba(150, 206, 180, 0.4);
+        }
+    }
+    
+    .subject-good {
+        color: rgb(130, 210, 240);
+        font-weight: 500;
+        text-shadow: 0 0 18px rgba(100, 200, 220, 0.3);
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: rgb(160, 230, 255);
+            text-shadow: 0 0 23px rgba(100, 200, 220, 0.45);
+        }
+    }
+    
+    .subject-bad {
+        color: rgb(240, 160, 200);
+        font-weight: 500;
+        text-shadow: 0 0 18px rgba(220, 120, 180, 0.25);
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: rgb(255, 180, 220);
+            text-shadow: 0 0 22px rgba(220, 120, 180, 0.4);
+        }
+    }
+    
+    .emphasis {
+        color: rgb(140, 180, 255);
+        font-weight: 550;
+        text-shadow: 0 0 20px rgba(100, 150, 255, 0.3);
+        letter-spacing: 0.3px;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: rgb(170, 210, 255);
+            text-shadow: 0 0 25px rgba(100, 150, 255, 0.5);
+            letter-spacing: 0.5px;
+        }
+    }
+    
+    .negative {
+        color: rgb(200, 170, 230);
+        font-weight: 500;
+        font-style: italic;
+        text-shadow: 0 0 16px rgba(180, 120, 220, 0.2);
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: rgb(220, 190, 250);
+            text-shadow: 0 0 20px rgba(180, 120, 220, 0.35);
+        }
+    }
+    
+    .ucf {
+        background: linear-gradient(135deg, 
+            rgb(255, 220, 140) 0%,
+            rgb(255, 200, 80) 50%,
+            rgb(255, 220, 140) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 550;
+        text-shadow: 0 0 18px rgba(255, 204, 100, 0.25);
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background: linear-gradient(135deg, 
+                rgb(255, 230, 160) 0%,
+                rgb(255, 210, 100) 50%,
+                rgb(255, 230, 160) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 22px rgba(255, 204, 100, 0.4);
+            letter-spacing: 0.7px;
+        }
+    }
+    
+    .major {
+        color: rgb(190, 160, 230);
+        font-weight: 500;
+        text-shadow: 0 0 18px rgba(180, 140, 220, 0.25);
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: rgb(210, 180, 250);
+            text-shadow: 0 0 23px rgba(180, 140, 220, 0.4);
+        }
+    }
+    
+    .python {
+        background: linear-gradient(135deg, 
+            rgb(160, 200, 255) 0%,
+            rgb(140, 220, 255) 50%,
+            rgb(160, 200, 255) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 550;
+        text-shadow: 0 0 18px rgba(120, 180, 255, 0.25);
+        letter-spacing: 0.3px;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background: linear-gradient(135deg, 
+                rgb(180, 220, 255) 0%,
+                rgb(160, 240, 255) 50%,
+                rgb(180, 220, 255) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 22px rgba(120, 180, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+    }
+    
+    .skill {
+        color: rgb(150, 190, 240);
+        font-weight: 500;
+        text-shadow: 0 0 18px rgba(120, 180, 240, 0.25);
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: rgb(180, 220, 255);
+            text-shadow: 0 0 22px rgba(120, 180, 240, 0.4);
+        }
+    }
+    
+    @keyframes glow-pulse {
+        0%, 100% { 
+            filter: brightness(1);
+        }
+        50% { 
+            filter: brightness(1.3);
         }
     }
     
