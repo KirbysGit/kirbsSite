@@ -17,8 +17,6 @@ import sanduskySunset from '@/images/sanduskySunset.jpg';
 const About = () => {
     
     // states.
-
-    // 
     const [activeParagraph, setActiveParagraph] = useState(0);
     const paragraphRefs = useRef([]);
 
@@ -359,6 +357,7 @@ const About = () => {
                     </ImageCard>
                     
                 </OverlappingImageContainer>
+
                 <TextContainer>
                     <StoryTitle>Post-Grad Life ~<StoryDate>25' to Today</StoryDate></StoryTitle>
                     <StoryText>
@@ -391,8 +390,8 @@ const About = () => {
                         </StoryParagraph>
                     </StoryText>
                 </TextContainer>
+
             </StorySection>
-            
         </AboutContainer>
     );
 }
@@ -404,17 +403,22 @@ const AboutContainer = styled.div`
     background: linear-gradient(to bottom,
         rgb(13, 7, 27) 0%,
         rgb(13, 7, 27) 25%,
-        rgb(45, 30, 80) 75%,
+        rgb(30, 20, 55) 50%,
+        rgb(45, 30, 80) 65%,
+        rgb(65, 45, 110) 80%,
+        rgb(85, 60, 135) 90%,
         rgb(100, 70, 150) 100%);
     width: 100vw;
     padding-top: 4rem;
-    overflow-x: hidden;
+    overflow: hidden;
+    position: relative;
 
     gap: 1rem;
-    padding-bottom: 4rem;
+    padding-bottom: 6rem;
 
     @media (max-width: 1600px) {
         padding-bottom: 3rem;
+    }
 `;
 
 const StorySection = styled.div`
@@ -528,6 +532,10 @@ const ImageCard = styled.div`
         top: 75%;
         left: 0;
         transform: translate(35px, 30px);
+
+        @media (max-width: 2000px) {
+            transform: translate(35px, 75px);
+        }
     `}
     
     ${props => props.$position === 'diagonal-down-right' && `
@@ -986,4 +994,5 @@ const StoryParagraph = styled.p`
     
 `;
 
+// export.
 export default About;

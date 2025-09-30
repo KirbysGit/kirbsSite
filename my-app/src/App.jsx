@@ -7,6 +7,7 @@ import About from './components/About/About';
 import GlobalStyle from './styles/GlobalStyle';
 import Education from './components/Education/Education';
 import Experience from './components/Experience/Experience';
+import AExperience from './components/Experience/ActualExperience';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
 
 // App Component.
@@ -22,6 +23,7 @@ function App() {
               <>
                 <Hero />
                 <About />
+                <AExperience />
                 <Experience />
                 <Education />
               </>
