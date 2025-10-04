@@ -7,6 +7,7 @@ import About from './components/About/About';
 import GlobalStyle from './styles/GlobalStyle';
 import Education from './components/Education/Education';
 import Experience from './components/Experience/Experience';
+import Projects from './components/Projects/Projects';
 import AExperience from './components/Experience/ActualExperience';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
 
@@ -24,8 +25,7 @@ function App() {
                 <Hero />
                 <About />
                 <AExperience />
-                <Experience />
-                <Education />
+                <Projects />
               </>
             }
           />
