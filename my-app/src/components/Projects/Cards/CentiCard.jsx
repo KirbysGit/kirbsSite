@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 // Import project logos and previews
-import centiBanner from '@/images/projects/centi_banner.png';
-import centiPreview from '@/images/projects/centiPreview.png';
+import centiBanner from '@/images/projects/centi/centi_banner.png';
+import centiPreview from '@/images/projects/centi/centiPreview.png';
 
 // Import logo map
 import { getLogo } from '@/components/Utils/logoMap';

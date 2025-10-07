@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 // 🔁 Replace with your actual assets
-import securescapeLogo from '@/images/projects/securescape.png';
-import securescapePreview from '@/images/projects/securescape_preview.png';
+import securescapeLogo from '@/images/projects/secure_scape/securescape.png';
+import securescapePreview from '@/images/projects/secure_scape/securescape_preview.png';
 
 // Your existing logo map
 import { getLogo } from '@/components/Utils/logoMap';
@@ -15,7 +15,6 @@ const SecureScapeCard = () => {
     'ESP32-CAM',
     'Arduino',
     'Edge Impulse',
-    'Computer Vision',
     'Flutter',
     'Dart',
     'React',

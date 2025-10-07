@@ -3,8 +3,13 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // Import project card components
+import CKSiteCard from './Cards/CKSiteCard';
 import CentiCard from './Cards/CentiCard';
 import SecureScapeCard from './Cards/SecureScapeCard';
+import SentimentTraderCard from './Cards/SentimentTraderCard';
+import ShelfVisionCard from './Cards/ShelfVisionCard';
+import UCFClubManagerCard from './Cards/UCFClubManagerCard';
+import OceanLifeCard from './Cards/OceanLifeCard';
 
 const Projects = () => { 
     return (
@@ -36,11 +41,26 @@ const Projects = () => {
                 
                 {/* Projects Cards Grid */}
                 <ProjectsGrid>
+                    {/* CK's Site Meta Card */}
+                    <CKSiteCard />
+                    
                     {/* Centi Project Card */}
                     <CentiCard />
                     
                     {/* SecureScape Project Card */}
                     <SecureScapeCard />
+                    
+                    {/* SentimentTrader Project Card */}
+                    <SentimentTraderCard />
+                    
+                    {/* ShelfVision Project Card */}
+                    <ShelfVisionCard />
+                    
+                    {/* UCF Club & Event Manager Project Card */}
+                    <UCFClubManagerCard />
+                    
+                    {/* Ocean-Life Contact Manager Project Card */}
+                    <OceanLifeCard />
                 </ProjectsGrid>
             </ContentWrapper>
         </ProjectsContainer>
