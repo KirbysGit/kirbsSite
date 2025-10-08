@@ -1,8 +1,8 @@
-// Imports.
-import React from 'react';
+// Projects.jsx
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-// Import project card components
+// Your cards
 import CKSiteCard from './Cards/CKSiteCard';
 import CentiCard from './Cards/CentiCard';
 import SecureScapeCard from './Cards/SecureScapeCard';
@@ -12,6 +12,73 @@ import UCFClubManagerCard from './Cards/UCFClubManagerCard';
 import OceanLifeCard from './Cards/OceanLifeCard';
 
 const Projects = () => { 
+  const cards = useMemo(
+    () => [
+      { id: 'ck', node: <CKSiteCard /> },
+      { id: 'centi', node: <CentiCard /> },
+      { id: 'sec', node: <SecureScapeCard /> },
+      { id: 'sent', node: <SentimentTraderCard /> },
+      { id: 'shelf', node: <ShelfVisionCard /> },
+      { id: 'ucf', node: <UCFClubManagerCard /> },
+      { id: 'ocean', node: <OceanLifeCard /> },
+    ],
+    []
+  );
+
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const n = cards.length;
+
+  const next = () => setIndex((i) => (i + 1) % n);
+  const prev = () => setIndex((i) => (i - 1 + n) % n);
+
+  // Autoplay (15s), respect reduced motion
+  useEffect(() => {
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    if (paused || reduced) return;
+    const t = setInterval(next, 15000);
+    return () => clearInterval(t);
+  }, [paused, n]);
+
+  // Keyboard nav
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Simple drag / swipe
+  const drag = useRef({ x: 0, active: false });
+  const onPointerDown = (e) => {
+    drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
+    setPaused(true);
+  };
+  const onPointerUp = (e) => {
+    if (!drag.current.active) return;
+    const upX = e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0;
+    const dx = upX - drag.current.x;
+    drag.current.active = false;
+    if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
+    setPaused(false);
+  };
+
+  // Index-based positioning system
+  const getCardStyle = (cardIndex) => {
+    const distance = Math.abs(cardIndex - index);
+    
+    // Only show cards within 2 positions of current index
+    if (distance > 2) return null;
+    
+    return {
+      position: cardIndex - index, // -2, -1, 0, 1, 2
+      isFocused: cardIndex === index,
+      distance: distance
+    };
+  };
+
     return (
         <ProjectsContainer>
             {/* Lower Sky Atmospheric Elements */}
@@ -39,33 +106,56 @@ const Projects = () => {
                 <SectionTitle>Projects</SectionTitle>
                 <SectionSubtitle>What I've built and shipped</SectionSubtitle>
                 
-                {/* Projects Cards Grid */}
-                <ProjectsGrid>
-                    {/* CK's Site Meta Card */}
-                    <CKSiteCard />
-                    
-                    {/* Centi Project Card */}
-                    <CentiCard />
-                    
-                    {/* SecureScape Project Card */}
-                    <SecureScapeCard />
-                    
-                    {/* SentimentTrader Project Card */}
-                    <SentimentTraderCard />
-                    
-                    {/* ShelfVision Project Card */}
-                    <ShelfVisionCard />
-                    
-                    {/* UCF Club & Event Manager Project Card */}
-                    <UCFClubManagerCard />
-                    
-                    {/* Ocean-Life Contact Manager Project Card */}
-                    <OceanLifeCard />
-                </ProjectsGrid>
+        <Stage
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onTouchStart={onPointerDown}
+          onTouchEnd={onPointerUp}
+          role="region"
+          aria-label="Projects carousel"
+        >
+          <Track>
+            {cards.map((c, i) => {
+              const cardStyle = getCardStyle(i);
+              if (!cardStyle) return null;
+              
+              return (
+                <Slide 
+                  key={c.id} 
+                  $position={cardStyle.position}
+                  $isFocused={cardStyle.isFocused}
+                  $distance={cardStyle.distance}
+                >
+                  {c.node}
+                </Slide>
+              );
+            })}
+          </Track>
+
+          {index > 0 && <ArrowLeft aria-label="Previous project" onClick={prev}>‹</ArrowLeft>}
+          {index < n - 1 && <ArrowRight aria-label="Next project" onClick={next}>›</ArrowRight>}
+
+          <Dots>
+            {cards.map((_, i) => (
+              <Dot
+                key={i}
+                aria-label={`Go to project ${i + 1}`}
+                aria-selected={i === index}
+                onClick={() => setIndex(i)}
+              />
+            ))}
+          </Dots>
+        </Stage>
             </ContentWrapper>
         </ProjectsContainer>
     );
-}
+};
+
+export default Projects;
+
+/* ------------------ styles ------------------ */
 
 // Main container - brighter lower sky gradient
 const ProjectsContainer = styled.div`
@@ -161,21 +251,78 @@ const SectionSubtitle = styled.h2`
     }
 `;
 
-// Projects cards grid
-const ProjectsGrid = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 2.5rem;
+const Stage = styled.div`
+  display: grid;
+  place-items: center;
+  min-height: 80vh;
+  padding: 40px 0;
+  position: relative;
+  overflow: visible;
     width: 100%;
-    max-width: 1400px;
-    flex-wrap: wrap;
-    
-    @media (max-width: 1200px) {
-        flex-direction: column;
-        align-items: center;
-        gap: 2rem;
-    }
+`;
+
+const Track = styled.div`
+    position: relative;
+  width: 50vw;
+  height: clamp(560px, 70vh, 760px);
+  perspective: 1200px;
+  overflow: visible;
+`;
+
+const Slide = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 220ms ease,
+    filter 220ms ease;
+  will-change: transform, opacity, filter;
+  pointer-events: none;
+
+  /* Focused card (index 0) */
+  ${({ $isFocused }) => $isFocused && `
+    transform: translateX(0) translateZ(0) scale(1);
+    opacity: 1;
+    z-index: 10;
+    filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.25));
+    pointer-events: auto;
+  `}
+
+  /* Adjacent cards (distance 1) */
+  ${({ $distance, $position }) => $distance === 1 && `
+    transform: translateX(${$position > 0 ? '35%' : '-35%'}) scale(0.75) translateZ(-30px);
+    opacity: 0.4;
+    z-index: 5;
+    filter: blur(2px) saturate(0.7);
+  `}
+
+  /* Far cards (distance 2) */
+  ${({ $distance, $position }) => $distance === 2 && `
+    transform: translateX(${$position > 0 ? '65%' : '-65%'}) scale(0.6) translateZ(-60px);
+    opacity: 0.2;
+    z-index: 1;
+    filter: blur(4px) saturate(0.5);
+  `}
+
+  @media (max-width: 1200px) {
+    ${({ $distance, $position }) => $distance === 1 && `
+      transform: translateX(${$position > 0 ? '30%' : '-30%'}) scale(0.8) translateZ(-30px);
+    `}
+    ${({ $distance }) => $distance === 2 && `
+      display: none;
+    `}
+  }
+
+  @media (max-width: 820px) {
+    ${({ $distance, $position }) => $distance === 1 && `
+      transform: translateX(${$position > 0 ? '25%' : '-25%'}) scale(0.85) translateZ(-30px);
+    `}
+  }
 `;
 
 // Sun with glow effect
@@ -342,5 +489,51 @@ const HorizonCloud = styled.div`
     }
 `;
 
-// Export.
-export default Projects;
+const ArrowBase = styled.button`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: transform 180ms ease, background 180ms ease, opacity 180ms ease;
+  opacity: 0.9;
+  &:hover { transform: translateY(-50%) scale(1.06); background: rgba(255,255,255,0.25); }
+`;
+
+const ArrowLeft = styled(ArrowBase)`
+  left: max(12px, 4vw);
+`;
+
+const ArrowRight = styled(ArrowBase)`
+  right: max(12px, 4vw);
+`;
+
+const Dots = styled.div`
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+`;
+
+const Dot = styled.button`
+  width: 8px; height: 8px; border-radius: 999px; border: 0;
+  background: rgba(255,255,255,0.45);
+  transition: width 180ms ease, background 180ms ease;
+  cursor: pointer;
+  &[aria-selected="true"] {
+    width: 24px;
+    background: #fff;
+  }
+`;

@@ -12,7 +12,7 @@ const OceanLifeCard = () => {
   const [hoveredTech, setHoveredTech] = useState(null);
 
   const techs = [
-    'HTML5','CSS3','JavaScript','PHP','MySQL','Apache','Linux','Bootstrap','Postman','SwaggerHub'
+    'HTML5','CSS3','PHP','MySQL','Apache','Linux','Bootstrap','Postman'
   ];
 
   return (
@@ -28,8 +28,7 @@ const OceanLifeCard = () => {
         </HeaderTop>
 
         <ProjectDescription>
-          A responsive, ocean-themed contact manager with user auth, full CRUD, and fast search.
-          Built on a classic LAMP stack with a lightweight vanilla JS front-end and a JSON REST API (PHP + MySQL).
+          A simple ocean-themed contact manager. Contains user login/registration, full CRUD, and search functionality. Built with the LAMP stack.
         </ProjectDescription>
 
         <Divider $oceanTheme />
@@ -57,60 +56,50 @@ const OceanLifeCard = () => {
         <SectionLabel style={{ marginTop: '0.75rem' }} $oceanTheme>What It Does</SectionLabel>
         <HighlightsList>
           <Highlight $oceanTheme>
-            <HighlightIcon $oceanTheme>🔐</HighlightIcon>
-            <HighlightText>User login/registration with cookie-based sessions and form validation.</HighlightText>
+            <HighlightText>User login/registration with cookie-based sessions and form validation</HighlightText>
           </Highlight>
 
           <Highlight $oceanTheme>
-            <HighlightIcon $oceanTheme>📇</HighlightIcon>
-            <HighlightText>Complete contact CRUD with inline editing, email/phone regex, and instant feedback.</HighlightText>
+            <HighlightText>Complete contact CRUD with inline editing and instant feedback</HighlightText>
           </Highlight>
 
           <Highlight $oceanTheme>
-            <HighlightIcon $oceanTheme>🔎</HighlightIcon>
-            <HighlightText>Search across name, email, and phone—returns just your contacts (user-scoped API).</HighlightText>
-          </Highlight>
-
-          <Highlight $oceanTheme>
-            <HighlightIcon $oceanTheme>🌊</HighlightIcon>
-            <HighlightText>Clean, ocean-inspired UI (Bootstrap-assisted) and responsive layout.</HighlightText>
+            <HighlightText>Search across name, email, and phone with user-scoped API</HighlightText>
           </Highlight>
         </HighlightsList>
       </CardBody>
 
       <CardFooter>
         <Divider $oceanTheme />
-
-        {/* Link tiles: GitHub + Presentation */}
-        <LinksRow>
-          <LinkTile
+        
+        {/* Resources Grid - LinkedIn style preview cards */}
+        <ResourcesGrid>
+          {/* GitHub Card */}
+          <ResourceCard
             $oceanTheme
-            onClick={() => window.open('https://github.com/your-org/ocean-life', '_blank')}
+            onClick={() => window.open('https://github.com/juwelB/Small_Contact_App', '_blank')}
           >
-            <PreviewImageWrapper>
-              <PreviewImage src={oceanlifeLogo} alt="Ocean-Life GitHub" />
-            </PreviewImageWrapper>
-            <PreviewTextContent>
-              <PreviewTitle>GitHub Repository</PreviewTitle>
-              <PreviewSubtext>Browse the code</PreviewSubtext>
-              <PreviewArrow>→</PreviewArrow>
-            </PreviewTextContent>
-          </LinkTile>
+            <ResourcePreview $type="github">
+              <GitHubLogoIcon>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </GitHubLogoIcon>
+            </ResourcePreview>
+            <ResourceCaption>View Code</ResourceCaption>
+          </ResourceCard>
 
-          <LinkTile
+          {/* Presentation PDF Card */}
+          <ResourceCard
             $oceanTheme
             onClick={() => window.open('/projects/ocean_life/presentation.pdf', '_blank')}
           >
-            <PreviewImageWrapper>
-              <PreviewImage src={oceanlifePreview} alt="Ocean-Life Presentation" />
-            </PreviewImageWrapper>
-            <PreviewTextContent>
-              <PreviewTitle>Project Presentation</PreviewTitle>
-              <PreviewSubtext>View the slides (PDF)</PreviewSubtext>
-              <PreviewArrow>→</PreviewArrow>
-            </PreviewTextContent>
-          </LinkTile>
-        </LinksRow>
+            <ResourcePreview $type="presentation" $preview={oceanlifePreview}>
+              <ResourceIcon>📊</ResourceIcon>
+            </ResourcePreview>
+            <ResourceCaption>Presentation</ResourceCaption>
+          </ResourceCard>
+        </ResourcesGrid>
       </CardFooter>
     </ProjectCard>
   );
@@ -123,11 +112,18 @@ const ProjectCard = styled.div`
   min-height: 620px;
 
   background: ${({ $oceanTheme }) => $oceanTheme ? `
-    radial-gradient(120% 120% at 10% 0%,
-      rgba(224, 247, 250, 0.22) 0%,
-      rgba(2, 136, 209, 0.28) 30%,
-      rgba(2, 119, 189, 0.36) 60%,
-      rgba(1, 79, 121, 0.48) 100%
+    linear-gradient(180deg,
+      rgba(0, 30, 60, 0.95) 0%,
+      rgba(0, 50, 100, 0.92) 15%,
+      rgba(0, 80, 140, 0.88) 35%,
+      rgba(0, 100, 160, 0.85) 55%,
+      rgba(0, 120, 180, 0.82) 75%,
+      rgba(0, 140, 200, 0.80) 100%
+    ),
+    radial-gradient(ellipse at center,
+      rgba(0, 150, 220, 0.15) 0%,
+      rgba(0, 100, 160, 0.08) 50%,
+      rgba(0, 50, 100, 0.05) 100%
     )
   ` : 'rgba(20,20,20,0.2)'};
 
@@ -228,6 +224,7 @@ const ProjectDescription = styled.p`
   color: rgba(255, 255, 255, 0.95);
   margin: 0.25rem 0 0;
   font-weight: 400;
+  text-align: justify;
 `;
 
 const Divider = styled.div`
@@ -274,29 +271,37 @@ const HighlightsList = styled.div`
 const Highlight = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  border-radius: 12px;
-
+  padding: 1rem 1rem 1rem 1.25rem;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  
   background: ${({ $oceanTheme }) =>
     $oceanTheme
-      ? 'linear-gradient(90deg, rgba(224,247,250,0.12), rgba(110,198,255,0.12))'
+      ? 'linear-gradient(90deg, rgba(224,247,250,0.08) 0%, rgba(110,198,255,0.06) 100%)'
       : 'rgba(255,255,255,0.08)'};
-
-  border: 1px solid ${({ $oceanTheme }) =>
-    $oceanTheme ? 'rgba(224,247,250,0.35)' : 'rgba(255,255,255,0.2)'};
-
-  transition: all 0.25s ease;
+  
+  /* Gradient left border */
+  border-left: 4px solid transparent;
+  border-image: ${({ $oceanTheme }) =>
+    $oceanTheme
+      ? 'linear-gradient(180deg, rgb(224, 247, 250) 0%, rgb(110, 198, 255) 100%)'
+      : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
+  };
+  border-image-slice: 1;
+  
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateX(4px);
     background: ${({ $oceanTheme }) =>
       $oceanTheme
-        ? 'linear-gradient(90deg, rgba(224,247,250,0.18), rgba(110,198,255,0.18))'
+        ? 'linear-gradient(90deg, rgba(224,247,250,0.15) 0%, rgba(110,198,255,0.12) 100%)'
         : 'rgba(255,255,255,0.15)'};
-    border-color: ${({ $oceanTheme }) =>
-      $oceanTheme ? 'rgba(224,247,250,0.55)' : 'rgba(255,255,255,0.4)'};
-    box-shadow: 0 4px 12px rgba(2, 119, 189, 0.25);
+    transform: translateX(6px);
+    box-shadow: ${({ $oceanTheme }) => $oceanTheme ? '0 4px 16px rgba(224,247,250,0.25)' : '0 4px 12px rgba(255,180,100,0.2)'};
+    
+    /* Thicker border on hover */
+    border-left-width: 5px;
   }
 `;
 
@@ -323,11 +328,13 @@ const HighlightIcon = styled.div`
 `;
 
 const HighlightText = styled.p`
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 0.92rem;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.92);
   margin: 0;
   flex: 1;
+  font-weight: 400;
+  text-align: justify;
 `;
 
 const TechStack = styled.div`
@@ -427,103 +434,109 @@ const CardFooter = styled.div`
   margin-top: auto;
 `;
 
-const LinksRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 0.85rem;
+/* ========================= Resources Grid (LinkedIn-style) ========================= */
 
+const ResourcesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
 `;
 
-const LinkTile = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.85rem;
-  border-radius: 12px;
-
-  background: ${({ $oceanTheme }) =>
-    $oceanTheme
-      ? 'linear-gradient(90deg, rgba(224,247,250,0.15), rgba(110,198,255,0.12))'
-      : 'rgba(255,255,255,0.1)'};
-
-  border: 2px solid rgba(224,247,250,0.4);
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-  position: relative;
-  overflow: hidden;
-
-  &::before{
-    content:'';
-    position:absolute;
-    top:0; left:-100%;
-    width:100%; height:100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-    transition: left 0.6s ease;
-  }
-
-  &:hover{
-    transform: translateY(-3px);
-    border-color: rgba(224,247,250,0.65);
-    box-shadow: 0 10px 24px rgba(2,119,189,0.35);
-
-    &::before{ left:100%; }
-  }
-`;
-
-const PreviewImageWrapper = styled.div`
-  flex-shrink: 0;
-  width: 90px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-  transition: transform 0.35s ease;
-
-  ${LinkTile}:hover & { transform: scale(1.05); }
-`;
-
-const PreviewImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const PreviewTextContent = styled.div`
+const ResourceCard = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  flex: 1;
-  position: relative;
-`;
-
-const PreviewTitle = styled.div`
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: rgba(255,255,255,1);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.25);
-`;
-
-const PreviewSubtext = styled.div`
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.85);
-  font-weight: 600;
-`;
-
-const PreviewArrow = styled.div`
-  position: absolute;
-  right: 2%;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.5rem;
-  color: rgba(255,255,255,0.75);
-  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-
-  ${LinkTile}:hover & {
-    transform: translateY(-50%) translateX(8px);
-    color: rgba(255,255,255,1);
+  border-radius: 10px;
+  overflow: hidden;
+  background: ${({ $oceanTheme }) =>
+    $oceanTheme ? 'rgba(224,247,250,0.12)' : 'rgba(255,180,100,0.1)'};
+  border: 1.5px solid ${({ $oceanTheme }) => 
+    $oceanTheme ? 'rgba(224,247,250,0.35)' : 'rgba(255,180,100,0.3)'};
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  
+  &:hover {
+    transform: translateY(-4px);
+    border-color: ${({ $oceanTheme }) => 
+      $oceanTheme ? 'rgba(224,247,250,0.6)' : 'rgba(255,180,100,0.5)'};
+    box-shadow: ${({ $oceanTheme }) => 
+      $oceanTheme ? '0 6px 20px rgba(224,247,250,0.3)' : '0 6px 20px rgba(255,180,100,0.25)'};
+    background: ${({ $oceanTheme }) =>
+      $oceanTheme ? 'rgba(224,247,250,0.18)' : 'rgba(255,180,100,0.15)'};
   }
+`;
+
+const ResourcePreview = styled.div`
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${({ $type, $preview }) => {
+    if ($preview) {
+      return `url(${$preview}) center/cover no-repeat`;
+    }
+    if ($type === 'presentation') return 'linear-gradient(135deg, rgba(224,247,250,0.2), rgba(110,198,255,0.15))';
+    if ($type === 'github') return 'linear-gradient(135deg, rgba(50, 50, 50, 0.3), rgba(30, 30, 30, 0.2))';
+    return 'rgba(255,255,255,0.05)';
+  }};
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: ${({ $preview }) => 
+      $preview 
+        ? 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%)'
+        : 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 100%)'
+    };
+  }
+`;
+
+const ResourceIcon = styled.div`
+  font-size: 2rem;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  transition: transform 0.3s ease;
+  
+  ${ResourceCard}:hover & {
+    transform: scale(1.15);
+  }
+`;
+
+const GitHubLogoIcon = styled.div`
+  width: 60px;
+  height: 60px;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.95);
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
+  transition: all 0.3s ease;
+  
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  ${ResourceCard}:hover & {
+    transform: scale(1.1);
+    color: rgba(224,247,250,1);
+  }
+`;
+
+const ResourceCaption = styled.div`
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.95);
+  text-align: center;
+  background: rgba(0,0,0,0.15);
+  letter-spacing: 0.3px;
 `;
 
 export default OceanLifeCard;

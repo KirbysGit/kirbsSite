@@ -34,7 +34,7 @@ const SecureScapeCard = () => {
                 </HeaderTop>
 
         <ProjectDescription>
-          Portable security cameras that detect people and alert your phone. Works completely offline—perfect for campsites and remote spots with no internet.
+          Portable security camera posts that detect people and alert your phone. Works completely offline, perfect for campsites and remote spots with no internet.
         </ProjectDescription>
 
         <Divider $secureTheme $themeColor="#00A86B" />
@@ -62,16 +62,13 @@ const SecureScapeCard = () => {
         <SectionLabel style={{ marginTop: '0.75rem' }} $secureTheme>What It Does</SectionLabel>
         <HighlightsList>
           <Highlight $secureTheme>
-            <HighlightIcon $secureTheme>🧠</HighlightIcon>
-            <HighlightText>On-device person detection via Edge Impulse—no internet required</HighlightText>
+            <HighlightText>On-device person detection via Edge Impulse machine learning, completely offline operation</HighlightText>
           </Highlight>
           <Highlight $secureTheme>
-            <HighlightIcon $secureTheme>📳</HighlightIcon>
-            <HighlightText>Instant local alarms + image relay to the app and web dashboard</HighlightText>
+            <HighlightText>Instant local alarms with image capture and real-time relay to mobile app</HighlightText>
           </Highlight>
           <Highlight $secureTheme>
-            <HighlightIcon $secureTheme>🛰️</HighlightIcon>
-            <HighlightText>Multi-node coverage with lightweight messaging for perimeter security</HighlightText>
+            <HighlightText>Multi-node wireless coverage with lightweight messaging for comprehensive perimeter security</HighlightText>
           </Highlight>
         </HighlightsList>
       </CardBody>
@@ -88,8 +85,8 @@ const SecureScapeCard = () => {
             <PreviewImage src={securescapePreview} alt="SecureScape Demo Site" />
           </PreviewImageWrapper>
           <PreviewTextContent>
-            <PreviewTitle>View full project site</PreviewTitle>
-            <PreviewSubtext>Complete documentation & demos</PreviewSubtext>
+            <PreviewTitle>View A Demo Of The Site</PreviewTitle>
+            <PreviewSubtext>Our Documentation & Project Demos</PreviewSubtext>
             <PreviewArrow>→</PreviewArrow>
           </PreviewTextContent>
         </LivePreviewContainer>
@@ -271,22 +268,35 @@ const HighlightsList = styled.div`
 const Highlight = styled.div`
   display: flex; 
   align-items: center; 
-  gap: 1rem; 
-  padding: 0.75rem;
-  border-radius: 12px;
+  padding: 1rem 1rem 1rem 1.25rem;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  
   background: ${({ $secureTheme }) =>
-    $secureTheme ? 'linear-gradient(90deg, rgba(0,168,107,0.12) 0%, rgba(64,145,108,0.12) 100%)'
+    $secureTheme ? 'linear-gradient(90deg, rgba(0,168,107,0.08) 0%, rgba(64,145,108,0.06) 100%)'
                  : 'rgba(255,180,100,0.08)'};
-  border: 1px solid ${({ $secureTheme }) => $secureTheme ? 'rgba(0,168,107,0.32)' : 'rgba(255,180,100,0.2)'};
+  
+  /* Gradient left border */
+  border-left: 4px solid transparent;
+  border-image: ${({ $secureTheme }) =>
+    $secureTheme
+      ? 'linear-gradient(180deg, rgb(0, 168, 107) 0%, rgb(64, 255, 210) 100%)'
+      : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
+  };
+  border-image-slice: 1;
+  
   transition: all 0.3s ease;
 
   &:hover {
     background: ${({ $secureTheme }) =>
-      $secureTheme ? 'linear-gradient(90deg, rgba(0,168,107,0.20) 0%, rgba(64,145,108,0.20) 100%)'
+      $secureTheme ? 'linear-gradient(90deg, rgba(0,168,107,0.15) 0%, rgba(64,145,108,0.12) 100%)'
                    : 'rgba(255,180,100,0.15)'};
-    border-color: ${({ $secureTheme }) => $secureTheme ? 'rgba(0,168,107,0.55)' : 'rgba(255,180,100,0.4)'};
-    transform: translateX(4px);
-    box-shadow: ${({ $secureTheme }) => $secureTheme ? '0 4px 12px rgba(0,168,107,0.28)' : '0 4px 12px rgba(255,180,100,0.2)'};
+    transform: translateX(6px);
+    box-shadow: ${({ $secureTheme }) => $secureTheme ? '0 4px 16px rgba(0,168,107,0.25)' : '0 4px 12px rgba(255,180,100,0.2)'};
+    
+    /* Thicker border on hover */
+    border-left-width: 5px;
   }
 `;
 
@@ -314,12 +324,14 @@ const HighlightIcon = styled.div`
 `;
 
 const HighlightText = styled.p`
-  font-size: 0.9rem; 
-  line-height: 1.5; 
+  font-size: 0.92rem; 
+  line-height: 1.6; 
   color: rgba(255,255,255,0.92); 
   margin: 0; 
   flex: 1; 
   font-weight: 400;
+  text-align: justify;
+  padding-right: 0.5rem;
 `;
 
 const TechStack = styled.div`
@@ -340,8 +352,7 @@ const TechPill = styled.div`
   border-radius: 50%;
   display: flex; 
   align-items: center; 
-  justify-content: center; 
-  padding: 0.6rem;
+  justify-content: center;
   background: ${({ $secureTheme }) =>
     $secureTheme
       ? 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(235, 255, 246, 0.98) 50%, rgba(225, 250, 242, 0.96) 100%)'
@@ -365,8 +376,8 @@ const TechPill = styled.div`
 `;
 
 const TechLogo = styled.img`
-  width: 150%; 
-  height: 150%; 
+  width: 28px; 
+  height: 28px; 
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
   transition: filter 0.3s ease;

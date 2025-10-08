@@ -56,6 +56,10 @@ import linuxLogo from '@/images/logos/linux.png';
 import bootstrapLogo from '@/images/logos/bootstrap.png';
 import postmanLogo from '@/images/logos/postman.png';
 
+// Social Media Logos
+import githubLogo from '@/images/logos/github.png';
+import linkedinLogo from '@/images/logos/linkedin.png';
+import instagramLogo from '@/images/logos/instagram.png';
 
 
 const logoMap = {
@@ -114,7 +118,12 @@ const logoMap = {
     'Apache': apacheLogo,
     'Linux': linuxLogo,
     'Bootstrap': bootstrapLogo,
-    'Postman': postmanLogo
+    'Postman': postmanLogo,
+    
+    // Social Media
+    'GitHub': githubLogo,
+    'LinkedIn': linkedinLogo,
+    'Instagram': instagramLogo
 
 };
 

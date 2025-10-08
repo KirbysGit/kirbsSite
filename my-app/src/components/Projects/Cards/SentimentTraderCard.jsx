@@ -23,6 +23,10 @@ const SentimentTraderCard = () => {
 
     return (
         <ProjectCard $sentimentTheme>
+            <WIPBadge $sentimentTheme>
+                <WIPIcon>🚧</WIPIcon>
+                <WIPText>In Progress</WIPText>
+            </WIPBadge>
             <CardHeader>
                 <HeaderTop>
                     <ProjectInfo>
@@ -34,7 +38,8 @@ const SentimentTraderCard = () => {
                 </HeaderTop>
 
                 <ProjectDescription>
-                    Pure-Python pipeline that streams Reddit finance chatter, scores sentiment with FinBERT, lines it up with Yahoo Finance data, and trains per-ticker XGBoost models to output next-day buy/sell predictions—all in real-time.
+                    A data pipeline that takes messy Reddit finance posts and turns them into actual trading signals. 
+                    Basically reads stock chatter, tags bullish/bearish, gives buy/sell picks.
                 </ProjectDescription>
 
                 <Divider $sentimentTheme />
@@ -62,20 +67,13 @@ const SentimentTraderCard = () => {
                 <SectionLabel style={{ marginTop: '0.75rem' }} $sentimentTheme>What It Does</SectionLabel>
                 <HighlightsList>
                     <Highlight $sentimentTheme>
-                        <HighlightIcon $sentimentTheme>🧲</HighlightIcon>
-                        <HighlightText>Streams Reddit finance posts and filters relevant stock ticker mentions with confidence scoring</HighlightText>
+                        <HighlightText>Streams Reddit finance posts and filters relevant stock ticker mentions with confidence</HighlightText>
                     </Highlight>
                     <Highlight $sentimentTheme>
-                        <HighlightIcon $sentimentTheme>🧠</HighlightIcon>
-                        <HighlightText>Analyzes sentiment using FinBERT (financial language model) blended with VADER for accuracy</HighlightText>
+                        <HighlightText>Analyzes sentiment using FinBERT NLP and merges with real-time Yahoo Finance data</HighlightText>
                     </Highlight>
                     <Highlight $sentimentTheme>
-                        <HighlightIcon $sentimentTheme>📈</HighlightIcon>
-                        <HighlightText>Merges sentiment with real Yahoo Finance data (price, RSI, moving averages) for complete picture</HighlightText>
-                    </Highlight>
-                    <Highlight $sentimentTheme>
-                        <HighlightIcon $sentimentTheme>🚦</HighlightIcon>
-                        <HighlightText>Generates next-day BUY/SELL signals per ticker using trained XGBoost models</HighlightText>
+                        <HighlightText>Generates next-day buy/sell signals per ticker using trained XGBoost machine learning models</HighlightText>
                     </Highlight>
                 </HighlightsList>
             </CardBody>
@@ -324,22 +322,35 @@ const HighlightsList = styled.div`
 const Highlight = styled.div`
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem;
-    border-radius: 12px;
+    padding: 1rem 1rem 1rem 1.25rem;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    
     background: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? 'linear-gradient(90deg, rgba(156, 39, 176, 0.12) 0%, rgba(255, 109, 0, 0.12) 100%)'
+        $sentimentTheme ? 'linear-gradient(90deg, rgba(156, 39, 176, 0.08) 0%, rgba(255, 109, 0, 0.06) 100%)'
                        : 'rgba(255,180,100,0.08)'};
-    border: 1px solid ${({ $sentimentTheme }) => $sentimentTheme ? 'rgba(156, 39, 176, 0.32)' : 'rgba(255,180,100,0.2)'};
+    
+    /* Gradient left border */
+    border-left: 4px solid transparent;
+    border-image: ${({ $sentimentTheme }) =>
+        $sentimentTheme
+            ? 'linear-gradient(180deg, rgb(156, 39, 176) 0%, rgb(255, 109, 0) 100%)'
+            : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
+    };
+    border-image-slice: 1;
+    
     transition: all 0.3s ease;
 
     &:hover {
         background: ${({ $sentimentTheme }) =>
-            $sentimentTheme ? 'linear-gradient(90deg, rgba(156, 39, 176, 0.20) 0%, rgba(255, 109, 0, 0.20) 100%)'
+            $sentimentTheme ? 'linear-gradient(90deg, rgba(156, 39, 176, 0.15) 0%, rgba(255, 109, 0, 0.12) 100%)'
                            : 'rgba(255,180,100,0.15)'};
-        border-color: ${({ $sentimentTheme }) => $sentimentTheme ? 'rgba(186, 104, 200, 0.55)' : 'rgba(255,180,100,0.4)'};
-        transform: translateX(4px);
-        box-shadow: ${({ $sentimentTheme }) => $sentimentTheme ? '0 4px 12px rgba(156, 39, 176, 0.28)' : '0 4px 12px rgba(255,180,100,0.2)'};
+        transform: translateX(6px);
+        box-shadow: ${({ $sentimentTheme }) => $sentimentTheme ? '0 4px 16px rgba(156, 39, 176, 0.25)' : '0 4px 12px rgba(255,180,100,0.2)'};
+        
+        /* Thicker border on hover */
+        border-left-width: 5px;
     }
 `;
 
@@ -367,8 +378,8 @@ const HighlightIcon = styled.div`
 `;
 
 const HighlightText = styled.p`
-    font-size: 0.9rem;
-    line-height: 1.5;
+    font-size: 0.92rem;
+    line-height: 1.6;
     color: rgba(255,255,255,0.92);
     margin: 0;
     flex: 1;
@@ -576,6 +587,69 @@ const ResourceCaption = styled.div`
     text-align: center;
     background: rgba(0,0,0,0.15);
     letter-spacing: 0.3px;
+`;
+
+// WIP Badge Components
+const WIPBadge = styled.div`
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 20px;
+    z-index: 10;
+    
+    background: ${props => props.$sentimentTheme ? 
+        'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)' : 
+        'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)'
+    };
+    
+    border: 2px solid ${props => props.$sentimentTheme ? 
+        'rgba(255, 235, 59, 0.8)' : 
+        'rgba(255, 235, 59, 0.8)'
+    };
+    
+    box-shadow: 
+        0 4px 12px rgba(255, 152, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    
+    transition: all 0.3s ease;
+    animation: wiggle 3s ease-in-out infinite;
+    
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 
+            0 6px 16px rgba(255, 152, 0, 0.5),
+            inset 0 1px 3px rgba(255, 255, 255, 0.4);
+    }
+    
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-3deg); }
+        75% { transform: rotate(3deg); }
+    }
+`;
+
+const WIPIcon = styled.span`
+    font-size: 1rem;
+    line-height: 1;
+    animation: bounce 2s ease-in-out infinite;
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+    }
+`;
+
+const WIPText = styled.span`
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 `;
 
 export default SentimentTraderCard;

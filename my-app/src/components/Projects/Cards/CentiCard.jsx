@@ -12,6 +12,10 @@ const CentiCard = () => {
     const [hoveredTech, setHoveredTech] = useState(null);
     return (
         <ProjectCard $centiTheme>
+            <WIPBadge $centiTheme>
+                <WIPIcon>🚧</WIPIcon>
+                <WIPText>In Progress</WIPText>
+            </WIPBadge>
             <CardHeader>
                 <HeaderTop>
                     <ProjectInfo>
@@ -49,18 +53,15 @@ const CentiCard = () => {
                 <SectionLabel $centiTheme>What It Does</SectionLabel>
                 <HighlightsList>
                     <Highlight $centiTheme>
-                        <HighlightIcon $centiTheme>🔗</HighlightIcon>
                         <HighlightText>Automatically syncs with your bank accounts so you don't have to manually track every purchase</HighlightText>
                     </Highlight>
                     
                     <Highlight $centiTheme>
-                        <HighlightIcon $centiTheme>📊</HighlightIcon>
                         <HighlightText>Gives you a personalized "Centi Score" that shows your financial health at a glance</HighlightText>
                     </Highlight>
                     
                     <Highlight $centiTheme>
-                        <HighlightIcon $centiTheme>📈</HighlightIcon>
-                        <HighlightText>Breaks down your spending into easy-to-read charts—see exactly where your money goes each month</HighlightText>
+                        <HighlightText>Breaks down your spending into easy-to-read charts so you can see where your money goes each month</HighlightText>
                     </Highlight>
                 </HighlightsList>
             </CardBody>
@@ -232,6 +233,7 @@ const ProjectDescription = styled.p`
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
     font-weight: 400;
+    text-align: justify;
 `;
 
 const Divider = styled.div`
@@ -283,33 +285,39 @@ const HighlightsList = styled.div`
 const Highlight = styled.div`
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem;
-    border-radius: 12px;
+    padding: 1rem 1rem 1rem 1.25rem;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    
     background: ${props => props.$centiTheme ? 
-        'linear-gradient(90deg, rgba(182, 224, 254, 0.12) 0%, rgba(167, 255, 235, 0.12) 100%)' : 
+        'linear-gradient(90deg, rgba(182, 224, 254, 0.08) 0%, rgba(167, 255, 235, 0.06) 100%)' : 
         'rgba(255, 180, 100, 0.08)'
     };
-    border: 1px solid ${props => props.$centiTheme ? 
-        'rgba(182, 224, 254, 0.3)' : 
-        'rgba(255, 180, 100, 0.2)'
+    
+    /* Gradient left border */
+    border-left: 4px solid transparent;
+    border-image: ${props => props.$centiTheme ?
+        'linear-gradient(180deg, rgb(13, 110, 253) 0%, rgb(0, 200, 180) 100%)' :
+        'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
     };
+    border-image-slice: 1;
+    
     transition: all 0.3s ease;
     
     &:hover {
         background: ${props => props.$centiTheme ? 
-            'linear-gradient(90deg, rgba(182, 224, 254, 0.20) 0%, rgba(167, 255, 235, 0.20) 100%)' : 
+            'linear-gradient(90deg, rgba(182, 224, 254, 0.15) 0%, rgba(167, 255, 235, 0.12) 100%)' : 
             'rgba(255, 180, 100, 0.15)'
         };
-        border-color: ${props => props.$centiTheme ? 
-            'rgba(182, 224, 254, 0.5)' : 
-            'rgba(255, 180, 100, 0.4)'
-        };
-        transform: translateX(4px);
+        transform: translateX(6px);
         box-shadow: ${props => props.$centiTheme ? 
-            '0 4px 12px rgba(182, 224, 254, 0.3)' : 
+            '0 4px 16px rgba(182, 224, 254, 0.25)' : 
             '0 4px 12px rgba(255, 180, 100, 0.2)'
         };
+        
+        /* Thicker border on hover */
+        border-left-width: 5px;
     }
 `;
 
@@ -342,9 +350,9 @@ const HighlightIcon = styled.div`
 `;
 
 const HighlightText = styled.p`
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.92);
     margin: 0;
     flex: 1;
     font-weight: 400;
@@ -594,6 +602,69 @@ const PreviewArrow = styled.div`
             transform: translateX(8px);
         }
     }
+`;
+
+// WIP Badge Components
+const WIPBadge = styled.div`
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 20px;
+    z-index: 10;
+    
+    background: ${props => props.$centiTheme ? 
+        'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)' : 
+        'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)'
+    };
+    
+    border: 2px solid ${props => props.$centiTheme ? 
+        'rgba(255, 235, 59, 0.8)' : 
+        'rgba(255, 235, 59, 0.8)'
+    };
+    
+    box-shadow: 
+        0 4px 12px rgba(255, 152, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    
+    transition: all 0.3s ease;
+    animation: wiggle 3s ease-in-out infinite;
+    
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 
+            0 6px 16px rgba(255, 152, 0, 0.5),
+            inset 0 1px 3px rgba(255, 255, 255, 0.4);
+    }
+    
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-3deg); }
+        75% { transform: rotate(3deg); }
+    }
+`;
+
+const WIPIcon = styled.span`
+    font-size: 1rem;
+    line-height: 1;
+    animation: bounce 2s ease-in-out infinite;
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+    }
+`;
+
+const WIPText = styled.span`
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 `;
 
 export default CentiCard;

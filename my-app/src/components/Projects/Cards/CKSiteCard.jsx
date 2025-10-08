@@ -11,6 +11,10 @@ const CKSiteCard = () => {
 
     return (
     <ProjectCard $cosmicTheme>
+      <WIPBadge $cosmicTheme>
+        <WIPIcon>🚧</WIPIcon>
+        <WIPText>In Progress</WIPText>
+      </WIPBadge>
       <StarField>
         <Star top="15%" left="10%" size="2px" delay="0s" />
         <Star top="25%" left="80%" size="1.5px" delay="1s" />
@@ -23,23 +27,23 @@ const CKSiteCard = () => {
       </StarField>
 
       <CardHeader>
-        <ProjectInfo>
-          <ProjectName $cosmicTheme>CK's Site</ProjectName>
-          <ProjectSubtitle>This Portfolio · My Digital Journey</ProjectSubtitle>
-          <ProjectDate>2024 – Present</ProjectDate>
-        </ProjectInfo>
-      </CardHeader>
+        <HeaderTop>
+          <ProjectInfo>
+            <ProjectName $cosmicTheme>CK's Site</ProjectName>
+            <ProjectSubtitle>This Portfolio · My Digital Journey</ProjectSubtitle>
+            <ProjectDate>2024 – Present</ProjectDate>
+          </ProjectInfo>
+        </HeaderTop>
 
-      <CardBody>
         <ProjectDescription>
-          Welcome! This site is more than a portfolio—it's a living document of my path through software engineering.
-          Every project, skill, and experience here represents a chapter in my journey from curious beginner to confident builder.
-          I'm constantly updating it as I grow, learn, and ship new things.
+          This site! It's a constant work in progress, but I'm using it to showcase my projects and skills. It serves as a living document of my path through my career.
         </ProjectDescription>
 
         <Divider $cosmicTheme />
+      </CardHeader>
 
-        <SectionLabel $cosmicTheme>Built With</SectionLabel>
+      <CardBody>
+        <SectionLabel $cosmicTheme>Tech Stack</SectionLabel>
         <TechStack>
           {techs.map((tech) => (
             <TechPillWrapper
@@ -57,52 +61,21 @@ const CKSiteCard = () => {
           ))}
         </TechStack>
 
-        <SectionLabel style={{ marginTop: '0.75rem' }} $cosmicTheme>What's Here</SectionLabel>
+        <SectionLabel style={{ marginTop: '0.75rem' }} $cosmicTheme>What It Shows</SectionLabel>
         <HighlightsList>
           <Highlight $cosmicTheme>
-            <HighlightIcon $cosmicTheme>🚀</HighlightIcon>
-            <HighlightText>Real projects I've built—full-stack apps, ML experiments, and hardware hacks</HighlightText>
+            <HighlightText>Real projects I've built including full-stack web applications and machine learning experiments</HighlightText>
           </Highlight>
 
           <Highlight $cosmicTheme>
-            <HighlightIcon $cosmicTheme>🎓</HighlightIcon>
-            <HighlightText>My education journey at UCF and the skills I've picked up along the way</HighlightText>
+            <HighlightText>Complete education journey at UCF and all the technical skills I've picked up along the way</HighlightText>
           </Highlight>
 
           <Highlight $cosmicTheme>
-            <HighlightIcon $cosmicTheme>💼</HighlightIcon>
-            <HighlightText>Work experience from internships to leadership roles—what I learned and shipped</HighlightText>
-          </Highlight>
-
-          <Highlight $cosmicTheme>
-            <HighlightIcon $cosmicTheme>✨</HighlightIcon>
-            <HighlightText>A bit of personality—because engineering is creative, not just technical</HighlightText>
+            <HighlightText>Work experience from internships to leadership roles showing what I learned and shipped to production</HighlightText>
           </Highlight>
         </HighlightsList>
       </CardBody>
-
-      <CardFooter>
-        <Divider $cosmicTheme />
-        <FooterMessage>
-          Thanks for stopping by. Feel free to explore, reach out, or check out the code behind this site below. 🌟
-        </FooterMessage>
-        
-        <GitHubButton
-          $cosmicTheme
-          onClick={() => window.open('https://github.com/KirbysGit/colinKirby', '_blank')}
-        >
-          <ButtonIcon>
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </ButtonIcon>
-          <ButtonTextContent>
-            <ButtonTitle>View Source Code</ButtonTitle>
-            <ButtonSubtext>Check out how this site was built</ButtonSubtext>
-          </ButtonTextContent>
-          <ButtonArrow>→</ButtonArrow>
-        </GitHubButton>
-      </CardFooter>
     </ProjectCard>
   );
 };
@@ -112,11 +85,6 @@ const CKSiteCard = () => {
 const twinkle = keyframes`
   0%, 100% { opacity: 0.3; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.2); }
-`;
-
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
 `;
 
 const ProjectCard = styled.div`
@@ -146,7 +114,6 @@ const ProjectCard = styled.div`
   display: flex;
   flex-direction: column;
   transition: all 0.4s ease;
-  animation: ${float} 6s ease-in-out infinite;
 
   &:hover {
     transform: translateY(-12px);
@@ -190,21 +157,27 @@ const CardHeader = styled.div`
   z-index: 1;
 `;
 
+const HeaderTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+`;
+
 const ProjectInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  text-align: center;
-  align-items: center;
+  flex: 1;
 `;
 
 const ProjectName = styled.h3`
-  font-size: 3rem;
-  font-weight: 900;
+  font-size: 2.4rem;
+  font-weight: 800;
   margin: 0;
-  letter-spacing: 2px;
-  line-height: 1.1;
-  text-transform: uppercase;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   
   ${({ $cosmicTheme }) => $cosmicTheme ? `
     background: linear-gradient(135deg, #ffffff 0%, #d4b3ff 30%, #9d6fff 60%, #7c3aed 100%);
@@ -239,37 +212,36 @@ const CardBody = styled.div`
   gap: 0.5rem;
   position: relative;
   z-index: 1;
-  margin-top: 1rem;
 `;
 
 const ProjectDescription = styled.p`
-  font-size: 0.98rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0 0 0.5rem 0;
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0.25rem 0 0;
   font-weight: 400;
-  text-align: center;
+  text-align: justify;
 `;
 
 const Divider = styled.div`
   width: 100%;
   height: 2px;
-  margin: 0.8rem 0;
+  margin: 0.6rem 0 0.8rem;
   border-radius: 2px;
   background: ${({ $cosmicTheme }) =>
     $cosmicTheme
-      ? 'linear-gradient(90deg, transparent, rgba(150, 100, 255, 0.8), transparent)'
+      ? 'linear-gradient(90deg, rgba(150, 100, 255, 1), rgba(100, 50, 200, 1))'
       : 'rgba(255,255,255,0.2)'};
-  box-shadow: 0 0 15px rgba(150, 100, 255, 0.5);
+  box-shadow: 0 0 10px rgba(150, 100, 255, 0.45);
+  opacity: 0.9;
 `;
 
 const SectionLabel = styled.div`
   font-size: 0.85rem;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  margin: 0.5rem 0 0.5rem;
-  text-align: center;
+  letter-spacing: 1px;
+  margin: 0.25rem 0 0.35rem;
   
   ${({ $cosmicTheme }) => $cosmicTheme ? `
     background: linear-gradient(90deg, #d4b3ff, #9d6fff);
@@ -282,10 +254,8 @@ const SectionLabel = styled.div`
 const TechStack = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.7rem;
   align-items: center;
-  justify-content: center;
-  margin: 0.5rem 0;
 `;
 
 const TechPillWrapper = styled.div`
@@ -294,8 +264,8 @@ const TechPillWrapper = styled.div`
 `;
 
 const TechPill = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -310,39 +280,39 @@ const TechPill = styled.div`
     $cosmicTheme ? 'rgba(150, 100, 255, 0.6)' : 'rgba(255,180,100,0.5)'};
 
   box-shadow:
-    0 4px 12px rgba(150, 100, 255, 0.3),
+    0 2px 8px rgba(150, 100, 255, 0.27),
     inset 0 1px 2px rgba(255,255,255,0.95);
 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 
   ${TechPillWrapper}:hover & {
-    transform: translateY(-6px) scale(1.1);
+    transform: translateY(-4px) scale(1.08);
     box-shadow:
-      0 12px 24px rgba(150, 100, 255, 0.5),
+      0 8px 20px rgba(150, 100, 255, 0.45),
       inset 0 1px 3px rgba(255,255,255,1);
     border-color: rgba(150, 100, 255, 0.9);
   }
 `;
 
 const TechLogo = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.12));
   transition: filter 0.3s ease;
 
   ${TechPillWrapper}:hover & {
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
   }
 `;
 
 const Tooltip = styled.div`
   position: absolute;
-  bottom: calc(100% + 10px);
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%) ${({ $visible }) => $visible ? 'translateY(0)' : 'translateY(4px)'};
-  padding: 0.5rem 0.8rem;
+  padding: 0.5rem 0.7rem;
   border-radius: 8px;
   
   background: ${({ $cosmicTheme }) =>
@@ -350,15 +320,15 @@ const Tooltip = styled.div`
       ? 'linear-gradient(135deg, rgba(100, 50, 200, 0.98), rgba(80, 30, 150, 0.98))'
       : 'rgba(0,0,0,0.85)'};
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 700;
   white-space: nowrap;
 
-  box-shadow: 0 4px 16px rgba(100, 50, 200, 0.4), 0 0 0 1px rgba(150, 100, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(100, 50, 200, 0.35), 0 0 0 1px rgba(150, 100, 255, 0.4);
 
   opacity: ${({ $visible }) => $visible ? 1 : 0};
   pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
 
   &::after {
@@ -375,23 +345,30 @@ const Tooltip = styled.div`
 const HighlightsList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.7rem;
 `;
 
 const Highlight = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.8rem;
-  border-radius: 12px;
+  padding: 1rem 1rem 1rem 1.25rem;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
 
   background: ${({ $cosmicTheme }) =>
     $cosmicTheme
-      ? 'linear-gradient(90deg, rgba(150, 100, 255, 0.12), rgba(100, 50, 200, 0.12))'
+      ? 'linear-gradient(90deg, rgba(150, 100, 255, 0.08), rgba(100, 50, 200, 0.06))'
       : 'rgba(255,255,255,0.08)'};
 
-  border: 1px solid ${({ $cosmicTheme }) =>
-    $cosmicTheme ? 'rgba(150, 100, 255, 0.3)' : 'rgba(255,255,255,0.2)'};
+  /* Gradient left border */
+  border-left: 4px solid transparent;
+  border-image: ${({ $cosmicTheme }) =>
+    $cosmicTheme
+      ? 'linear-gradient(180deg, rgb(150, 100, 255) 0%, rgb(180, 130, 255) 100%)'
+      : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
+  };
+  border-image-slice: 1;
 
   transition: all 0.3s ease;
 
@@ -399,11 +376,12 @@ const Highlight = styled.div`
     transform: translateX(6px);
     background: ${({ $cosmicTheme }) =>
       $cosmicTheme
-        ? 'linear-gradient(90deg, rgba(150, 100, 255, 0.2), rgba(100, 50, 200, 0.2))'
+        ? 'linear-gradient(90deg, rgba(150, 100, 255, 0.15), rgba(100, 50, 200, 0.12))'
         : 'rgba(255,255,255,0.15)'};
-    border-color: ${({ $cosmicTheme }) =>
-      $cosmicTheme ? 'rgba(150, 100, 255, 0.6)' : 'rgba(255,255,255,0.4)'};
     box-shadow: 0 4px 16px rgba(100, 50, 200, 0.3);
+    
+    /* Thicker border on hover */
+    border-left-width: 5px;
   }
 `;
 
@@ -433,9 +411,11 @@ const HighlightIcon = styled.div`
 const HighlightText = styled.p`
   font-size: 0.92rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
   margin: 0;
   flex: 1;
+  font-weight: 400;
+  text-align: justify;
 `;
 
 const CardFooter = styled.div`
@@ -444,108 +424,201 @@ const CardFooter = styled.div`
   margin-top: auto;
   position: relative;
   z-index: 1;
+`;
+
+/* ========================= Social Media Links ========================= */
+
+const SocialSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 0.75rem;
+  padding: 1rem 0;
+  width: 100%;
 `;
 
-const FooterMessage = styled.p`
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
-  text-align: center;
-  margin: 0;
-  font-style: italic;
+const SocialSectionTitle = styled.div`
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 0.25rem;
+  
+  ${({ $cosmicTheme }) => $cosmicTheme ? `
+    background: linear-gradient(90deg, #d4b3ff, #9d6fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  ` : `color: rgba(255,255,255,0.9);`}
 `;
 
-const GitHubButton = styled.div`
+const SocialLinksContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+`;
+
+const SocialLinkWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const SocialLink = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 14px;
-  
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   background: ${({ $cosmicTheme }) =>
-    $cosmicTheme
-      ? 'linear-gradient(90deg, rgba(150, 100, 255, 0.15), rgba(100, 50, 200, 0.15))'
-      : 'rgba(255,255,255,0.1)'};
-  
-  border: 2px solid ${({ $cosmicTheme }) =>
-    $cosmicTheme ? 'rgba(150, 100, 255, 0.4)' : 'rgba(255,255,255,0.3)'};
-  
+    $cosmicTheme ? 'rgba(150, 100, 255, 0.12)' : 'rgba(255,180,100,0.1)'};
+  border: 2px solid ${({ $cosmicTheme }) => 
+    $cosmicTheme ? 'rgba(150, 100, 255, 0.35)' : 'rgba(255,180,100,0.3)'};
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   position: relative;
   overflow: hidden;
-
+  
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    transition: left 0.6s ease;
+    inset: 0;
+    background: ${({ $cosmicTheme }) =>
+      $cosmicTheme 
+        ? 'linear-gradient(135deg, rgba(150, 100, 255, 0.2), rgba(100, 50, 200, 0.15))'
+        : 'linear-gradient(135deg, rgba(255, 180, 100, 0.2), rgba(255, 140, 60, 0.15))'
+    };
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
-
+  
   &:hover {
-    transform: translateY(-4px);
-    border-color: ${({ $cosmicTheme }) =>
-      $cosmicTheme ? 'rgba(150, 100, 255, 0.8)' : 'rgba(255,255,255,0.5)'};
-    box-shadow: 0 12px 32px rgba(100, 50, 200, 0.4);
+    transform: translateY(-3px) scale(1.08);
+    border-color: ${({ $cosmicTheme }) => 
+      $cosmicTheme ? 'rgba(150, 100, 255, 0.6)' : 'rgba(255,180,100,0.5)'};
+    box-shadow: ${({ $cosmicTheme }) => 
+      $cosmicTheme ? '0 6px 16px rgba(150, 100, 255, 0.4)' : '0 6px 16px rgba(255,180,100,0.3)'};
+    background: ${({ $cosmicTheme }) =>
+      $cosmicTheme ? 'rgba(150, 100, 255, 0.18)' : 'rgba(255,180,100,0.15)'};
     
     &::before {
-      left: 100%;
+      opacity: 1;
     }
   }
 `;
 
-const ButtonIcon = styled.div`
-  width: 40px;
-  height: 40px;
-  color: rgba(212, 179, 255, 0.9);
-  flex-shrink: 0;
-  transition: all 0.4s ease;
-
-  ${GitHubButton}:hover & {
-    color: rgba(150, 100, 255, 1);
-    transform: rotate(360deg) scale(1.1);
-  }
-
-  svg {
-    width: 100%;
-    height: 100%;
+const SocialIcon = styled.img`
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  transition: all 0.3s ease;
+  z-index: 1;
+  
+  ${SocialLink}:hover & {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
   }
 `;
 
-const ButtonTextContent = styled.div`
+const SocialTooltip = styled.div`
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) ${({ $visible }) => $visible ? 'translateY(0)' : 'translateY(4px)'};
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  
+  background: ${({ $cosmicTheme }) =>
+    $cosmicTheme
+      ? 'linear-gradient(135deg, rgba(100, 50, 200, 0.98), rgba(80, 30, 150, 0.98))'
+      : 'rgba(0,0,0,0.85)'};
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  box-shadow: 0 3px 8px rgba(100, 50, 200, 0.3), 0 0 0 1px rgba(150, 100, 255, 0.4);
+
+  opacity: ${({ $visible }) => $visible ? 1 : 0};
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(100, 50, 200, 0.98);
+  }
+`;
+
+// WIP Badge Components
+const WIPBadge = styled.div`
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  flex: 1;
-`;
-
-const ButtonTitle = styled.div`
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 1);
-  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
-`;
-
-const ButtonSubtext = styled.div`
-  font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
-`;
-
-const ButtonArrow = styled.div`
-  font-size: 1.8rem;
-  color: rgba(212, 179, 255, 0.8);
-  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
-
-  ${GitHubButton}:hover & {
-    transform: translateX(10px);
-    color: rgba(150, 100, 255, 1);
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 20px;
+  z-index: 10;
+  
+  background: ${props => props.$cosmicTheme ? 
+    'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)' : 
+    'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)'
+  };
+  
+  border: 2px solid ${props => props.$cosmicTheme ? 
+    'rgba(255, 235, 59, 0.8)' : 
+    'rgba(255, 235, 59, 0.8)'
+  };
+  
+  box-shadow: 
+    0 4px 12px rgba(255, 152, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  
+  transition: all 0.3s ease;
+  animation: wiggle 3s ease-in-out infinite;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 
+      0 6px 16px rgba(255, 152, 0, 0.5),
+      inset 0 1px 3px rgba(255, 255, 255, 0.4);
   }
+  
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+  }
+`;
+
+const WIPIcon = styled.span`
+  font-size: 1rem;
+  line-height: 1;
+  animation: bounce 2s ease-in-out infinite;
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+`;
+
+const WIPText = styled.span`
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 `;
 
 export default CKSiteCard;

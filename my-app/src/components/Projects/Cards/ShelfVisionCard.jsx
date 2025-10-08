@@ -30,9 +30,7 @@ const ShelfVisionCard = () => {
         </HeaderTop>
 
         <ProjectDescription>
-          Custom anchor-based detector (PyTorch) tuned for the SKU-110K retail-shelf dataset.
-          ResNet-50 + FPN backbone, dynamic IoU/center matching, and visualization-driven debugging
-          to improve detection in tightly packed scenes.
+        A vision model that finds products in crowded retail-shelf photos. Basically scans shelf images, draws boxes for each item, and stays reliable even when things overlap.
         </ProjectDescription>
 
         <Divider $shelfTheme />
@@ -60,51 +58,15 @@ const ShelfVisionCard = () => {
         <SectionLabel style={{ marginTop: '0.75rem' }} $shelfTheme>What It Does</SectionLabel>
         <HighlightsList>
           <Highlight $shelfTheme>
-            <HighlightIcon $shelfTheme>🧠</HighlightIcon>
-            <HighlightText>
-              Multi-scale detection pipeline: ResNet-50 + FPN features feed a lightweight
-              head for dense shelf layouts with lots of small, overlapping items.
-            </HighlightText>
+            <HighlightText>Detects products in crowded retail shelf photos using ResNet-50 and FPN features</HighlightText>
           </Highlight>
 
           <Highlight $shelfTheme>
-            <HighlightIcon $shelfTheme>📐</HighlightIcon>
-            <HighlightText>
-              Smart anchors & matching: tuned scales/ratios, IoU + center-inside fallback to avoid
-              missed boxes in crowded scenes.
-            </HighlightText>
+            <HighlightText>Handles overlapping items with smart anchor matching and IoU-based detection algorithms</HighlightText>
           </Highlight>
 
           <Highlight $shelfTheme>
-            <HighlightIcon $shelfTheme>🧪</HighlightIcon>
-            <HighlightText>
-              Test-driven training: unit tests for IoU, anchors, and inference + rich overlays to
-              visualize predictions vs. ground truth during training.
-            </HighlightText>
-          </Highlight>
-
-          <Highlight $shelfTheme>
-            <HighlightIcon $shelfTheme>📊</HighlightIcon>
-            <HighlightText>
-              Benchmarks & metrics on SKU-110K; includes PR curves, IoU histograms,
-              comparison runs vs. YOLOv5 baselines.
-            </HighlightText>
-          </Highlight>
-        </HighlightsList>
-
-        <SectionLabel style={{ marginTop: '0.75rem' }} $shelfTheme>Results</SectionLabel>
-        <HighlightsList>
-          <Highlight $shelfTheme>
-            <HighlightIcon $shelfTheme>✅</HighlightIcon>
-            <HighlightText>
-              Early-stage learning established on SKU-110K (non-zero mAP and stable IoU after anchor/matching fixes).
-            </HighlightText>
-          </Highlight>
-          <Highlight $shelfTheme>
-            <HighlightIcon $shelfTheme>🛠️</HighlightIcon>
-            <HighlightText>
-              Modular YAML configs for repeatable training/eval; checkpoints, visualizations, and logs are saved per run.
-            </HighlightText>
+            <HighlightText>Benchmarked on SKU-110K dataset with comprehensive metrics and YOLOv5 comparisons</HighlightText>
           </Highlight>
         </HighlightsList>
       </CardBody>
@@ -346,22 +308,34 @@ const HighlightsList = styled.div`
 const Highlight = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: .75rem;
-  border-radius: 12px;
+  padding: 1rem 1rem 1rem 1.25rem;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  
   background: ${p => p.$shelfTheme
-    ? 'linear-gradient(90deg, rgba(34,211,238,0.10), rgba(167,243,208,0.10))'
+    ? 'linear-gradient(90deg, rgba(34,211,238,0.08) 0%, rgba(167,243,208,0.06) 100%)'
     : 'rgba(255,255,255,0.06)'};
-  border: 1px solid ${p => p.$shelfTheme ? 'rgba(34,211,238,0.35)' : 'rgba(255,255,255,0.1)'};
+  
+  /* Gradient left border */
+  border-left: 4px solid transparent;
+  border-image: ${p => p.$shelfTheme
+    ? 'linear-gradient(180deg, rgb(34, 211, 238) 0%, rgb(167, 243, 208) 100%)'
+    : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
+  };
+  border-image-slice: 1;
+  
   transition: all .3s ease;
 
   &:hover {
-    transform: translateX(4px);
-    border-color: ${p => p.$shelfTheme ? 'rgba(34,211,238,0.6)' : 'rgba(255,255,255,0.2)'};
-    box-shadow: ${p => p.$shelfTheme ? '0 6px 16px rgba(34,211,238,0.25)' : '0 6px 16px rgba(0,0,0,0.25)'};
     background: ${p => p.$shelfTheme
-      ? 'linear-gradient(90deg, rgba(34,211,238,0.16), rgba(167,243,208,0.16))'
+      ? 'linear-gradient(90deg, rgba(34,211,238,0.15) 0%, rgba(167,243,208,0.12) 100%)'
       : 'rgba(255,255,255,0.1)'};
+    transform: translateX(6px);
+    box-shadow: ${p => p.$shelfTheme ? '0 4px 16px rgba(34,211,238,0.25)' : '0 4px 12px rgba(0,0,0,0.25)'};
+    
+    /* Thicker border on hover */
+    border-left-width: 5px;
   }
 `;
 
@@ -385,8 +359,8 @@ const HighlightIcon = styled.div`
 `;
 
 const HighlightText = styled.p`
-  font-size: .9rem;
-  line-height: 1.5;
+  font-size: 0.92rem;
+  line-height: 1.6;
   color: rgba(241,245,249,0.95);
   margin: 0;
   flex: 1;

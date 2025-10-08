@@ -29,15 +29,13 @@ const UCFClubManagerCard = () => {
         <HeaderTop>
           <ProjectInfo>
             <ProjectName $ucfTheme>UCF Club & Event Manager</ProjectName>
-            <ProjectSubtitle>University of Central Florida (MERN)</ProjectSubtitle>
-            <ProjectRole>Technical Lead · Team of 6</ProjectRole>
             <ProjectDate>Jun 2024 – Jul 2024</ProjectDate>
           </ProjectInfo>
           <ProjectLogoImage src={ucfLogo} alt="UCF Logo" />
         </HeaderTop>
 
         <ProjectDescription>
-          Led a team of 6 CpE/CS students to build a full-stack MERN app for streamlined authentication, club management, and event registration. Deployed to Heroku with REST API documented on SwaggerHub.
+          A full-stack MERN app for streamlined club management and event registration. Built with a team of 6 students, deployed to Heroku with REST API documented on SwaggerHub.
         </ProjectDescription>
 
         <Divider $ucfTheme />
@@ -62,39 +60,16 @@ const UCFClubManagerCard = () => {
           ))}
         </TechStack>
 
-        <SectionLabel style={{ marginTop: '0.75rem' }} $ucfTheme>Core Features</SectionLabel>
+        <SectionLabel style={{ marginTop: '0.75rem' }} $ucfTheme>What It Does</SectionLabel>
         <HighlightsList>
           <Highlight $ucfTheme>
-            <HighlightIcon $ucfTheme>🔐</HighlightIcon>
-            <HighlightText>User auth: sign-up, login, password reset, email verification</HighlightText>
+            <HighlightText>User authentication with sign-up, login, password reset, and email verification</HighlightText>
           </Highlight>
           <Highlight $ucfTheme>
-            <HighlightIcon $ucfTheme>👥</HighlightIcon>
-            <HighlightText>Clubs: create, search, join/leave, admin controls, delete</HighlightText>
+            <HighlightText>Club management with create, search, join/leave, admin controls, and delete functionality</HighlightText>
           </Highlight>
           <Highlight $ucfTheme>
-            <HighlightIcon $ucfTheme>📅</HighlightIcon>
-            <HighlightText>Events: create, RSVP / un-RSVP, browse by club, calendar view</HighlightText>
-          </Highlight>
-          <Highlight $ucfTheme>
-            <HighlightIcon $ucfTheme>📱</HighlightIcon>
-            <HighlightText>Dashboard & pages: Login, Sign-up, Events, Clubs, Calendar with Tailwind UI</HighlightText>
-          </Highlight>
-        </HighlightsList>
-
-        <SectionLabel style={{ marginTop: '0.75rem' }} $ucfTheme>Highlights</SectionLabel>
-        <HighlightsList>
-          <Highlight $ucfTheme>
-            <HighlightIcon $ucfTheme>✅</HighlightIcon>
-            <HighlightText>Delivered working CRUD + RSVP flows covering clubs & events</HighlightText>
-          </Highlight>
-          <Highlight $ucfTheme>
-            <HighlightIcon $ucfTheme>📖</HighlightIcon>
-            <HighlightText>Documented API endpoints in Swagger; aligned with front-end flows</HighlightText>
-          </Highlight>
-          <Highlight $ucfTheme>
-            <HighlightIcon $ucfTheme>🎨</HighlightIcon>
-            <HighlightText>Responsive UI with Tailwind; Lighthouse-checked core pages</HighlightText>
+            <HighlightText>Event system with RSVP, calendar view, and club-specific event browsing</HighlightText>
           </Highlight>
         </HighlightsList>
       </CardBody>
@@ -153,14 +128,11 @@ const ProjectCard = styled.div`
   min-height: 640px;
   position: relative;
 
-  /* Deep black → anthracite gradient */
+  /* UCF Dark with Silver highlights gradient background */
   background: ${p => p.$ucfTheme ? `
-    linear-gradient(135deg,
-      rgba(0, 0, 0, 0.95) 0%,
-      rgba(15, 15, 15, 0.94) 25%,
-      rgba(31, 41, 55, 0.92) 65%,
-      rgba(45, 55, 72, 0.90) 100%
-    )
+    radial-gradient(ellipse at top, rgba(20, 20, 25, 0.95) 0%, rgba(35, 35, 45, 0.92) 30%, rgba(25, 25, 35, 0.95) 70%, rgba(15, 15, 20, 0.98) 100%),
+    linear-gradient(135deg, rgba(200, 200, 210, 0.15) 0%, rgba(150, 150, 160, 0.08) 25%, rgba(100, 100, 110, 0.05) 50%, rgba(50, 50, 60, 0.03) 75%, rgba(20, 20, 25, 0.02) 100%),
+    linear-gradient(45deg, rgba(255, 201, 4, 0.12) 0%, rgba(200, 200, 210, 0.06) 50%, rgba(255, 201, 4, 0.08) 100%)
   ` : `rgba(20,20,20,0.9)`};
   backdrop-filter: blur(18px) saturate(105%);
   -webkit-backdrop-filter: blur(18px) saturate(105%);
@@ -176,20 +148,6 @@ const ProjectCard = styled.div`
   display: flex;
   flex-direction: column;
   transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-
-  /* Subtle grid overlay with gold tint */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(rgba(255, 201, 4, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 201, 4, 0.04) 1px, transparent 1px);
-    background-size: 20px 20px;
-    border-radius: inherit;
-    mask-image: radial-gradient(85% 85% at 50% 50%, black 50%, transparent 100%);
-  }
 
   &:hover {
     transform: translateY(-8px);
@@ -326,22 +284,35 @@ const HighlightsList = styled.div`
 const Highlight = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0.7rem;
-  border-radius: 12px;
+  padding: 1rem 1rem 1rem 1.25rem;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  
   background: ${({ $ucfTheme }) =>
-    $ucfTheme ? 'linear-gradient(90deg, rgba(255, 201, 4, 0.1) 0%, rgba(31, 41, 55, 0.15) 100%)'
+    $ucfTheme ? 'linear-gradient(90deg, rgba(255, 201, 4, 0.08) 0%, rgba(31, 41, 55, 0.06) 100%)'
               : 'rgba(255,180,100,0.08)'};
-  border: 1px solid ${({ $ucfTheme }) => $ucfTheme ? 'rgba(255, 201, 4, 0.25)' : 'rgba(255,180,100,0.2)'};
+  
+  /* Gradient left border */
+  border-left: 4px solid transparent;
+  border-image: ${({ $ucfTheme }) =>
+    $ucfTheme
+      ? 'linear-gradient(180deg, rgb(255, 201, 4) 0%, rgb(255, 217, 102) 100%)'
+      : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
+  };
+  border-image-slice: 1;
+  
   transition: all 0.3s ease;
 
   &:hover {
     background: ${({ $ucfTheme }) =>
-      $ucfTheme ? 'linear-gradient(90deg, rgba(255, 201, 4, 0.18) 0%, rgba(31, 41, 55, 0.22) 100%)'
+      $ucfTheme ? 'linear-gradient(90deg, rgba(255, 201, 4, 0.15) 0%, rgba(31, 41, 55, 0.12) 100%)'
                 : 'rgba(255,180,100,0.15)'};
-    border-color: ${({ $ucfTheme }) => $ucfTheme ? 'rgba(255, 201, 4, 0.5)' : 'rgba(255,180,100,0.4)'};
-    transform: translateX(4px);
-    box-shadow: ${({ $ucfTheme }) => $ucfTheme ? '0 4px 12px rgba(255, 201, 4, 0.25)' : '0 4px 12px rgba(255,180,100,0.2)'};
+    transform: translateX(6px);
+    box-shadow: ${({ $ucfTheme }) => $ucfTheme ? '0 4px 16px rgba(255, 201, 4, 0.25)' : '0 4px 12px rgba(255,180,100,0.2)'};
+    
+    /* Thicker border on hover */
+    border-left-width: 5px;
   }
 `;
 
@@ -369,9 +340,9 @@ const HighlightIcon = styled.div`
 `;
 
 const HighlightText = styled.p`
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: rgba(255,255,255,0.9);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.92);
   margin: 0;
   flex: 1;
   font-weight: 400;
@@ -474,12 +445,15 @@ const CardFooter = styled.div`
   z-index: 1;
 `;
 
+
+/* ========================= Resources Grid (LinkedIn-style) ========================= */
+
 const ResourcesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
-  margin-top: 0.75rem;
-
+  width: 100%;
+  
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
@@ -488,70 +462,62 @@ const ResourcesGrid = styled.div`
 const ResourceCard = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.8rem;
-  border-radius: 12px;
-  background: ${({ $ucfTheme }) =>
-    $ucfTheme ? 'linear-gradient(135deg, rgba(255, 201, 4, 0.08) 0%, rgba(31, 41, 55, 0.12) 100%)'
-              : 'rgba(255,180,100,0.1)'};
-  border: 2px solid ${({ $ucfTheme }) => $ucfTheme ? 'rgba(255, 201, 4, 0.3)' : 'rgba(255,180,100,0.3)'};
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-  position: relative;
+  border-radius: 10px;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 201, 4, 0.15), transparent);
-    transition: left 0.6s ease;
-  }
-
+  background: ${({ $ucfTheme }) =>
+    $ucfTheme ? 'rgba(255, 201, 4, 0.12)' : 'rgba(255,180,100,0.1)'};
+  border: 1.5px solid ${({ $ucfTheme }) => 
+    $ucfTheme ? 'rgba(255, 201, 4, 0.35)' : 'rgba(255,180,100,0.3)'};
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  
   &:hover {
-    background: ${({ $ucfTheme }) =>
-      $ucfTheme ? 'linear-gradient(135deg, rgba(255, 201, 4, 0.16) 0%, rgba(31, 41, 55, 0.2) 100%)'
-                : 'rgba(255,180,100,0.15)'};
-    border-color: ${({ $ucfTheme }) => $ucfTheme ? 'rgba(255, 201, 4, 0.6)' : 'rgba(255,180,100,0.5)'};
     transform: translateY(-4px);
-    box-shadow: ${({ $ucfTheme }) => $ucfTheme ? '0 8px 24px rgba(255, 201, 4, 0.3)' : '0 8px 24px rgba(255,180,100,0.3)'};
-
-    &::before {
-      left: 100%;
-    }
+    border-color: ${({ $ucfTheme }) => 
+      $ucfTheme ? 'rgba(255, 201, 4, 0.6)' : 'rgba(255,180,100,0.5)'};
+    box-shadow: ${({ $ucfTheme }) => 
+      $ucfTheme ? '0 6px 20px rgba(255, 201, 4, 0.3)' : '0 6px 20px rgba(255,180,100,0.25)'};
+    background: ${({ $ucfTheme }) =>
+      $ucfTheme ? 'rgba(255, 201, 4, 0.18)' : 'rgba(255,180,100,0.15)'};
   }
 `;
 
 const ResourcePreview = styled.div`
   width: 100%;
-  height: 120px;
-  border-radius: 8px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: ${({ $type, $preview }) => {
+    if ($preview) {
+      return `url(${$preview}) center/cover no-repeat`;
+    }
+    if ($type === 'presentation') return 'linear-gradient(135deg, rgba(255, 201, 4, 0.2), rgba(255, 217, 102, 0.15))';
+    if ($type === 'figma') return 'linear-gradient(135deg, rgba(255, 201, 4, 0.2), rgba(255, 217, 102, 0.15))';
+    if ($type === 'github') return 'linear-gradient(135deg, rgba(50, 50, 50, 0.3), rgba(30, 30, 30, 0.2))';
+    return 'rgba(255,255,255,0.05)';
+  }};
   position: relative;
   overflow: hidden;
-  background: ${({ $preview }) => 
-    $preview 
-      ? `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), url(${$preview}) center/cover no-repeat`
-      : 'linear-gradient(135deg, rgba(31, 41, 55, 0.7), rgba(0, 0, 0, 0.8))'};
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
-  transition: transform 0.3s ease;
-
-  ${ResourceCard}:hover & {
-    transform: scale(1.03);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: ${({ $preview }) => 
+      $preview 
+        ? 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%)'
+        : 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 100%)'
+    };
   }
 `;
 
 const ResourceIcon = styled.div`
-  font-size: 2.5rem;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  font-size: 2rem;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   transition: transform 0.3s ease;
-
+  
   ${ResourceCard}:hover & {
     transform: scale(1.15);
   }
@@ -560,28 +526,30 @@ const ResourceIcon = styled.div`
 const GitHubLogoIcon = styled.div`
   width: 60px;
   height: 60px;
-  color: #ffffff;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.95);
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
   transition: all 0.3s ease;
-
-  ${ResourceCard}:hover & {
-    transform: scale(1.15);
-    color: #FFC904;
-  }
-
+  
   svg {
     width: 100%;
     height: 100%;
   }
+  
+  ${ResourceCard}:hover & {
+    transform: scale(1.1);
+    color: rgba(255, 201, 4, 1);
+  }
 `;
 
 const ResourceCaption = styled.div`
-  font-size: 0.82rem;
+  padding: 0.5rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255,255,255,0.95);
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  background: rgba(0,0,0,0.15);
+  letter-spacing: 0.3px;
 `;
 
 export default UCFClubManagerCard;
