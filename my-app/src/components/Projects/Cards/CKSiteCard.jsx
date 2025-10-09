@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 
 // Utils
 import { getLogo } from '@/components/Utils/logoMap';
+import WIPBubble from './WIPBubble';
 
 const CKSiteCard = () => {
   const [hoveredTech, setHoveredTech] = useState(null);
@@ -11,10 +12,7 @@ const CKSiteCard = () => {
 
     return (
     <ProjectCard $cosmicTheme>
-      <WIPBadge $cosmicTheme>
-        <WIPIcon>🚧</WIPIcon>
-        <WIPText>In Progress</WIPText>
-      </WIPBadge>
+      <WIPBubble theme="cosmic" />
       <StarField>
         <Star top="15%" left="10%" size="2px" delay="0s" />
         <Star top="25%" left="80%" size="1.5px" delay="1s" />
@@ -558,67 +556,5 @@ const SocialTooltip = styled.div`
   }
 `;
 
-// WIP Badge Components
-const WIPBadge = styled.div`
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.8rem;
-  border-radius: 20px;
-  z-index: 10;
-  
-  background: ${props => props.$cosmicTheme ? 
-    'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)' : 
-    'linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%)'
-  };
-  
-  border: 2px solid ${props => props.$cosmicTheme ? 
-    'rgba(255, 235, 59, 0.8)' : 
-    'rgba(255, 235, 59, 0.8)'
-  };
-  
-  box-shadow: 
-    0 4px 12px rgba(255, 152, 0, 0.4),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3);
-  
-  transition: all 0.3s ease;
-  animation: wiggle 3s ease-in-out infinite;
-  
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 
-      0 6px 16px rgba(255, 152, 0, 0.5),
-      inset 0 1px 3px rgba(255, 255, 255, 0.4);
-  }
-  
-  @keyframes wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-3deg); }
-    75% { transform: rotate(3deg); }
-  }
-`;
-
-const WIPIcon = styled.span`
-  font-size: 1rem;
-  line-height: 1;
-  animation: bounce 2s ease-in-out infinite;
-  
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-  }
-`;
-
-const WIPText = styled.span`
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
-`;
 
 export default CKSiteCard;

@@ -489,33 +489,82 @@ const HorizonCloud = styled.div`
     }
 `;
 
+// Bounce animations for arrows
+const leftBounce = keyframes`
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  25% {
+    transform: translateY(-50%) translateX(-3px);
+  }
+  75% {
+    transform: translateY(-50%) translateX(3px);
+  }
+`;
+
+const rightBounce = keyframes`
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  25% {
+    transform: translateY(-50%) translateX(3px);
+  }
+  75% {
+    transform: translateY(-50%) translateX(-3px);
+  }
+`;
+
 const ArrowBase = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   border: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.18);
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
   color: #fff;
-  font-size: 28px;
+  font-size: 32px;
+  font-weight: bold;
   line-height: 1;
   display: grid;
   place-items: center;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: transform 180ms ease, background 180ms ease, opacity 180ms ease;
-  opacity: 0.9;
-  &:hover { transform: translateY(-50%) scale(1.06); background: rgba(255,255,255,0.25); }
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255,255,255,0.3);
+  box-shadow: 
+    0 4px 16px rgba(0,0,0,0.15),
+    0 0 20px rgba(255,255,255,0.1),
+    inset 0 1px 2px rgba(255,255,255,0.2);
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.95;
+  z-index: 20;
+  
+  &:hover { 
+    transform: translateY(-50%) scale(1.1); 
+    background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.25));
+    border-color: rgba(255,255,255,0.5);
+    box-shadow: 
+      0 6px 24px rgba(0,0,0,0.2),
+      0 0 30px rgba(255,255,255,0.2),
+      inset 0 1px 3px rgba(255,255,255,0.3);
+  }
+  
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
 `;
 
 const ArrowLeft = styled(ArrowBase)`
   left: max(12px, 4vw);
+  animation: ${leftBounce} 2s ease-in-out infinite;
+  animation-delay: 0.5s;
 `;
 
 const ArrowRight = styled(ArrowBase)`
   right: max(12px, 4vw);
+  animation: ${rightBounce} 2s ease-in-out infinite;
+  animation-delay: 1s;
 `;
 
 const Dots = styled.div`

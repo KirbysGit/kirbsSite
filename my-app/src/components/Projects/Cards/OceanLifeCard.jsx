@@ -53,7 +53,7 @@ const OceanLifeCard = () => {
           ))}
         </TechStack>
 
-        <SectionLabel style={{ marginTop: '0.75rem' }} $oceanTheme>What It Does</SectionLabel>
+        <SectionLabel $oceanTheme>What It Does</SectionLabel>
         <HighlightsList>
           <Highlight $oceanTheme>
             <HighlightText>User login/registration with cookie-based sessions and form validation</HighlightText>
@@ -109,7 +109,7 @@ const OceanLifeCard = () => {
 
 const ProjectCard = styled.div`
   width: 500px;
-  min-height: 620px;
+  min-height: 640px;
 
   background: ${({ $oceanTheme }) => $oceanTheme ? `
     linear-gradient(180deg,
@@ -174,23 +174,22 @@ const HeaderTop = styled.div`
 const ProjectInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   flex: 1;
 `;
 
 const ProjectName = styled.h3`
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   font-weight: 800;
   margin: 0;
-  letter-spacing: -0.4px;
   line-height: 1.2;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-
+  letter-spacing: -0.5px;
   ${({ $oceanTheme }) => $oceanTheme ? `
-    background: linear-gradient(90deg, #e0f7fa, #a5e9ff 50%, #9be7f7 100%);
+    background: linear-gradient(100deg, #e0f7fa 0%, #a5e9ff 50%, #9be7f7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   ` : `color: #fff;`}
 `;
 
@@ -211,11 +210,11 @@ const ProjectDate = styled.span`
 `;
 
 const ProjectLogoImage = styled.img`
-  width: 180px;
+  width: 90px;
   height: auto;
   border-radius: 12px;
   object-fit: contain;
-  filter: drop-shadow(0 6px 20px rgba(2, 136, 209, 0.35));
+  filter: drop-shadow(0 4px 12px rgba(2, 136, 209, 0.3));
 `;
 
 const ProjectDescription = styled.p`
@@ -245,17 +244,17 @@ const CardBody = styled.div`
   flex-direction: column;
   flex: 1;
   gap: 0.5rem;
+  position: relative;
+  z-index: 1;
 `;
 
 const SectionLabel = styled.div`
-  font-size: 0.82rem;
-  font-weight: 800;
+  font-size: 0.85rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.1px;
-  margin: 0.25rem 0 0.35rem;
-
+  letter-spacing: 1px;
   ${({ $oceanTheme }) => $oceanTheme ? `
-    background: linear-gradient(90deg, #e0f7fa, #9ae0ff);
+    background: linear-gradient(100deg, #e0f7fa 0%, #a5e9ff 50%, #9be7f7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -431,7 +430,10 @@ const Tooltip = styled.div`
 const CardFooter = styled.div`
   display: flex;
   flex-direction: column;
+  padding-top: 0.5rem;
   margin-top: auto;
+  position: relative;
+  z-index: 1;
 `;
 
 /* ========================= Resources Grid (LinkedIn-style) ========================= */
