@@ -2,16 +2,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-// my images.
+// map pin component.
 import MapPin from '../Experience/MapPin';
-import naturalAthlete from '@/images/naturalAthlete.jpg';
-import alwaysChillin from '@/images/alwaysChillin.jpg';
-import engineeringGuy from '@/images/engineeringGuy.jpg';
+
+// images.
 import ucf4 from '@/images/ucf4.jpg';
-import secondHome from '@/images/secondHome.jpg';
-import campingTrip from '@/images/campingTrip.jpg';
 import lilG from '@/images/lilG.jpg';
 import mySetUp from '@/images/mySetUp.jpg';
+import secondHome from '@/images/secondHome.jpg';
+import campingTrip from '@/images/campingTrip.jpg';
+import alwaysChillin from '@/images/alwaysChillin.jpg';
+import naturalAthlete from '@/images/naturalAthlete.jpg';
+import engineeringGuy from '@/images/engineeringGuy.jpg';
 import sanduskySunset from '@/images/sanduskySunset.jpg';
 
 const About = () => {
@@ -20,54 +22,62 @@ const About = () => {
     const [activeParagraph, setActiveParagraph] = useState(0);
     const paragraphRefs = useRef([]);
 
-    // Optimized scroll tracking for Early Years section only
+    // scrolling tracking for early years section.
     useEffect(() => {
+        // variables.
         let lastScrollTime = 0;
         let cachedViewportHeight = window.innerHeight;
         let currentActiveParagraph = 0;
 
+        // function to handle scrolling.
         const handleScroll = () => {
+            // take now timestamp.
             const now = Date.now();
             
-            // Only run every 100ms to reduce calculations
+            //  only run ever 100ms to reduce over calculations.
             if (now - lastScrollTime < 100) return;
             lastScrollTime = now;
 
-            // Cache viewport height to avoid repeated calculations
+            // cache viewport height to avoid repeated calculations.
             cachedViewportHeight = window.innerHeight;
             const centerThreshold = cachedViewportHeight * 0.5;
             const bottomThreshold = cachedViewportHeight * 0.4;
 
+            // new active paragraph.
             let newActiveParagraph = currentActiveParagraph;
 
             paragraphRefs.current.forEach((ref, index) => {
+                // if ref is not found, return.
                 if (!ref) return;
                 
+                // get bounding client rect.
                 const rect = ref.getBoundingClientRect();
                 const isVisible = rect.top < centerThreshold && rect.bottom > bottomThreshold;
                 
+                // if is visible, set new active paragraph.
                 if (isVisible) {
                     newActiveParagraph = index;
                 }
             });
 
-            // Only update state if the active paragraph actually changed
+            // only update state if the active paragraph actually changed.
             if (newActiveParagraph !== currentActiveParagraph) {
                 currentActiveParagraph = newActiveParagraph;
                 setActiveParagraph(newActiveParagraph);
             }
         };
 
-        // Handle window resize to update cached viewport height
+        // handle window resize to update cached viewport height.
         const handleResize = () => {
             cachedViewportHeight = window.innerHeight;
         };
 
-        // Use passive scroll listener for better performance
+        // use passive scroll listener for better performance.
         window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', handleResize, { passive: true });
-        handleScroll(); // Initial call
+        handleScroll();
         
+        // remove event listeners on unmount.
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
@@ -76,7 +86,7 @@ const About = () => {
 
     return (
         <AboutContainer>
-            {/* Early Years */}
+            {/* early years */}
             <StorySection>
 
                 <OverlappingImageContainer>
@@ -136,6 +146,7 @@ const About = () => {
                     </ImageCard>
                 </OverlappingImageContainer>
                 
+                {/* early years story telling */}
                 <TextContainer>
                     <StoryTitle>The Early Years ~<StoryDate>03' to 21'</StoryDate></StoryTitle>
                     <StoryText>
@@ -172,7 +183,7 @@ const About = () => {
 
             </StorySection>
 
-            {/* My College Years */}
+            {/* my college years */}
             <StorySection reverse>
 
                 <OverlappingImageContainer>
@@ -247,6 +258,7 @@ const About = () => {
                     
                 </OverlappingImageContainer>
 
+                {/* my college years story telling */}
                 <TextContainer $isReversed={true}>
                     <StoryTitle>My College Years ~<StoryDate>21' to 25'</StoryDate></StoryTitle>
                     <StoryText>
@@ -287,6 +299,7 @@ const About = () => {
 
             </StorySection>
 
+            {/* post-grad life */}
             <StorySection>
 
                 <OverlappingImageContainer>
@@ -358,6 +371,7 @@ const About = () => {
                     
                 </OverlappingImageContainer>
 
+                {/* post-grad life story telling */}
                 <TextContainer>
                     <StoryTitle>Post-Grad Life ~<StoryDate>25' to Today</StoryDate></StoryTitle>
                     <StoryText>
@@ -396,10 +410,22 @@ const About = () => {
     );
 }
 
+// -------------------------------------------------------------- main container.
 const AboutContainer = styled.div`
+    /* layout */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+
+    /* spacing */
+    gap: 1rem;
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+
+    /* styles */
     background: linear-gradient(to bottom,
         rgb(13, 7, 27) 0%,
         rgb(13, 7, 27) 25%,
@@ -408,35 +434,36 @@ const AboutContainer = styled.div`
         rgb(65, 45, 110) 80%,
         rgb(85, 60, 135) 90%,
         rgb(100, 70, 150) 100%);
-    width: 100vw;
-    padding-top: 4rem;
-    overflow: hidden;
-    position: relative;
 
-    gap: 1rem;
-    padding-bottom: 6rem;
 
+    /* media queries */
     @media (max-width: 1600px) {
         padding-bottom: 3rem;
     }
 `;
-
 const StorySection = styled.div`
+    /* layout */
     display: flex;
     align-items: flex-start;
+    flex-direction: ${props => props.reverse ? 'row-reverse' : 'row'};
+
+    /* spacing */
     padding: 3rem 2rem;
     gap: 3rem;
-    flex-direction: ${props => props.reverse ? 'row-reverse' : 'row'};
 `;
 
+// -------------------------------------------------------------- images.
 const OverlappingImageContainer = styled.div`
+    /* layout */
     flex: 3;
     position: relative;
     min-height: 500px;
-    padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    /* spacing */
+    padding: 1rem;
 `;
 
 const MapPinWrapper = styled.div`
