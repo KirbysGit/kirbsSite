@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-// Import logo map and project logo
-import { getLogo } from '@/components/Utils/logoMap';
-import sentimentTraderLogo from '@/images/projects/sentiment_trader/sentimenttrader.png';
+// Shared components
+import CardBase, { 
+  CardHeader, 
+  HeaderTop, 
+  ProjectInfo, 
+  ProjectName, 
+  ProjectSubtitle, 
+  ProjectDate, 
+  ProjectLogoImage, 
+  ProjectDescription, 
+  Divider, 
+  CardBody, 
+  SectionLabel, 
+  CardFooter 
+} from '../shared/CardBase';
+import TechStack from '../shared/TechStack';
+import Highlights from '../shared/Highlights';
+import { themes } from '../shared/themes';
+import WIPRibbon from '../WIPRibbon';
 
-// Import resource preview images
+// Project assets
+import sentimentTraderLogo from '@/images/projects/sentiment_trader/sentimenttrader.png';
 import lightningTalkPreview from '@/images/projects/sentiment_trader/lightningtalkpreview.png';
 import paperPreview from '@/images/projects/sentiment_trader/paperpreview.png';
 
-// Import WIPBubble component
-import WIPBubble from './WIPBubble';
-
-const SentimentTraderCard = () => {
-    const [hoveredTech, setHoveredTech] = useState(null);
-
+const SentimentTraderCard = ({ isFocused = false }) => {
     const techs = [
         'Python',
         'PyTorch',
@@ -24,13 +36,21 @@ const SentimentTraderCard = () => {
         'NumPy'
     ];
 
+  const highlights = [
+    'Streams Reddit finance posts and filters relevant stock ticker mentions with confidence',
+    'Analyzes sentiment using FinBERT NLP and merges with real-time Yahoo Finance data',
+    'Generates next-day buy/sell signals per ticker using trained XGBoost machine learning models'
+  ];
+
+  const theme = themes.sentiment;
+
     return (
-        <ProjectCard $sentimentTheme>
-            <WIPBubble theme="sentiment" />
+    <CardBase theme={true} themeName="sentiment" themeColors={theme.colors} isFocused={isFocused}>
+      <WIPRibbon text="IN PROGRESS" />
             <CardHeader>
                 <HeaderTop>
                     <ProjectInfo>
-                        <ProjectName $sentimentTheme>SentimentTrader</ProjectName>
+            <ProjectName $themeColors={theme.colors}>SentimentTrader</ProjectName>
                         <ProjectSubtitle>Real-Time Stock Analysis Pipeline</ProjectSubtitle>
                         <ProjectDate>Jan 2025 – May 2025</ProjectDate>
                     </ProjectInfo>
@@ -42,50 +62,25 @@ const SentimentTraderCard = () => {
                     Basically reads stock chatter, tags bullish/bearish, gives buy/sell picks.
                 </ProjectDescription>
 
-                <Divider $sentimentTheme />
+        <Divider $themeColors={theme.colors} />
             </CardHeader>
 
             <CardBody>
-                <SectionLabel $sentimentTheme>Tech Stack</SectionLabel>
-                <TechStack>
-                    {techs.map((tech) => (
-                        <TechPillWrapper
-                            key={tech}
-                            onMouseEnter={() => setHoveredTech(tech)}
-                            onMouseLeave={() => setHoveredTech(null)}
-                        >
-                            <TechPill $sentimentTheme>
-                                <TechLogo src={getLogo(tech)} alt={tech} />
-                            </TechPill>
-                            <Tooltip $visible={hoveredTech === tech} $sentimentTheme>
-                                {tech}
-                            </Tooltip>
-                        </TechPillWrapper>
-                    ))}
-                </TechStack>
+        <SectionLabel $themeColors={theme.colors}>Tech Stack</SectionLabel>
+        <TechStack techs={techs} themeColors={theme.colors} />
 
-                <SectionLabel style={{ marginTop: '0.75rem' }} $sentimentTheme>What It Does</SectionLabel>
-                <HighlightsList>
-                    <Highlight $sentimentTheme>
-                        <HighlightText>Streams Reddit finance posts and filters relevant stock ticker mentions with confidence</HighlightText>
-                    </Highlight>
-                    <Highlight $sentimentTheme>
-                        <HighlightText>Analyzes sentiment using FinBERT NLP and merges with real-time Yahoo Finance data</HighlightText>
-                    </Highlight>
-                    <Highlight $sentimentTheme>
-                        <HighlightText>Generates next-day buy/sell signals per ticker using trained XGBoost machine learning models</HighlightText>
-                    </Highlight>
-                </HighlightsList>
+        <SectionLabel style={{ marginTop: '0.75rem' }} $themeColors={theme.colors}>What It Does</SectionLabel>
+        <Highlights highlights={highlights} themeColors={theme.colors} />
             </CardBody>
 
             <CardFooter>
-                <Divider $sentimentTheme />
+        <Divider $themeColors={theme.colors} />
                 
                 {/* Resources Grid - LinkedIn style preview cards */}
                 <ResourcesGrid>
                     {/* YouTube Video Card */}
                     <ResourceCard
-                        $sentimentTheme
+            $themeColors={theme.colors}
                         onClick={() => window.open('https://www.youtube.com/watch?v=lhisabRnFw0', '_blank')}
                     >
                         <ResourcePreview $type="youtube" $preview={lightningTalkPreview}>
@@ -96,7 +91,7 @@ const SentimentTraderCard = () => {
 
                     {/* Paper/PDF Card */}
                     <ResourceCard
-                        $sentimentTheme
+            $themeColors={theme.colors}
                         onClick={() => window.open('/projects/sentiment_trader/sentimenttrader_paper.pdf', '_blank')}
                     >
                         <ResourcePreview $type="paper" $preview={paperPreview}>
@@ -107,7 +102,7 @@ const SentimentTraderCard = () => {
 
                     {/* GitHub Card */}
                     <ResourceCard
-                        $sentimentTheme
+            $themeColors={theme.colors}
                         onClick={() => window.open('https://github.com/KirbysGit/sentimentTrader', '_blank')}
                     >
                         <ResourcePreview $type="github">
@@ -121,367 +116,11 @@ const SentimentTraderCard = () => {
                     </ResourceCard>
                 </ResourcesGrid>
             </CardFooter>
-        </ProjectCard>
-    );
+    </CardBase>
+  );
 };
 
-/* ========================= THEME: SentimentTrader (Finance/Purple-Orange) ========================= */
-
-const ProjectCard = styled.div`
-    width: 500px;
-    min-height: 600px;
-
-    /* Yahoo purple → Reddit orange gradient */
-    background: ${({ $sentimentTheme }) => $sentimentTheme ? `
-        linear-gradient(135deg,
-            rgba(96, 1, 210, 0.90) 0%,
-            rgba(126, 87, 194, 0.88) 25%,
-            rgba(156, 39, 176, 0.86) 50%,
-            rgba(255, 109, 0, 0.88) 75%,
-            rgba(255, 69, 0, 0.90) 100%
-        )` : `linear-gradient(135deg,
-            rgba(34,34,34,0.15) 0%,
-            rgba(30,30,30,0.12) 50%,
-            rgba(25,25,25,0.10) 100%
-        )`
-    };
-    backdrop-filter: blur(20px) saturate(110%);
-    -webkit-backdrop-filter: blur(20px) saturate(110%);
-
-    border: 1px solid ${({ $sentimentTheme }) => $sentimentTheme ? 'rgba(156, 39, 176, 0.5)' : 'rgba(255,180,100,0.4)'};
-    border-radius: 24px;
-    box-shadow: ${({ $sentimentTheme }) => $sentimentTheme ? `
-        0 8px 32px rgba(0, 0, 0, 0.35),
-        inset 0 1px 2px rgba(186, 104, 200, 0.28),
-        inset 0 -1px 2px rgba(0, 0, 0, 0.2),
-        0 0 44px rgba(156, 39, 176, 0.25)
-    ` : `
-        0 8px 32px rgba(0,0,0,0.3)
-    `};
-
-    padding: 2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-
-    /* Subtle grid texture overlay */
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: 
-            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-        background-size: 20px 20px;
-        pointer-events: none;
-        opacity: 0.3;
-    }
-
-    &:hover {
-        transform: translateY(-8px);
-        background: ${({ $sentimentTheme }) => $sentimentTheme ? `
-            linear-gradient(135deg,
-                rgba(96, 1, 210, 0.95) 0%,
-                rgba(126, 87, 194, 0.93) 25%,
-                rgba(156, 39, 176, 0.91) 50%,
-                rgba(255, 109, 0, 0.93) 75%,
-                rgba(255, 69, 0, 0.95) 100%
-            )` : undefined
-        };
-        box-shadow: ${({ $sentimentTheme }) => $sentimentTheme ? `
-            0 12px 48px rgba(0, 0, 0, 0.45),
-            inset 0 2px 3px rgba(186, 104, 200, 0.36),
-            inset 0 -1px 2px rgba(0, 0, 0, 0.2),
-            0 0 64px rgba(156, 39, 176, 0.4),
-            0 0 32px rgba(255, 109, 0, 0.3)
-        ` : undefined};
-        border-color: ${({ $sentimentTheme }) => $sentimentTheme ? 'rgba(186, 104, 200, 0.7)' : undefined};
-    }
-
-    @media (max-width: 1200px) {
-        width: 100%;
-        max-width: 500px;
-    }
-`;
-
-const CardHeader = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    position: relative;
-    z-index: 1;
-`;
-
-const HeaderTop = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-`;
-
-const ProjectInfo = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex: 1;
-`;
-
-const ProjectName = styled.h3`
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.35);
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-    ${({ $sentimentTheme }) => $sentimentTheme ? `
-        background: linear-gradient(90deg, #E1BEE7, #FFAB91);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    ` : `color: #fff;`}
-`;
-
-const ProjectSubtitle = styled.div`
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.95);
-    font-weight: 500;
-    font-style: italic;
-    margin: 0;
-`;
-
-const ProjectDate = styled.span`
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.9);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-`;
-
-const ProjectLogoImage = styled.img`
-    width: 110px;
-    height: auto;
-    border-radius: 12px;
-    object-fit: contain;
-`;
-
-const ProjectDescription = styled.p`
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: rgba(255,255,255,0.95);
-    margin: 0;
-    font-weight: 400;
-    text-align: justify;
-`;
-
-const Divider = styled.div`
-    width: 100%;
-    height: 2px;
-    background: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? 'linear-gradient(90deg, #BA68C8, #FF6D00)' : 'rgba(255,255,255,0.2)'};
-    opacity: 0.75;
-    border-radius: 2px;
-    box-shadow: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? '0 0 10px rgba(156, 39, 176, 0.45)' : '0 0 10px rgba(255,255,255,0.2)'};
-    margin-top: 0.25rem;
-    margin-bottom: 0.75rem;
-`;
-
-const CardBody = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 0.5rem;
-    position: relative;
-    z-index: 1;
-`;
-
-const SectionLabel = styled.div`
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    ${({ $sentimentTheme }) => $sentimentTheme ? `
-        background: linear-gradient(90deg, #E1BEE7, #FFAB91);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    ` : `color: rgba(255,255,255,0.9);`}
-`;
-
-const HighlightsList = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-`;
-
-const Highlight = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 1rem 1rem 1rem 1.25rem;
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
-    
-    background: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? 'linear-gradient(90deg, rgba(156, 39, 176, 0.08) 0%, rgba(255, 109, 0, 0.06) 100%)'
-                       : 'rgba(255,180,100,0.08)'};
-    
-    /* Gradient left border */
-    border-left: 4px solid transparent;
-    border-image: ${({ $sentimentTheme }) =>
-        $sentimentTheme
-            ? 'linear-gradient(180deg, rgb(156, 39, 176) 0%, rgb(255, 109, 0) 100%)'
-            : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
-    };
-    border-image-slice: 1;
-    
-    transition: all 0.3s ease;
-
-    &:hover {
-        background: ${({ $sentimentTheme }) =>
-            $sentimentTheme ? 'linear-gradient(90deg, rgba(156, 39, 176, 0.15) 0%, rgba(255, 109, 0, 0.12) 100%)'
-                           : 'rgba(255,180,100,0.15)'};
-        transform: translateX(6px);
-        box-shadow: ${({ $sentimentTheme }) => $sentimentTheme ? '0 4px 16px rgba(156, 39, 176, 0.25)' : '0 4px 12px rgba(255,180,100,0.2)'};
-        
-        /* Thicker border on hover */
-        border-left-width: 5px;
-    }
-`;
-
-const HighlightIcon = styled.div`
-    font-size: 1.8rem;
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? 'linear-gradient(90deg, rgba(156, 39, 176, 0.25), rgba(255, 109, 0, 0.25))'
-                       : 'rgba(255,180,100,0.15)'};
-    border-radius: 10px;
-    box-shadow: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? '0 2px 8px rgba(156, 39, 176, 0.3)' : '0 2px 8px rgba(255,180,100,0.2)'};
-    transition: all 0.3s ease;
-
-    ${Highlight}:hover & {
-        transform: scale(1.1);
-        box-shadow: ${({ $sentimentTheme }) =>
-            $sentimentTheme ? '0 4px 12px rgba(156, 39, 176, 0.5)' : '0 4px 12px rgba(255,180,100,0.3)'};
-    }
-`;
-
-const HighlightText = styled.p`
-    font-size: 0.92rem;
-    line-height: 1.6;
-    color: rgba(255,255,255,0.92);
-    margin: 0;
-    flex: 1;
-    font-weight: 400;
-`;
-
-const TechStack = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: center;
-`;
-
-const TechPillWrapper = styled.div`
-    position: relative;
-    display: inline-block;
-`;
-
-const TechPill = styled.div`
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.6rem;
-    background: ${({ $sentimentTheme }) =>
-        $sentimentTheme
-            ? 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(243, 229, 245, 0.98) 50%, rgba(255, 243, 224, 0.96) 100%)'
-            : 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,250,245,0.98) 50%, rgba(255,245,235,0.95) 100%)'};
-    border: 2px solid ${({ $sentimentTheme }) => $sentimentTheme ? 'rgba(156, 39, 176, 0.6)' : 'rgba(255,180,100,0.5)'};
-    box-shadow: ${({ $sentimentTheme }) =>
-        $sentimentTheme
-            ? '0 2px 8px rgba(156, 39, 176, 0.28), inset 0 1px 2px rgba(255,255,255,0.9)'
-            : '0 2px 8px rgba(255,180,100,0.2), inset 0 1px 2px rgba(255,255,255,0.9)'};
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-    cursor: pointer;
-
-    ${TechPillWrapper}:hover & {
-        transform: translateY(-4px) scale(1.08);
-        box-shadow: ${({ $sentimentTheme }) =>
-            $sentimentTheme
-                ? '0 8px 20px rgba(156, 39, 176, 0.5), inset 0 1px 3px rgba(255,255,255,1)'
-                : '0 8px 20px rgba(255,180,100,0.4), inset 0 1px 3px rgba(255,255,255,1)'};
-        border-color: ${({ $sentimentTheme }) => $sentimentTheme ? 'rgba(186, 104, 200, 0.9)' : 'rgba(255,180,100,0.8)'};
-    }
-`;
-
-const TechLogo = styled.img`
-    width: 150%;
-    height: 150%;
-    object-fit: contain;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
-    transition: filter 0.3s ease;
-
-    ${TechPillWrapper}:hover & {
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-    }
-`;
-
-const Tooltip = styled.div`
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) ${({ $visible }) => $visible ? 'translateY(0)' : 'translateY(4px)'};
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    white-space: nowrap;
-    background: ${({ $sentimentTheme }) =>
-        $sentimentTheme
-            ? 'linear-gradient(135deg, rgba(156, 39, 176, 0.95), rgba(255, 109, 0, 0.95))'
-            : 'linear-gradient(135deg, rgba(255,140,60,0.95), rgba(255,160,100,0.95))'};
-    box-shadow: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? '0 4px 12px rgba(156, 39, 176, 0.4), 0 0 0 1px rgba(225, 190, 231, 0.4)'
-                       : '0 4px 12px rgba(255,140,60,0.4), 0 0 0 1px rgba(255,180,100,0.5)'};
-    opacity: ${({ $visible }) => $visible ? 1 : 0};
-    pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-    z-index: 1000;
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border: 5px solid transparent;
-        border-top-color: ${({ $sentimentTheme }) => $sentimentTheme ? 'rgba(156, 39, 176, 0.95)' : 'rgba(255,140,60,0.95)'};
-    }
-`;
-
-const CardFooter = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding-top: 0.5rem;
-    margin-top: auto;
-    position: relative;
-    z-index: 1;
-`;
+/* ================= SentimentTrader-specific Footer Components ================= */
 
 /* ========================= Resources Grid (LinkedIn-style) ========================= */
 
@@ -501,21 +140,16 @@ const ResourceCard = styled.div`
     flex-direction: column;
     border-radius: 10px;
     overflow: hidden;
-    background: ${({ $sentimentTheme }) =>
-        $sentimentTheme ? 'rgba(156, 39, 176, 0.12)' : 'rgba(255,180,100,0.1)'};
-    border: 1.5px solid ${({ $sentimentTheme }) => 
-        $sentimentTheme ? 'rgba(156, 39, 176, 0.35)' : 'rgba(255,180,100,0.3)'};
+    background: ${({ $themeColors }) => $themeColors?.previewBackground || 'rgba(255,180,100,0.1)'};
+    border: 1.5px solid ${({ $themeColors }) => $themeColors?.previewBorder || 'rgba(255,180,100,0.3)'};
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     
     &:hover {
         transform: translateY(-4px);
-        border-color: ${({ $sentimentTheme }) => 
-            $sentimentTheme ? 'rgba(186, 104, 200, 0.6)' : 'rgba(255,180,100,0.5)'};
-        box-shadow: ${({ $sentimentTheme }) => 
-            $sentimentTheme ? '0 6px 20px rgba(156, 39, 176, 0.3)' : '0 6px 20px rgba(255,180,100,0.25)'};
-        background: ${({ $sentimentTheme }) =>
-            $sentimentTheme ? 'rgba(156, 39, 176, 0.18)' : 'rgba(255,180,100,0.15)'};
+        border-color: ${({ $themeColors }) => $themeColors?.previewHoverBorder || 'rgba(255,180,100,0.5)'};
+        box-shadow: ${({ $themeColors }) => $themeColors?.previewHoverShadow || '0 6px 20px rgba(255,180,100,0.25)'};
+        background: ${({ $themeColors }) => $themeColors?.previewHoverBackground || 'rgba(255,180,100,0.15)'};
     }
 `;
 
@@ -588,7 +222,6 @@ const ResourceCaption = styled.div`
     background: rgba(0,0,0,0.15);
     letter-spacing: 0.3px;
 `;
-
 
 export default SentimentTraderCard;
 

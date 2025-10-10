@@ -1,28 +1,50 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-// Logo map
-import { getLogo } from '@/components/Utils/logoMap';
+// Shared components
+import CardBase, { 
+  CardHeader, 
+  HeaderTop, 
+  ProjectInfo, 
+  ProjectName, 
+  ProjectSubtitle, 
+  ProjectDate, 
+  ProjectLogoImage,
+  ProjectDescription, 
+  Divider, 
+  CardBody, 
+  SectionLabel,
+  CardFooter
+} from '../shared/CardBase';
+import TechStack from '../shared/TechStack';
+import Highlights from '../shared/Highlights';
+import { themes } from '../shared/themes';
 
-
+// Import project images
 import shelfBanner from '@/images/projects/shelf_vision/shelfvision.png';
 import paperPreview from '@/images/projects/shelf_vision/paperpreview.png';
 import presentationPreview from '@/images/projects/shelf_vision/presentationpreview.png';
 
-const ShelfVisionCard = () => {
-  const [hoveredTech, setHoveredTech] = useState(null);
-
+const ShelfVisionCard = ({ isFocused = false }) => {
   const techs = [
     'Python', 'PyTorch', 'OpenCV',
     'NumPy', 'Pandas', 'Matplotlib', 'scikit-learn'
   ];
 
-    return (
-    <ProjectCard $shelfTheme>
+  const highlights = [
+    'Detects products in crowded retail shelf photos using ResNet-50 and FPN features',
+    'Handles overlapping items with smart anchor matching and IoU-based detection algorithms',
+    'Benchmarked on SKU-110K dataset with comprehensive metrics and YOLOv5 comparisons'
+  ];
+
+  const theme = themes.shelf;
+
+  return (
+    <CardBase theme={true} themeName="shelf" themeColors={theme.colors} isFocused={isFocused}>
       <CardHeader>
         <HeaderTop>
           <ProjectInfo>
-            <ProjectName $shelfTheme>ShelfVision</ProjectName>
+            <ProjectName $themeColors={theme.colors}>ShelfVision</ProjectName>
             <ProjectSubtitle>Dense Shelf Object Detection</ProjectSubtitle>
             <ProjectDate>Jan 2025 – May 2025</ProjectDate>
           </ProjectInfo>
@@ -30,55 +52,28 @@ const ShelfVisionCard = () => {
         </HeaderTop>
 
         <ProjectDescription>
-        A vision model that finds products in crowded retail-shelf photos. Basically scans shelf images, draws boxes for each item, and stays reliable even when things overlap.
+          A vision model that finds products in crowded retail-shelf photos. Basically scans shelf images, draws boxes for each item, and stays reliable even when things overlap.
         </ProjectDescription>
 
-        <Divider $shelfTheme />
+        <Divider $themeColors={theme.colors} />
       </CardHeader>
 
       <CardBody>
-        <SectionLabel $shelfTheme>Tech Stack</SectionLabel>
-        <TechStack>
-          {techs.map((tech) => (
-            <TechPillWrapper
-              key={tech}
-              onMouseEnter={() => setHoveredTech(tech)}
-              onMouseLeave={() => setHoveredTech(null)}
-            >
-              <TechPill $shelfTheme>
-                <TechLogo src={getLogo(tech)} alt={tech} />
-              </TechPill>
-              <Tooltip $visible={hoveredTech === tech} $shelfTheme>
-                {tech}
-              </Tooltip>
-            </TechPillWrapper>
-          ))}
-        </TechStack>
+        <SectionLabel $themeColors={theme.colors}>Tech Stack</SectionLabel>
+        <TechStack techs={techs} themeColors={theme.colors} />
 
-        <SectionLabel style={{ marginTop: '0.75rem' }} $shelfTheme>What It Does</SectionLabel>
-        <HighlightsList>
-          <Highlight $shelfTheme>
-            <HighlightText>Detects products in crowded retail shelf photos using ResNet-50 and FPN features</HighlightText>
-          </Highlight>
-
-          <Highlight $shelfTheme>
-            <HighlightText>Handles overlapping items with smart anchor matching and IoU-based detection algorithms</HighlightText>
-          </Highlight>
-
-          <Highlight $shelfTheme>
-            <HighlightText>Benchmarked on SKU-110K dataset with comprehensive metrics and YOLOv5 comparisons</HighlightText>
-          </Highlight>
-        </HighlightsList>
+        <SectionLabel style={{ marginTop: '0.75rem' }} $themeColors={theme.colors}>What It Does</SectionLabel>
+        <Highlights highlights={highlights} themeColors={theme.colors} />
       </CardBody>
 
       <CardFooter>
-        <Divider $shelfTheme />
+        <Divider $themeColors={theme.colors} />
         
         {/* Resources Grid - LinkedIn style preview cards */}
         <ResourcesGrid>
           {/* Paper PDF Card */}
           <ResourceCard
-            $shelfTheme
+            $themeColors={theme.colors}
             onClick={() => window.open('/projects/shelf_vision/paper.pdf', '_blank')}
           >
             <ResourcePreview $type="paper" $preview={paperPreview}>
@@ -89,7 +84,7 @@ const ShelfVisionCard = () => {
 
           {/* Presentation PDF Card */}
           <ResourceCard
-            $shelfTheme
+            $themeColors={theme.colors}
             onClick={() => window.open('/projects/shelf_vision/presentation.pdf', '_blank')}
           >
             <ResourcePreview $type="presentation" $preview={presentationPreview}>
@@ -100,7 +95,7 @@ const ShelfVisionCard = () => {
 
           {/* GitHub Card */}
           <ResourceCard
-            $shelfTheme
+            $themeColors={theme.colors}
             onClick={() => window.open('https://github.com/KirbysGit/shelfVision', '_blank')}
           >
             <ResourcePreview $type="github">
@@ -114,352 +109,11 @@ const ShelfVisionCard = () => {
           </ResourceCard>
         </ResourcesGrid>
       </CardFooter>
-    </ProjectCard>
+    </CardBase>
   );
 };
 
-/* ========================= THEME: ShelfVision (Cyan CV Theme) ========================= */
-
-const ProjectCard = styled.div`
-  width: 500px;
-  min-height: 640px;
-  position: relative;
-
-  background: ${p => p.$shelfTheme ? `
-    radial-gradient(120% 120% at 100% 0%, rgba(18,24,38,0.92) 0%, rgba(10,13,22,0.95) 40%, rgba(6,10,18,0.98) 100%),
-    linear-gradient(135deg, rgba(34,211,238,0.08), rgba(167,243,208,0.04))
-  ` : `rgba(20,20,20,0.9)`};
-  backdrop-filter: blur(18px) saturate(110%);
-  -webkit-backdrop-filter: blur(18px) saturate(110%);
-
-  border: 1px solid ${p => p.$shelfTheme ? 'rgba(34,211,238,0.35)' : 'rgba(255,255,255,0.08)'};
-  border-radius: 24px;
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.45),
-    inset 0 1px 2px rgba(255,255,255,0.06),
-    0 0 48px ${p => p.$shelfTheme ? 'rgba(34,211,238,0.18)' : 'rgba(0,0,0,0.2)'};
-
-  padding: 2rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-
-  /* subtle grid overlay */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(rgba(34,211,238,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(34,211,238,0.06) 1px, transparent 1px);
-    background-size: 22px 22px, 22px 22px;
-    border-radius: inherit;
-    mask-image: radial-gradient(80% 80% at 50% 50%, black 60%, transparent 100%);
-  }
-
-  /* faint scanlines on hover */
-  &:hover::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      180deg,
-      rgba(34,211,238,0.05) 0px,
-      rgba(34,211,238,0.05) 1px,
-      transparent 2px,
-      transparent 3px
-    );
-    border-radius: inherit;
-    animation: scan 2.4s linear infinite;
-  }
-
-  @keyframes scan {
-    from { background-position-y: 0px; }
-    to { background-position-y: 24px; }
-  }
-
-  &:hover {
-    transform: translateY(-8px);
-    border-color: rgba(34,211,238,0.55);
-    box-shadow:
-      0 16px 48px rgba(0,0,0,0.55),
-      0 0 72px rgba(34,211,238,0.28);
-  }
-
-  @media (max-width: 1200px) {
-    width: 100%;
-    max-width: 500px;
-  }
-`;
-
-const CardHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  position: relative;
-  z-index: 1;
-`;
-
-const HeaderTop = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-`;
-
-const ProjectInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  flex: 1;
-`;
-
-const ProjectName = styled.h3`
-  font-size: 2.4rem;
-  font-weight: 800;
-  margin: 0;
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-  text-shadow: 0 2px 8px rgba(0,0,0,.35);
-  ${p => p.$shelfTheme ? `
-    background: linear-gradient(90deg, rgb(186,230,253), rgb(34,211,238), rgb(167,243,208));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  ` : `color: white;`}
-`;
-
-const ProjectSubtitle = styled.div`
-  font-size: 1.05rem;
-  color: rgba(224, 247, 250, 0.95);
-  font-weight: 600;
-  font-style: italic;
-  margin: 0;
-`;
-
-const ProjectDate = styled.span`
-  font-size: .9rem;
-  color: rgba(203, 213, 225, 0.9);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-`;
-
-const ProjectLogoImage = styled.img`
-  width: 130px;
-  height: auto;
-  border-radius: 12px;
-  object-fit: contain;
-`;
-
-const ProjectDescription = styled.p`
-  font-size: .95rem;
-  line-height: 1.6;
-  color: rgba(241,245,249,0.95);
-  margin: 0;
-  font-weight: 400;
-  text-align: justify;
-`;
-
-const Divider = styled.div`
-  width: 100%;
-  height: 2px;
-  border-radius: 2px;
-  background: ${p => p.$shelfTheme
-    ? 'linear-gradient(90deg, rgba(34,211,238,1), rgba(167,243,208,1))'
-    : 'rgba(255,255,255,0.2)'};
-  box-shadow: ${p => p.$shelfTheme
-    ? '0 0 12px rgba(34,211,238,0.45)'
-    : '0 0 10px rgba(255,255,255,0.18)'};
-  opacity: .85;
-  margin: .5rem 0 .75rem 0;
-`;
-
-const CardBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: .5rem;
-  position: relative;
-  z-index: 1;
-`;
-
-const SectionLabel = styled.div`
-  font-size: .85rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  ${p => p.$shelfTheme ? `
-    background: linear-gradient(90deg, rgb(186,230,253), rgb(34,211,238), rgb(167,243,208));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  ` : `color: rgba(255,255,255,0.92);`}
-`;
-
-const HighlightsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: .7rem;
-`;
-
-const Highlight = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 1rem 1rem 1rem 1.25rem;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-  
-  background: ${p => p.$shelfTheme
-    ? 'linear-gradient(90deg, rgba(34,211,238,0.08) 0%, rgba(167,243,208,0.06) 100%)'
-    : 'rgba(255,255,255,0.06)'};
-  
-  /* Gradient left border */
-  border-left: 4px solid transparent;
-  border-image: ${p => p.$shelfTheme
-    ? 'linear-gradient(180deg, rgb(34, 211, 238) 0%, rgb(167, 243, 208) 100%)'
-    : 'linear-gradient(180deg, rgb(255, 140, 60) 0%, rgb(255, 180, 100) 100%)'
-  };
-  border-image-slice: 1;
-  
-  transition: all .3s ease;
-
-  &:hover {
-    background: ${p => p.$shelfTheme
-      ? 'linear-gradient(90deg, rgba(34,211,238,0.15) 0%, rgba(167,243,208,0.12) 100%)'
-      : 'rgba(255,255,255,0.1)'};
-    transform: translateX(6px);
-    box-shadow: ${p => p.$shelfTheme ? '0 4px 16px rgba(34,211,238,0.25)' : '0 4px 12px rgba(0,0,0,0.25)'};
-    
-    /* Thicker border on hover */
-    border-left-width: 5px;
-  }
-`;
-
-const HighlightIcon = styled.div`
-  font-size: 1.7rem;
-  flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  background: ${p => p.$shelfTheme ? 'rgba(34,211,238,0.16)' : 'rgba(255,255,255,0.1)'};
-  box-shadow: ${p => p.$shelfTheme ? '0 2px 10px rgba(34,211,238,0.25)' : '0 2px 10px rgba(0,0,0,0.2)'};
-  transition: all .3s ease;
-
-  ${Highlight}:hover & {
-    transform: scale(1.1);
-    box-shadow: ${p => p.$shelfTheme ? '0 4px 14px rgba(34,211,238,0.4)' : '0 4px 14px rgba(0,0,0,0.3)'};
-  }
-`;
-
-const HighlightText = styled.p`
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: rgba(241,245,249,0.95);
-  margin: 0;
-  flex: 1;
-  font-weight: 400;
-`;
-
-const TechStack = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: .75rem;
-  align-items: center;
-`;
-
-const TechPillWrapper = styled.div`
-  position: relative;
-  display: inline-block;
-`;
-
-const TechPill = styled.div`
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: .55rem;
-  background: ${p => p.$shelfTheme
-    ? 'linear-gradient(135deg, rgba(250,250,255,1), rgba(236,254,255,0.98))'
-    : 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,250,245,0.98) 50%, rgba(255,245,235,0.95) 100%)'};
-  border: 2px solid ${p => p.$shelfTheme ? 'rgba(34,211,238,0.55)' : 'rgba(255,180,100,0.5)'};
-  box-shadow: ${p => p.$shelfTheme
-    ? '0 2px 8px rgba(34,211,238,0.22), inset 0 1px 2px rgba(255,255,255,.9)'
-    : '0 2px 8px rgba(255,180,100,0.2), inset 0 1px 2px rgba(255,255,255,0.9)'};
-  transition: all .3s cubic-bezier(.4,0,.2,1);
-  cursor: pointer;
-
-  ${TechPillWrapper}:hover & {
-    transform: translateY(-4px) scale(1.08);
-    box-shadow: ${p => p.$shelfTheme
-      ? '0 10px 22px rgba(34,211,238,0.4), inset 0 1px 3px rgba(255,255,255,1)'
-      : '0 8px 20px rgba(255,180,100,0.4), inset 0 1px 3px rgba(255,255,255,1)'};
-    border-color: ${p => p.$shelfTheme ? 'rgba(34,211,238,0.85)' : 'rgba(255,180,100,0.8)'};
-    background: ${p => p.$shelfTheme
-      ? 'linear-gradient(135deg, rgba(255,255,255,1), rgba(236,254,255,1))'
-      : 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,250,245,0.98) 50%, rgba(255,245,235,0.95) 100%)'};
-  }
-`;
-
-const TechLogo = styled.img`
-  width: 150%;
-  height: 150%;
-  object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.12));
-  transition: filter .3s ease;
-
-  ${TechPillWrapper}:hover & {
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
-  }
-`;
-
-const Tooltip = styled.div`
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) ${p => p.$visible ? 'translateY(0)' : 'translateY(4px)'};
-  padding: .45rem .7rem;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(34,211,238,0.95), rgba(8,145,178,0.95));
-  color: white;
-  font-size: .75rem;
-  font-weight: 700;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(34,211,238,0.4), 0 0 0 1px rgba(186,230,253,0.5);
-  opacity: ${p => p.$visible ? 1 : 0};
-  pointer-events: none;
-  transition: all .25s cubic-bezier(.4,0,.2,1);
-  z-index: 1000;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: rgba(34,211,238,0.95);
-  }
-`;
-
-const CardFooter = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-top: 0.5rem;
-  margin-top: auto;
-  position: relative;
-  z-index: 1;
-`;
-
-/* ========================= Resources Grid (LinkedIn-style) ========================= */
+/* ================= ShelfVision-specific Resources Grid ================= */
 
 const ResourcesGrid = styled.div`
   display: grid;
@@ -477,21 +131,16 @@ const ResourceCard = styled.div`
   flex-direction: column;
   border-radius: 10px;
   overflow: hidden;
-  background: ${({ $shelfTheme }) =>
-    $shelfTheme ? 'rgba(34,211,238,0.12)' : 'rgba(255,180,100,0.1)'};
-  border: 1.5px solid ${({ $shelfTheme }) => 
-    $shelfTheme ? 'rgba(34,211,238,0.35)' : 'rgba(255,180,100,0.3)'};
+  background: ${({ $themeColors }) => $themeColors?.resourceBackground || 'rgba(255,180,100,0.1)'};
+  border: 1.5px solid ${({ $themeColors }) => $themeColors?.resourceBorder || 'rgba(255,180,100,0.3)'};
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   
   &:hover {
     transform: translateY(-4px);
-    border-color: ${({ $shelfTheme }) => 
-      $shelfTheme ? 'rgba(34,211,238,0.6)' : 'rgba(255,180,100,0.5)'};
-    box-shadow: ${({ $shelfTheme }) => 
-      $shelfTheme ? '0 6px 20px rgba(34,211,238,0.3)' : '0 6px 20px rgba(255,180,100,0.25)'};
-    background: ${({ $shelfTheme }) =>
-      $shelfTheme ? 'rgba(34,211,238,0.18)' : 'rgba(255,180,100,0.15)'};
+    border-color: ${({ $themeColors }) => $themeColors?.resourceHoverBorder || 'rgba(255,180,100,0.5)'};
+    box-shadow: ${({ $themeColors }) => $themeColors?.resourceHoverShadow || '0 6px 20px rgba(255,180,100,0.25)'};
+    background: ${({ $themeColors }) => $themeColors?.resourceHoverBackground || 'rgba(255,180,100,0.15)'};
   }
 `;
 

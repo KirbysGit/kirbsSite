@@ -10,6 +10,7 @@ import Experience from './components/Experience/Experience';
 import Projects from './components/Projects/Projects';
 import AExperience from './components/Experience/ActualExperience';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
+import Skills from './components/Skills/Skills.jsx';
 
 // App Component.
 function App() {
@@ -26,6 +27,7 @@ function App() {
                 <About />
                 <AExperience />
                 <Projects />
+                <Skills />
               </>
             }
           />

@@ -11,16 +11,25 @@ import ShelfVisionCard from './Cards/ShelfVisionCard';
 import UCFClubManagerCard from './Cards/UCFClubManagerCard';
 import OceanLifeCard from './Cards/OceanLifeCard';
 
+// Import themes for dot styling
+import { themes } from './shared/themes';
+
+// Import Cloud component from Experience
+import Cloud from '../Experience/Cloud';
+
+// Import Sun component
+import Sun from './Sun';
+
 const Projects = () => { 
   const cards = useMemo(
     () => [
-      { id: 'ck', node: <CKSiteCard /> },
-      { id: 'centi', node: <CentiCard /> },
-      { id: 'sec', node: <SecureScapeCard /> },
-      { id: 'sent', node: <SentimentTraderCard /> },
-      { id: 'shelf', node: <ShelfVisionCard /> },
-      { id: 'ucf', node: <UCFClubManagerCard /> },
-      { id: 'ocean', node: <OceanLifeCard /> },
+      { id: 'ck', node: <CKSiteCard />, theme: 'cosmic' },
+      { id: 'centi', node: <CentiCard />, theme: 'centi' },
+      { id: 'sent', node: <SentimentTraderCard />, theme: 'sentiment' },
+      { id: 'sec', node: <SecureScapeCard />, theme: 'secure' },
+      { id: 'shelf', node: <ShelfVisionCard />, theme: 'shelf' },
+      { id: 'ucf', node: <UCFClubManagerCard />, theme: 'ucf' },
+      { id: 'ocean', node: <OceanLifeCard />, theme: 'ocean' },
     ],
     []
   );
@@ -36,7 +45,7 @@ const Projects = () => {
   useEffect(() => {
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
     if (paused || reduced) return;
-    const t = setInterval(next, 15000);
+    const t = setInterval(next, 30000);
     return () => clearInterval(t);
   }, [paused, n]);
 
@@ -83,10 +92,48 @@ const Projects = () => {
         <ProjectsContainer>
             {/* Lower Sky Atmospheric Elements */}
             <AtmosphereLayer>
+                {/* Parallax Cloud Layers - Decreasing frequency from top to bottom */}
+                <CloudLayer>
+                    {/* TOP LAYER - Dense clouds (continuing from Experience) */}
+                    <Cloud top="2%" delay="0" duration="180" layer="far" type={1} />
+                    <Cloud top="8%" delay="60" duration="200" layer="far" type={3} />
+                    <Cloud top="15%" delay="120" duration="190" layer="far" type={2} />
+                    <Cloud top="22%" delay="35" duration="195" layer="far" type={5} />
+                    <Cloud top="28%" delay="90" duration="185" layer="far" type={4} />
+                    
+                    <Cloud top="5%" delay="30" duration="145" layer="mid" type={4} />
+                    <Cloud top="12%" delay="80" duration="140" layer="mid" type={2} />
+                    <Cloud top="18%" delay="15" duration="150" layer="mid" type={5} />
+                    <Cloud top="25%" delay="100" duration="155" layer="mid" type={1} />
+                    
+                    <Cloud top="3%" delay="10" duration="115" layer="near" type={3} />
+                    <Cloud top="10%" delay="55" duration="125" layer="near" type={1} />
+                    <Cloud top="16%" delay="90" duration="120" layer="near" type={4} />
+                    
+                    {/* MID LAYER - Medium density clouds */}
+                    <Cloud top="32%" delay="45" duration="175" layer="far" type={1} />
+                    <Cloud top="38%" delay="105" duration="185" layer="far" type={3} />
+                    <Cloud top="45%" delay="25" duration="180" layer="far" type={2} />
+                    
+                    <Cloud top="35%" delay="70" duration="135" layer="mid" type={4} />
+                    <Cloud top="42%" delay="20" duration="145" layer="mid" type={2} />
+                    
+                    <Cloud top="30%" delay="40" duration="110" layer="near" type={5} />
+                    <Cloud top="40%" delay="85" duration="115" layer="near" type={1} />
+                    
+                    {/* LOWER LAYER - Sparse clouds */}
+                    <Cloud top="52%" delay="15" duration="160" layer="far" type={4} />
+                    <Cloud top="58%" delay="75" duration="170" layer="far" type={1} />
+                    
+                    <Cloud top="50%" delay="50" duration="125" layer="mid" type={3} />
+                    
+                    {/* VERY LOWER LAYER - Minimal clouds (transition to horizon) */}
+                    <Cloud top="65%" delay="30" duration="140" layer="far" type={2} />
+                    <Cloud top="72%" delay="90" duration="150" layer="far" type={5} />
+                </CloudLayer>
+                
                 {/* Sun - positioned like it's at the horizon */}
-                <Sun>
-                    <SunGlow />
-                </Sun>
+                <Sun />
                 
                 {/* Flying birds - scattered across the sky */}
                 <Bird top="20%" left="15%" delay="0s" duration="25s" />
@@ -128,7 +175,7 @@ const Projects = () => {
                   $isFocused={cardStyle.isFocused}
                   $distance={cardStyle.distance}
                 >
-                  {c.node}
+                  {React.cloneElement(c.node, { isFocused: cardStyle.isFocused })}
                 </Slide>
               );
             })}
@@ -138,9 +185,11 @@ const Projects = () => {
           {index < n - 1 && <ArrowRight aria-label="Next project" onClick={next}>›</ArrowRight>}
 
           <Dots>
-            {cards.map((_, i) => (
+            {cards.map((card, i) => (
               <Dot
                 key={i}
+                $theme={card.theme}
+                $isActive={i === index}
                 aria-label={`Go to project ${i + 1}`}
                 aria-selected={i === index}
                 onClick={() => setIndex(i)}
@@ -201,6 +250,18 @@ const AtmosphereLayer = styled.div`
     overflow: hidden;
 `;
 
+// Cloud layer container
+const CloudLayer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+`;
+
 // Content wrapper
 const ContentWrapper = styled.div`
     position: relative;
@@ -212,6 +273,14 @@ const ContentWrapper = styled.div`
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    
+    @media (max-width: 1600px) {
+        padding: 1.5rem;
+    }
+    
+    @media (max-width: 1200px) {
+        padding: 1rem;
+    }
 `;
 
 // Section title
@@ -248,6 +317,17 @@ const SectionSubtitle = styled.h2`
     
     @media (max-width: 1600px) {
         font-size: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: 1.3rem;
+        margin-bottom: 3rem;
+    }
+    
+    @media (max-width: 900px) {
+        font-size: 1.1rem;
+        margin-bottom: 3.5rem;
     }
 `;
 
@@ -258,7 +338,17 @@ const Stage = styled.div`
   padding: 40px 0;
   position: relative;
   overflow: visible;
-    width: 100%;
+  width: 100%;
+  
+  @media (max-width: 1600px) {
+    min-height: 70vh;
+    padding: 30px 0;
+  }
+  
+  @media (max-width: 1200px) {
+    min-height: 60vh;
+    padding: 20px 0;
+  }
 `;
 
 const Track = styled.div`
@@ -267,6 +357,21 @@ const Track = styled.div`
   height: clamp(560px, 70vh, 760px);
   perspective: 1200px;
   overflow: visible;
+  
+  @media (max-width: 1600px) {
+    width: 60vw;
+    height: clamp(500px, 65vh, 700px);
+  }
+  
+  @media (max-width: 1200px) {
+    width: 70vw;
+    height: clamp(450px, 60vh, 650px);
+  }
+  
+  @media (max-width: 900px) {
+    width: 85vw;
+    height: clamp(400px, 55vh, 600px);
+  }
 `;
 
 const Slide = styled.div`
@@ -325,66 +430,6 @@ const Slide = styled.div`
   }
 `;
 
-// Sun with glow effect
-const Sun = styled.div`
-    position: absolute;
-    bottom: 10%;
-    right: 15%;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: radial-gradient(circle at center,
-        rgba(255, 250, 200, 1) 0%,
-        rgba(255, 240, 150, 0.95) 20%,
-        rgba(255, 230, 120, 0.9) 40%,
-        rgba(255, 220, 100, 0.7) 60%,
-        rgba(255, 210, 80, 0.4) 80%,
-        transparent 100%);
-    box-shadow: 
-        0 0 40px rgba(255, 230, 120, 0.6),
-        0 0 80px rgba(255, 220, 100, 0.4),
-        0 0 120px rgba(255, 210, 80, 0.2);
-    animation: sunPulse 8s ease-in-out infinite;
-    
-    @keyframes sunPulse {
-        0%, 100% {
-            transform: scale(1);
-            opacity: 0.9;
-        }
-        50% {
-            transform: scale(1.05);
-            opacity: 1;
-        }
-    }
-`;
-
-// Sun glow layer
-const SunGlow = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200%;
-    height: 200%;
-    border-radius: 50%;
-    background: radial-gradient(circle at center,
-        rgba(255, 240, 150, 0.3) 0%,
-        rgba(255, 230, 120, 0.15) 30%,
-        rgba(255, 220, 100, 0.05) 60%,
-        transparent 100%);
-    animation: glowPulse 6s ease-in-out infinite;
-    
-    @keyframes glowPulse {
-        0%, 100% {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 0.5;
-        }
-        50% {
-            transform: translate(-50%, -50%) scale(1.1);
-            opacity: 0.8;
-        }
-    }
-`;
 
 // Bird animation path
 const fly = keyframes`
@@ -574,15 +619,69 @@ const Dots = styled.div`
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
+  
+  @media (max-width: 1600px) {
+    bottom: 12px;
+  }
+  
+  @media (max-width: 1200px) {
+    bottom: 8px;
+  }
+  
+  @media (max-width: 900px) {
+    bottom: 4px;
+  }
 `;
 
 const Dot = styled.button`
-  width: 8px; height: 8px; border-radius: 999px; border: 0;
-  background: rgba(255,255,255,0.45);
-  transition: width 180ms ease, background 180ms ease;
+  width: 8px; 
+  height: 8px; 
+  border-radius: 999px; 
+  border: 0;
+  background: ${({ $theme }) => {
+    const theme = themes[$theme];
+    return theme?.colors?.pillBackground || 'rgba(255,255,255,0.45)';
+  }};
+  border: 1px solid ${({ $theme }) => {
+    const theme = themes[$theme];
+    return theme?.colors?.pillBorder || 'rgba(255,255,255,0.3)';
+  }};
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  box-shadow: ${({ $theme }) => {
+    const theme = themes[$theme];
+    return theme?.colors?.pillShadow || '0 2px 8px rgba(255,255,255,0.2)';
+  }};
+  
+  &:hover {
+    transform: scale(1.2);
+    background: ${({ $theme }) => {
+      const theme = themes[$theme];
+      return theme?.colors?.pillHoverBackground || 'rgba(255,255,255,0.7)';
+    }};
+    border-color: ${({ $theme }) => {
+      const theme = themes[$theme];
+      return theme?.colors?.pillHoverBorder || 'rgba(255,255,255,0.6)';
+    }};
+    box-shadow: ${({ $theme }) => {
+      const theme = themes[$theme];
+      return theme?.colors?.pillHoverShadow || '0 4px 12px rgba(255,255,255,0.4)';
+    }};
+  }
+  
   &[aria-selected="true"] {
     width: 24px;
-    background: #fff;
+    background: ${({ $theme }) => {
+      const theme = themes[$theme];
+      return theme?.colors?.pillHoverBackground || '#fff';
+    }};
+    border-color: ${({ $theme }) => {
+      const theme = themes[$theme];
+      return theme?.colors?.pillHoverBorder || 'rgba(255,255,255,0.8)';
+    }};
+    box-shadow: ${({ $theme }) => {
+      const theme = themes[$theme];
+      return theme?.colors?.pillHoverShadow || '0 4px 16px rgba(255,255,255,0.5)';
+    }};
   }
 `;
