@@ -4,25 +4,42 @@ import HotAirBalloon from './HotAirBalloon';
 import SkillTower from './SkillTower';
 import { getLogo } from '../Utils/logoMap';
 
-// simple palette buckets
+// Realistic building material palettes
 const palettes = {
-  frontend: { base:"#6EC1FF", mid:"#4A98E6", dark:"#2C6FB5", accent:"#B8E3FF" },
-  backend:  { base:"#FF8B6A", mid:"#D56550", dark:"#A74A3B", accent:"#FFD4C8" },
-  data:     { base:"#C4A3FF", mid:"#9A7CE2", dark:"#6B55B8", accent:"#E7DAFF" },
-  devops:   { base:"#6FD0A5", mid:"#4FAE89", dark:"#2C8B6D", accent:"#BFEAD9" },
-  design:   { base:"#FFC371", mid:"#E39C4F", dark:"#BD6A29", accent:"#FFE1B5" },
-  general:  { base:"#B9C6D2", mid:"#93A2AE", dark:"#71808E", accent:"#E4EBF2" },
+  // Modern glass tower (blue-tinted glass)
+  glass_blue: { base:"#8BA5B8", mid:"#6B8599", dark:"#4A5F6E", accent:"#B5C9D8" },
+  // Sleek steel/aluminum (cool grays)
+  steel: { base:"#A0A8B0", mid:"#7E868E", dark:"#5C646C", accent:"#C8D0D8" },
+  // Concrete high-rise (warm grays)
+  concrete: { base:"#B8B0A8", mid:"#968E86", dark:"#746C64", accent:"#D8D0C8" },
+  // Modern glass tower (greenish tint)
+  glass_green: { base:"#9BB5A8", mid:"#7B9588", dark:"#5B7568", accent:"#BBD5C8" },
+  // Sandstone/beige building
+  sandstone: { base:"#C8B8A0", mid:"#A89880", dark:"#887860", accent:"#E8D8C0" },
+  // Brick building (reddish-brown)
+  brick: { base:"#B89888", mid:"#987868", dark:"#785848", accent:"#D8B8A8" },
+  // Dark modern tower (charcoal)
+  charcoal: { base:"#888890", mid:"#686870", dark:"#484850", accent:"#A8A8B0" },
+  // Limestone/tan building
+  limestone: { base:"#C0B0A0", mid:"#A09080", dark:"#807060", accent:"#E0D0C0" },
 };
 
-// map names → category bucket
-const categoryOf = (name) => {
-  const n = name.toLowerCase();
-  if (["react","javascript","html","css","tailwind","bootstrap","vercel"].some(k=>n.includes(k))) return "frontend";
-  if (["django","fastapi","node","express","postgres","postgresql","aws","docker"].some(k=>n.includes(k))) return "backend";
-  if (["python","pytorch","scikit","xgboost","ml","machine","data","opencv","pandas","numpy"].some(k=>n.includes(k))) return "data";
-  if (["aws","docker","vercel","heroku","railway","nginx"].some(k=>n.includes(k))) return "devops";
-  if (["figma","ui","ux","design"].some(k=>n.includes(k))) return "design";
-  return "general";
+// Map buildings to realistic material types for variety
+const buildingMaterialMap = {
+  "AWS": "charcoal",
+  "PostgreSQL": "glass_blue",
+  "React": "steel",
+  "Django": "concrete",
+  "Python": "glass_green",
+  "FastAPI": "limestone",
+  "Docker": "glass_blue",
+  "JavaScript": "sandstone",
+  "Bootstrap": "brick",
+  "Figma": "steel",
+  "UI / UX Design": "concrete",
+  "Tailwind CSS": "glass_green",
+  "Postman": "sandstone",
+  "Vercel": "charcoal",
 };
 
 // Your requested skills (mix of specific + general). Add/remove freely.
@@ -38,40 +55,31 @@ const SKILLS_INPUT = [
 // utility to create layered skyline config
 const makeLayeredSkyline = (names) => {
   const logoSrc = getLogo;
-  const categoryOf = (name) => {
-    const n = name.toLowerCase();
-    if (["react","javascript","html","css","tailwind","bootstrap","vercel"].some(k=>n.includes(k))) return "frontend";
-    if (["django","fastapi","node","express","postgres","postgresql","aws","docker"].some(k=>n.includes(k))) return "backend";
-    if (["python","pytorch","scikit","xgboost","ml","machine","data","opencv","pandas","numpy"].some(k=>n.includes(k))) return "data";
-    if (["aws","docker","vercel","heroku","railway","nginx"].some(k=>n.includes(k))) return "devops";
-    if (["figma","ui","ux","design"].some(k=>n.includes(k))) return "design";
-    return "general";
-  };
 
-  // BACK layer (tall, muted, distant)
+  // BACK layer (tall skyscrapers in the distance - spread across horizon)
   const backLayer = [
-    { name: "AWS", level: 0.95, depth: 0.35, overlap: 0, w: 88, cap: "crown" },
-    { name: "PostgreSQL", level: 0.9, depth: 0.4, overlap: -18, w: 96, cap: "peak" },
-    { name: "React", level: 0.88, depth: 0.45, overlap: -24, w: 80, cap: "flat" },
-    { name: "Django", level: 0.85, depth: 0.38, overlap: -20, w: 84, cap: "billboard" },
-    { name: "Python", level: 0.92, depth: 0.42, overlap: -22, w: 92, cap: "crown" }
+    { name: "AWS", level: 0.98, depth: 0.35, leftPos: 5, overlap: 0, w: 95, cap: "crown" },
+    { name: "PostgreSQL", level: 0.75, depth: 0.4, leftPos: 18, overlap: 0, w: 155, cap: "flat" },
+    { name: "React", level: 0.92, depth: 0.45, leftPos: 35, overlap: 0, w: 105, cap: "peak" },
+    { name: "Django", level: 0.65, depth: 0.38, leftPos: 52, overlap: 0, w: 135, cap: "billboard" },
+    { name: "Python", level: 0.88, depth: 0.42, leftPos: 72, overlap: 0, w: 115, cap: "crown" }
   ];
 
-  // MID layer (medium height, moderate depth)
+  // MID layer (medium height, moderate depth - interspersed positions)
   const midLayer = [
-    { name: "FastAPI", level: 0.78, depth: 0.65, overlap: -36, w: 72, cap: "flat" },
-    { name: "Docker", level: 0.7, depth: 0.68, overlap: -28, w: 68, cap: "peak" },
-    { name: "JavaScript", level: 0.75, depth: 0.62, overlap: -32, w: 76, cap: "billboard" },
-    { name: "Bootstrap", level: 0.72, depth: 0.7, overlap: -30, w: 74, cap: "flat" }
+    { name: "FastAPI", level: 0.82, depth: 0.65, leftPos: 12, overlap: 0, w: 100, cap: "peak" },
+    { name: "Docker", level: 0.58, depth: 0.68, leftPos: 28, overlap: 0, w: 120, cap: "flat" },
+    { name: "JavaScript", level: 0.76, depth: 0.62, leftPos: 45, overlap: 0, w: 92, cap: "billboard" },
+    { name: "Bootstrap", level: 0.48, depth: 0.7, leftPos: 64, overlap: 0, w: 135, cap: "flat" }
   ];
 
-  // FRONT layer (shorter, in-your-face)
+  // FRONT layer (foreground buildings - strategically placed in front)
   const frontLayer = [
-    { name: "Figma", level: 0.5, depth: 0.92, overlap: -52, w: 64, cap: "crown" },
-    { name: "UI / UX Design", level: 0.46, depth: 0.95, overlap: -46, w: 60, cap: "flat" },
-    { name: "Tailwind CSS", level: 0.42, depth: 0.98, overlap: -54, w: 66, cap: "peak" },
-    { name: "Postman", level: 0.48, depth: 0.88, overlap: -44, w: 62, cap: "billboard" },
-    { name: "Vercel", level: 0.44, depth: 0.9, overlap: -48, w: 58, cap: "flat" }
+    { name: "Figma", level: 0.62, depth: 0.92, leftPos: 8, overlap: 0, w: 85, cap: "crown" },
+    { name: "UI / UX Design", level: 0.35, depth: 0.95, leftPos: 22, overlap: 0, w: 105, cap: "flat" },
+    { name: "Tailwind CSS", level: 0.55, depth: 0.98, leftPos: 38, overlap: 0, w: 90, cap: "peak" },
+    { name: "Postman", level: 0.42, depth: 0.88, leftPos: 55, overlap: 0, w: 100, cap: "flat" },
+    { name: "Vercel", level: 0.68, depth: 0.9, leftPos: 75, overlap: 0, w: 80, cap: "billboard" }
   ];
 
   // Combine all layers
@@ -79,8 +87,8 @@ const makeLayeredSkyline = (names) => {
   
   return allBuildings.map((building) => {
     const logoSrc = getLogo(building.name);
-    const category = categoryOf(building.name);
-    const palette = palettes[category];
+    const material = buildingMaterialMap[building.name] || "steel"; // default to steel if not mapped
+    const palette = palettes[material];
     
     return {
       ...building,
@@ -122,6 +130,7 @@ const Skills = () => {
                         overlap={b.overlap}
                         depth={b.depth}
                         cap={b.cap}
+                        leftPos={b.leftPos}
                     />
                 ))}
             </SkylineRow>
@@ -331,15 +340,11 @@ const SkylineRow = styled.div`
   position: absolute;
   bottom: 22%;
   left: 0;
-  width: 70%;
-  display: flex;
-  align-items: flex-end;
-
-  /* This keeps the very first building anchored, and
-     subsequent ones overlap left via their own margin-left */
-  padding-left: 2rem;
+  width: 50%;  /* Match sidewalk width */
+  height: 850px;  /* Tall enough for scaled-up buildings */
+  
+  /* Buildings position themselves absolutely within this container */
   z-index: 3;
-
 `;
 
 // Grassy base layer for buildings with perspective

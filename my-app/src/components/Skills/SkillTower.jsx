@@ -11,12 +11,13 @@ export default function SkillTower({
   overlap = 0,   // e.g. -20 to overlap the next tower a bit
   depth = 1,     // 0..1 (0 = far/back, 1 = front)
   w = 76,        // width override
-  cap = "flat"   // "flat" | "crown" | "peak" | "billboard"
+  cap = "flat",  // "flat" | "crown" | "peak" | "billboard"
+  leftPos = 0    // horizontal position as percentage of parent width (0-100)
 }) {
   const id = useId();
 
-  // proportions
-  const H = Math.round(clamp(80, 500, 140 + level * 140));
+  // proportions - scaled up for prominence
+  const H = Math.round(clamp(120, 650, 200 + level * 280));
   const W = w;
   const SIDE = 10;
   const FACE_W = W - SIDE;
@@ -28,7 +29,7 @@ export default function SkillTower({
   const faceH = H;           // height of main face
 
   // ----- WINDOW GRID (CENTERED) -----
-  const cellW = 8, cellH = 12, gapX = 6, gapY = 6;
+  const cellW = 11, cellH = 16, gapX = 8, gapY = 8;
   const cols = Math.floor((faceW + gapX) / (cellW + gapX));
   const rows = Math.floor((faceH + gapY) / (cellH + gapY));
 
@@ -73,6 +74,7 @@ export default function SkillTower({
       $brightness={brightness}
       $saturation={saturation}
       $blur={blur}
+      $leftPos={leftPos}
     >
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${name} building`}>
         <defs>
@@ -89,16 +91,31 @@ export default function SkillTower({
             <stop offset="60%" stopColor="rgba(0,0,0,0)" />
           </linearGradient>
           <linearGradient id={`${id}-sheen`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(255,255,255,.22)" />
-            <stop offset="55%" stopColor="rgba(255,255,255,.05)" />
+            <stop offset="0%" stopColor="rgba(255,255,255,.12)" />
+            <stop offset="55%" stopColor="rgba(255,255,255,.03)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </linearGradient>
+          <linearGradient id={`${id}-winEdge`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stopColor="rgba(255,255,255,0.0)"/>
+            <stop offset="60%"  stopColor="rgba(255,255,255,0.55)"/>
+            <stop offset="100%" stopColor="rgba(255,255,255,0.85)"/>
+          </linearGradient>
+          <linearGradient id={`${id}-winStripe`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="rgba(255,255,255,0.7)"/>
+            <stop offset="100%" stopColor="rgba(255,255,255,0.0)"/>
+          </linearGradient>
+          {/* thin building rim highlight at the RIGHT edge */}
+          <linearGradient id={`${id}-sunRimRight`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stopColor="rgba(255,255,255,0.0)"/>
+            <stop offset="100%" stopColor="rgba(255,255,255,0.45)"/>
           </linearGradient>
         </defs>
 
-        {/* LEFT side face (thin) */}
+        {/* LEFT side face (thin) - shadowed side */}
         <polygon
           points={`2,4 ${SIDE},0 ${SIDE},${H} 2,${H - 2}`}
           fill={`url(#${id}-side)`}
+          opacity="0.9"
         />
 
         {/* MAIN face */}
@@ -107,18 +124,74 @@ export default function SkillTower({
         {/* edge ambient-occlusion on main face */}
         <rect x={faceX} y="0" width="6" height={H} fill={`url(#${id}-edgeAO)`} />
 
+        {/* right rim highlight (sun on the right) */}
+        <rect
+          x={faceX + faceW - 8}
+          y="0"
+          width="8"
+          height={H}
+          fill={`url(#${id}-sunRimRight)`}
+          style={{ mixBlendMode: 'screen' }}
+        />
+
         {/* WINDOWS (centered) */}
         <g shapeRendering="crispEdges">
           {Array.from({ length: rows }).map((_, r) =>
             Array.from({ length: cols }).map((__, c) => {
               const idx = r * cols + c;
+
+              // positions
               const x = originX + c * (cellW + gapX);
               const y = originY + r * (cellH + gapY);
-              const fill = lit.has(idx)
-                ? "rgba(255,238,170,.95)"
-                : "rgba(210,230,255,.22)";
+
+              // base glass vs lit
+              const isLit = lit.has(idx);
+
+              // sun-right glare factor: stronger toward RIGHT and TOP
+              const colT = cols > 1 ? c / (cols - 1) : 0;      // 0 = left, 1 = right
+              const rowT = rows > 1 ? 1 - r / (rows - 1) : 1;  // 0 = bottom, 1 = top
+              const glare = Math.min(1, 0.15 + 0.8 * colT * (0.6 + 0.4 * rowT));
+
+              // tiny deterministic jitter so stripes don't align perfectly
+              const jitter = ((idx * 16807) % 100) / 100; // 0..1
+
               return (
-                <rect key={`${r}-${c}`} x={x} y={y} width={cellW} height={cellH} rx="1" ry="1" fill={fill} />
+                <g key={`${r}-${c}`}>
+                  {/* base glass */}
+                  <rect
+                    x={x} y={y} width={cellW} height={cellH} rx="1" ry="1"
+                    fill={`rgba(30,45,70,${0.28 + 0.18 * (1 - glare)})`}
+                  />
+
+                  {/* warm interior light (washed slightly by glare) */}
+                  {isLit && (
+                    <rect
+                      x={x + 1} y={y + 1} width={cellW - 2} height={cellH - 2} rx="1" ry="1"
+                      fill="rgba(255,230,150,0.85)"
+                      style={{ mixBlendMode: 'screen', opacity: 0.85 - glare * 0.35 }}
+                    />
+                  )}
+
+                  {/* right-edge specular rim */}
+                  <rect
+                    x={x + cellW * 0.55} y={y + 1}
+                    width={cellW * 0.40} height={cellH - 2}
+                    fill={`url(#${id}-winEdge)`}
+                    style={{ mixBlendMode: 'screen', opacity: 0.55 * glare }}
+                  />
+
+                  {/* diagonal glint band (top-right -> bottom-left) */}
+                  <polygon
+                    points={[
+                      `${x + cellW * (0.85 - 0.1 * jitter)},${y + cellH * (0.20 + 0.05 * jitter)}`,
+                      `${x + cellW * (1.05 - 0.1 * jitter)},${y + cellH * (0.25 + 0.05 * jitter)}`,
+                      `${x + cellW * (0.25 - 0.05 * jitter)},${y + cellH * (0.60 + 0.06 * jitter)}`,
+                      `${x + cellW * (0.05 - 0.05 * jitter)},${y + cellH * (0.65 + 0.06 * jitter)}`
+                    ].join(' ')}
+                    fill={`url(#${id}-winStripe)`}
+                    style={{ mixBlendMode: 'screen', opacity: 0.35 * glare }}
+                  />
+                </g>
               );
             })
           )}
@@ -134,26 +207,26 @@ export default function SkillTower({
         {/* logo plaque */}
         {!!logoSrc && (
           <g>
-            <rect x={faceX + faceW/2 - 18} y="12" width="36" height="20" rx="4" fill="rgba(255,255,255,.9)"/>
-            <image href={logoSrc} x={faceX + faceW/2 - 14} y="15" width="28" height="14" preserveAspectRatio="xMidYMid meet"/>
+            <rect x={faceX + faceW/2 - 26} y="16" width="52" height="28" rx="5" fill="rgba(255,255,255,.9)"/>
+            <image href={logoSrc} x={faceX + faceW/2 - 20} y="20" width="40" height="20" preserveAspectRatio="xMidYMid meet"/>
           </g>
         )}
 
         {/* cap variants for silhouette variety */}
         {cap === "crown" && (
           <polygon
-            points={`${faceX + faceW/2 - 8},0 ${faceX + faceW/2},-12 ${faceX + faceW/2 + 8},0`}
+            points={`${faceX + faceW/2 - 12},0 ${faceX + faceW/2},-18 ${faceX + faceW/2 + 12},0`}
             fill={palette.accent}
           />
         )}
         {cap === "peak" && (
           <polygon
-            points={`${faceX + faceW/2 - 12},0 ${faceX + faceW/2},-16 ${faceX + faceW/2 + 12},0`}
+            points={`${faceX + faceW/2 - 18},0 ${faceX + faceW/2},-24 ${faceX + faceW/2 + 18},0`}
             fill={palette.mid}
           />
         )}
         {cap === "billboard" && (
-          <rect x={faceX + faceW/2 - 16} y="-8" width="32" height="8" rx="2" fill={palette.dark} />
+          <rect x={faceX + faceW/2 - 24} y="-12" width="48" height="12" rx="3" fill={palette.dark} />
         )}
 
         {/* hairline for crisper edges */}
@@ -167,12 +240,14 @@ export default function SkillTower({
 /* ---------- styled ---------- */
 
 const Wrap = styled.div`
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: ${({ $leftPos }) => $leftPos}%;
   display: flex;
   align-items: center;
   height: var(--h);
 
-  /* overlap control */
+  /* overlap control (fine-tuning) */
   margin-left: ${({ $overlap }) => ($overlap ? `${$overlap}px` : "0")};
 
   /* depth look */
