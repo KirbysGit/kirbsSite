@@ -16,6 +16,8 @@ import postgresqlLogo from '@/images/logos/postgresql.png';
 import pythonLogo from '@/images/logos/python.png';
 import railwayLogo from '@/images/logos/railway.png';
 import reactLogo from '@/images/logos/react.png';
+import javaLogo from '@/images/logos/java.png';
+import cPlusPlusLogo from '@/images/logos/c++.png';
 import vercelLogo from '@/images/logos/vercel.png';
 import websocketsLogo from '@/images/logos/websockets.png';
 
@@ -82,6 +84,8 @@ const logoMap = {
     'React': reactLogo,
     'Vercel': vercelLogo,
     'WebSockets': websocketsLogo,
+    'Java': javaLogo,
+    'C++': cPlusPlusLogo,
     
     // SecureScape Technologies
     'ESP32-CAM': esp32Logo,

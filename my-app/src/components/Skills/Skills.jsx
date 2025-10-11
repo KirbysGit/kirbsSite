@@ -3,92 +3,18 @@ import styled, { keyframes } from 'styled-components';
 import HotAirBalloon from './HotAirBalloon';
 import SkillTower from './SkillTower';
 import { getLogo } from '../Utils/logoMap';
-
-// Realistic building material palettes
-const palettes = {
-  // Modern glass tower (blue-tinted glass)
-  glass_blue: { base:"#8BA5B8", mid:"#6B8599", dark:"#4A5F6E", accent:"#B5C9D8" },
-  // Sleek steel/aluminum (cool grays)
-  steel: { base:"#A0A8B0", mid:"#7E868E", dark:"#5C646C", accent:"#C8D0D8" },
-  // Concrete high-rise (warm grays)
-  concrete: { base:"#B8B0A8", mid:"#968E86", dark:"#746C64", accent:"#D8D0C8" },
-  // Modern glass tower (greenish tint)
-  glass_green: { base:"#9BB5A8", mid:"#7B9588", dark:"#5B7568", accent:"#BBD5C8" },
-  // Sandstone/beige building
-  sandstone: { base:"#C8B8A0", mid:"#A89880", dark:"#887860", accent:"#E8D8C0" },
-  // Brick building (reddish-brown)
-  brick: { base:"#B89888", mid:"#987868", dark:"#785848", accent:"#D8B8A8" },
-  // Dark modern tower (charcoal)
-  charcoal: { base:"#888890", mid:"#686870", dark:"#484850", accent:"#A8A8B0" },
-  // Limestone/tan building
-  limestone: { base:"#C0B0A0", mid:"#A09080", dark:"#807060", accent:"#E0D0C0" },
-};
-
-// Map buildings to realistic material types for variety
-const buildingMaterialMap = {
-  "AWS": "charcoal",
-  "PostgreSQL": "glass_blue",
-  "React": "steel",
-  "Django": "concrete",
-  "Python": "glass_green",
-  "FastAPI": "limestone",
-  "Docker": "glass_blue",
-  "JavaScript": "sandstone",
-  "Bootstrap": "brick",
-  "Figma": "steel",
-  "UI / UX Design": "concrete",
-  "Tailwind CSS": "glass_green",
-  "Postman": "sandstone",
-  "Vercel": "charcoal",
-};
-
-// Your requested skills (mix of specific + general). Add/remove freely.
-const SKILLS_INPUT = [
-  "Python", "JavaScript", "React",
-  "PostgreSQL", "AWS", "FastAPI",
-  "Flutter", "Postman", "Tailwind CSS",
-  "Bootstrap", "Vercel", "Django",
-  // optional "general" ones (no logo needed, still look good):
-  "UI / UX Design", "Data Modeling", "Machine Learning"
-];
+import { 
+  buildingPalettes, 
+  buildingMaterialMap, 
+  buildings
+} from './skylineConfig';
 
 // utility to create layered skyline config
-const makeLayeredSkyline = (names) => {
-  const logoSrc = getLogo;
-
-  // BACK layer (tall skyscrapers in the distance - spread across horizon)
-  const backLayer = [
-    { name: "AWS", level: 0.98, depth: 0.35, leftPos: 5, overlap: 0, w: 95, cap: "crown" },
-    { name: "PostgreSQL", level: 0.75, depth: 0.4, leftPos: 18, overlap: 0, w: 155, cap: "flat" },
-    { name: "React", level: 0.92, depth: 0.45, leftPos: 35, overlap: 0, w: 105, cap: "peak" },
-    { name: "Django", level: 0.65, depth: 0.38, leftPos: 52, overlap: 0, w: 135, cap: "billboard" },
-    { name: "Python", level: 0.88, depth: 0.42, leftPos: 72, overlap: 0, w: 115, cap: "crown" }
-  ];
-
-  // MID layer (medium height, moderate depth - interspersed positions)
-  const midLayer = [
-    { name: "FastAPI", level: 0.82, depth: 0.65, leftPos: 12, overlap: 0, w: 100, cap: "peak" },
-    { name: "Docker", level: 0.58, depth: 0.68, leftPos: 28, overlap: 0, w: 120, cap: "flat" },
-    { name: "JavaScript", level: 0.76, depth: 0.62, leftPos: 45, overlap: 0, w: 92, cap: "billboard" },
-    { name: "Bootstrap", level: 0.48, depth: 0.7, leftPos: 64, overlap: 0, w: 135, cap: "flat" }
-  ];
-
-  // FRONT layer (foreground buildings - strategically placed in front)
-  const frontLayer = [
-    { name: "Figma", level: 0.62, depth: 0.92, leftPos: 8, overlap: 0, w: 85, cap: "crown" },
-    { name: "UI / UX Design", level: 0.35, depth: 0.95, leftPos: 22, overlap: 0, w: 105, cap: "flat" },
-    { name: "Tailwind CSS", level: 0.55, depth: 0.98, leftPos: 38, overlap: 0, w: 90, cap: "peak" },
-    { name: "Postman", level: 0.42, depth: 0.88, leftPos: 55, overlap: 0, w: 100, cap: "flat" },
-    { name: "Vercel", level: 0.68, depth: 0.9, leftPos: 75, overlap: 0, w: 80, cap: "billboard" }
-  ];
-
-  // Combine all layers
-  const allBuildings = [...backLayer, ...midLayer, ...frontLayer];
-  
-  return allBuildings.map((building) => {
+const makeLayeredSkyline = () => {
+  return buildings.map((building) => {
     const logoSrc = getLogo(building.name);
     const material = buildingMaterialMap[building.name] || "steel"; // default to steel if not mapped
-    const palette = palettes[material];
+    const palette = buildingPalettes[material];
     
     return {
       ...building,
@@ -99,7 +25,7 @@ const makeLayeredSkyline = (names) => {
 };
 
 const Skills = () => {
-    const skyline = makeLayeredSkyline(SKILLS_INPUT);
+    const skyline = makeLayeredSkyline();
 
     return (
         <SkillsContainer>
@@ -127,7 +53,6 @@ const Skills = () => {
                         level={b.level}
                         palette={b.palette}
                         w={b.w}
-                        overlap={b.overlap}
                         depth={b.depth}
                         cap={b.cap}
                         leftPos={b.leftPos}
@@ -291,7 +216,7 @@ const Road = styled.div`
     position: absolute;
     bottom: 16%;
     left: 0;
-    width: 50%;
+    width: 59.75%;
     height: 3rem;
     z-index: 2;
 
@@ -340,8 +265,9 @@ const SkylineRow = styled.div`
   position: absolute;
   bottom: 22%;
   left: 0;
-  width: 50%;  /* Match sidewalk width */
-  height: 850px;  /* Tall enough for scaled-up buildings */
+  width: 60%;  /* Match sidewalk width */
+  height: 600px;  /* Tall enough for scaled-up buildings */
+  border: 2px solid red;
   
   /* Buildings position themselves absolutely within this container */
   z-index: 3;
@@ -349,11 +275,10 @@ const SkylineRow = styled.div`
 
 // Grassy base layer for buildings with perspective
 const GrassyBase = styled.div`
-    border: 2px solid blue;
     position: absolute;
     bottom: 8%;
     left: 0;
-    width: 55%;
+    width: 63.75%;
     height: 4rem;
     z-index: 1;
 
@@ -404,7 +329,7 @@ const UpperSidewalk = styled.div`
     position: absolute;
     bottom: 20%;
     left: 0;
-    width: 50%;
+    width: 60%;
     height: 1.25rem;
     z-index: 4;
 
@@ -453,7 +378,7 @@ const LowerSidewalk = styled.div`
     position: absolute;
     bottom: 13.5%;
     left: 0;
-    width: 50%;
+    width: 60%;
     height: 1.75rem;
     z-index: 2;
 
