@@ -166,7 +166,11 @@ const Skills = () => {
             {/* Grassy Base Layer - left side only */}
             <GrassyBase />
             
+            {/* Ocean rail at bottom of grass */}
+            <OceanRail />
             
+            {/* Ocean wall below rail - water starts in Background section */}
+            <OceanWall />
             
         </SkillsContainer>
     );
@@ -176,11 +180,12 @@ export default Skills;
 
 /* ================= Styles ================= */
 
-// Main container - bright blue sky with grassy base
+// Main container - bright blue sky with grassy base and ocean
 const SkillsContainer = styled.div`
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow-x: hidden;
     
     /* Smooth transition from Projects ending to bright sky with grassy base */
     background: linear-gradient(to bottom,
@@ -308,7 +313,7 @@ const SectionSubtitle = styled.h2`
 // Road below sidewalk with perspective
 const Road = styled.div`
     position: absolute;
-    bottom: 11%;
+    bottom: 12%;
     left: 0;
     width: 120%;
     height: 3rem;
@@ -417,14 +422,14 @@ const BuildingFoundation = styled.div`
   }
 `;
 
-// Grassy base layer for buildings with perspective
+// Grassy base layer for buildings with perspective (shrunk for ocean)
 const GrassyBase = styled.div`
     position: absolute;
-    bottom: 0%;
+    bottom: 7.5%;
     left: 0;
     width: 120%;
-    height: 8rem;
-    z-index: 1;
+    height: 4rem;
+    z-index: 4;
 
     transform: translateX(-7.5%);
     
@@ -706,10 +711,10 @@ const RippleLayer = styled.div`
 const BridgeRail = styled.div`
   position: absolute;
   right: 0%;
-  bottom: 17.5%;
+  bottom: 17%;
   width: 50%;
   height: 1.5rem;
-  z-index: 2;
+  z-index: 1;
 
   /* posts */
   background:
@@ -794,5 +799,96 @@ const PSNote = styled.p`
       0 2px 4px rgba(0, 0, 0, 0.7),
       0 4px 8px rgba(0, 0, 0, 0.5),
       0 0 20px rgba(0, 0, 0, 0.4);
+  }
+`;
+
+// Ocean rail at bottom of grassy area
+const OceanRail = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: 7.5%;
+  width: 100%;
+  height: 1.5rem;
+  z-index: 4;
+
+  /* posts - same style as bridge rail */
+  background:
+    repeating-linear-gradient(
+      90deg, 
+      transparent 0 16px,
+      rgba(85,85,90,.95) 16px 20px
+    );
+
+  /* two rails */
+  &::after {
+    content:'';
+    position: absolute;
+    left: 0; right: 0;
+    top: 3px;
+    height: 3px;
+    background: #6b6b70;
+    box-shadow: 0 9px 0 #6b6b70; /* lower rail */
+  }
+`;
+
+// Stone/concrete ocean wall below rail
+const OceanWall = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: 0%;
+  width: 100%;
+  height: 10%;
+  z-index: 3;
+  
+  /* Stone texture base with gradient - fully opaque */
+  background: 
+    linear-gradient(to bottom,
+      rgb(80, 90, 95) 0%,
+      rgb(70, 80, 85) 20%,
+      rgb(60, 70, 75) 40%,
+      rgb(50, 60, 70) 60%,
+      rgb(40, 55, 65) 80%,
+      rgb(35, 50, 60) 100%
+    );
+  
+  /* Stone block pattern */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      /* Horizontal mortar lines */
+      repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 40px,
+        rgba(30, 30, 35, 0.5) 40px,
+        rgba(30, 30, 35, 0.5) 43px
+      ),
+      /* Vertical mortar lines */
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 90px,
+        rgba(30, 30, 35, 0.4) 90px,
+        rgba(30, 30, 35, 0.4) 93px
+      );
+    opacity: 1;
+    mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+  }
+  
+  /* Stone texture detail */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.12) 0%, transparent 4%),
+      radial-gradient(circle at 45% 35%, rgba(255,255,255,0.08) 0%, transparent 3%),
+      radial-gradient(circle at 70% 55%, rgba(255,255,255,0.1) 0%, transparent 3.5%),
+      radial-gradient(circle at 30% 70%, rgba(0,0,0,0.15) 0%, transparent 4%),
+      radial-gradient(circle at 85% 25%, rgba(0,0,0,0.12) 0%, transparent 3%),
+      radial-gradient(circle at 60% 85%, rgba(255,255,255,0.09) 0%, transparent 3%);
+    opacity: 0.7;
   }
 `;
