@@ -63,6 +63,12 @@ import githubLogo from '@/images/logos/github.png';
 import linkedinLogo from '@/images/logos/linkedin.png';
 import instagramLogo from '@/images/logos/instagram.png';
 
+// Design & Productivity Tools
+import gitLogo from '@/images/logos/git.png';
+import canvaLogo from '@/images/logos/canva.png';
+import figmaLogo from '@/images/logos/figma.png';
+import msofficeLogo from '@/images/logos/msoffice.png';
+
 
 const logoMap = {
     // Technologies - Web/Cloud
@@ -127,7 +133,13 @@ const logoMap = {
     // Social Media
     'GitHub': githubLogo,
     'LinkedIn': linkedinLogo,
-    'Instagram': instagramLogo
+    'Instagram': instagramLogo,
+    
+    // Design & Productivity Tools
+    'Git': gitLogo,
+    'Canva': canvaLogo,
+    'Figma': figmaLogo,
+    'MS Office': msofficeLogo
 
 };
 
