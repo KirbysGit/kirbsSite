@@ -425,10 +425,10 @@ const BuildingFoundation = styled.div`
 // Grassy base layer for buildings with perspective (shrunk for ocean)
 const GrassyBase = styled.div`
     position: absolute;
-    bottom: 7.5%;
+    bottom: 7%;
     left: 0;
     width: 120%;
-    height: 4rem;
+    height: 2rem;
     z-index: 4;
 
     transform: translateX(-7.5%);
@@ -589,10 +589,10 @@ const UpperSidewalk = styled.div`
 // Lower Sidewalk (below road) with perspective
 const LowerSidewalk = styled.div`
     position: absolute;
-    bottom: 8.5%;
+    bottom: 10%;
     left: 0;
     width: 110%;
-    height: 1.75rem;
+    height: 1.25rem;
     z-index: 2;
 
     transform: translateX(-5.5%);
@@ -806,7 +806,7 @@ const PSNote = styled.p`
 const OceanRail = styled.div`
   position: absolute;
   left: 0;
-  bottom: 7.5%;
+  bottom: 7%;
   width: 100%;
   height: 1.5rem;
   z-index: 4;
