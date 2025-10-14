@@ -1,14 +1,19 @@
-// Imports.
+// hero.jsx
+
+// main hero component upon load.
+// idea is to introduce me, create a smooth animation welcome, and an invitation to scroll down.
+// starting off with the space theme and moving downwards.
+
+// imports.
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-// Style 4 Hero.
 const Hero = () => {
     return (
         <HeroContainer>
             <ParticleField>
-                {/* Steady stars - most of the field */}
+                {/* steady starts (non-moving) */}
                 <Star top="8%" left="12%" animation="steady" duration="0" opacity="0.4" size="1px" />
                 <Star top="22%" left="88%" animation="steady" duration="0" opacity="0.3" size="1px" />
                 <Star top="38%" left="28%" animation="steady" duration="0" opacity="0.5" size="1px" />
@@ -25,7 +30,7 @@ const Hero = () => {
                 <Star top="28%" left="3%" animation="steady" duration="0" opacity="0.4" size="1px" />
                 <Star top="72%" left="85%" animation="steady" duration="0" opacity="0.5" size="1px" />
                 
-                {/* Occasional twinklers - the stars that catch your eye */}
+                {/* starts that occassionally twinkle (wanted to make them look more realistic and catch the user's eye) */}
                 <Star top="15%" left="25%" animation="twinkle1" duration="23.7" opacity="0.6" size="2px" />
                 <Star top="45%" left="65%" animation="twinkle2" duration="31.2" opacity="0.7" size="1px" />
                 <Star top="75%" left="35%" animation="twinkle3" duration="18.9" opacity="0.8" size="2px" />
@@ -39,7 +44,7 @@ const Hero = () => {
                 <Star top="42%" left="88%" animation="twinkle5" duration="33.4" opacity="0.6" size="1px" />
                 <Star top="68%" left="12%" animation="twinkle6" duration="21.8" opacity="0.7" size="2px" />
                 
-                {/* Moon */}
+                {/* moon (want to add a guy on it, or like an alien) */}
                 <Moon>
                     <Crater1 />
                     <Crater2 />
@@ -47,6 +52,8 @@ const Hero = () => {
                     <Crater4 />
                 </Moon>
             </ParticleField>
+
+            {/* original messages upon load */}
             <Msgs>
                 <SupMsg
                     initial={{ x: -500, opacity: 0 }}

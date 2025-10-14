@@ -69,13 +69,24 @@ const Background = () => {
                                     
                                     <ClubsSection>
                                         <ClubsLabel>Clubs & Organizations</ClubsLabel>
-                                        <ClubsGrid>
-                                            <ClubLogo src={shpeLogo} alt="SHPE" title="Society of Hispanic Professional Engineers" />
-                                            <ClubLogo src={knightHacksLogo} alt="Knight Hacks" title="Knight Hacks" />
-                                            <ClubLogo src={aiUcfLogo} alt="AI @ UCF" title="AI @ UCF" />
-                                            <ClubLogo src={ieeeLogo} alt="IEEE" title="Institute of Electrical and Electronics Engineers" />
-                                            <ClubLogo src={acmLogo} alt="ACM" title="Association for Computing Machinery" />
-                                        </ClubsGrid>
+                                        <ClubsList>
+                                            <ClubItem>
+                                                <ClubLogo src={shpeLogo} alt="SHPE" />
+                                                <ClubName>SHPE</ClubName>
+                                            </ClubItem>
+                                            <ClubItem>
+                                                <ClubLogo src={knightHacksLogo} alt="Knight Hacks" />
+                                                <ClubName>Knight Hacks</ClubName>
+                                            </ClubItem>
+                                            <ClubItem>
+                                                <ClubLogo src={aiUcfLogo} alt="AI @ UCF" />
+                                                <ClubName>AI @ UCF</ClubName>
+                                            </ClubItem>
+                                            <ClubItem>
+                                                <ClubLogo src={acmLogo} alt="ACM" />
+                                                <ClubName>ACM</ClubName>
+                                            </ClubItem>
+                                        </ClubsList>
                                     </ClubsSection>
                                 </EducationContent>
                             </GlassCard>
@@ -92,28 +103,20 @@ const Background = () => {
                                 />
                                 
                                 <CardTitle>Always Active</CardTitle>
-                                <CardText>
-                                    Grew up playing basketball <SportEmoji>🏀</SportEmoji>, football <SportEmoji>🏈</SportEmoji>, baseball <SportEmoji>⚾</SportEmoji>, and lacrosse <SportEmoji>🥍</SportEmoji>. Rowed <SportEmoji>🚣</SportEmoji> competitively in high school.
-                                    <br /><br />
-                                    Started lifting <SportEmoji>🏋️</SportEmoji> in college to manage my stress and stay grounded. Now I rotate between the gym, skateboarding <SportEmoji>🛹</SportEmoji>, golf <SportEmoji>⛳</SportEmoji>.
+                                <CardText style={{ padding: '0rem 1.5rem', fontSize: '1.05rem' }}>
+                                    Grew up playing basketball, football, baseball, and lacrosse. Rowed competitively in high school. Started lifting in college to manage stress and stay grounded. Now I rotate between the gym, skateboarding, and golf.
                                 </CardText>
-                            </GlassCard>
-                            
-                            <GlassCard>
-                                <ReactionBubble 
-                                    emoji="🌴" 
-                                    side="left" 
-                                    size={68}
-                                    color="#9C27B0"
-                                    top="-1.5rem"
-                                    horizontalOffset="-1rem"
-                                />
                                 
-                                <CardTitle>Orlando Local</CardTitle>
-                                <CardText>
-                                    <CardHighlight>Florida Living</CardHighlight>
-                                    Based in sunny Orlando. Perfect weather for staying active year-round and enjoying the outdoor lifestyle.
-                                </CardText>
+                                <EmojiRow aria-hidden="true">
+                                    <Emoji title="Basketball">🏀</Emoji>
+                                    <Emoji title="Football">🏈</Emoji>
+                                    <Emoji title="Baseball">⚾</Emoji>
+                                    <Emoji title="Lacrosse">🥍</Emoji>
+                                    <Emoji title="Rowing">🚣</Emoji>
+                                    <Emoji title="Lifting">🏋️</Emoji>
+                                    <Emoji title="Skateboarding">🛹</Emoji>
+                                    <Emoji title="Golf">⛳</Emoji>
+                                </EmojiRow>
                             </GlassCard>
                             
                             <GlassCard>
@@ -121,33 +124,126 @@ const Background = () => {
                                     emoji="🎨" 
                                     side="left" 
                                     size={68}
-                                    color="#FF9800"
+                                    color="#0A84FF"
                                     top="-1.5rem"
-                                    horizontalOffset="-1rem"
+                                    horizontalOffset="-0.5rem"
                                 />
                                 
-                                <CardTitle>Creative Coder</CardTitle>
-                                <CardText>
-                                    <CardHighlight>Design Meets Code</CardHighlight>
-                                    Love crafting beautiful, functional web experiences. SVG animations, UI design, and creative problem-solving are my jam.
+                                <CardTitle>Being Creative</CardTitle>
+                                <CardText style={{ padding: '0rem 1.5rem', fontSize: '1.05rem' }}>
+                                  I grew up drawing. Lately I'm learning music, mostly guitar and piano, with production next. Design is my favorite part of projects, if you couldn't tell by the "unique" theming of this site. Art is as much a part of my life as staying active.
                                 </CardText>
+ 
+                                
+                                <EmojiRow aria-hidden="true">
+                                    <Emoji title="Art">🎨</Emoji>
+                                    <Emoji title="Sketching">✏️</Emoji>
+                                    <Emoji title="Design">🖌️</Emoji>
+                                    <Emoji title="Music">🎵</Emoji>
+                                    <Emoji title="Guitar">🎸</Emoji>
+                                    <Emoji title="Piano">🎹</Emoji>
+                                    <Emoji title="Production">🎧</Emoji>
+                                </EmojiRow>
                             </GlassCard>
                             
                             <GlassCard>
                                 <ReactionBubble 
-                                    emoji="⚡" 
+                                    emoji="🎯" 
                                     side="left" 
-                                    size={68}
-                                    color="#FFC107"
+                                    size={64}
+                                    color="#0A84FF"
                                     top="-1.5rem"
-                                    horizontalOffset="-1rem"
+                                    horizontalOffset="-0.5rem"
                                 />
                                 
-                                <CardTitle>Life Philosophy</CardTitle>
-                                <CardText>
-                                    <CardHighlight>Balance is Key</CardHighlight>
-                                    Believe in staying active both mentally and physically. Code hard, play hard, and always keep learning.
+                                <CardTitle>Goals</CardTitle>
+                                <CardText style={{ padding: '0rem 1.5rem', fontSize: '1.05rem' }}>
+                                  I want to work for myself and blend technical work with creativity. I like fast paced startup environments where I can grow. My sweet spot is collaboration, creativity, and hard technical problems. Most of all I just want to keep improving and enjoy the process.
                                 </CardText>
+
+                                
+                                <EmojiRow aria-hidden="true">
+                                    <Emoji title="Target">🎯</Emoji>
+                                    <Emoji title="Rocket">🚀</Emoji>
+                                    <Emoji title="Fire">🔥</Emoji>
+                                    <Emoji title="Brain">🧠</Emoji>
+                                    <Emoji title="People">👥</Emoji>
+                                    <Emoji title="Lightning">⚡</Emoji>
+                                </EmojiRow>
+                            </GlassCard>
+                            
+                            <GlassCard>
+                                <ReactionBubble 
+                                    emoji="💭" 
+                                    side="left" 
+                                    size={64}
+                                    color="#0A84FF"
+                                    top="-1.5rem"
+                                    horizontalOffset="-0.5rem"
+                                />
+                                
+                                <CardTitle>My Mantras</CardTitle>
+                                
+                                <MantrasWrapper>
+                                    <MantraText>
+                                        <MantraHighlight>Amor Fati</MantraHighlight>
+                                        Love Of Fate. Trying to appreciate everything that happens, good or bad. Just experiencing it.
+                                    </MantraText>
+                                    <MantraText>
+                                        <MantraHighlight>Nothing changes if nothing changes.</MantraHighlight>
+                                        My life is in my hands. It's up to me to determine what it looks like (from a Theo Von podcast btw).
+                                    </MantraText>
+                                </MantrasWrapper>
+                                
+                                <EmojiRow aria-hidden="true">
+                                    <Emoji title="Mindset">💭</Emoji>
+                                    <Emoji title="Compass">🧭</Emoji>
+                                    <Emoji title="Growth">🌱</Emoji>
+                                    <Emoji title="Balance">⚖️</Emoji>
+                                    <Emoji title="Change">🔄</Emoji>
+                                    <Emoji title="Action">💪</Emoji>
+                                </EmojiRow>
+                            </GlassCard>
+                            
+                            <GlassCard>
+                                <ReactionBubble 
+                                    emoji="🎧" 
+                                    side="left" 
+                                    size={64}
+                                    color="#0A84FF"
+                                    top="-1.5rem"
+                                    horizontalOffset="-0.5rem"
+                                />
+                                
+                                <CardTitle>What I Listen To</CardTitle>
+                                
+                                <MusicWrapper>
+                                    <CardText>
+                                        I feel you can tell a lot about a person by their music. Here's my top 10 from the last 6 months:
+                                    </CardText>
+                                    
+                                    <ArtistGrid>
+                                        <ArtistName>Kanye</ArtistName>
+                                        <ArtistName>The Backseat Lovers</ArtistName>
+                                        <ArtistName>Malcom Todd</ArtistName>
+                                        <ArtistName>Daniel Caesar</ArtistName>
+                                        <ArtistName>Rex Orange County</ArtistName>
+                                        <ArtistName>Bad Bunny</ArtistName>
+                                        <ArtistName>Bruno Mars</ArtistName>
+                                        <ArtistName>$uicideboy$</ArtistName>
+                                        <ArtistName>Olivia Rodrigo</ArtistName>
+                                        <ArtistName>Zach Bryan</ArtistName>
+                                    </ArtistGrid>
+                                </MusicWrapper>
+                                
+                                <EmojiRow aria-hidden="true">
+                                    <Emoji title="Headphones">🎧</Emoji>
+                                    <Emoji title="Music">🎵</Emoji>
+                                    <Emoji title="Vinyl">💿</Emoji>
+                                    <Emoji title="Microphone">🎤</Emoji>
+                                    <Emoji title="Speakers">🔊</Emoji>
+                                    <Emoji title="Notes">🎶</Emoji>
+                                </EmojiRow>
                             </GlassCard>
                         </InfoGrid>
                     </InfoGridSection>
@@ -182,20 +278,22 @@ const floatParticles = keyframes`
   50% { opacity: 0.8; transform: translateY(-8px); }
 `;
 
-const BackgroundContainer = styled.div`
+const BackgroundContainer = styled.section`
   position: relative;
-  min-height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+  width: 100%;
+  min-height: 100dvh;         /* at least full screen */
+  overflow-x: clip;            /* prevent sideways jiggle */
+  overflow-y: visible;         /* allow vertical growth */
+  --surface-h: 5vh;          /* same as your SurfaceWater height */
+  --section-pad: clamp(24px, 4vw, 56px);
 `;
 
 // Surface water - connects to ocean wall in Skills section (same animation as HarborWater)
 const SurfaceWater = styled.div`
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0 auto auto 0;
   width: 100%;
-  height: 8.5vh;
+  height: var(--surface-h);
   z-index: 2;
   overflow: hidden;
   
@@ -256,16 +354,18 @@ const SurfaceRippleLayer = styled.div`
 
 // Unified underwater section - spans from waterline to deep ocean with continuous gradient
 const UnderwaterSection = styled.div`
-  position: absolute;
-  left: 0;
-  top: 10vh;
+  position: relative;                /* was absolute */
+  margin-top: var(--surface-h);      /* keep clear of the surface overlay */
   width: 100%;
-  min-height: 90vh;
-  z-index: 1;
+
+  /* grow with content but still cover a full screen if short */
+  min-height: calc(100dvh - var(--surface-h));
+  padding: var(--section-pad) 0 calc(var(--section-pad) * 1.5);
+  
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 4rem;
+  z-index: 1;
   
   /* Subtle waterline effect at the top */
   box-shadow: 
@@ -295,29 +395,29 @@ const UnderwaterSection = styled.div`
     rgba(16, 58, 108, 1) 56%,
     rgba(14, 50, 102, 1) 60%,
     rgba(12, 42, 96, 1) 64%,
-    rgba(10, 36, 88, 1) 68%,
-    rgba(8, 32, 82, 1) 72%,
-    /* Deep ocean - darker blues */
-    rgba(7, 30, 78, 1) 75%,
-    rgba(7, 28, 74, 1) 78%,
-    rgba(6, 26, 70, 1) 81%,
-    rgba(6, 24, 66, 1) 84%,
-    rgba(5, 23, 62, 1) 86%,
-    rgba(5, 21, 58, 1) 88%,
-    rgba(5, 20, 54, 1) 90%,
-    rgba(4, 19, 50, 1) 92%,
-    rgba(4, 18, 46, 1) 93%,
-    rgba(4, 17, 42, 1) 94%,
-    rgba(3, 16, 38, 1) 95%,
-    rgba(3, 15, 34, 1) 96%,
-    rgba(3, 14, 30, 1) 97%,
-    rgba(2, 13, 28, 1) 98%,
-    rgba(2, 12, 26, 1) 98.5%,
-    rgba(2, 11, 24, 1) 99%,
-    rgba(2, 10, 22, 1) 99.3%,
-    rgba(1, 9, 20, 1) 99.6%,
-    rgba(1, 8, 18, 1) 99.8%,
-    rgba(1, 7, 16, 1) 100%
+    rgba(11, 40, 92, 1) 68%,
+    rgba(10, 38, 88, 1) 72%,
+    /* Deep ocean - sunlit blues (kept brighter) */
+    rgba(10, 36, 84, 1) 75%,
+    rgba(10, 35, 82, 1) 78%,
+    rgba(9, 34, 80, 1) 81%,
+    rgba(9, 33, 78, 1) 84%,
+    rgba(9, 32, 76, 1) 86%,
+    rgba(8, 31, 74, 1) 88%,
+    rgba(8, 30, 72, 1) 90%,
+    rgba(8, 29, 70, 1) 92%,
+    rgba(8, 28, 68, 1) 93%,
+    rgba(7, 28, 66, 1) 94%,
+    rgba(7, 27, 64, 1) 95%,
+    rgba(7, 26, 62, 1) 96%,
+    rgba(7, 26, 60, 1) 97%,
+    rgba(6, 25, 58, 1) 98%,
+    rgba(6, 24, 56, 1) 98.5%,
+    rgba(6, 24, 54, 1) 99%,
+    rgba(6, 23, 52, 1) 99.3%,
+    rgba(6, 22, 50, 1) 99.6%,
+    rgba(5, 22, 48, 1) 99.8%,
+    rgba(5, 21, 46, 1) 100%
   );
   
   /* Caustic light rays from surface - now extends smoothly down the entire section */
@@ -459,11 +559,15 @@ const floatCard = keyframes`
 // Profile section - flex container
 const ProfileSection = styled.div`
   width: 90%;
-  margin: 3rem auto 0 auto;
+  margin: 2rem auto 0;
   display: flex;
-  gap: 2rem;
+  gap: clamp(1rem, 2vw, 2rem);
   align-items: flex-start;
   z-index: 10;
+  
+  @media (max-width: 1400px) {
+    width: 90%;
+  }
   
   @media (max-width: 1200px) {
     flex-direction: column;
@@ -490,7 +594,7 @@ const ImageSection = styled.div`
 
 const ProfileImageFrame = styled.div`
   position: relative;
-  width: 75%;
+  width: 100%;
   aspect-ratio: 1;
   border-radius: 50%;
   padding: 8px;
@@ -542,7 +646,9 @@ const ProfileImage = styled.img`
 `;
 
 const InfoGridSection = styled.div`
-  flex: 2;
+  flex: 3;
+  min-width: 0; /* Allow flex items to shrink */
+  padding-bottom: var(--section-pad);   /* bottom breathing room */
   
   @media (max-width: 1200px) {
     flex: 0 0 auto;
@@ -553,24 +659,37 @@ const InfoGridSection = styled.div`
 // 3x2 Grid of cards
 const InfoGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;     /* Make all rows equal height */
+  gap: 1.5rem;
+  align-items: stretch;    /* Stretch cards to fill grid cells */
   
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 1400px) {
+    gap: 1.25rem;
+  }
+  
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
   }
   
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 `;
 
 // Individual glassmorphism card
-const GlassCard = styled.div`
+const GlassCard = styled.article`
+  align-self: stretch;     /* Stretch to fill grid cell height */
+  height: 100%;
   position: relative;
   padding: 1.25rem 1.25rem;
   border-radius: 20px;
   overflow: visible; /* Allow bubble to overflow */
+  min-width: 0; /* Allow flex/grid items to shrink */
+  display: flex;
+  flex-direction: column;
   
   /* Glassmorphism effect */
   background: linear-gradient(
@@ -609,22 +728,14 @@ const GlassCard = styled.div`
   &:nth-child(6) { animation: ${floatCard} 6s ease-in-out 2.5s infinite; }
 `;
 
-// Card icon (for cards still using old style)
-const CardIcon = styled.div`
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-  text-align: center;
-  
-  /* Subtle glow on icon */
-  filter: drop-shadow(0 2px 8px rgba(120, 200, 220, 0.4));
-`;
-
 // Card title
 const CardTitle = styled.h3`
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
   text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   
   /* Gradient text */
   background: linear-gradient(135deg, 
@@ -646,72 +757,135 @@ const CardText = styled.p`
   margin: 0;
   text-align: justify;
   color: rgba(220, 240, 250, 0.85);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex: 1;
+  display: flex;
+  align-items: center;
   
   /* Subtle text shadow for readability */
   text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
 `;
 
-// Inline sport emoji with hover effects
-const SportEmoji = styled.span`
-  display: inline-block;
+// Emoji row container
+const EmojiRow = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;         /* Push to bottom of card */
+  padding-top: 0.75rem;
+  justify-content: center;
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 8px rgba(120, 200, 220, 0.35));
+`;
+
+// Individual emoji bubble
+const Emoji = styled.span`
+  display: inline-grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 1.1rem;
-  margin: 0 0.15rem;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
-  filter: grayscale(0.3) brightness(1.1);
-  
+
   &:hover {
-    transform: scale(1.3) rotate(10deg);
-    filter: grayscale(0) brightness(1.2) drop-shadow(0 2px 8px rgba(120, 200, 220, 0.6));
-  }
-  
-  /* Add a subtle pulse animation on hover */
-  &:hover::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    animation: emojiPulse 0.6s ease-out;
-  }
-  
-  @keyframes emojiPulse {
-    0% {
-      transform: scale(1);
-      opacity: 0.8;
-    }
-    50% {
-      transform: scale(1.5);
-      opacity: 0.4;
-    }
-    100% {
-      transform: scale(2);
-      opacity: 0;
-    }
+    transform: translateY(-2px) scale(1.06);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
   }
 `;
 
-// Highlighted text within regular cards (for emphasis)
-const CardHighlight = styled.span`
-  display: block;
-  font-weight: 700;
+// Wrapper for all mantras to center them
+const MantrasWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 0.5rem;
+`;
+
+// Mantra text container with reduced spacing
+const MantraText = styled.div`
   font-size: 1rem;
-  margin-bottom: 0.35rem;
+  line-height: 1.5;
+  text-align: justify;
+  color: rgba(220, 240, 250, 0.85);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+`;
+
+// Highlighted mantra titles
+const MantraHighlight = styled.div`
+  display: block;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+  text-align: center;
   background: linear-gradient(135deg, 
-    rgba(230, 245, 255, 1) 0%,
-    rgba(180, 220, 240, 1) 100%
+    rgba(255, 235, 120, 1) 0%,
+    rgba(255, 200, 100, 1) 50%,
+    rgba(255, 180, 90, 1) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: 0.3px;
+  text-shadow: 0 2px 8px rgba(255, 200, 100, 0.4);
+`;
+
+// Wrapper for music content to center it
+const MusicWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  
+  /* Override CardText styling inside wrapper */
+  p {
+    flex: 0;
+    display: block;
+  }
+`;
+
+// Artist grid for music card
+const ArtistGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+`;
+
+// Individual artist name
+const ArtistName = styled.div`
+  font-size: 0.875rem;
+  padding: 0.1rem 0.5rem;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(200, 230, 245, 0.9);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
+  }
 `;
 
 // Date text (slightly muted)
 const CardDate = styled.span`
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-style: italic;
   line-height: 1.1;
-  color: rgba(180, 220, 240, 0.75);
+  color: rgba(180, 220, 240, 0.85);
   margin: 0;
 `;
 
@@ -729,8 +903,10 @@ const CardDetail = styled.span`
 const EducationContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-top: 0;
+  flex: 1;                  /* Take remaining space */
+  justify-content: space-between;
 `;
 
 // Degree section
@@ -781,7 +957,7 @@ const InfoItem = styled.div`
 `;
 
 const InfoLabel = styled.span`
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: rgba(150, 200, 220, 0.7);
@@ -799,7 +975,7 @@ const InfoDivider = styled.div`
 `;
 
 const GPAText = styled.span`
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: rgba(150, 220, 240, 1);
   text-shadow: 0 2px 8px rgba(120, 200, 220, 0.4);
@@ -813,38 +989,57 @@ const ClubsSection = styled.div`
 `;
 
 const ClubsLabel = styled.span`
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: rgba(150, 200, 220, 0.7);
+  color: rgba(150, 200, 220, 0.8);
   font-weight: 600;
   text-align: center;
+  margin-bottom: 0.125rem;
 `;
 
-const ClubsGrid = styled.div`
+const ClubsList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+`;
+
+const ClubItem = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.65rem;
-  flex-wrap: wrap;
-`;
-
-const ClubLogo = styled.img`
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-  border-radius: 7px;
-  padding: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
   
   &:hover {
-    transform: translateY(-3px) scale(1.05);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 
-      0 4px 12px rgba(31, 38, 135, 0.4),
-      0 0 20px rgba(100, 200, 220, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
   }
+`;
+
+const ClubLogo = styled.img`
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 6px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+`;
+
+const ClubName = styled.span`
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(200, 230, 245, 0.9);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
