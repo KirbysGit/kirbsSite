@@ -16,6 +16,8 @@
     "@mui/icons-material": "^7.1.0",
     "@mui/lab": "^7.0.0-beta.12",
     "@mui/material": "^7.1.0",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
     "canvas-confetti": "^1.9.3",
     "framer-motion": "^11.13.1",
     "leaflet": "^1.9.4",
@@ -32,6 +34,7 @@
     "react-vertical-timeline-component": "^3.5.3",
     "recharts": "^2.15.3",
     "styled-components": "^6.1.13",
+    "three": "^0.180.0",
     "tsparticles": "^2.12.0",
     "tsparticles-preset-stars": "^2.12.0",
     "typed.js": "^2.1.0"

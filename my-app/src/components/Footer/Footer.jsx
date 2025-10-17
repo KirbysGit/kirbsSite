@@ -1,6 +1,7 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import TreasureChest from './TreasureChest';
+import styled, { keyframes, css } from 'styled-components';
+import rockpileImage from '../../images/footer/rockpile.png';
+
 
 const Footer = () => { 
     const scrollToTop = () => {
@@ -14,23 +15,11 @@ const Footer = () => {
         <FooterContainer>
             <SandPlane />
             
-            {/* Treasure chest - positioned on left, partially buried */}
-            <TreasureChest 
-                width={160} 
-                height={160}
-                burialDepth={0.45}
-                tilt={0}
-            />
+            
+        
 
             <FooterContent>
-                
-                {/*
-                <CenterSection>
-                    <SurfaceButton onClick={scrollToTop}>
-                        <ButtonText>SURFACE</ButtonText>
-                        <ArrowIcon>↑</ArrowIcon>
-                    </SurfaceButton>
-                </CenterSection>*/}
+                {/* Underwater objects are now in Background component */}
             </FooterContent>
         </FooterContainer>
     );
@@ -50,6 +39,7 @@ const FooterContainer = styled.footer`
   perspective: 400px;
   perspective-origin: 50% 100%;
 `;
+
 
 const SandPlane = styled.div`
     height: 45vh;
@@ -174,88 +164,25 @@ const SandPlane = styled.div`
     }
 `;
 
+// Rock pile component - positioned on the sandy bottom
+const UnderwaterObject = styled.div`
+    position: absolute;
+    z-index: 3;
+    
+    /* Reset perspective to avoid FooterContainer's 3D effects */
+    perspective: none;
+    transform-style: flat;
+    
+    /* Subtle underwater glow effect */
+    filter: drop-shadow(0 4px 12px rgba(0, 40, 80, 0.3));
+`;
 
 /* keep your content wrapper; just make sure it's above the layers */
 const FooterContent = styled.div`
-  position: relative;
+  height: 20vh;
+  border: 2px solid white;
+
   z-index: 1;
   padding: 2rem clamp(2rem, 5vw, 6rem);
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
   gap: 2rem;
-`;
-
-
-// Center section
-const CenterSection = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-
-// Surface button with bubble trail
-const SurfaceButton = styled.button`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1.5rem 3rem;
-  font-family: 'Red Hat Display', sans-serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: rgba(180, 230, 245, 1);
-  background: linear-gradient(135deg,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
-  border: 2px solid rgba(120, 200, 220, 0.5);
-  border-radius: 60px;
-  backdrop-filter: blur(15px);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 8px 32px rgba(31, 38, 135, 0.37),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 0 25px rgba(100, 200, 220, 0.3);
-  
-  &:hover {
-    transform: translateY(-8px);
-    background: linear-gradient(135deg,
-      rgba(255, 255, 255, 0.18) 0%,
-      rgba(255, 255, 255, 0.09) 100%
-    );
-    border-color: rgba(120, 200, 220, 0.7);
-    box-shadow: 
-      0 16px 48px rgba(31, 38, 135, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.35),
-      0 0 40px rgba(100, 200, 220, 0.5);
-  }
-  
-  &:active {
-    transform: translateY(-4px);
-  }
-`;
-
-const ButtonText = styled.span`
-  display: block;
-  text-shadow: 0 2px 10px rgba(120, 200, 220, 0.5);
-`;
-
-const ArrowIcon = styled.span`
-  font-size: 2rem;
-  line-height: 1;
-  animation: arrowFloat 2s ease-in-out infinite;
-  
-  @keyframes arrowFloat {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-5px);
-    }
-  }
 `;
