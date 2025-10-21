@@ -1,22 +1,22 @@
 // basic imports.
-import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from 'react';
 
 // map pin component.
 import MapPin from '../Experience/MapPin';
 
 // images.
-import ucf4 from '@/images/ucf4.jpg';
-import lilG from '@/images/lilG.jpg';
-import mySetUp from '@/images/mySetUp.jpg';
-import secondHome from '@/images/secondHome.jpg';
-import campingTrip from '@/images/campingTrip.jpg';
-import alwaysChillin from '@/images/alwaysChillin.jpg';
-import naturalAthlete from '@/images/naturalAthlete.jpg';
-import engineeringGuy from '@/images/engineeringGuy.jpg';
-import sanduskySunset from '@/images/sanduskySunset.jpg';
+import ucf4 from '@/images/story/ucf4.jpg';
+import lilG from '@/images/story/lilG.jpg';
+import mySetUp from '@/images/story/mySetUp.jpg';
+import secondHome from '@/images/story/secondHome.jpg';
+import campingTrip from '@/images/story/campingTrip.jpg';
+import alwaysChillin from '@/images/story/alwaysChillin.jpg';
+import naturalAthlete from '@/images/story/naturalAthlete.jpg';
+import engineeringGuy from '@/images/story/engineeringGuy.jpg';
+import sanduskySunset from '@/images/story/sanduskySunset.jpg';
 
-const About = () => {
+const Story = () => {
     
     // states.
     const [activeParagraph, setActiveParagraph] = useState(0);
@@ -24,6 +24,7 @@ const About = () => {
 
     // scrolling tracking for early years section.
     useEffect(() => {
+
         // variables.
         let lastScrollTime = 0;
         let cachedViewportHeight = window.innerHeight;
@@ -85,7 +86,7 @@ const About = () => {
     }, []);
 
     return (
-        <AboutContainer>
+        <StoryContainer>
             {/* early years */}
             <StorySection>
 
@@ -184,7 +185,7 @@ const About = () => {
             </StorySection>
 
             {/* my college years */}
-            <StorySection reverse>
+            <StorySection $reverse>
 
                 <OverlappingImageContainer>
                     {/* pin of ucf */}
@@ -335,11 +336,11 @@ const About = () => {
                         </BubbleContainer>
                     </ImageCard>
 
-                    {/* image of the dream setup */}
+                    {/* image of the my setup */}
                     <ImageCard
                         $position="diagonal-down-left"
                         $image={mySetUp}
-                        $alt="Always Chillin"
+                        $alt="My Setup"
                     >
                         <BubbleContainer $position="bottom-left">
                             <SpeechBubble $parentPosition="bottom-left"
@@ -406,22 +407,22 @@ const About = () => {
                 </TextContainer>
 
             </StorySection>
-        </AboutContainer>
+        </StoryContainer>
     );
 }
 
 // -------------------------------------------------------------- main container.
-const AboutContainer = styled.div`
+const StoryContainer = styled.div`
     /* layout */
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
     overflow: hidden;
     position: relative;
+    flex-direction: column;
 
     /* spacing */
     gap: 1rem;
+    width: 100%;
+    min-height: 100vh;
     padding-top: 4rem;
     padding-bottom: 6rem;
 
@@ -435,89 +436,93 @@ const AboutContainer = styled.div`
         rgb(85, 60, 135) 90%,
         rgb(100, 70, 150) 100%);
 
-
     /* media queries */
     @media (max-width: 1600px) {
         padding-bottom: 3rem;
     }
 `;
+
+// story sections like "early years".
 const StorySection = styled.div`
     /* layout */
     display: flex;
     align-items: flex-start;
-    flex-direction: ${props => props.reverse ? 'row-reverse' : 'row'};
+    flex-direction: ${props => props.$reverse ? 'row-reverse' : 'row'};
 
     /* spacing */
-    padding: 3rem 2rem;
     gap: 3rem;
+    padding: 3rem 2rem;
 `;
 
-// -------------------------------------------------------------- images.
+// images throughout the "story".
 const OverlappingImageContainer = styled.div`
     /* layout */
     flex: 3;
-    position: relative;
-    min-height: 500px;
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: center;
     
     /* spacing */
     padding: 1rem;
+    min-height: 500px;
 `;
 
+// wrapper for the mapbox pin. used twice, once for windy, and one for ucf.
 const MapPinWrapper = styled.div`
-    position: absolute;
+    /* layout */
+    top: 0;
     z-index: 1;
-    
-    /* Make the wrapper responsive */
+    position: absolute;
+
+    /* styles */
     transform: scale(1);
+
+    /* media queries */
     
-    /* Default positioning for left side */
+    /* when wrapper is one left side of the screen*/
     ${props => props.$side === 'left' && `
-        /* For large screens (≥1900px) */
+        /* for my big monitor */
         @media (min-width: 1900px) {
             transform: scale(1.1);
-            top: 0px;
             left: 57.5px;
         }
         
-        /* For smaller screens (<1600px) */
+        /* for my smaller monitor */
         @media (max-width: 1599px) {
             transform: scale(0.9);
             left: 20px;
-            top: 0px;
         }
     `}
     
-    /* Positioning for right side */
+    /* when wrapper is one right side of the screen*/
     ${props => props.$side === 'right' && `
-        /* For large screens (≥1900px) */
+        /* for my large monitor */
         @media (min-width: 1900px) {
             transform: scale(1.1);
-            top: 0px;
             right: 57.5px;
             left: auto;
         }
         
-        /* For smaller screens (<1600px) */
+        /* for my smaller monitor */
         @media (max-width: 1599px) {
             transform: scale(0.9);
             right: 20px;
             left: auto;
-            top: 0px;
         }
     `}
 `;
 
+// image card used for all of the images.
 const ImageCard = styled.div`
-    position: absolute;
-    border-radius: 20px;
+    /* set up of the positioning for the zig zag is pretty brute force, don't judge me. */
+
+    /* layout */
     display: flex;
+    overflow: visible;
+    position: absolute;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
     z-index: ${props => {
         switch(props.$position) {
             case 'bottom-right': return 1;
@@ -526,35 +531,45 @@ const ImageCard = styled.div`
             default: return 1;
         }
     }};
-    overflow: visible;
+
+    /* spacing */
+    /* we're handling width / height in the media queries */
+
+    /* styles */
     cursor: pointer;
-    
-    /* Image or Emoji styling */
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    font-size: ${props => props.$image ? '0' : '3.5rem'};
     background: ${props => props.$image 
         ? `url(${props.$image}) center/cover` 
         : 'rgba(255, 255, 255, 0.1)'};
     backdrop-filter: ${props => props.$image ? 'none' : 'blur(10px)'};
-    font-size: ${props => props.$image ? '0' : '3.5rem'};
     
-    /* Positioning based on $position prop */
+    /* --- layout by $position prop --- */
+
+    /* top-left position like camping trip */
     ${props => props.$position === 'top-left' && `
         top: 0;
         left: 0;
         transform: translate(40px, 40px);
     `}
     
+    /* bottom-right position like lil g & me playing baseball */
     ${props => props.$position === 'bottom-right' && `
         bottom: 0;
         right: 0;
         transform: translate(20px, 50px);
     `}
     
+    /* bottom-left position like me in front of engineering building */
     ${props => props.$position === 'bottom-left' && `
         bottom: 0;
         left: 0;
         transform: translate(-20px, 20px);
     `}
     
+    /* diagonal-down-left position like for me playing basketball or the set up pic */
     ${props => props.$position === 'diagonal-down-left' && `
         top: 75%;
         left: 0;
@@ -565,24 +580,28 @@ const ImageCard = styled.div`
         }
     `}
     
+    /* diagonal-down-right for the ucf aesthetic photo */
     ${props => props.$position === 'diagonal-down-right' && `
         top: 75%;
         right: 0;
         transform: translate(-35px, 30px);
     `}
 
+    /* sunset position like sandusky sunset */
     ${props => props.$position === 'sunset' && `
         top: 100%;
         right: 0;
         transform: translate(20px, 80px);
     `}
     
+    /* diagonal-down-left-from-right for the library pic */
     ${props => props.$position === 'diagonal-down-left-from-right' && `
         top: 100%;
         left: 0;
         transform: translate(-20px, 40px);
     `}
 
+    /* media queries */
     @media (max-width: 2000px) {
         width: 24rem;
         height: 24rem;
@@ -594,20 +613,23 @@ const ImageCard = styled.div`
     }
 `;
 
+// wrapper for the speech bubbles.
 const BubbleContainer = styled.div`
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    /* layout */
     z-index: 10;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+
+    /* spacing */
+    gap: 8px;
+
+    /* styles */
     pointer-events: none;
-    
-    /* Container scales everything inside it */
     transform: scale(0.8);
+    transition: all 0.3s ease;
     
-    /* Responsive scaling for the entire container */
+    /* media queries */
     @media (min-width: 1900px) {
         transform: scale(1);
     }
@@ -616,7 +638,8 @@ const BubbleContainer = styled.div`
         transform: scale(0.85);
     }
     
-    /* Positioning based on $position prop */
+    /* --- positioning based on $position prop --- */
+
     ${props => props.$position === 'top-left' && `
         top: -15px;
         left: -140px;
@@ -672,27 +695,36 @@ const BubbleContainer = styled.div`
     `}
 `;
 
+// actual speed bubble component.
 const SpeechBubble = styled.div`
-    background: #007AFF;
-    color: white;
+    /* layout */
+    position: relative;
+
+    /* spacing */
     width: ${props => props.$width ? props.$width : '75%'};
     padding: 8px 16px 6px 16px;
     border-radius: 18px;
-    font-size: 1.15rem;
+
+    /* styles */
+    color: white;
     font-weight: 500;
     line-height: 1.2;
-    text-align: justify;
+    font-size: 1.15rem;
+    text-align: justify;    
+    border-radius: 18px;
+    background: #007AFF;
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
-    position: relative;
     
-    /* Right-align bubbles when parent is top-right or bottom-right */
+    /* --- positioning based on $parentPosition prop --- */
+
+    /* right-align bubbles when parent is top-right or bottom-right */
     ${props => (props.$parentPosition === 'top-right' || props.$parentPosition === 'bottom-right') && `
         margin-left: auto;
     `}
     
-    /* Speech bubble tail using SVG like iPhone - only on last bubble */
+    /* speech bubble tail using svg like iphone - only on last bubble */
     &:last-child::after {
         position: absolute;
         content: "";
@@ -703,7 +735,8 @@ const SpeechBubble = styled.div`
         background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='15.515px' height='17.5px' viewBox='32.484 17.5 15.515 17.5' enable-background='new 32.484 17.5 15.515 17.5'><path fill='%23007AFF' d='M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'/></svg>") no-repeat;
         background-size: 15.515px 17.5px;
         
-        /* Tail positioning based on parent BubbleContainer position */
+        /* tail positioning based on parent bubble container position */
+        /* so i can get the tail to point to the correct side based on where i placed it */
         ${props => {
             const parentPosition = props.$parentPosition;
             if (parentPosition === 'top-left' || parentPosition === 'bottom-left') {
@@ -721,35 +754,51 @@ const SpeechBubble = styled.div`
     }
 `;
 
+// wrapper for the text on left or right side of the screen.
 const TextContainer = styled.div`
-    height: 100%;
+    /* layout */
     flex: 4;
+    height: 100%;    
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+
+    /* spacing */
     padding: 0rem 2rem 2rem 2rem;
+       
+    /* styles */
     color: white;
     
-    
+    /* --- positioning based on $isReversed prop --- */
     ${props => props.$isReversed && `
         padding: 0rem 0rem 2rem 2rem;
     `}
 `;
 
+// ttile of the story section, like "early years" or "college".
 const StoryTitle = styled.div`
-    margin-top: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+    /* layout */
     display: flex;
     align-items: center;
+
+    /* spacing */
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+
+    /* styles */
+    font-weight: 700;
+
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.9) 0%,
         rgba(200, 180, 255, 0.8) 50%,
         rgba(150, 200, 255, 0.9) 100%);
+
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
+
+    /* media queries */
 
     @media (max-width: 2000px) {
         font-size: 5rem; 
@@ -760,12 +809,20 @@ const StoryTitle = styled.div`
     }
 `;
 
+// date of the story section, like "03' to 21'".
 const StoryDate = styled.span`
-    font-weight: 400;
-    margin-left: 0.5rem;
+    /* layout */
     display: inline-block;
     vertical-align: middle;
+
+    /* spacing */
+    margin-left: 0.5rem;
+
+    /* styles */
+    font-weight: 400;
     color: rgba(255, 255, 255, 1);
+
+    /* media queries */
 
     @media (max-width: 2000px) {
         font-size: 3.5rem; 
@@ -776,13 +833,20 @@ const StoryDate = styled.span`
     }
 `;
 
+// wrapper for the actual text of the story.
 const StoryText = styled.div`
+    /* layout */
+    max-width: 100%;
+
+    /* spacing */
     padding: 0 3rem 0 0;
+
+    /* styles */
     text-align: left;
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.9);
-    max-width: 100%;
 
+    /* media queries */
     @media (max-width: 2000px) {
         font-size: 1.5rem; 
     }
@@ -793,20 +857,25 @@ const StoryText = styled.div`
 `;
 
 const StoryParagraph = styled.p`
-    margin-bottom: 2rem;
-    text-indent: 0rem;
+    
+    /* layout */
     position: relative;
+
+
+    /* spacing */
+    margin-bottom: 2rem;
     padding-left: ${props => props.$isReversed ? '0' : '3rem'};
     padding-right: ${props => props.$isReversed ? '3rem' : '0'};
+
+    /* styles */
     font-weight: 400;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    text-indent: 0rem;
     text-align: justify;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: ${props => props.$isActive ? 1 : 0.7};
-    transform: ${props => props.$isActive ? 'translateX(0)' : 'translateX(-5px)'};
+    letter-spacing: 0.3px;
+    transition: opacity 0.3s ease;
+    opacity: ${props => props.$isActive ? 1 : 0.8};
     
-    /* Active paragraph gets a glowing left border */
+    /* active paragraph gets an animated gradient border */
     ${props => props.$isActive && `
         &::before {
             content: '';
@@ -817,15 +886,15 @@ const StoryParagraph = styled.p`
             width: 3px;
             background: linear-gradient(to bottom, 
                 rgba(200, 180, 255, 0.8) 0%,
-                rgba(150, 200, 255, 0.8) 50%,
+                rgba(150, 200, 255, 0.9) 50%,
                 rgba(100, 150, 255, 0.8) 100%);
             border-radius: 2px;
-            box-shadow: 0 0 10px rgba(200, 180, 255, 0.5);
-            animation: border-glow 0.3s ease-in-out;
+            box-shadow: 0 0 8px rgba(180, 200, 255, 0.4);
+            animation: border-slide-in 0.4s ease-out;
         }
     `}
     
-    /* For reversed sections, move the border to the right side */
+    /* for reversed sections, move the border to the right side */
     ${props => props.$isReversed && props.$isActive && `
         &::before {
             left: auto;
@@ -833,10 +902,12 @@ const StoryParagraph = styled.p`
         }
     `}
     
-    @keyframes border-glow {
+    /* animation for the border */
+    @keyframes border-slide-in {
         from { 
             opacity: 0;
             transform: scaleY(0);
+            transform-origin: top;
         }
         to { 
             opacity: 1;
@@ -844,182 +915,64 @@ const StoryParagraph = styled.p`
         }
     }
     
-    /* Special styled words - Balanced Space Theme */
+    /* small styles for some of the text in the story, just to give it a bit more flair and make it less boring. */
     .location {
-        color: rgb(150, 220, 220);
+        color: rgb(120, 200, 200);
         font-weight: 500;
-        text-shadow: 0 0 20px rgba(100, 200, 200, 0.3);
-        transition: all 0.3s ease;
-        
-        &:hover {
-            color: rgb(180, 240, 240);
-            text-shadow: 0 0 25px rgba(100, 200, 200, 0.5);
-            letter-spacing: 0.3px;
-        }
     }
     
     .special-moment {
-        background: linear-gradient(90deg, 
-            rgb(200, 180, 255) 0%,
-            rgb(150, 210, 255) 25%,
-            rgb(180, 200, 255) 50%,
-            rgb(150, 210, 255) 75%,
-            rgb(200, 180, 255) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-weight: 500;
-        text-shadow: 0 0 15px rgba(180, 200, 255, 0.25);
-        letter-spacing: 0.2px;
+        color: rgb(180, 200, 255);
+        font-weight: 600;
     }
     
     .activity {
-        color: rgb(170, 220, 200);
+        color: rgb(150, 200, 180);
         font-weight: 500;
-        text-shadow: 0 0 18px rgba(150, 206, 180, 0.25);
-        transition: all 0.2s ease;
-        
-        &:hover {
-            color: rgb(190, 240, 220);
-            text-shadow: 0 0 22px rgba(150, 206, 180, 0.4);
-        }
     }
     
     .subject-good {
-        color: rgb(130, 210, 240);
+        color: rgb(120, 180, 220);
         font-weight: 500;
-        text-shadow: 0 0 18px rgba(100, 200, 220, 0.3);
-        transition: all 0.2s ease;
-        
-        &:hover {
-            color: rgb(160, 230, 255);
-            text-shadow: 0 0 23px rgba(100, 200, 220, 0.45);
-        }
     }
     
     .subject-bad {
-        color: rgb(240, 160, 200);
+        color: rgb(220, 140, 180);
         font-weight: 500;
-        text-shadow: 0 0 18px rgba(220, 120, 180, 0.25);
-        transition: all 0.2s ease;
-        
-        &:hover {
-            color: rgb(255, 180, 220);
-            text-shadow: 0 0 22px rgba(220, 120, 180, 0.4);
-        }
+        font-style: italic;
     }
     
     .emphasis {
         color: rgb(140, 180, 255);
-        font-weight: 550;
-        text-shadow: 0 0 20px rgba(100, 150, 255, 0.3);
-        letter-spacing: 0.3px;
-        transition: all 0.2s ease;
-        
-        &:hover {
-            color: rgb(170, 210, 255);
-            text-shadow: 0 0 25px rgba(100, 150, 255, 0.5);
-            letter-spacing: 0.5px;
-        }
+        font-weight: 600;
     }
     
     .negative {
-        color: rgb(200, 170, 230);
+        color: rgb(200, 150, 200);
         font-weight: 500;
         font-style: italic;
-        text-shadow: 0 0 16px rgba(180, 120, 220, 0.2);
-        transition: all 0.2s ease;
-        
-        &:hover {
-            color: rgb(220, 190, 250);
-            text-shadow: 0 0 20px rgba(180, 120, 220, 0.35);
-        }
     }
     
     .ucf {
-        background: linear-gradient(135deg, 
-            rgb(255, 220, 140) 0%,
-            rgb(255, 200, 80) 50%,
-            rgb(255, 220, 140) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-weight: 550;
-        text-shadow: 0 0 18px rgba(255, 204, 100, 0.25);
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        
-        &:hover {
-            background: linear-gradient(135deg, 
-                rgb(255, 230, 160) 0%,
-                rgb(255, 210, 100) 50%,
-                rgb(255, 230, 160) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 22px rgba(255, 204, 100, 0.4);
-            letter-spacing: 0.7px;
-        }
+        color: rgb(255, 200, 100);
+        font-weight: 600;
     }
     
     .major {
-        color: rgb(190, 160, 230);
+        color: rgb(180, 150, 220);
         font-weight: 500;
-        text-shadow: 0 0 18px rgba(180, 140, 220, 0.25);
-        transition: all 0.2s ease;
-        
-        &:hover {
-            color: rgb(210, 180, 250);
-            text-shadow: 0 0 23px rgba(180, 140, 220, 0.4);
-        }
     }
     
     .python {
-        background: linear-gradient(135deg, 
-            rgb(160, 200, 255) 0%,
-            rgb(140, 220, 255) 50%,
-            rgb(160, 200, 255) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-weight: 550;
-        text-shadow: 0 0 18px rgba(120, 180, 255, 0.25);
-        letter-spacing: 0.3px;
-        transition: all 0.3s ease;
-        
-        &:hover {
-            background: linear-gradient(135deg, 
-                rgb(180, 220, 255) 0%,
-                rgb(160, 240, 255) 50%,
-                rgb(180, 220, 255) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 22px rgba(120, 180, 255, 0.4);
-            letter-spacing: 0.5px;
-        }
+        color: rgb(120, 180, 255);
+        font-weight: 600;
     }
     
     .skill {
-        color: rgb(150, 190, 240);
+        color: rgb(140, 180, 240);
         font-weight: 500;
-        text-shadow: 0 0 18px rgba(120, 180, 240, 0.25);
-        transition: all 0.2s ease;
-        
-        &:hover {
-            color: rgb(180, 220, 255);
-            text-shadow: 0 0 22px rgba(120, 180, 240, 0.4);
-        }
     }
-    
-    @keyframes glow-pulse {
-        0%, 100% { 
-            filter: brightness(1);
-        }
-        50% { 
-            filter: brightness(1.3);
-        }
-    }
-    
 `;
 
 // export.
-export default About;
+export default Story;

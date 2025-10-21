@@ -3,46 +3,49 @@
 // main hero component upon load.
 // idea is to introduce me, create a smooth animation welcome, and an invitation to scroll down.
 // starting off with the space theme and moving downwards.
+// had idea of adding some more stuff in background, thinking ufo, astronaut, and maybe one more thing.
 
 // imports.
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-const Hero = () => {
+// hero component.
+const Hero = ({ hiddenWhileLoading = false }) => {
     return (
         <HeroContainer>
-            <ParticleField>
-                {/* steady starts (non-moving) */}
-                <Star top="8%" left="12%" animation="steady" duration="0" opacity="0.4" size="1px" />
-                <Star top="22%" left="88%" animation="steady" duration="0" opacity="0.3" size="1px" />
-                <Star top="38%" left="28%" animation="steady" duration="0" opacity="0.5" size="1px" />
-                <Star top="58%" left="72%" animation="steady" duration="0" opacity="0.4" size="1px" />
-                <Star top="78%" left="18%" animation="steady" duration="0" opacity="0.3" size="1px" />
-                <Star top="12%" left="58%" animation="steady" duration="0" opacity="0.4" size="1px" />
-                <Star top="32%" left="42%" animation="steady" duration="0" opacity="0.5" size="1px" />
-                <Star top="68%" left="92%" animation="steady" duration="0" opacity="0.3" size="1px" />
-                <Star top="48%" left="8%" animation="steady" duration="0" opacity="0.4" size="1px" />
-                <Star top="82%" left="52%" animation="steady" duration="0" opacity="0.3" size="1px" />
-                <Star top="18%" left="78%" animation="steady" duration="0" opacity="0.5" size="1px" />
-                <Star top="42%" left="92%" animation="steady" duration="0" opacity="0.4" size="1px" />
-                <Star top="62%" left="32%" animation="steady" duration="0" opacity="0.3" size="1px" />
-                <Star top="28%" left="3%" animation="steady" duration="0" opacity="0.4" size="1px" />
-                <Star top="72%" left="85%" animation="steady" duration="0" opacity="0.5" size="1px" />
+            {/* stars in the background */}
+            <ParticleField className="twinkles">
+                {/* simplified starfield - reduced for performance */}
+                <Star $top="8%" $left="12%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
+                <Star $top="22%" $left="88%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
+                <Star $top="38%" $left="28%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
+                <Star $top="58%" $left="72%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
+                <Star $top="78%" $left="18%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
+                <Star $top="12%" $left="58%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
+                <Star $top="32%" $left="42%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
+                <Star $top="68%" $left="92%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
+                <Star $top="48%" $left="8%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
+                <Star $top="82%" $left="52%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
+                <Star $top="18%" $left="78%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
+                <Star $top="42%" $left="92%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
+                <Star $top="62%" $left="32%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
+                <Star $top="28%" $left="3%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
+                <Star $top="72%" $left="85%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
                 
                 {/* starts that occassionally twinkle (wanted to make them look more realistic and catch the user's eye) */}
-                <Star top="15%" left="25%" animation="twinkle1" duration="23.7" opacity="0.6" size="2px" />
-                <Star top="45%" left="65%" animation="twinkle2" duration="31.2" opacity="0.7" size="1px" />
-                <Star top="75%" left="35%" animation="twinkle3" duration="18.9" opacity="0.8" size="2px" />
-                <Star top="25%" left="75%" animation="twinkle4" duration="42.1" opacity="0.5" size="1px" />
-                <Star top="55%" left="15%" animation="twinkle5" duration="27.4" opacity="0.9" size="2px" />
-                <Star top="85%" left="85%" animation="twinkle6" duration="35.8" opacity="0.6" size="1px" />
-                <Star top="35%" left="45%" animation="twinkle1" duration="19.6" opacity="0.7" size="2px" />
-                <Star top="65%" left="95%" animation="twinkle2" duration="38.3" opacity="0.4" size="1px" />
-                <Star top="12%" left="68%" animation="twinkle3" duration="25.1" opacity="0.8" size="1px" />
-                <Star top="88%" left="22%" animation="twinkle4" duration="29.7" opacity="0.5" size="2px" />
-                <Star top="42%" left="88%" animation="twinkle5" duration="33.4" opacity="0.6" size="1px" />
-                <Star top="68%" left="12%" animation="twinkle6" duration="21.8" opacity="0.7" size="2px" />
+                <Star $top="15%" $left="25%" $animation="twinkle1" $duration="23.7" $opacity="0.6" $size="2px" />
+                <Star $top="45%" $left="65%" $animation="twinkle2" $duration="31.2" $opacity="0.7" $size="1px" />
+                <Star $top="75%" $left="35%" $animation="twinkle3" $duration="18.9" $opacity="0.8" $size="2px" />
+                <Star $top="25%" $left="75%" $animation="twinkle4" $duration="42.1" $opacity="0.5" $size="1px" />
+                <Star $top="55%" $left="15%" $animation="twinkle5" $duration="27.4" $opacity="0.9" $size="2px" />
+                <Star $top="85%" $left="85%" $animation="twinkle6" $duration="35.8" $opacity="0.6" $size="1px" />
+                <Star $top="35%" $left="45%" $animation="twinkle1" $duration="19.6" $opacity="0.7" $size="2px" />
+                <Star $top="65%" $left="95%" $animation="twinkle2" $duration="38.3" $opacity="0.4" $size="1px" />
+                <Star $top="12%" $left="68%" $animation="twinkle3" $duration="25.1" $opacity="0.8" $size="1px" />
+                <Star $top="88%" $left="22%" $animation="twinkle4" $duration="29.7" $opacity="0.5" $size="2px" />
+                <Star $top="42%" $left="88%" $animation="twinkle5" $duration="33.4" $opacity="0.6" $size="1px" />
+                <Star $top="68%" $left="12%" $animation="twinkle6" $duration="21.8" $opacity="0.7" $size="2px" />
                 
                 {/* moon (want to add a guy on it, or like an alien) */}
                 <Moon>
@@ -53,46 +56,62 @@ const Hero = () => {
                 </Moon>
             </ParticleField>
 
-            {/* original messages upon load */}
-            <Msgs>
-                <SupMsg
-                    initial={{ x: -500, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                >
-                    What's up! 
-                    <WavingHand>👋</WavingHand>
-                </SupMsg>
-                <IntroNameMsg
-                    initial={{ x: -500, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 1.5, duration: 1, ease: "easeOut" }}
-                >
-                    My name's
-                </IntroNameMsg>
-                <NameMsg
-                    initial={{ x: -500, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 2.5, duration: 1, ease: "easeOut" }}
-                >
-                    <Name>Colin Kirby</Name>
-                </NameMsg>
-                <SubNameMsg
-                    initial={{ y: -50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 3.5, duration: 1, ease: "easeOut" }}
-                >
-                    <b>* Most people just call me Kirby</b>
-                </SubNameMsg>
-                <ScrollInvite
-                    initial={{ y: 50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 5, duration: 1, ease: "easeOut" }}
-                >
-                    <ScrollText>Here's a bit about me...</ScrollText>
-                    <ScrollArrow>↓</ScrollArrow>
-                </ScrollInvite>
-            </Msgs>
+            {/* original messages upon load - always rendered for stable layout */}
+            <MsgsWrapper
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+            >
+                    <Msgs>
+                        {/* what's up! message */}
+                        <SupMsg
+                            initial={{ x: -500, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
+                        >
+                            What's up! 
+                            <WavingHand>👋</WavingHand>
+                        </SupMsg>
+
+                        {/* my name's... message */}
+                        <IntroNameMsg
+                            initial={{ x: -500, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ delay: 1.8, duration: 1.2, ease: "easeOut" }}
+                        >
+                            My name's
+                        </IntroNameMsg>
+
+                        {/* my name */}
+                        <NameMsg
+                            initial={{ x: -500, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ delay: 2.8, duration: 1.2, ease: "easeOut" }}
+                        >
+                            <Name className="nameGradient">Colin Kirby</Name>
+                        </NameMsg>
+
+                        {/* sub name message*/}
+                        <SubNameMsg
+                            initial={{ y: -50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 3.8, duration: 1.2, ease: "easeOut" }}
+                        >
+                            <b>* Most people just call me Kirby</b>
+                        </SubNameMsg>
+
+                        {/* scroll invitation message */}
+                        {/* might give the user options like "strictly business" or "learn about me" */}
+                        <ScrollInvite
+                            initial={{ y: 50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 4.8, duration: 1.2, ease: "easeOut" }}
+                        >
+                            <ScrollText>Here's a bit about me...</ScrollText>
+                            <ScrollArrow>↓</ScrollArrow>
+                        </ScrollInvite>
+                    </Msgs>
+                </MsgsWrapper>
             
         </HeroContainer>
     )
@@ -108,6 +127,7 @@ const HeroContainer = styled.div`
         rgba(20, 5, 40, 0.8) 0%, 
         rgba(0, 0, 0, 0.9) 30%, 
         rgba(13, 7, 27, 1) 70%);
+    
     
     /* Subtle starfield background */
     &::before {
@@ -168,6 +188,7 @@ const HeroContainer = styled.div`
         pointer-events: none;
     }
     
+    
     @keyframes twinkle {
         0%, 100% { 
             opacity: 0.3;
@@ -193,6 +214,14 @@ const HeroContainer = styled.div`
             transform: scale(1.05);
         }
     }
+`;
+
+// wrapper for smooth fade-in of messages.
+const MsgsWrapper = styled(motion.div)`
+    width: 100%;
+    height: 100%;
+    will-change: transform, opacity;
+    contain: layout;
 `;
 
 // my messages container.
@@ -221,8 +250,16 @@ const IntroNameMsg = styled(motion.div)`
 const NameMsg = styled(motion.div)`
     margin-top: -2rem;
     margin-bottom: -1rem;
-    font-size: 16.5rem;
     text-align: center;
+    font-size: 20rem; /* Base size for screens 1900px+ */
+    
+    @media (max-width: 1900px) {
+        font-size: 24rem;
+    }
+
+    @media (max-width: 1599px) {
+        font-size: 18rem;
+    }
 `;
 
 const Name = styled.span`
@@ -240,6 +277,7 @@ const Name = styled.span`
     -webkit-text-fill-color: transparent;
     background-size: 200% 100%;
     animation: gradientShift 10s linear infinite;
+    will-change: transform, opacity;
     
     @keyframes gradientShift {
         0% { background-position: 0% 50%; }
@@ -334,18 +372,18 @@ const ParticleField = styled.div`
 // Individual star particles
 const Star = styled.div`
     position: absolute;
-    top: ${props => props.top};
-    left: ${props => props.left};
-    width: ${props => props.size || '1px'};
-    height: ${props => props.size || '1px'};
+    top: ${props => props.$top};
+    left: ${props => props.$left};
+    width: ${props => props.$size || '1px'};
+    height: ${props => props.$size || '1px'};
     background: white;
     border-radius: 50%;
     box-shadow: 
         0 0 3px rgba(255, 255, 255, 0.9),
         0 0 6px rgba(255, 255, 255, 0.6),
         0 0 9px rgba(255, 255, 255, 0.3);
-    animation: ${props => props.animation} ${props => props.duration}s ease-in-out infinite;
-    opacity: ${props => props.opacity};
+    animation: ${props => props.$animation} ${props => props.$duration}s ease-in-out infinite;
+    opacity: ${props => props.$opacity};
     
     @keyframes twinkle1 {
         0%, 92% { opacity: 0.4; }

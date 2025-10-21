@@ -115,15 +115,24 @@ export const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
     } 
 
-    body, html {
+    html {
+        overflow-y: scroll;      /* Always reserve scrollbar width to prevent layout shift */
+    }
+
+    body {
         margin: 0;
         overflow-x: hidden;      /* Prevent horizontal scrolling */
-        overflow-y: auto;        /* Allow vertical scrolling when needed */
         scroll-behavior: smooth;
         padding: 0;
         background-color: #000;
         font-family: 'Red Hat Display', sans-serif;
         color: white;
+    }
+
+    /* Pause animations during loading to prevent jitter */
+    :root[data-loading="true"] .twinkles,
+    :root[data-loading="true"] .nameGradient {
+        animation-play-state: paused !important;
     }
 `
 
