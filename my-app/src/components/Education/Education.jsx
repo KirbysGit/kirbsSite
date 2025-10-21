@@ -64,7 +64,7 @@ const EducationContainer = styled.div`
         rgb(72, 160, 238) 97%,
         rgb(71, 160, 238) 100%);  /* Vibrant horizon blue */
     
-    width: 100vw;
+    width: 100%;
     padding: 4rem 2rem;
     padding-top: 0;
     position: relative;

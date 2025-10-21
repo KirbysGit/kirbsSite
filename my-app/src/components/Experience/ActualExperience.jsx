@@ -291,7 +291,7 @@ const ExperienceContainer = styled.div`
         rgb(146, 192, 242) 94%,
         rgb(148, 196, 244) 97%,
         rgb(150, 200, 246) 100%);
-    width: 100vw;
+    width: 100%;
     padding: 4rem 2rem;
     padding-bottom: 0;
     position: relative;

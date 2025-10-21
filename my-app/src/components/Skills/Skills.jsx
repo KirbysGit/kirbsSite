@@ -211,7 +211,7 @@ const SkillsContainer = styled.div`
         rgb(115, 205, 230) 95%,    /* Near base */
         rgb(110, 200, 225) 100%);  /* Base blue */
     
-    width: 100vw;
+    width: 100%;
     padding: 4rem 2rem;
     padding-top: 0;
     position: relative;

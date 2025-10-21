@@ -117,7 +117,8 @@ export const GlobalStyle = createGlobalStyle`
 
     body, html {
         margin: 0;
-        overflow-y: scroll;
+        overflow-x: hidden;      /* Prevent horizontal scrolling */
+        overflow-y: auto;        /* Allow vertical scrolling when needed */
         scroll-behavior: smooth;
         padding: 0;
         background-color: #000;

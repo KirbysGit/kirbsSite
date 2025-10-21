@@ -101,7 +101,7 @@ const ExperienceContainer = styled.div`
         rgb(30, 21, 126) 75%,
         rgb(6, 12, 58) 100%);
     height: auto;                          /* Height is 100% Of Viewport. */
-    width: 100vw;                           /* Width is 100% of Viewport. */
+    width: 100%;                           /* Width is 100% of Viewport. */
 `
 // Styles 4 Particles Container 4 Experience Section.
 const ParticlesContainer = styled.div`

@@ -7,6 +7,7 @@ import aiUcfLogo from '../../images/about/aiucf.png';
 import ieeeLogo from '../../images/about/ieee.png';
 import acmLogo from '../../images/about/acm.png';
 import ReactionBubble from './ReactionBubble';
+import Footer from '../Footer/Footer';
 
 const Background = () => {
     return (
@@ -300,6 +301,9 @@ const Background = () => {
                     </InfoGridSection>
                 </ProfileSection>
             </UnderwaterSection>
+            
+            {/* Footer - ocean floor with underwater objects */}
+            <Footer />
         </BackgroundContainer>
     );
 };
@@ -333,8 +337,8 @@ const BackgroundContainer = styled.section`
   position: relative;
   width: 100%;
   min-height: 100dvh;         /* at least full screen */
-  overflow-x: clip;            /* prevent sideways jiggle */
-  overflow-y: visible;         /* allow vertical growth */
+  overflow: visible;           /* allow all overflow - horizontal is controlled at body level */
+  isolation: auto;             /* don't isolate stacking context - allow Footer to overlap */
   --surface-h: 5vh;          /* same as your SurfaceWater height */
   --section-pad: clamp(24px, 4vw, 56px);
 `;
@@ -417,6 +421,7 @@ const UnderwaterSection = styled.div`
   flex-direction: column;
   align-items: center;
   z-index: 1;
+  overflow: visible;                 /* allow Footer elements to overflow into this section */
   
   /* Subtle waterline effect at the top */
   box-shadow: 
