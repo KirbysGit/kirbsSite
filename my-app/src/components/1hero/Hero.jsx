@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 const Hero = ({ hiddenWhileLoading = false }) => {
     return (
         <HeroContainer>
+            
             {/* stars in the background */}
             <ParticleField className="twinkles">
                 {/* simplified starfield - reduced for performance */}
@@ -54,7 +55,15 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                     <Crater3 />
                     <Crater4 />
                 </Moon>
+                
+                {/* floating astronaut */}
+                
             </ParticleField>
+
+            <Astronaut />
+            
+            {/* floating UFO */}
+            <UFO />
 
             {/* original messages upon load - always rendered for stable layout */}
             <MsgsWrapper
@@ -83,13 +92,13 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                         </IntroNameMsg>
 
                         {/* my name */}
-                        <NameMsg
-                            initial={{ x: -500, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 2.8, duration: 1.2, ease: "easeOut" }}
-                        >
-                            <Name className="nameGradient">Colin Kirby</Name>
-                        </NameMsg>
+                            <NameRow
+                                initial={{ x: -500, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 2.8, duration: 1.2, ease: "easeOut" }}
+                            >
+                                <Name className="nameGradient">Colin Kirby</Name>
+                            </NameRow>
 
                         {/* sub name message*/}
                         <SubNameMsg
@@ -107,11 +116,39 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 4.8, duration: 1.2, ease: "easeOut" }}
                         >
-                            <ScrollText>Here's a bit about me...</ScrollText>
-                            <ScrollArrow>↓</ScrollArrow>
+                            <ScrollText>What do you want to see?</ScrollText>
+                            
+                            {/* navigation pills */}
+                            <NavPills
+                                initial={{ y: 50, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 5.4, duration: 1.2, ease: "easeOut" }}
+                            >
+                                <NavPill $variant="projects">
+                                    <NavPillBackground $variant="projects" />
+                                    <NavPillText>Straight to biznus</NavPillText>
+                                    <NavPillIcon>🚀</NavPillIcon>
+                                </NavPill>
+                                <NavPill $variant="story">
+                                    <NavPillBackground $variant="story" />
+                                    <NavPillText>Who even are you?</NavPillText>
+                                    <NavPillIcon>👨‍🚀</NavPillIcon>
+                                </NavPill>
+                            </NavPills>
+                            
+                            {/* Simple space-themed scroll arrow */}
+                            <SimpleArrow
+                                initial={{ y: 30, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 6.0, duration: 1.0, ease: "easeOut" }}
+                            >
+                                <ArrowText>Scroll to explore</ArrowText>
+                                <ArrowIcon>↓</ArrowIcon>
+                            </SimpleArrow>
                         </ScrollInvite>
                     </Msgs>
-                </MsgsWrapper>
+            </MsgsWrapper>
+
             
         </HeroContainer>
     )
@@ -222,6 +259,8 @@ const MsgsWrapper = styled(motion.div)`
     height: 100%;
     will-change: transform, opacity;
     contain: layout;
+    z-index: 15;
+    opacity: 0.90;
 `;
 
 // my messages container.
@@ -231,6 +270,7 @@ const Msgs = styled.div`
     gap: 0;
     padding: 6rem 4rem;
     width: 100%;
+    z-index: 15;
 `;
 
 // my first message floating in "What's up!"
@@ -247,18 +287,22 @@ const IntroNameMsg = styled(motion.div)`
     z-index: 10;
 `;
 // my message floating in saying my name.
-const NameMsg = styled(motion.div)`
+// my message floating in saying my name.
+const NameRow = styled(motion.div)`
     margin-top: -2rem;
     margin-bottom: -1rem;
     text-align: center;
-    font-size: 20rem; /* Base size for screens 1900px+ */
-    
-    @media (max-width: 1900px) {
-        font-size: 24rem;
-    }
+    font-size: 20rem;
 
-    @media (max-width: 1599px) {
-        font-size: 18rem;
+    /* full-bleed so it centers against the viewport, not the padded column */
+    position: relative;
+    left: 1.5vw;
+
+    @media (max-width: 1900px) { 
+        font-size: 18rem; 
+    }
+    @media (max-width: 1599px) { 
+        font-size: 14rem; 
     }
 `;
 
@@ -278,6 +322,9 @@ const Name = styled.span`
     background-size: 200% 100%;
     animation: gradientShift 10s linear infinite;
     will-change: transform, opacity;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+    word-spacing: -0.15ch; /* tiny pull so the visual center sits on 50% */
     
     @keyframes gradientShift {
         0% { background-position: 0% 50%; }
@@ -299,46 +346,22 @@ const SubNameMsg = styled(motion.div)`
 
 // Scroll invitation message
 const ScrollInvite = styled(motion.div)`
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     text-align: center;
-    z-index: 10;
+    z-index: 15;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    width: 100%;
 `;
 
 const ScrollText = styled.div`
     font-size: 1.5rem;
     color: rgba(255, 255, 255, 0.6);
     font-style: italic;
-`;
-
-const ScrollArrow = styled.div`
-    margin-top: -0.5rem;
-    font-size: 2rem;
-    color: rgba(255, 255, 255, 0.5);
-    animation: bounce 2s infinite;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    
-    &:hover {
-        color: rgba(255, 255, 255, 0.8);
-        transform: scale(1.2);
-    }
-    
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
-            transform: translateY(0);
-        }
-        40% {
-            transform: translateY(-10px);
-        }
-        60% {
-            transform: translateY(-5px);
-        }
-    }
+    text-align: center;
+    width: 100%;
 `;
 
 // waving hand emoji.
@@ -589,6 +612,360 @@ const Crater4 = styled.div`
         rgba(0, 0, 0, 0.04) 50%,
         transparent 100%);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.06);
+`;
+
+// Floating astronaut component
+const Astronaut = styled.div`
+    position: absolute;
+    top: 60%; /* 25% from bottom */
+    left: -120px; /* Start off-screen to the left */
+    width: 90px; /* Bigger astronaut */
+    height: 90px;
+    background-image: url('src/images/1hero/astronaut.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 0;
+    
+    /* Subtle glow effect */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
+    
+    /* Smooth floating animation - slower movement, faster rotation with delay */
+    animation: astronautFloat 35s linear infinite;
+    animation-delay: 6s; /* Start after text animations complete */
+    
+    @keyframes astronautFloat {
+        0% {
+            transform: translateX(0) rotate(0deg);
+        }
+        50% {
+            transform: translateX(calc(100vw + 120px)) rotate(720deg); /* 2 full rotations */
+        }
+        100% {
+            transform: translateX(calc(100vw + 240px)) rotate(1440deg); /* 4 full rotations */
+        }
+    }
+    
+    /* Pause animation during loading to prevent jitter */
+    :root[data-loading="true"] & {
+        animation-play-state: paused;
+    }
+`;
+
+// Floating UFO component with sinusoidal wave motion
+const UFO = styled.div`
+    position: absolute;
+    top: 10%; /* Near the top of the screen */
+    right: -80px; /* Start off-screen to the right */
+    width: 70px;
+    height: 70px;
+    background-image: url('src/images/1hero/ufo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 0;
+    
+    /* Subtle glow effect */
+    filter: drop-shadow(0 0 6px rgba(100, 255, 100, 0.2)) 
+            drop-shadow(0 0 12px rgba(150, 255, 150, 0.1));
+    
+    /* Combined smooth movement and bobbing animation with delay */
+    animation: ufoMove 20s linear infinite;
+    animation-delay: 8s; /* Start after astronaut begins */
+    
+    @keyframes ufoMove {
+        0% {
+            transform: translateX(0) translateY(0);
+        }
+        25% {
+            transform: translateX(calc(-25vw - 40px)) translateY(-50px);
+        }
+        50% {
+            transform: translateX(calc(-50vw - 80px)) translateY(0);
+        }
+        75% {
+            transform: translateX(calc(-75vw - 120px)) translateY(50px);
+        }
+        100% {
+            transform: translateX(calc(-100vw - 160px)) translateY(0);
+        }
+    }
+    
+    /* Pause animation during loading to prevent jitter */
+    :root[data-loading="true"] & {
+        animation-play-state: paused;
+    }
+`;
+
+// Navigation pills container
+const NavPills = styled(motion.div)`
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* equal columns */
+    gap: 1.5rem;
+    width: min(80vw, 680px);     /* set a nice max width */
+    margin: 1rem auto 0;         /* center the block */
+    z-index: 10;
+    text-align: center;
+    border-radius: 9999px;       /* optional */
+    padding: .5rem;              /* optional */
+`;
+
+// Individual navigation pill
+const NavPill = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;          /* take the full column width */
+    min-width: 0;         /* allow shrinking inside grid */
+    
+    /* Gradient backgrounds based on variant */
+    ${props => props.$variant === 'projects' && `
+        background: linear-gradient(to bottom,
+            rgb(150, 200, 246) 0%,
+            rgb(145, 198, 246) 6%,
+            rgb(138, 194, 246) 12%,
+            rgb(130, 190, 246) 18%,
+            rgb(122, 186, 245) 24%,
+            rgb(114, 182, 244) 32%,
+            rgb(106, 178, 243) 40%,
+            rgb(98, 174, 242) 48%,
+            rgb(92, 171, 241) 56%,
+            rgb(86, 168, 240) 64%,
+            rgb(82, 166, 239) 72%,
+            rgb(78, 164, 239) 80%,
+            rgb(75, 162, 238) 88%,
+            rgb(73, 161, 238) 94%,
+            rgb(72, 160, 238) 97%,
+            rgb(71, 160, 238) 100%);
+        box-shadow: 0 0 20px rgba(150, 200, 246, 0.4);
+    `}
+    
+    ${props => props.$variant === 'story' && `
+        background: linear-gradient(to bottom,
+            rgb(13, 7, 27) 0%,
+            rgb(13, 7, 27) 25%,
+            rgb(30, 20, 55) 50%,
+            rgb(45, 30, 80) 65%,
+            rgb(65, 45, 110) 80%,
+            rgb(85, 60, 135) 90%,
+            rgb(100, 70, 150) 100%);
+        box-shadow: 0 0 20px rgba(100, 70, 150, 0.4);
+    `}
+    
+    &:hover {
+        transform: translateY(-3px) scale(1.08);
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.3);
+        
+        /* Subtle enhanced glow on hover */
+        ${props => props.$variant === 'projects' && `
+            box-shadow: 0 0 25px rgba(150, 200, 246, 0.4), 0 0 35px rgba(255, 255, 255, 0.2);
+        `}
+        
+        ${props => props.$variant === 'story' && `
+            box-shadow: 0 0 25px rgba(100, 70, 150, 0.4), 0 0 35px rgba(255, 255, 255, 0.2);
+        `}
+    }
+    
+    &:active {
+        transform: translateY(-1px) scale(1.05);
+        transition: all 0.1s ease;
+    }
+`;
+
+// Background effects for pills
+const NavPillBackground = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50px;
+    pointer-events: none;
+    opacity: 0.4;
+    
+    /* Cloud effects for projects */
+    ${props => props.$variant === 'projects' && `
+        background-image: 
+            url('src/images/clouds/cloud1.png'),
+            url('src/images/clouds/cloud2.png'),
+            url('src/images/clouds/cloud3.png');
+        background-size: 25px 15px, 20px 12px, 18px 10px;
+        background-position: 15% 20%, 70% 60%, 40% 80%;
+        background-repeat: no-repeat;
+        opacity: 0.25;
+        animation: cloudDrift 12s ease-in-out infinite;
+        
+        @keyframes cloudDrift {
+            0%, 100% { 
+                background-position: 15% 20%, 70% 60%, 40% 80%;
+                opacity: 0.25;
+            }
+            25% { 
+                background-position: 20% 15%, 75% 55%, 45% 75%;
+                opacity: 0.35;
+            }
+            50% { 
+                background-position: 10% 25%, 65% 65%, 35% 85%;
+                opacity: 0.3;
+            }
+            75% { 
+                background-position: 18% 18%, 72% 58%, 42% 78%;
+                opacity: 0.28;
+            }
+        }
+    `}
+    
+    /* Star effects for story */
+    ${props => props.$variant === 'story' && `
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: starTwinkle 4s ease-in-out infinite;
+        }
+        
+        &::before {
+            width: 3px;
+            height: 3px;
+            top: 20%;
+            left: 15%;
+            animation-delay: 0s;
+            box-shadow: 
+                0 0 6px rgba(255, 255, 255, 0.8),
+                0 0 12px rgba(255, 255, 255, 0.4);
+        }
+        
+        &::after {
+            width: 2.5px;
+            height: 2.5px;
+            top: 70%;
+            right: 20%;
+            animation-delay: 2s;
+            box-shadow: 
+                0 0 5px rgba(255, 255, 255, 0.8),
+                0 0 10px rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Additional star using background */
+        background-image: 
+            radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+            radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+            radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 100% 100%;
+        animation: starField 8s ease-in-out infinite;
+        
+        @keyframes starTwinkle {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: scale(1); 
+            }
+            25% { 
+                opacity: 1; 
+                transform: scale(1.3); 
+            }
+            50% { 
+                opacity: 0.8; 
+                transform: scale(0.9); 
+            }
+            75% { 
+                opacity: 1; 
+                transform: scale(1.1); 
+            }
+        }
+        
+        @keyframes starField {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+    `}
+`;
+
+// Pill text
+const NavPillText = styled.span`
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 2;
+`;
+
+// Pill icon
+const NavPillIcon = styled.span`
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    position: relative;
+    z-index: 2;
+`;
+
+// Arrow text
+const ArrowText = styled.div`
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    transition: opacity 0.3s ease;
+    opacity: 0.7;
+`;
+
+// Arrow icon with space gradient
+const ArrowIcon = styled.div`
+    font-size: 2rem;
+    background: linear-gradient(135deg, 
+        rgba(100, 200, 255, 0.9) 0%,
+        rgba(150, 220, 255, 0.8) 50%,
+        rgba(200, 240, 255, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: bounce 2s ease-in-out infinite;
+    transition: transform 0.3s ease;
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-8px);
+        }
+        60% {
+            transform: translateY(-4px);
+        }
+    }
+`;
+
+// Simple space-themed scroll arrow (defined after other arrow components)
+const SimpleArrow = styled(motion.div)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: translateY(-3px);
+        
+        ${ArrowText} {
+            opacity: 1;
+        }
+        
+        ${ArrowIcon} {
+            transform: scale(1.2);
+        }
+    }
 `;
 
 export default Hero;
