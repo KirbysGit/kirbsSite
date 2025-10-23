@@ -40,3 +40,10 @@ const BubbleMsg = styled.p`
         background-size: calc(15.515px * var(--bubble-scale)) calc(17.5px * var(--bubble-scale));
     }
 `;
+
+
+Viewport/structural sizing → Layout
+e.g. min-height: 100vh, width: 100%, height: 100% (filling or constraining relative to the viewport/container)
+
+Fixed/content sizing → Spacing
+e.g. max-width: 420px, height: 300px, width: 24rem (local content bounds)

@@ -68,11 +68,11 @@ const Hero = () => {
             <UFO />
 
             {/* original messages upon load - delayed slide in */}
-            <MsgsWrapper
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                <MsgsWrapper
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-            >
+                >
                     <Msgs>
                         {/* what's up! message */}
                         <SupMsg
@@ -95,10 +95,10 @@ const Hero = () => {
 
                         {/* my name */}
                             <NameRow
-                                initial={{ x: -500, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
+                            initial={{ x: -500, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
                                 transition={{ delay: 2.8, duration: 1.2, ease: "easeOut" }}
-                            >
+                        >
                                 <Name className="nameGradient">Colin Kirby</Name>
                             </NameRow>
 
@@ -141,19 +141,21 @@ const Hero = () => {
                                 </NavPill>
                             </NavPills>
                             
-                            {/* bouncing arrow */}
+                            {/* constellation arrow */}
                             <SimpleArrow
                                 initial={{ y: 30, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 6.0, duration: 1.0, ease: "easeOut" }}
                             >
                                 <ArrowText>Scroll to explore</ArrowText>
-                                <ArrowIcon>↓</ArrowIcon>
+                                <ArrowIcon>
+                                    <ConstellationArrowDown />
+                                </ArrowIcon>
                             </SimpleArrow>
                         </ScrollInvite>
                     </Msgs>
-            </MsgsWrapper>
-
+                </MsgsWrapper>
+            
         </HeroContainer>
     )
 }
@@ -171,7 +173,7 @@ const HeroContainer = styled.div`
         rgba(20, 5, 40, 0.8) 0%, 
         rgba(0, 0, 0, 0.9) 30%, 
         rgba(13, 7, 27, 1) 70%);
-        
+    
     /* breathing nebula effect (looks so cool) */
     &::after {
         /* layout */
@@ -649,7 +651,7 @@ const ScrollInvite = styled(motion.div)`
     flex-direction: column;
 
     /* spacing */
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 
     /* styles */
     text-align: center;
@@ -761,29 +763,31 @@ const NavPill = styled.div`
     }
 `;
 
-// Background effects for pills
+// background effects for the pills. (clouds for projects, stars for story)
 const NavPillBackground = styled.div`
+    /* layout */
+    inset: 0;
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+
+    /* styles */
+    opacity: 0.4;
     border-radius: 50px;
     pointer-events: none;
-    opacity: 0.4;
     
-    /* Cloud effects for projects */
+    /* cloud effects for projects */
     ${props => props.$variant === 'projects' && `
+        /* styles */
+        opacity: 0.25;
+        background-repeat: no-repeat;
         background-image: 
             url('src/images/clouds/cloud1.png'),
             url('src/images/clouds/cloud2.png'),
             url('src/images/clouds/cloud3.png');
-        background-size: 25px 15px, 20px 12px, 18px 10px;
-        background-position: 15% 20%, 70% 60%, 40% 80%;
-        background-repeat: no-repeat;
-        opacity: 0.25;
         animation: cloudDrift 12s ease-in-out infinite;
+        background-position: 15% 20%, 70% 60%, 40% 80%;
+        background-size: 25px 15px, 20px 12px, 18px 10px;
         
+        /* keyframes, small cloud drifting (might get rid of honestly) */
         @keyframes cloudDrift {
             0%, 100% { 
                 background-position: 15% 20%, 70% 60%, 40% 80%;
@@ -804,8 +808,10 @@ const NavPillBackground = styled.div`
         }
     `}
     
-    /* Star effects for story */
+    /* star effects for story */
     ${props => props.$variant === 'story' && `
+
+        /* various stars in the background, twinkling and such. */
         &::before,
         &::after {
             content: '';
@@ -829,7 +835,7 @@ const NavPillBackground = styled.div`
         &::after {
             width: 2.5px;
             height: 2.5px;
-            top: 70%;
+    top: 70%;
             right: 20%;
             animation-delay: 2s;
             box-shadow: 
@@ -837,7 +843,7 @@ const NavPillBackground = styled.div`
                 0 0 10px rgba(255, 255, 255, 0.4);
         }
         
-        /* Additional star using background */
+        /* additional star using background */
         background-image: 
             radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
             radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
@@ -845,6 +851,7 @@ const NavPillBackground = styled.div`
         background-size: 100% 100%, 100% 100%, 100% 100%;
         animation: starField 8s ease-in-out infinite;
         
+        /* keyframes, star twinkling animation */
         @keyframes starTwinkle {
             0%, 100% { 
                 opacity: 0.6; 
@@ -871,80 +878,121 @@ const NavPillBackground = styled.div`
     `}
 `;
 
-// Pill text
+// pill text.
 const NavPillText = styled.span`
-    color: white;
-    font-weight: 500;
-    font-size: 1rem;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    position: relative;
+    /* layout */
     z-index: 2;
+    position: relative;
+
+    /* styles */
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 `;
 
-// Pill icon
+// pill icon.
 const NavPillIcon = styled.span`
+    /* layout */
+    z-index: 2;
+    position: relative;
+
+    /* styles */
     font-size: 1.2rem;
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-    position: relative;
-    z-index: 2;
 `;
 
-// Arrow text
+// arrow text. ("scroll to explore")
 const ArrowText = styled.div`
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
-    font-style: italic;
+    /* spacing */
+    margin-top: 1rem;
     margin-bottom: 0.5rem;
-    transition: opacity 0.3s ease;
+
+    /* styles */
     opacity: 0.7;
+    font-size: 0.9rem;
+    font-style: italic;
+    transition: opacity 0.3s ease;
+    color: rgba(255, 255, 255, 0.6);
 `;
 
-// Arrow icon with space gradient
+// arrow container.
 const ArrowIcon = styled.div`
-    font-size: 2rem;
-    background: linear-gradient(135deg, 
-        rgba(100, 200, 255, 0.9) 0%,
-        rgba(150, 220, 255, 0.8) 50%,
-        rgba(200, 240, 255, 0.9) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: bounce 2s ease-in-out infinite;
-    transition: transform 0.3s ease;
-    
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
-            transform: translateY(0);
+    /* layout */
+    position: relative;
+    width: 40px;
+    height: 60px;
+`;
+
+// svg for arrow, constellation style.
+const SimpleArrowSvg = styled.svg`
+    /* layout */
+    width: 100%;
+    height: 100%;
+    display: block;
+    animation: floatUpDown 3s ease-in-out infinite;
+
+    /* styles */
+    .star {
+        fill: #fff;
+        transform-origin: center;
+        filter: drop-shadow(0 0 3px rgba(150,200,255,.4));
+    }
+
+    .line {
+        stroke: rgba(255, 255, 255, 0.3);
+        stroke-width: 1;
+        stroke-linecap: round;
+    }
+
+    /* keyframes for floating up and down */
+    @keyframes floatUpDown {
+        0%, 100% { 
+            transform: translateY(0px); 
         }
-        40% {
-            transform: translateY(-8px);
-        }
-        60% {
-            transform: translateY(-4px);
+        50% { 
+            transform: translateY(-4px); 
         }
     }
 `;
 
-// Simple space-themed scroll arrow (defined after other arrow components)
+// arrow svg.
+const ConstellationArrowDown = () => (
+    <SimpleArrowSvg viewBox="0 0 40 60" aria-hidden="true">
+        {/* connecting lines */}
+        <line className="line" x1="20" y1="10" x2="20" y2="20" />
+        <line className="line" x1="20" y1="20" x2="20" y2="30" />
+        <line className="line" x1="20" y1="30" x2="20" y2="40" />
+        <line className="line" x1="20" y1="40" x2="20" y2="50" />
+        <line className="line" x1="20" y1="50" x2="7.5" y2="37.5" />
+        <line className="line" x1="20" y1="50" x2="32.5" y2="37.5" />
+        
+        {/* stars */}
+        {/* tip (bottom) */}
+        <circle className="star" cx="20" cy="50" r="2.0" />
+        {/* arrowhead */}
+        <circle className="star" cx="7.5" cy="37.5" r="1.8" />
+        <circle className="star" cx="32.5" cy="37.5" r="1.8" />
+        {/* shaft dots */}
+        <circle className="star" cx="20" cy="40" r="1.7" />
+        <circle className="star" cx="20" cy="30" r="1.7" />
+        <circle className="star" cx="20" cy="20" r="1.6" />
+        <circle className="star" cx="20" cy="10" r="1.8" />
+    </SimpleArrowSvg>
+);
+
+// simple arrow container.
 const SimpleArrow = styled(motion.div)`
+    /* layout */
     display: flex;
-    flex-direction: column;
     align-items: center;
+    flex-direction: column;
+
+    /* spacing */
     margin-top: 0.5rem;
-    cursor: pointer;
+
+    /* styles */
     transition: all 0.3s ease;
-    
-    &:hover {
-        transform: translateY(-3px);
-        
-        ${ArrowText} {
-            opacity: 1;
-        }
-        
-        ${ArrowIcon} {
-            transform: scale(1.2);
-        }
-    }
 `;
 
 export default Hero;
