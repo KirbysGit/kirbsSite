@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 // hero component.
-const Hero = ({ hiddenWhileLoading = false }) => {
+const Hero = () => {
     return (
         <HeroContainer>
             
@@ -48,24 +48,26 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                 <Star $top="42%" $left="88%" $animation="twinkle5" $duration="33.4" $opacity="0.6" $size="1px" />
                 <Star $top="68%" $left="12%" $animation="twinkle6" $duration="21.8" $opacity="0.7" $size="2px" />
                 
-                {/* moon (want to add a guy on it, or like an alien) */}
+                {/* moon (thinking bout adding some more to it, like a guy waving on it */}
                 <Moon>
-                    <Crater1 />
-                    <Crater2 />
-                    <Crater3 />
-                    <Crater4 />
+                    <Crater $top="15%" $left="55%" $size="6px" $depth="0.1" />
+                    <Crater $top="60%" $left="25%" $size="10px" $depth="0.08" />
+                    <Crater $top="35%" $left="15%" $size="4px" $depth="0.12" />
+                    <Crater $top="70%" $left="70%" $size="7px" $depth="0.09" />
+                    <Crater $top="25%" $left="35%" $size="8px" $depth="0.15" />
+                    <Crater $top="45%" $left="60%" $size="12px" $depth="0.12" />
+                    <Crater $top="80%" $left="40%" $size="5px" $depth="0.11" />
                 </Moon>
-                
-                {/* floating astronaut */}
                 
             </ParticleField>
 
+            {/* floating confused astronaut */}
             <Astronaut />
             
             {/* floating UFO */}
             <UFO />
 
-            {/* original messages upon load - always rendered for stable layout */}
+            {/* original messages upon load - delayed slide in */}
             <MsgsWrapper
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -110,12 +112,13 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                         </SubNameMsg>
 
                         {/* scroll invitation message */}
-                        {/* might give the user options like "strictly business" or "learn about me" */}
+                        {/* give the user options to navigate the site */}
                         <ScrollInvite
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 4.8, duration: 1.2, ease: "easeOut" }}
                         >
+                            {/* cta */}
                             <ScrollText>What do you want to see?</ScrollText>
                             
                             {/* navigation pills */}
@@ -124,11 +127,13 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 5.4, duration: 1.2, ease: "easeOut" }}
                             >
+                                {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
                                 <NavPill $variant="projects">
                                     <NavPillBackground $variant="projects" />
-                                    <NavPillText>Straight to biznus</NavPillText>
-                                    <NavPillIcon>🚀</NavPillIcon>
+                                    <NavPillText>Strictly business</NavPillText>
+                                    <NavPillIcon>✈️</NavPillIcon>
                                 </NavPill>
+                                {/* who even are you? (tim robinson type shi) */}
                                 <NavPill $variant="story">
                                     <NavPillBackground $variant="story" />
                                     <NavPillText>Who even are you?</NavPillText>
@@ -136,7 +141,7 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                                 </NavPill>
                             </NavPills>
                             
-                            {/* Simple space-themed scroll arrow */}
+                            {/* bouncing arrow */}
                             <SimpleArrow
                                 initial={{ y: 30, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
@@ -149,63 +154,35 @@ const Hero = ({ hiddenWhileLoading = false }) => {
                     </Msgs>
             </MsgsWrapper>
 
-            
         </HeroContainer>
     )
 }
 
 // entire container for the hero content.
 const HeroContainer = styled.div`
-    min-height: 100vh;
+    /* layout */
     display: flex;
-    position: relative;
     overflow: hidden;
+    min-height: 100vh;
+    position: relative;
+
+    /* styles */ 
     background: radial-gradient(ellipse at center, 
         rgba(20, 5, 40, 0.8) 0%, 
         rgba(0, 0, 0, 0.9) 30%, 
         rgba(13, 7, 27, 1) 70%);
-    
-    
-    /* Subtle starfield background */
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.3), transparent),
-            radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.4), transparent),
-            radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.2), transparent),
-            radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.5), transparent),
-            radial-gradient(1px 1px at 160px 30px, rgba(255,255,255,0.3), transparent),
-            radial-gradient(1px 1px at 200px 20px, rgba(255,255,255,0.4), transparent),
-            radial-gradient(1px 1px at 50px 120px, rgba(255,255,255,0.2), transparent),
-            radial-gradient(1px 1px at 180px 90px, rgba(255,255,255,0.3), transparent),
-            radial-gradient(1px 1px at 30px 150px, rgba(255,255,255,0.4), transparent),
-            radial-gradient(1px 1px at 120px 40px, rgba(255,255,255,0.2), transparent),
-            radial-gradient(1px 1px at 80px 160px, rgba(255,255,255,0.5), transparent),
-            radial-gradient(1px 1px at 150px 60px, rgba(255,255,255,0.3), transparent);
-        background-repeat: repeat;
-        background-size: 200px 200px;
-        animation: twinkle 4s ease-in-out infinite;
-        opacity: 0.8;
         
-        /* fade OUT near the bottom */
-        -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-                mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-        pointer-events: none;
-    }
-    
-    /* Breathing nebula effect */
+    /* breathing nebula effect (looks so cool) */
     &::after {
+        /* layout */
+        inset: 0;
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+
+        /* styles */
+        opacity: 0.7;
+        will-change: opacity, transform;
+        animation: breathe 10s ease-in-out infinite;
         background: 
             radial-gradient(ellipse at 20% 20%, rgba(120, 50, 200, 0.3) 0%, transparent 50%),
             radial-gradient(ellipse at 80% 80%, rgba(50, 100, 200, 0.2) 0%, transparent 50%),
@@ -216,31 +193,15 @@ const HeroContainer = styled.div`
                 rgba(40, 10, 80, 0.4) 50%,
                 rgba(20, 5, 40, 0.6) 75%,
                 rgba(0, 0, 0, 0.8) 100%);
-        animation: breathe 10s ease-in-out infinite;
-        opacity: 0.7;
+
         
-        /* fade OUT near the bottom */
+        /* fade out near bottom */
         -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
                 mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
         pointer-events: none;
     }
     
-    
-    @keyframes twinkle {
-        0%, 100% { 
-            opacity: 0.3;
-        }
-        25% { 
-            opacity: 0.8;
-        }
-        50% { 
-            opacity: 0.4;
-        }
-        75% { 
-            opacity: 0.9;
-        }
-    }
-    
+    /* keyframes for nebula breathing*/
     @keyframes breathe {
         0%, 100% { 
             opacity: 0.5;
@@ -253,161 +214,36 @@ const HeroContainer = styled.div`
     }
 `;
 
-// wrapper for smooth fade-in of messages.
-const MsgsWrapper = styled(motion.div)`
-    width: 100%;
-    height: 100%;
-    will-change: transform, opacity;
-    contain: layout;
-    z-index: 15;
-    opacity: 0.90;
-`;
-
-// my messages container.
-const Msgs = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding: 6rem 4rem;
-    width: 100%;
-    z-index: 15;
-`;
-
-// my first message floating in "What's up!"
-const SupMsg = styled(motion.div)`
-    margin: 0;
-    font-size: 4.5rem;
-    z-index: 10;
-    position: relative;
-`;
-
-const IntroNameMsg = styled(motion.div)`
-    margin-top: 0.5rem;
-    font-size: 2.5rem;
-    z-index: 10;
-`;
-// my message floating in saying my name.
-// my message floating in saying my name.
-const NameRow = styled(motion.div)`
-    margin-top: -2rem;
-    margin-bottom: -1rem;
-    text-align: center;
-    font-size: 20rem;
-
-    /* full-bleed so it centers against the viewport, not the padded column */
-    position: relative;
-    left: 1.5vw;
-
-    @media (max-width: 1900px) { 
-        font-size: 18rem; 
-    }
-    @media (max-width: 1599px) { 
-        font-size: 14rem; 
-    }
-`;
-
-const Name = styled.span`
-    font-weight: 900;
-    background: linear-gradient(90deg, 
-        rgb(0, 97, 241) 0%, 
-        rgb(45, 50, 180) 15%,
-        rgb(90, 0, 112) 30%, 
-        rgb(120, 50, 150) 45%,
-        rgb(69, 183, 209) 60%, 
-        rgb(100, 200, 200) 75%,
-        rgb(150, 206, 180) 90%,
-        rgb(0, 97, 241) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% 100%;
-    animation: gradientShift 10s linear infinite;
-    will-change: transform, opacity;
-    font-kerning: normal;
-    text-rendering: optimizeLegibility;
-    word-spacing: -0.15ch; /* tiny pull so the visual center sits on 50% */
-    
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 200% 50%; }
-    }
-
-    z-index: 15;
-`;
-
-// my fourth message floating in saying most people just call me Kirby.
-const SubNameMsg = styled(motion.div)`
-    margin-top: -2rem;
-    text-align: center;
-    font-style: italic;
-    font-size: 2.25rem;
-    z-index: 10;
-    color: rgba(255, 255, 255, 0.7);
-`;
-
-// Scroll invitation message
-const ScrollInvite = styled(motion.div)`
-    margin-top: 1.5rem;
-    text-align: center;
-    z-index: 15;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-`;
-
-const ScrollText = styled.div`
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.6);
-    font-style: italic;
-    text-align: center;
-    width: 100%;
-`;
-
-// waving hand emoji.
-const WavingHand = styled.span`
-    display: inline-block;
-    animation: wave 2.5s infinite;
-    transform-origin: 70% 70%;
-    
-    @keyframes wave {
-        0% { transform: rotate(0deg); }
-        10% { transform: rotate(14deg); }
-        20% { transform: rotate(-8deg); }
-        30% { transform: rotate(14deg); }
-        40% { transform: rotate(-4deg); }
-        50% { transform: rotate(10deg); }
-        60% { transform: rotate(0deg); }
-        100% { transform: rotate(0deg); }
-    }
-`
-
-// Individual particle field for natural twinkling
+// particle field for natural twinkling.
 const ParticleField = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    /* layout */
+    inset: 0;
     z-index: 1;
+    position: absolute;
 `;
 
-// Individual star particles
+// star particles.
 const Star = styled.div`
+    /* layout */
     position: absolute;
     top: ${props => props.$top};
     left: ${props => props.$left};
+
+    /* spacing */
     width: ${props => props.$size || '1px'};
     height: ${props => props.$size || '1px'};
+
+    /* styles */
     background: white;
     border-radius: 50%;
+    opacity: ${props => props.$opacity};
     box-shadow: 
         0 0 3px rgba(255, 255, 255, 0.9),
         0 0 6px rgba(255, 255, 255, 0.6),
         0 0 9px rgba(255, 255, 255, 0.3);
     animation: ${props => props.$animation} ${props => props.$duration}s ease-in-out infinite;
-    opacity: ${props => props.$opacity};
     
+    /* keyframes, twinkle animations, diff types of twinkling so it doesn't look uniform */
     @keyframes twinkle1 {
         0%, 92% { opacity: 0.4; }
         93% { opacity: 1; }
@@ -490,14 +326,21 @@ const Star = styled.div`
     }
 `;
 
-// Moon component
+// moon component. (looks great!)
 const Moon = styled.div`
+    /* layout */
     position: absolute;
     top: 15%;
     right: 20%;
+    z-index: 2;
+
+    /* spacing */
     width: 80px;
     height: 80px;
+
+    /* styles */
     border-radius: 50%;
+    animation: moonFloat 15s ease-in-out infinite;
     background: radial-gradient(circle at 30% 30%, 
         rgba(255, 255, 255, 0.9) 0%,
         rgba(240, 240, 240, 0.8) 20%,
@@ -509,42 +352,9 @@ const Moon = styled.div`
         0 0 8px rgba(255, 255, 255, 0.2),
         0 0 16px rgba(255, 255, 255, 0.1),
         inset -8px -8px 15px rgba(0, 0, 0, 0.15);
-    z-index: 2;
-    animation: moonFloat 15s ease-in-out infinite;
     
-    /* Multiple craters using pseudo-elements and additional divs */
-    &::before {
-        content: '';
-        position: absolute;
-        top: 25%;
-        left: 35%;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: radial-gradient(circle, 
-            rgba(0, 0, 0, 0.15) 0%,
-            rgba(0, 0, 0, 0.08) 50%,
-            transparent 100%);
-        box-shadow: 
-            0 0 3px rgba(0, 0, 0, 0.1);
-    }
     
-    &::after {
-        content: '';
-        position: absolute;
-        top: 45%;
-        left: 60%;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: radial-gradient(circle, 
-            rgba(0, 0, 0, 0.12) 0%,
-            rgba(0, 0, 0, 0.06) 50%,
-            transparent 100%);
-        box-shadow: 
-            0 0 4px rgba(0, 0, 0, 0.08);
-    }
-    
+    /* keyframes, moon float animation */
     @keyframes moonFloat {
         0%, 100% { 
             transform: translateY(0px) scale(1);
@@ -557,83 +367,48 @@ const Moon = styled.div`
     }
 `;
 
-// Additional crater components
-const Crater1 = styled.div`
+// flexible crater component for moon.
+const Crater = styled.div`
+    /* layout */
     position: absolute;
-    top: 15%;
-    left: 55%;
-    width: 6px;
-    height: 6px;
+    top: ${props => props.$top};
+    left: ${props => props.$left};
+
+    /* spacing */
+    width: ${props => props.$size};
+    height: ${props => props.$size};
+
+    /* styles */
     border-radius: 50%;
     background: radial-gradient(circle, 
-        rgba(0, 0, 0, 0.1) 0%,
-        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, ${props => props.$depth}) 0%,
+        rgba(0, 0, 0, ${props => props.$depth * 0.5}) 50%,
         transparent 100%);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0 ${props => parseFloat(props.$size) * 0.3}px rgba(0, 0, 0, ${props => props.$depth * 0.8});
 `;
 
-const Crater2 = styled.div`
-    position: absolute;
-    top: 60%;
-    left: 25%;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: radial-gradient(circle, 
-        rgba(0, 0, 0, 0.08) 0%,
-        rgba(0, 0, 0, 0.04) 50%,
-        transparent 100%);
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.06);
-`;
-
-const Crater3 = styled.div`
-    position: absolute;
-    top: 35%;
-    left: 15%;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: radial-gradient(circle, 
-        rgba(0, 0, 0, 0.12) 0%,
-        rgba(0, 0, 0, 0.06) 50%,
-        transparent 100%);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.08);
-`;
-
-const Crater4 = styled.div`
-    position: absolute;
-    top: 70%;
-    left: 70%;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: radial-gradient(circle, 
-        rgba(0, 0, 0, 0.09) 0%,
-        rgba(0, 0, 0, 0.04) 50%,
-        transparent 100%);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.06);
-`;
-
-// Floating astronaut component
+// astronaut.
 const Astronaut = styled.div`
-    position: absolute;
-    top: 60%; /* 25% from bottom */
-    left: -120px; /* Start off-screen to the left */
-    width: 90px; /* Bigger astronaut */
-    height: 90px;
-    background-image: url('src/images/1hero/astronaut.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    /* layout */
+    top: 60%; 
+    left: -10%;
     z-index: 0;
-    
-    /* Subtle glow effect */
+    position: absolute;
+
+    /* spacing */
+    width: 90px;
+    height: 90px;
+
+    /* styles */
+    animation-delay: 6s;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: astronautFloat 35s linear infinite;
+    background-image: url('src/images/1hero/astronaut.png');
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
     
-    /* Smooth floating animation - slower movement, faster rotation with delay */
-    animation: astronautFloat 35s linear infinite;
-    animation-delay: 6s; /* Start after text animations complete */
-    
+    /* keyframes, rotating and floating */
     @keyframes astronautFloat {
         0% {
             transform: translateX(0) rotate(0deg);
@@ -646,33 +421,33 @@ const Astronaut = styled.div`
         }
     }
     
-    /* Pause animation during loading to prevent jitter */
+    /* pause animation during loading */
     :root[data-loading="true"] & {
         animation-play-state: paused;
     }
 `;
 
-// Floating UFO component with sinusoidal wave motion
+// ufo.
 const UFO = styled.div`
+    /* layout */
+    top: 10%;
+    z-index: 0;
+    right: -10%;
     position: absolute;
-    top: 10%; /* Near the top of the screen */
-    right: -80px; /* Start off-screen to the right */
+
+    /* spacing */
     width: 70px;
     height: 70px;
-    background-image: url('src/images/1hero/ufo.png');
+
+    /* styles */
+    animation-delay: 8s;
     background-size: contain;
-    background-repeat: no-repeat;
     background-position: center;
-    z-index: 0;
-    
-    /* Subtle glow effect */
-    filter: drop-shadow(0 0 6px rgba(100, 255, 100, 0.2)) 
-            drop-shadow(0 0 12px rgba(150, 255, 150, 0.1));
-    
-    /* Combined smooth movement and bobbing animation with delay */
+    background-repeat: no-repeat;
     animation: ufoMove 20s linear infinite;
-    animation-delay: 8s; /* Start after astronaut begins */
+    background-image: url('src/images/1hero/ufo.png');
     
+    /* bobbing up and down animation */
     @keyframes ufoMove {
         0% {
             transform: translateX(0) translateY(0);
@@ -691,43 +466,254 @@ const UFO = styled.div`
         }
     }
     
-    /* Pause animation during loading to prevent jitter */
+    /* pause animation during loading */
     :root[data-loading="true"] & {
         animation-play-state: paused;
     }
 `;
 
-// Navigation pills container
-const NavPills = styled(motion.div)`
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr)); /* equal columns */
-    gap: 1.5rem;
-    width: min(80vw, 680px);     /* set a nice max width */
-    margin: 1rem auto 0;         /* center the block */
-    z-index: 10;
-    text-align: center;
-    border-radius: 9999px;       /* optional */
-    padding: .5rem;              /* optional */
+// wrapper for smooth fade-in of messages.
+const MsgsWrapper = styled(motion.div)`
+    /* layout */
+    z-index: 15;
+    width: 100%;
+    height: 100%;
+    contain: layout;
+
+    /* styles */
+    opacity: 0.9;
+    will-change: transform, opacity;
 `;
 
-// Individual navigation pill
-const NavPill = styled.div`
+// my messages container.
+const Msgs = styled.div`
+    /* layout */
+    z-index: 15;
+    width: 100%;
     display: flex;
+    flex-direction: column;
+
+    /* spacing */
+    gap: 0;
+    padding: 6rem 4rem;
+`;
+
+// my first message floating in "What's up!"
+const SupMsg = styled(motion.div)`
+    /* layout */
+    z-index: 10;
+    position: relative;
+
+    /* spacing */
+    margin: 0;
+
+    /* styles */
+    font-size: 5.5rem;
+
+    /* media queries */
+
+    @media (max-width: 1900px) { 
+        font-size: 5.5rem; 
+    }
+
+    @media (max-width: 1600px) { 
+        font-size: 3rem; 
+    }
+`;
+
+// waving hand emoji.
+const WavingHand = styled.span`
+    /* layout */
+    display: inline-block;
+    transform-origin: 70% 70%;
+
+    /* styles */
+    animation: wave 2.5s infinite;
+    
+    /* keyframes, wave animation */
+    @keyframes wave {
+        0% { transform: rotate(0deg); }
+        10% { transform: rotate(14deg); }
+        20% { transform: rotate(-8deg); }
+        30% { transform: rotate(14deg); }
+        40% { transform: rotate(-4deg); }
+        50% { transform: rotate(10deg); }
+        60% { transform: rotate(0deg); }
+        100% { transform: rotate(0deg); }
+    }
+`
+
+// my second message floating in saying "My name's..."
+const IntroNameMsg = styled(motion.div)`
+    /* layout */
+    z-index: 10;
+
+    /* spacing */
+    margin-top: 0.5rem;
+
+    /* styles */
+    font-size: 2.5rem;
+
+    /* media queries */
+    @media (max-width: 1900px) { 
+        font-size: 2.5rem; 
+    }
+
+    @media (max-width: 1600px) { 
+        font-size: 2rem; 
+    }
+`;
+
+// my name!
+const NameRow = styled(motion.div)`
+    /* layout */
+    left: 1.5vw;
+    position: relative;
+
+    /* spacing */
+    margin-top: -2rem;
+    margin-bottom: -1rem;
+
+    /* styles */
+    font-size: 20rem;
+    text-align: center;
+
+    /* media queries */
+
+    @media (max-width: 1900px) { 
+        font-size: 18rem; 
+    }
+    @media (max-width: 1599px) { 
+        font-size: 16rem; 
+    }
+`;
+
+const Name = styled.span`
+    /* layout */
+    z-index: 15;
+
+    /* styles */
+    font-weight: 900;
+    background-size: 200% 100%;
+    animation: gradientShift 10s linear infinite;
+    background: linear-gradient(90deg, 
+        rgb(0, 97, 241) 0%, 
+        rgb(45, 50, 180) 15%,
+        rgb(90, 0, 112) 30%, 
+        rgb(120, 50, 150) 45%,
+        rgb(69, 183, 209) 60%, 
+        rgb(100, 200, 200) 75%,
+        rgb(150, 206, 180) 90%,
+        rgb(0, 97, 241) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    /* keyframes, gradient shift animation */
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+    }
+`;
+
+// lil sub msg for my name.
+const SubNameMsg = styled(motion.div)`
+    /* layout */
+    z-index: 10;
+
+    /* spacing */
+    margin-top: -2rem;
+
+    /* styles */
+    text-align: center;
+    font-style: italic;
+    font-size: 2.75rem;
+    color: rgba(255, 255, 255, 0.7);
+
+    /* media queries */
+    @media (max-width: 1900px) { 
+        font-size: 2.75rem; 
+    }
+    @media (max-width: 1600px) { 
+        font-size: 2.25rem; 
+    }
+`;
+
+// scroll invitation message.
+const ScrollInvite = styled(motion.div)`
+    /* layout */
+    z-index: 15;
+    width: 100%;
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-direction: column;
+
+    /* spacing */
+    margin-top: 1.5rem;
+
+    /* styles */
+    text-align: center;
+`;
+
+// scroll text. what do you want to see?
+const ScrollText = styled.div`
+    /* spacing */
+    width: 100%;
+
+    /* styles */
+    font-size: 2rem;
+    font-style: italic;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+
+    /* media queries */
+    @media (max-width: 1900px) { 
+        font-size: 2rem; 
+    }
+    @media (max-width: 1600px) { 
+        font-size: 1.5rem; 
+    }
+`;
+
+// navigation pills container.
+const NavPills = styled(motion.div)`
+    /* layout */
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    /* spacing */
+    gap: 1.5rem;
+    margin: 1rem auto 0;
+    width: min(80vw, 680px);
+    text-align: center;
+`;
+
+// navigation pill.
+const NavPill = styled.div`
+    /* layout */
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    overflow: hidden;
+    position: relative;
     align-items: center;
     justify-content: center;
+    
+    /* spacing */
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    border-radius: 50px;
+
+    /* styles */
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-    width: 100%;          /* take the full column width */
-    min-width: 0;         /* allow shrinking inside grid */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Gradient backgrounds based on variant */
+    /* gradient background based on variant */
+
+    /* projects variant, sky style for background of Projects.jsx. */
     ${props => props.$variant === 'projects' && `
         background: linear-gradient(to bottom,
             rgb(150, 200, 246) 0%,
@@ -746,9 +732,10 @@ const NavPill = styled.div`
             rgb(73, 161, 238) 94%,
             rgb(72, 160, 238) 97%,
             rgb(71, 160, 238) 100%);
-        box-shadow: 0 0 20px rgba(150, 200, 246, 0.4);
+        box-shadow: 0 0 20px rgba(150, 200, 246, 0.1);
     `}
     
+    /* story variant, spacey style for background of Story.jsx. */
     ${props => props.$variant === 'story' && `
         background: linear-gradient(to bottom,
             rgb(13, 7, 27) 0%,
@@ -758,22 +745,14 @@ const NavPill = styled.div`
             rgb(65, 45, 110) 80%,
             rgb(85, 60, 135) 90%,
             rgb(100, 70, 150) 100%);
-        box-shadow: 0 0 20px rgba(100, 70, 150, 0.4);
+        box-shadow: 0 0 20px rgba(100, 70, 150, 0.1);
     `}
     
+    /* hover effect */
     &:hover {
         transform: translateY(-3px) scale(1.08);
-        box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         border-color: rgba(255, 255, 255, 0.3);
-        
-        /* Subtle enhanced glow on hover */
-        ${props => props.$variant === 'projects' && `
-            box-shadow: 0 0 25px rgba(150, 200, 246, 0.4), 0 0 35px rgba(255, 255, 255, 0.2);
-        `}
-        
-        ${props => props.$variant === 'story' && `
-            box-shadow: 0 0 25px rgba(100, 70, 150, 0.4), 0 0 35px rgba(255, 255, 255, 0.2);
-        `}
     }
     
     &:active {
