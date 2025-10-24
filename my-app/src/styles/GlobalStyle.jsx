@@ -29,6 +29,30 @@ export const GlobalStyle = createGlobalStyle`
         font-style: normal;
     }
 
+    /* Smooth scrolling optimizations */
+    html {
+        scroll-behavior: smooth;
+        overscroll-behavior: contain;
+    }
+    
+    body {
+        overscroll-behavior-y: contain;
+        scroll-behavior: smooth;
+    }
+    
+    /* Prevent scroll-induced re-renders */
+    * {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+    
+    /* Optimize scroll performance */
+    .story-section {
+        contain: layout style paint;
+        will-change: auto;
+        transform: translateZ(0);
+    }
+
     @font-face {
         font-family: 'Red Hat Display';
         src: url('/fonts/RedHatDisplay-LightItalic.ttf') format('truetype');

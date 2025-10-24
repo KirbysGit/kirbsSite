@@ -1,12 +1,15 @@
+// app.jsx
+
+// bread and butter of the app, router and routes.
+// where i handle all the main components and how they're connected.
+
 // imports.
 import React, { useState, useEffect } from 'react';
 import {BrowserRouter, Routes, Route } from 'react-router-dom';
 
-
-
 // local imports.
 import Hero from './components/1hero/Hero';
-//import Story from './components/1story/Story';
+import Story from './components/2story/Story';
 import GlobalStyle from './styles/GlobalStyle';
 //import Projects from './components/Projects/Projects';
 //import AExperience from './components/Experience/ActualExperience';
@@ -15,19 +18,22 @@ import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
 //import Background from './components/Background/Background.jsx';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 
-// App Component.
+// app component.
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+
+  // states for loading screen.
   const [isFading, setIsFading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
-    // Mark document state so CSS can pause animations
+    // mark document state so css can pause animations.
     document.documentElement.dataset.loading = isLoading ? "true" : "false";
   }, [isLoading]);
 
+  // this is just used as a base loading animation, not actual loading going on.
   useEffect(() => {
-    // Simple loading simulation - no heavy image preloading
+    // simple loading simulation - no heavy image preloading.
     const loadingSteps = [
       { progress: 30, delay: 200 },
       { progress: 60, delay: 300 },
@@ -35,7 +41,10 @@ function App() {
       { progress: 100, delay: 100 }
     ];
 
+    // initialize step.
     let currentStep = 0;
+
+    // update the progress, update the step, update the progress, and wait for the delay.
     const updateProgress = () => {
       if (currentStep < loadingSteps.length) {
         const step = loadingSteps[currentStep];
@@ -45,11 +54,11 @@ function App() {
           updateProgress();
         }, step.delay);
       } else {
-        // Start fade out
+        // once steps are complete, fade out of the loading screen.
         setTimeout(() => {
           setIsFading(true);
           
-          // Hide loading screen after fade completes
+          // hide the loading screen after fade completes.
           setTimeout(() => {
             setIsLoading(false);
           }, 1200);
@@ -71,7 +80,7 @@ function App() {
               <>
                 {/* Always mounted and visible - loading screen overlays on top */}
                 <Hero />
-                {/* <Story /> */}
+                <Story />
                 {/* <AExperience /> */}
                 {/* <Projects /> */}
                 {/* <Skills /> */}
@@ -89,5 +98,5 @@ function App() {
   );
 }
 
-// Export.
+// export.
 export default App; 

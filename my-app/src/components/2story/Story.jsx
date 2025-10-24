@@ -1,9 +1,15 @@
 // basic imports.
 import styled from 'styled-components';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
 
 // map pin component.
 import MapPin from '../Experience/MapPin';
+
+// aurora component
+import Aurora from './Aurora';
+
+// meteor shower component
+import MeteorShower from './MeteorShower';
 
 // images.
 import ucf4 from '@/images/story/ucf4.jpg';
@@ -15,6 +21,13 @@ import alwaysChillin from '@/images/story/alwaysChillin.jpg';
 import naturalAthlete from '@/images/story/naturalAthlete.jpg';
 import engineeringGuy from '@/images/story/engineeringGuy.jpg';
 import sanduskySunset from '@/images/story/sanduskySunset.jpg';
+import spaceStation from '@/images/story/spacestation.png';
+import satellite1 from '@/images/story/satellite1.png';
+import satellite2 from '@/images/story/satellite2.png';
+import asteroid1 from '@/images/story/asteroid1.png';
+import asteroid2 from '@/images/story/asteroid2.png';
+import asteroid3 from '@/images/story/asteroid3.png';
+import asteroid4 from '@/images/story/asteroid4.png';
 
 const Story = () => {
     
@@ -22,73 +35,94 @@ const Story = () => {
     const [activeParagraph, setActiveParagraph] = useState(0);
     const paragraphRefs = useRef([]);
 
-    // scrolling tracking for early years section.
+    // optimized scroll tracking with throttling and memoization
     useEffect(() => {
-
-        // variables.
         let lastScrollTime = 0;
         let cachedViewportHeight = window.innerHeight;
         let currentActiveParagraph = 0;
+        let rafId = null;
 
-        // function to handle scrolling.
+        // throttled scroll handler with requestAnimationFrame
         const handleScroll = () => {
-            // take now timestamp.
             const now = Date.now();
             
-            //  only run ever 100ms to reduce over calculations.
-            if (now - lastScrollTime < 100) return;
+            // throttle to 16ms (60fps) instead of 100ms
+            if (now - lastScrollTime < 16) return;
             lastScrollTime = now;
 
-            // cache viewport height to avoid repeated calculations.
-            cachedViewportHeight = window.innerHeight;
-            const centerThreshold = cachedViewportHeight * 0.5;
-            const bottomThreshold = cachedViewportHeight * 0.4;
+            // cancel previous RAF if still pending
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
 
-            // new active paragraph.
-            let newActiveParagraph = currentActiveParagraph;
+            rafId = requestAnimationFrame(() => {
+                const centerThreshold = cachedViewportHeight * 0.5;
+                const bottomThreshold = cachedViewportHeight * 0.4;
+                let newActiveParagraph = currentActiveParagraph;
 
-            paragraphRefs.current.forEach((ref, index) => {
-                // if ref is not found, return.
-                if (!ref) return;
-                
-                // get bounding client rect.
-                const rect = ref.getBoundingClientRect();
-                const isVisible = rect.top < centerThreshold && rect.bottom > bottomThreshold;
-                
-                // if is visible, set new active paragraph.
-                if (isVisible) {
-                    newActiveParagraph = index;
+                // batch DOM reads
+                const rects = paragraphRefs.current.map(ref => 
+                    ref ? ref.getBoundingClientRect() : null
+                );
+
+                // find active paragraph
+                rects.forEach((rect, index) => {
+                    if (rect && rect.top < centerThreshold && rect.bottom > bottomThreshold) {
+                        newActiveParagraph = index;
+                    }
+                });
+
+                // only update if changed
+                if (newActiveParagraph !== currentActiveParagraph) {
+                    currentActiveParagraph = newActiveParagraph;
+                    setActiveParagraph(newActiveParagraph);
                 }
             });
-
-            // only update state if the active paragraph actually changed.
-            if (newActiveParagraph !== currentActiveParagraph) {
-                currentActiveParagraph = newActiveParagraph;
-                setActiveParagraph(newActiveParagraph);
-            }
         };
 
-        // handle window resize to update cached viewport height.
+        // debounced resize handler
+        let resizeTimeout;
         const handleResize = () => {
-            cachedViewportHeight = window.innerHeight;
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                cachedViewportHeight = window.innerHeight;
+            }, 150);
         };
 
-        // use passive scroll listener for better performance.
         window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', handleResize, { passive: true });
+        
+        // initial check
         handleScroll();
         
-        // remove event listeners on unmount.
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
+            if (rafId) cancelAnimationFrame(rafId);
+            clearTimeout(resizeTimeout);
         };
     }, []);
 
     return (
         <StoryContainer>
+            {/* Background effects - positioned absolutely to avoid layout shifts */}
+            <BackgroundEffectsLayer>
+                <Aurora />
+                { /* <MeteorShower images={[asteroid1, asteroid2, asteroid3, asteroid4]} /> */}
+            </BackgroundEffectsLayer>
+            
+            {/* main story title */}
+            <StoryMainTitle>My Story</StoryMainTitle>
+            
             {/* early years */}
             <StorySection>
+
+                {/* space station - static in top right */}
+                <SpaceStation />
+                
+                {/* satellites floating through background */}
+                <Satellite1 />
+                <Satellite2 />
 
                 <OverlappingImageContainer>
                     {/* pin of windermere */}
@@ -303,6 +337,7 @@ const Story = () => {
             {/* post-grad life */}
             <StorySection>
 
+
                 <OverlappingImageContainer>
 
                     {/* image of the camp site */}
@@ -420,10 +455,10 @@ const StoryContainer = styled.div`
     flex-direction: column;
 
     /* spacing */
-    gap: 1rem;
+    gap: 0rem;
     width: 100%;
     min-height: 100vh;
-    padding-top: 4rem;
+    padding-top: 2rem;
     padding-bottom: 6rem;
 
     /* styles */
@@ -436,9 +471,61 @@ const StoryContainer = styled.div`
         rgb(85, 60, 135) 90%,
         rgb(100, 70, 150) 100%);
 
+    /* smooth scrolling optimizations */
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+    contain: layout style paint;
+    will-change: scroll-position;
+
     /* media queries */
     @media (max-width: 1600px) {
         padding-bottom: 3rem;
+    }
+`;
+
+// background effects layer - prevents layout shifts
+const BackgroundEffectsLayer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    pointer-events: none;
+    contain: layout style paint;
+    will-change: auto;
+    transform: translateZ(0); /* force GPU layer */
+`;
+
+// main story title at the top
+const StoryMainTitle = styled.div` 
+    /* layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* spacing */
+    margin-bottom: -1.5rem;
+    padding: 0;
+
+    /* styles */
+    font-weight: 700;
+    text-align: center;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 1) 0%,
+        rgba(200, 180, 255, 0.95) 50%,
+        rgba(150, 200, 255, 1) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    /* media queries */
+    @media (max-width: 2000px) {
+        font-size: 6rem; 
+    }
+
+    @media (max-width: 1600px) {
+        font-size: 4rem;
     }
 `;
 
@@ -452,6 +539,12 @@ const StorySection = styled.div`
     /* spacing */
     gap: 3rem;
     padding: 3rem 2rem;
+    
+    /* performance optimizations */
+    contain: layout style paint;
+    will-change: auto;
+    transform: translateZ(0); /* force GPU layer */
+    backface-visibility: hidden; /* prevent rendering artifacts */
 `;
 
 // images throughout the "story".
@@ -466,6 +559,12 @@ const OverlappingImageContainer = styled.div`
     /* spacing */
     padding: 1rem;
     min-height: 500px;
+    
+    /* performance optimizations */
+    contain: layout style paint;
+    will-change: auto;
+    transform: translateZ(0); /* force GPU layer */
+    backface-visibility: hidden; /* prevent rendering artifacts */
 `;
 
 // wrapper for the mapbox pin. used twice, once for windy, and one for ucf.
@@ -770,6 +869,12 @@ const TextContainer = styled.div`
     /* styles */
     color: white;
     
+    /* performance optimizations */
+    contain: layout style paint;
+    will-change: auto;
+    transform: translateZ(0); /* force GPU layer */
+    backface-visibility: hidden; /* prevent rendering artifacts */
+    
     /* --- positioning based on $isReversed prop --- */
     ${props => props.$isReversed && `
         padding: 0rem 0rem 2rem 2rem;
@@ -971,6 +1076,134 @@ const StoryParagraph = styled.p`
     .skill {
         color: rgb(140, 180, 240);
         font-weight: 500;
+    }
+`;
+
+// space station - static in top right of Early Years section
+const SpaceStation = styled.div`
+    /* layout */
+    top: 0%;
+    right: 5%;
+    z-index: 0;
+    position: absolute;
+
+    /* spacing */
+    width: 250px;
+    height: 250px;
+
+    /* styles */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(${spaceStation});
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
+    opacity: 0.7;
+    will-change: transform;
+    contain: layout style paint;
+    
+    /* subtle floating animation - optimized */
+    animation: spaceStationFloat 8s ease-in-out infinite;
+    
+    @keyframes spaceStationFloat {
+        0%, 100% { 
+            transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        50% { 
+            transform: translate3d(0, -8px, 0) rotate(2deg);
+        }
+    }
+`;
+
+// satellite 1 - floating through background
+const Satellite1 = styled.div`
+    /* layout */
+    top: 12.5%;
+    left: -15%;
+    z-index: 0;
+    position: absolute;
+
+    /* spacing */
+    width: 100px;
+    height: 180px;
+
+    /* styles */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(${satellite1});
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
+    opacity: 0.6;
+    will-change: transform;
+    contain: layout style paint;
+    
+    /* floating animation with delay - optimized */
+    animation-delay: 3s;
+    animation: satellite1Float 25s linear infinite;
+    
+    @keyframes satellite1Float {
+        0% {
+            transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        25% {
+            transform: translate3d(calc(25vw + 40px), -30px, 0) rotate(90deg);
+        }
+        50% {
+            transform: translate3d(calc(50vw + 80px), 0, 0) rotate(180deg);
+        }
+        75% {
+            transform: translate3d(calc(75vw + 120px), 30px, 0) rotate(270deg);
+        }
+        100% {
+            transform: translate3d(calc(100vw + 160px), 0, 0) rotate(360deg);
+        }
+    }
+`;
+
+// satellite 2 - floating through background with different path
+const Satellite2 = styled.div`
+    /* layout */
+    top: 22.5%;
+    right: -15%;
+    z-index: 0;
+    position: absolute;
+
+    /* spacing */
+    width: 100px;
+    height: 180px;
+
+    /* styles */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(${satellite2});
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
+    opacity: 0.5;
+    will-change: transform;
+    contain: layout style paint;
+    
+    /* floating animation with different delay and path - right to left - optimized */
+    animation-delay: 7s;
+    animation: satellite2Float 30s linear infinite;
+    
+    @keyframes satellite2Float {
+        0% {
+            transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        20% {
+            transform: translate3d(calc(-20vw - 30px), -20px, 0) rotate(72deg);
+        }
+        40% {
+            transform: translate3d(calc(-40vw - 60px), 0, 0) rotate(144deg);
+        }
+        60% {
+            transform: translate3d(calc(-60vw - 90px), 20px, 0) rotate(216deg);
+        }
+        80% {
+            transform: translate3d(calc(-80vw - 120px), -10px, 0) rotate(288deg);
+        }
+        100% {
+            transform: translate3d(calc(-100vw - 150px), 0, 0) rotate(360deg);
+        }
     }
 `;
 

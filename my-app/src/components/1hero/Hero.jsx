@@ -71,14 +71,14 @@ const Hero = () => {
                 <MsgsWrapper
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
                 >
                     <Msgs>
                         {/* what's up! message */}
                         <SupMsg
                             initial={{ x: -500, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
+                        transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
                         >
                             What's up! 
                             <WavingHand>👋</WavingHand>
@@ -88,70 +88,70 @@ const Hero = () => {
                         <IntroNameMsg
                             initial={{ x: -500, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 1.8, duration: 1.2, ease: "easeOut" }}
+                        transition={{ delay: 1.8, duration: 1.2, ease: "easeOut" }}
                         >
                             My name's
                         </IntroNameMsg>
 
                         {/* my name */}
-                            <NameRow
+                        <NameRow
                             initial={{ x: -500, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 2.8, duration: 1.2, ease: "easeOut" }}
+                            transition={{ delay: 2.8, duration: 1.2, ease: "easeOut" }}
                         >
-                                <Name className="nameGradient">Colin Kirby</Name>
-                            </NameRow>
+                            <Name className="nameGradient">Colin Kirby</Name>
+                        </NameRow>
 
                         {/* sub name message*/}
                         <SubNameMsg
                             initial={{ y: -50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 3.8, duration: 1.2, ease: "easeOut" }}
+                        transition={{ delay: 3.8, duration: 1.2, ease: "easeOut" }}
                         >
                             <b>* Most people just call me Kirby</b>
                         </SubNameMsg>
 
                         {/* scroll invitation message */}
-                        {/* give the user options to navigate the site */}
+                    {/* give the user options to navigate the site */}
                         <ScrollInvite
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 4.8, duration: 1.2, ease: "easeOut" }}
+                    >
+                        {/* cta */}
+                        <ScrollText>What do you want to see?</ScrollText>
+                        
+                        {/* navigation pills */}
+                        <NavPills
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 4.8, duration: 1.2, ease: "easeOut" }}
+                            transition={{ delay: 5.4, duration: 1.2, ease: "easeOut" }}
                         >
-                            {/* cta */}
-                            <ScrollText>What do you want to see?</ScrollText>
-                            
-                            {/* navigation pills */}
-                            <NavPills
-                                initial={{ y: 50, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 5.4, duration: 1.2, ease: "easeOut" }}
-                            >
-                                {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
-                                <NavPill $variant="projects">
-                                    <NavPillBackground $variant="projects" />
-                                    <NavPillText>Strictly business</NavPillText>
-                                    <NavPillIcon>✈️</NavPillIcon>
-                                </NavPill>
-                                {/* who even are you? (tim robinson type shi) */}
-                                <NavPill $variant="story">
-                                    <NavPillBackground $variant="story" />
-                                    <NavPillText>Who even are you?</NavPillText>
-                                    <NavPillIcon>👨‍🚀</NavPillIcon>
-                                </NavPill>
-                            </NavPills>
-                            
-                            {/* constellation arrow */}
-                            <SimpleArrow
-                                initial={{ y: 30, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 6.0, duration: 1.0, ease: "easeOut" }}
-                            >
-                                <ArrowText>Scroll to explore</ArrowText>
-                                <ArrowIcon>
-                                    <ConstellationArrowDown />
-                                </ArrowIcon>
-                            </SimpleArrow>
+                            {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
+                            <NavPill $variant="projects">
+                                <NavPillBackground $variant="projects" />
+                                <NavPillText>Strictly business</NavPillText>
+                                <NavPillIcon>✈️</NavPillIcon>
+                            </NavPill>
+                            {/* who even are you? (tim robinson type shi) */}
+                            <NavPill $variant="story">
+                                <NavPillBackground $variant="story" />
+                                <NavPillText>Who even are you?</NavPillText>
+                                <NavPillIcon>👨‍🚀</NavPillIcon>
+                            </NavPill>
+                        </NavPills>
+                        
+                        {/* constellation arrow */}
+                        <SimpleArrow
+                            initial={{ y: 30, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 6.0, duration: 1.0, ease: "easeOut" }}
+                        >
+                            <ArrowText>Scroll to explore</ArrowText>
+                            <ArrowIcon>
+                                <ConstellationArrowDown />
+                            </ArrowIcon>
+                        </SimpleArrow>
                         </ScrollInvite>
                     </Msgs>
                 </MsgsWrapper>
