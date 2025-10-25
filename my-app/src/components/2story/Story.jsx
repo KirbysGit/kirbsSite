@@ -31,30 +31,6 @@ import asteroid4 from '@/images/story/asteroid4.png';
 
 const Story = memo(() => {
     
-    // states.
-    const [activeParagraph, setActiveParagraph] = useState(0);
-    const paragraphRefs = useRef([]);
-
-    // optimized scroll tracking with IntersectionObserver (no layout reads)
-    useEffect(() => {
-        const els = paragraphRefs.current.filter(Boolean);
-        els.forEach((el, i) => el.setAttribute('data-idx', i));
-
-        const io = new IntersectionObserver(
-            (entries) => {
-                // pick the most visible paragraph
-                const best = entries
-                    .filter(e => e.isIntersecting)
-                    .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-                if (best) setActiveParagraph(Number(best.target.dataset.idx));
-            },
-            { threshold: [0.3, 0.6] } // tune as desired
-        );
-
-        els.forEach(el => io.observe(el));
-        return () => io.disconnect();
-    }, []);
-
     // preload images that appear at section boundaries to prevent decode jitter
     useEffect(() => {
         const srcs = [
@@ -65,25 +41,6 @@ const Story = memo(() => {
         srcs.forEach(src => { 
             const img = new Image(); 
             img.src = src; 
-        });
-    }, []);
-
-    // memoized paragraph component with stable ref callback
-    const MemoizedStoryParagraph = useMemo(() => {
-        return React.memo(function Para({ children, paragraphIndex, isReversed, isActive }) {
-            const setRef = useCallback((el) => {
-                paragraphRefs.current[paragraphIndex] = el || null;
-            }, [paragraphIndex]);
-
-            return (
-                <StoryParagraph
-                    ref={setRef}
-                    $isActive={isActive}
-                    $isReversed={isReversed}
-                >
-                    {children}
-                </StoryParagraph>
-            );
         });
     }, []);
 
@@ -169,38 +126,28 @@ const Story = memo(() => {
                 <TextContainer>
                     <StoryTitle>The Early Years ~<StoryDate>03' to 21'</StoryDate></StoryTitle>
                     <StoryText>
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={0}
-                            isActive={activeParagraph === 0}
-                            isReversed={false}
-                        >
+                        <StoryParagraph $$isReversed={false}>
                             🏠 So... back to <span className="special-moment">day one</span>, I was born and raised in <span className="location">Windermere, Florida</span>. Outside of <span className="activity">school</span>, I spent basically all of my time doing one of the following: <span className="activity">playing sports</span>, <span className="activity">video games</span>, <span className="activity">drawing</span>, or just hanging out with my <span className="subject-good">friends</span> doing literally <span className="emphasis">anything that sounded fun</span>.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={1}
-                            isActive={activeParagraph === 1}
-                            isReversed={false}
+                        <StoryParagraph 
+                            $isReversed={false}
                         >
                             📚 School wasn't really my favorite, mostly because of the <span className="negative">early mornings</span> and <span className="negative">boring homework</span>. I kept my <span className="subject-good">A's</span> to stay out of trouble. <span className="subject-good">Math</span> and <span className="subject-good">science</span> were my strong suits. <span className="subject-bad">English</span> definitely was <span className="emphasis">NOT</span>, and honestly I still don't understand where to use <span className="skill">em-dashes</span>.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
 
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={2}
-                            isActive={activeParagraph === 2}
-                            isReversed={false}
+                        <StoryParagraph 
+                            $isReversed={false}
                         >
                             🎨 I was always drawn to <span className="activity">art</span>, probably from my <span className="subject-good">parents</span>. I'd <span className="activity">doodle</span> in class and loved the <span className="activity">design</span> side of projects because it let me be <span className="emphasis">creative</span>. That same <span className="emphasis">creative</span> streak pulled me into <span className="activity">music</span> too.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={3}
-                            isActive={activeParagraph === 3}
-                            isReversed={false}
+                        <StoryParagraph 
+                            $isReversed={false}
                         >
                             🎓 By the time I hit <span className="special-moment">high school</span>, my schedule was packed with <span className="activity">sports</span>, <span className="activity">classes</span>, and a couple of <span className="activity">clubs</span>. I didn't really have a big plan for <span className="special-moment">college</span> at first. I just knew I would go, and I picked a school <span className="emphasis">a few days</span> before applying based on my <span className="subject-good">scholarships</span>.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                     </StoryText>
                 </TextContainer>
 
@@ -282,41 +229,33 @@ const Story = memo(() => {
                 </OverlappingImageContainer>
 
                 {/* my college years story telling */}
-                <TextContainer $isReversed={true}>
+                <TextContainer $$isReversed={true}>
                     <StoryTitle>My College Years ~<StoryDate>21' to 25'</StoryDate></StoryTitle>
                     <StoryText>
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={4}
-                            isActive={activeParagraph === 4}
-                            isReversed={true}
+                        <StoryParagraph 
+                            $isReversed={true}
                         >
                             🏫 I wasn't really set on any university, but <span className="ucf">UCF</span> felt like the right fit. I came into <span className="ucf">UCF</span> majoring in <span className="major">Mechanical Engineering</span> just because I was good at <span className="subject-good">STEM</span> stuff and didn't stop until after I got through <span className="emphasis">Statics</span> and realized that I wasn't really in the mood for any more free-body diagrams.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={5}
-                            isActive={activeParagraph === 5}
-                            isReversed={true}
+                        <StoryParagraph 
+                            $isReversed={true}
                         >
                             🛠️ <span className="special-moment">Freshman year</span> flew by, but I do remember one <span className="python">Intro to Python</span> class being really <span className="subject-good">interesting</span> to me. Then in my <span className="special-moment">sophomore year</span> I switched over to <span className="major">Computer Engineering</span> so I could keep some <span className="skill">hands-on</span> work while learning to <span className="skill">code</span>.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
 
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={6}
-                            isActive={activeParagraph === 6}
-                            isReversed={true}
+                        <StoryParagraph 
+                            $isReversed={true}
                         >
                             🔒 College for me felt a lot like high school in terms of the <span className="skill">routine</span>. I was in <span className="activity">class</span>, <span className="activity">studying</span>, <span className="activity">working</span>, or at the <span className="activity">gym</span> most days. I joined a few <span className="activity">clubs</span> for the <span className="skill">networking</span>. It was a <span className="emphasis">constant grind</span>, but honestly I was <span className="emphasis">addicted</span> to it.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={7}
-                            isActive={activeParagraph === 7}
-                            isReversed={true}
+                        <StoryParagraph 
+                            $isReversed={true}
                         >
                             🚀 These <span className="special-moment">years</span> were where I <span className="emphasis">grew</span> the most. But with my <span className="emphasis">packed schedule</span>, I realized I had <span className="negative">lost track</span> of what I was working towards. I was getting hooked on the <span className="emphasis">dopamine</span> of "I got stuff done today". I realized I needed to take a <span className="emphasis">step back</span> before I jumped into a <span className="major">job</span> that didn't <span className="subject-good">align</span> with me.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                     </StoryText>
                 </TextContainer>
 
@@ -399,37 +338,29 @@ const Story = memo(() => {
                 <TextContainer>
                     <StoryTitle>Post-Grad Life ~<StoryDate>25' to Today</StoryDate></StoryTitle>
                     <StoryText>
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={8}
-                            isActive={activeParagraph === 8}
-                            isReversed={false}
+                        <StoryParagraph 
+                            $isReversed={false}
                         >
                             🧑‍🎓 Honestly, thus far <span className="special-moment">post-grad</span> has been weird. The <span className="emphasis">momentum</span> shift from <span className="activity">full-time classes</span>, <span className="activity">internships</span>, and <span className="activity">part-time work</span> to setting my own pace took some <span className="emphasis">adjusting</span>. Having no built-in to-do list felt odd but also kind of <span className="subject-good">freeing</span>.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={9}
-                            isActive={activeParagraph === 9}
-                            isReversed={false}
+                        <StoryParagraph 
+                            $isReversed={false}
                         >
                             ☀️ I took the <span className="special-moment">Summer of 2025</span> to get clear on what I want for myself. I <span className="emphasis">slowed down</span>, cleaned up the <span className="negative">mental clutter</span>, and kept <span className="skill">skills</span> sharp by working on <span className="activity">past projects</span>, polishing my <span className="activity">portfolio</span>, and grinding that <span className="negative">god awful LeetCode</span> all while still working my <span className="activity">serving job</span>.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
 
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={10}
-                            isActive={activeParagraph === 10}
-                            isReversed={false}
+                        <StoryParagraph 
+                            $isReversed={false}
                         >
                             🔍 Now getting back into it, I'm in the <span className="emphasis">job search</span>. I don't have it all <span className="negative">mapped out</span> (barely any of it, honestly), but I do know that I am drawn to <span className="skill">software</span> and I want to stay close to <span className="subject-good">people</span>, so maybe <span className="major">Tech Sales</span>? Who knows.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                         
-                        <MemoizedStoryParagraph 
-                            paragraphIndex={11}
-                            isActive={activeParagraph === 11}
-                            isReversed={false}
+                        <StoryParagraph 
+                            $isReversed={false}
                         >
                             🎯 I do however know that I have <span className="emphasis">big goals</span> that I know I will <span className="subject-good">achieve</span>. So for now I'm <span className="emphasis">taking my time</span>, working on <span className="skill">myself</span>, and looking for a <span className="subject-good">team</span> I can <span className="emphasis">grow</span> with. Until I find it, I'll keep <span className="emphasis">getting better</span>.
-                        </MemoizedStoryParagraph>
+                        </StoryParagraph>
                     </StoryText>
                 </TextContainer>
 
@@ -442,7 +373,8 @@ const Story = memo(() => {
 const StoryContainer = styled.div`
     /* layout */
     display: flex;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
     position: relative;
     flex-direction: column;
 
@@ -543,9 +475,10 @@ const OverlappingImageContainer = styled.div`
     padding: 1rem;
     min-height: 500px;
     
-    /* ok to defer images; avoid on text */
-    content-visibility: auto;
-    contain-intrinsic-size: 600px;
+    /* allow absolutely-positioned children to overflow */
+    overflow: visible;
+    /* (optional) small perf win without clipping */
+    contain: layout style; /* NOTE: no 'paint' */
 `;
 
 // wrapper for the mapbox pin. used twice, once for windy, and one for ucf.
@@ -622,7 +555,7 @@ const ImageCard = styled.div`
     border: 2px solid rgba(255, 255, 255, 0.2);
     font-size: ${props => props.$image ? '0' : '3.5rem'};
     background: ${props => props.$image 
-        ? `url(${props.$image}) center/cover` 
+        ? `url(${props.$image}) center/cover no-repeat` 
         : 'rgba(255, 255, 255, 0.1)'};
     backdrop-filter: ${props => props.$image ? 'none' : 'blur(10px)'};
     
@@ -864,7 +797,7 @@ const StoryTitle = styled.div`
 
     /* spacing */
     margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.25rem;
 
     /* styles */
     font-weight: 700;
@@ -943,39 +876,13 @@ const StoryParagraph = styled.p`
 
     /* spacing */
     margin-bottom: 2rem;
-    padding-left: ${props => props.$isReversed ? '0' : '3rem'};
-    padding-right: ${props => props.$isReversed ? '3rem' : '0'};
 
     /* styles */
     font-weight: 400;
     text-indent: 0rem;
     text-align: justify;
     letter-spacing: 0.3px;
-    
-    /* Subtle active paragraph highlighting */
-    color: ${props => (props.$isActive ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.82)')};
-    text-shadow: ${props => (props.$isActive ? '0 0 .5px rgba(255,255,255,.25)' : 'none')};
-    transition: color 180ms ease;
-    
-    /* Subtle background highlight for active paragraph */
-    background: ${props => (props.$isActive 
-        ? 'linear-gradient(90deg, rgba(150,200,255,0.08) 0%, transparent 20%, transparent 80%, rgba(150,200,255,0.08) 100%)'
-        : 'transparent'
-    )};
-    transition: background 200ms ease;
-
-    /* Enhanced emphasis highlight for active paragraph */
-    & .emphasis {
-        background: ${props => (props.$isActive 
-            ? 'linear-gradient(120deg, rgba(150,200,255,0.4) 0%, rgba(200,180,255,0.3) 50%, rgba(150,200,255,0.4) 100%)'
-            : 'linear-gradient(120deg, transparent 0, rgba(150,200,255,0.2) 30%, transparent 60%)'
-        )};
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        transition: background 220ms ease;
-        border-radius: 2px;
-        padding: 1px 2px;
-    }
+    color: rgba(255,255,255,0.9);
     
     /* small styles for some of the text in the story, just to give it a bit more flair and make it less boring. */
     .location {
