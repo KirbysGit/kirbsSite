@@ -4,6 +4,7 @@ export const GlobalStyle = createGlobalStyle`
     @font-face {
         font-family: 'Cal Sans';
         src: url('/fonts/CalSans-Regular.ttf') format('truetype');
+        font-display: swap;
     }
 
     /* Red Hat Display Regular */
@@ -12,6 +13,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-Regular.ttf') format('truetype');
         font-weight: 400;
         font-style: normal;
+        font-display: swap;
     }
 
     @font-face {
@@ -19,6 +21,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-Italic.ttf') format('truetype');
         font-weight: 400;
         font-style: italic;
+        font-display: swap;
     }
 
     /* Red Hat Display Light */
@@ -27,12 +30,18 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-Light.ttf') format('truetype');
         font-weight: 300;
         font-style: normal;
+        font-display: swap;
     }
 
     /* Smooth scrolling optimizations */
     html {
         scroll-behavior: smooth;
         overscroll-behavior: contain;
+        font-family: "Red Hat Display", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-synthesis: none;             /* avoid synthetic bold/italic jump */
+        font-size-adjust: from-font;      /* modern browsers: keeps x-height consistent */
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
     }
     
     body {
@@ -40,8 +49,13 @@ export const GlobalStyle = createGlobalStyle`
         scroll-behavior: smooth;
     }
     
-    /* Prevent scroll-induced re-renders */
-    * {
+    /* Prevent scroll-induced re-renders - only on animated elements */
+    .twinkles,
+    .nameGradient,
+    .aurora,
+    .meteor,
+    .satellite,
+    .spaceStation {
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
     }
@@ -58,6 +72,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-LightItalic.ttf') format('truetype');
         font-weight: 300;
         font-style: italic;
+        font-display: swap;
     }
 
     /* Red Hat Display Medium */
@@ -66,6 +81,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-Medium.ttf') format('truetype');
         font-weight: 500;
         font-style: normal;
+        font-display: swap;
     }
 
     @font-face {
@@ -73,6 +89,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-MediumItalic.ttf') format('truetype');
         font-weight: 500;
         font-style: italic;
+        font-display: swap;
     }
 
     /* Red Hat Display SemiBold */
@@ -81,6 +98,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-SemiBold.ttf') format('truetype');
         font-weight: 600;
         font-style: normal;
+        font-display: swap;
     }
 
     @font-face {
@@ -88,6 +106,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-SemiBoldItalic.ttf') format('truetype');
         font-weight: 600;
         font-style: italic;
+        font-display: swap;
     }
 
     /* Red Hat Display Bold */
@@ -96,6 +115,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-Bold.ttf') format('truetype');
         font-weight: 700;
         font-style: normal;
+        font-display: swap;
     }
 
     @font-face {
@@ -103,6 +123,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-BoldItalic.ttf') format('truetype');
         font-weight: 700;
         font-style: italic;
+        font-display: swap;
     }
 
     /* Red Hat Display ExtraBold */
@@ -111,6 +132,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-ExtraBold.ttf') format('truetype');
         font-weight: 800;
         font-style: normal;
+        font-display: swap;
     }
 
     @font-face {
@@ -118,6 +140,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-ExtraBoldItalic.ttf') format('truetype');
         font-weight: 800;
         font-style: italic;
+        font-display: swap;
     }
 
     /* Red Hat Display Black */
@@ -126,6 +149,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-Black.ttf') format('truetype');
         font-weight: 900;
         font-style: normal;
+        font-display: swap;
     }
 
     @font-face {
@@ -133,6 +157,7 @@ export const GlobalStyle = createGlobalStyle`
         src: url('/fonts/RedHatDisplay-BlackItalic.ttf') format('truetype');
         font-weight: 900;
         font-style: italic;
+        font-display: swap;
     }
 
     * {
