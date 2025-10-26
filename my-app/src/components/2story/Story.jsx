@@ -229,7 +229,7 @@ const Story = memo(() => {
                 </OverlappingImageContainer>
 
                 {/* my college years story telling */}
-                <TextContainer $$isReversed={true}>
+                <TextContainer $isReversed={true}>
                     <StoryTitle>My College Years ~<StoryDate>21' to 25'</StoryDate></StoryTitle>
                     <StoryText>
                         <StoryParagraph 

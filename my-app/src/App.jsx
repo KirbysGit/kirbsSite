@@ -11,12 +11,13 @@ import styled from 'styled-components';
 // local imports.
 import Hero from './components/1hero/Hero';
 import Story from './components/2story/Story';
+import WhoIAm from './components/2story/WhoIAm';
 import GlobalStyle from './styles/GlobalStyle';
 //import Projects from './components/Projects/Projects';
 //import AExperience from './components/Experience/ActualExperience';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
 //import Skills from './components/Skills/Skills.jsx';
-//import Background from './components/Background/Background.jsx';
+import Background from './components/Background/Background.jsx';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 
 // Progress UI
@@ -142,11 +143,21 @@ function App() {
               <>
                 {/* Always mounted and visible - loading screen overlays on top */}
                 <Hero />
-                <Story />
+                <WhoIAm />
                 {/* <AExperience /> */}
                 {/* <Projects /> */}
                 {/* <Skills /> */}
-                {/* <Background /> */}
+                <Background />
+              </>
+            }
+          />
+          <Route 
+            path="/story"
+            element={
+              <>
+                <Hero />
+                <Story />
+                <Background />
               </>
             }
           />
