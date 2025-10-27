@@ -1,869 +1,478 @@
-// basic imports.
 import styled from 'styled-components';
-import React, { useEffect, memo } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
+import { useTypewriter } from '@/hooks/useTypewriter';
 
-// map pin component.
-import MapPin from '../Experience/MapPin';
-
-// images.
-import ucf4 from '@/images/story/ucf4.jpg';
-import lilG from '@/images/story/lilG.jpg';
-import mySetUp from '@/images/story/mySetUp.jpg';
-import secondHome from '@/images/story/secondHome.jpg';
-import campingTrip from '@/images/story/campingTrip.jpg';
-import alwaysChillin from '@/images/story/alwaysChillin.jpg';
-import naturalAthlete from '@/images/story/naturalAthlete.jpg';
-import engineeringGuy from '@/images/story/engineeringGuy.jpg';
-import sanduskySunset from '@/images/story/sanduskySunset.jpg';
-import spaceStation from '@/images/story/spacestation.png';
-import satellite1 from '@/images/story/satellite1.png';
-import satellite2 from '@/images/story/satellite2.png';
+const TYPE_SPEED = 90;       // ms/char (typing)
+const DELETE_SPEED = 65;     // ms/char (deleting)
+const EXTRA_PAUSE = 150;     // pause before revealing content
 
 const WhoIAm = memo(() => {
-    
-    // preload images that appear at section boundaries to prevent decode jitter
+    const [index, setIndex] = useState(0);
+    const [frozen, setFrozen] = useState(false);
+    const [showContent, setShowContent] = useState(false);
+    const [isSlidingOut, setIsSlidingOut] = useState(false);
+    const [startInitial, setStartInitial] = useState(false);
+    const nextIdxRef = useRef(0);
+    const triggerRef = useRef(null);
+
+    // Hook: start by typing the current role
+    const role = CARDS[index].role;
+    const { out, phase, setPhase, resetTo } = useTypewriter(role, {
+        typeMs: TYPE_SPEED,
+        deleteMs: DELETE_SPEED,
+        start: startInitial,
+        mode: 'type',
+        onDone: (donePhase) => {
+            if (donePhase === 'type') {
+                setFrozen(true);
+                setShowContent(true);
+                setPhase('idle');
+            }
+            if (donePhase === 'delete') {
+                // Switch to next role
+                const ni = nextIdxRef.current;
+                const nextRole = CARDS[ni].role;
+                setIndex(ni);
+                resetTo('');
+                setPhase('type');
+            }
+        }
+    });
+
+    // Preload first card image
     useEffect(() => {
-        const srcs = [
-            ucf4, engineeringGuy, secondHome, // college section
-            naturalAthlete, alwaysChillin,    // early years (edge cases)
-            campingTrip, lilG, mySetUp, sanduskySunset // post-grad section
-        ];
-        srcs.forEach(src => { 
-            const img = new Image(); 
-            img.src = src; 
-        });
+        const i = new Image();
+        i.src = CARDS[0].image;
     }, []);
 
+    // Start initial typing when H2 is in view
+    useEffect(() => {
+        const el = triggerRef.current;
+        if (!el || startInitial) return;
+        
+        const obs = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setStartInitial(true);
+                    obs.disconnect();
+                }
+            },
+            { threshold: 0.25, rootMargin: '0px 0px -30% 0px' }
+        );
+        
+        obs.observe(el);
+        return () => obs.disconnect();
+    }, [startInitial]);
+
+    // Nav function
+    const goTo = (nextIndex) => {
+        if (phase === 'delete') return; // Ignore rapid clicks during delete
+        nextIdxRef.current = nextIndex;
+        
+        // First slide out existing content
+        setIsSlidingOut(true);
+        
+        // Wait for slide-out animation, then start deleting text
+        setTimeout(() => {
+            setShowContent(false);
+            setIsSlidingOut(false);
+            setFrozen(false);
+            setPhase('delete');
+        }, 400); // Match slideOut duration
+    };
+
+    const next = () => goTo((index + 1) % CARDS.length);
+    const prev = () => goTo((index - 1 + CARDS.length) % CARDS.length);
+
+    // Image shuffle transforms
+    const decor = (i) => {
+        const d = (i - index + CARDS.length) % CARDS.length;
+        const tx = Math.min(d * 14, 42);
+        const rot = Math.min(d * 2.5, 10);
+        const z = CARDS.length - d;
+        return { tx, rot, z };
+    };
+
+    const card = CARDS[index];
+
     return (
-        <WhoIAmContainer>
-            {/* Background effects - positioned absolutely to avoid layout shifts */}
-            <BackgroundEffectsLayer>
-                {/* <Aurora /> */}
-                { /* <MeteorShower images={[asteroid1, asteroid2, asteroid3, asteroid4]} /> */}
-            </BackgroundEffectsLayer>
-            
-            {/* main title */}
-            <WhoIAmMainTitle>Who I Am</WhoIAmMainTitle>
-            
-            {/* single simplified section */}
-            <WhoIAmSection>
-                <OverlappingImageContainer>
-                    {/* pin of windermere */}
-                    <MapPinWrapper $side="left">
-                        <MapPin 
-                            item={{ theme: { primary: '#ff6b6b' } }}
-                            coords={[28.4958, -81.5359]}
-                            address="Windermere, Florida"
-                            link="https://www.google.com/maps/place/Windermere,+FL/@28.4958,-81.5359,15z"
-                            style="outdoors-v12"
-                            size="400x350"
-                            pitch={55}
-                            bearing={-40}
-                            zoom={13.8}
-                            pinSize="7rem"
-                            pinPosition={{ bottom: "42%", left: "33.75%" }}
-                            pulsePosition={{ top: "52.5%", left: "52.625%" }}
-                            showPulse={true}
-                            mapFilters="grayscale(20%) brightness(85%) contrast(110%)"
-                            borderRadius="20px"
-                        />
-                    </MapPinWrapper>
+        <SectionWrap>
+            <PageTitle>Who I Am</PageTitle>
 
-                    {/* image of me hitting a dinger */}
-                    <ImageCard 
-                        $position="bottom-right" 
-                        $image={naturalAthlete}
-                        $alt="Natural Athlete"
-                    >
-                        <BubbleContainer $position="bottom-right">
-                            <SpeechBubble $parentPosition="bottom-right">
-                                Clearly a natural athlete, photo speaks for itself. 💯
-                            </SpeechBubble>
-                            <SpeechBubble $parentPosition="bottom-right">
-                                If you were wondering, Yes that was a home run. ⚾
-                            </SpeechBubble>
-                        </BubbleContainer>
-                    </ImageCard>
-
-                    {/* image of me in front of engineering building */}
-                    <ImageCard 
-                        $position="bottom-left" 
-                        $image={engineeringGuy}
-                        $alt="Engineering Guy"
-                    >
-                        <BubbleContainer $position="top-left">
-                            <SpeechBubble $parentPosition="top-left" $width="100%">
-                                Big Engineering Guy 💻 #2EZ
-                            </SpeechBubble>
-                            <SpeechBubble $parentPosition="top-left" $width="90%">
-                                #ItWasActuallyReallyHard
-                            </SpeechBubble>
-                        </BubbleContainer>
-                    </ImageCard>
-
-                    {/* image of the my setup */}
-                    <ImageCard
-                        $position="diagonal-down-left"
-                        $image={mySetUp}
-                        $alt="My Setup"
-                    >
-                        <BubbleContainer $position="bottom-left">
-                            <SpeechBubble $parentPosition="bottom-left" $width="max-content">
-                                A look into my setup ⌨️🖱️
-                            </SpeechBubble>
-                            <SpeechBubble $parentPosition="bottom-left" $width="max-content">
-                                Where the magic happens 🪄
-                            </SpeechBubble>
-                        </BubbleContainer>
-                    </ImageCard>
-
-                    {/* image of lil g */}
-                    <ImageCard 
-                        $position="top-left" 
-                        $image={lilG}
-                        $alt="Lil G"
-                    >
-                        <BubbleContainer $position="top-left">
-                            <SpeechBubble $parentPosition="bottom-right" $width="max-content">
-                                My lil bro 🐕
-                            </SpeechBubble>
-                            <SpeechBubble $parentPosition="bottom-right" $width="max-content">
-                                His name is Guinness 🍺
-                            </SpeechBubble>
-                        </BubbleContainer>
-                    </ImageCard>
-                </OverlappingImageContainer>
+            <Grid>
+                <LeftCol>
+                    <ImageStack>
+                        {CARDS.map((c, i) => {
+                            const { tx, rot, z } = decor(i);
+                            const active = i === index;
+                            return (
+                                <ImgShell
+                                    key={c.image}
+                                    style={{
+                                        zIndex: z,
+                                        transform: `translateX(${active ? 0 : tx}px) rotate(${active ? 0 : rot}deg)`,
+                                        opacity: active ? 1 : 0.9
+                                    }}
+                                >
+                                    <StyledImage src={c.image} alt={c.imageAlt} />
+                                </ImgShell>
+                            );
+                        })}
+                    </ImageStack>
+                </LeftCol>
                 
-                {/* simplified content */}
-                <TextContainer>
-                    <SectionTitle>About Me</SectionTitle>
-                    <SimplifiedText>
-                        <OneLinerText>
-                            I'm a <span className="emphasis">Computer Engineering graduate</span> who builds <span className="skill">software solutions</span> and thrives on <span className="activity">creative problem-solving</span> while staying connected to <span className="subject-good">people</span>.
-                        </OneLinerText>
-                        
-                        <NowText>
-                            <NowBullet>🎯 <span className="emphasis">Job hunting</span> for roles that blend <span className="skill">software</span> with <span className="subject-good">human connection</span></NowBullet>
-                            <NowBullet>🚀 <span className="activity">Building projects</span> to sharpen my <span className="skill">full-stack</span> development skills</NowBullet>
-                            <NowBullet>🧠 <span className="activity">Learning</span> new technologies while staying grounded in <span className="subject-good">fundamentals</span></NowBullet>
-                        </NowText>
-                        
-                        <SuperpowersText>
-                            <SuperpowerTag>💻 <span className="skill">Full-Stack Development</span></SuperpowerTag>
-                            <SuperpowerTag>🎨 <span className="activity">Creative Problem Solving</span></SuperpowerTag>
-                            <SuperpowerTag>🤝 <span className="subject-good">Team Collaboration</span></SuperpowerTag>
-                            <SuperpowerTag>📈 <span className="skill">Continuous Learning</span></SuperpowerTag>
-                            <SuperpowerTag>⚡ <span className="emphasis">Adaptability</span></SuperpowerTag>
-                        </SuperpowersText>
-                    </SimplifiedText>
-                </TextContainer>
-            </WhoIAmSection>
-        </WhoIAmContainer>
+                <RightCol>
+                    <ContentBox>
+                        <H2 ref={triggerRef}>
+                            <StaticA>A&nbsp;</StaticA>
+                            <TypedBox style={{ minWidth: `${LONGEST_ROLE_CH}ch` }}>
+                                {frozen ? (
+                                    <LiveRegion aria-live="polite">
+                                        <FrozenRole>
+                                            {card.role}
+                                            <Caret aria-hidden>_</Caret>
+                                        </FrozenRole>
+                                    </LiveRegion>
+                                ) : (
+                                    <LiveRegion aria-live="polite">
+                                        <GradientSpan>
+                                            {out}
+                                            <Caret aria-hidden>_</Caret>
+                                        </GradientSpan>
+                                    </LiveRegion>
+                                )}
+                            </TypedBox>
+                        </H2>
+
+                        {showContent && (
+                            <ContentWrapper className={isSlidingOut ? 'slideOut' : ''}>
+                                <OneLiner>{card.oneLiner}</OneLiner>
+                                <SectionTitle>What I'm Up To Right Now...</SectionTitle>
+                                <BulletList>
+                                    {card.bullets.map((b, i) => (
+                                        <BulletItem key={i}>{b}</BulletItem>
+                                    ))}
+                                </BulletList>
+                                <Closer>{card.closer}</Closer>
+                            </ContentWrapper>
+                        )}
+                    </ContentBox>
+                </RightCol>
+            </Grid>
+            
+            <NavRow>
+                <NavBtn onClick={prev} aria-label="Previous">‹</NavBtn>
+                <NavBtn onClick={next} aria-label="Next">›</NavBtn>
+            </NavRow>
+        </SectionWrap>
     );
 });
 
-// -------------------------------------------------------------- main container.
-const WhoIAmContainer = styled.div`
-  /* design tokens for scale */
-  --section-h: clamp(560px, 70vh, 820px);  /* total height budget per section */
-  --text-max: clamp(54ch, 58ch, 62ch);     /* readable line length */
-  --img:      clamp(15rem, 18vw, 21rem);   /* image card size */
-  --gap:      clamp(20px, 3vw, 48px);
+export default WhoIAm;
 
-  display: flex;
-  flex-direction: column;
+/* ========== styled ========== */
+
+const SectionWrap = styled.section`
+  padding: 4rem 6rem 8rem;
+  background: linear-gradient(to bottom,
+    rgb(13,7,27) 0%, rgb(13,7,27) 25%, rgb(30,20,55) 50%,
+    rgb(45,30,80) 65%, rgb(65,45,110) 80%, rgb(85,60,135) 90%, rgb(100,70,150) 100%);
+  min-height: 100vh;
+  
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0s !important;
+      transition-duration: 0s !important;
+    }
+  }
+`;
+
+const PageTitle = styled.h1`
+  margin: 0 0 3rem;
+  font-weight: 800;
+  opacity: 0.75;
+  text-align: center;
+  font-size: clamp(3rem, 8vw, 6rem);
+  background: linear-gradient(135deg, #fff 0%, rgba(200,180,255,.95) 50%, rgba(150,200,255,1) 100%);
+  -webkit-background-clip: text; 
+  background-clip: text; 
+  -webkit-text-fill-color: transparent;
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 520px 1fr;
+  gap: clamp(3rem, 6vw, 7rem);
+  align-items: start;
+  justify-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+`;
+
+const LeftCol = styled.div`
+  width: 520px;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const ImageStack = styled.div`
   position: relative;
   width: 100%;
-  min-height: 100vh;
-
-  /* scrolling */
-  overflow-x: hidden;
-  overflow-y: visible;
-  overscroll-behavior: contain;
-
-  gap: 0;
-  padding-top: 2rem;
-  padding-bottom: 6rem;
-
-  background: linear-gradient(to bottom,
-    rgb(13, 7, 27) 0%,
-    rgb(13, 7, 27) 25%,
-    rgb(30, 20, 55) 50%,
-    rgb(45, 30, 80) 65%,
-    rgb(65, 45, 110) 80%,
-    rgb(85, 60, 135) 90%,
-    rgb(100, 70, 150) 100%);
-
-  @media (max-width: 1600px) { padding-bottom: 3rem; }
+  height: 520px;
 `;
 
-// background effects layer - prevents layout shifts
-const BackgroundEffectsLayer = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    pointer-events: none;
-    contain: layout style paint;
-    will-change: auto;
-    transform: translateZ(0); /* force GPU layer */
-`;
-
-// main title at the top
-const WhoIAmMainTitle = styled.div` 
-    /* layout */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    /* spacing */
-    margin-bottom: -1.5rem;
-    padding: 0;
-
-    /* styles */
-    font-weight: 700;
-    text-align: center;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 1) 0%,
-        rgba(200, 180, 255, 0.95) 50%,
-        rgba(150, 200, 255, 1) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    /* media queries */
-    @media (max-width: 2000px) {
-        font-size: 6rem; 
-    }
-
-    @media (max-width: 1600px) {
-        font-size: 4rem;
-    }
-`;
-
-// story sections like "early years".
-const WhoIAmSection = styled.section`
-  display: grid;
-  grid-template-columns: minmax(480px, 1fr) minmax(460px, 1fr);
-  grid-template-areas: "media text";
-  align-items: center;
-  gap: var(--gap);
-  padding: clamp(24px, 6vh, 64px) clamp(16px, 3vw, 56px);
-  min-height: var(--section-h);
-`;
-
-// images throughout the "story".
-const OverlappingImageContainer = styled.div`
-  grid-area: media;
-  position: relative;
-  height: var(--section-h);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 1rem;
-  overflow: visible;       /* allow cards to overlap within this area */
-  contain: layout style;   /* no paint containment (avoids clipping) */
-`;
-
-// wrapper for the mapbox pin. used twice, once for windy, and one for ucf.
-const MapPinWrapper = styled.div`
-    /* layout */
-    top: 0;
-    z-index: 1;
-    position: absolute;
-
-    /* styles */
-    transform: scale(1);
-
-    /* media queries */
-    
-    /* when wrapper is one left side of the screen*/
-    ${props => props.$side === 'left' && `
-        /* for my big monitor */
-        @media (min-width: 1900px) {
-            transform: scale(1.1);
-            left: 57.5px;
-        }
-        
-        /* for my smaller monitor */
-        @media (max-width: 1599px) {
-            transform: scale(0.9);
-            left: 20px;
-        }
-    `}
-    
-    /* when wrapper is one right side of the screen*/
-    ${props => props.$side === 'right' && `
-        /* for my large monitor */
-        @media (min-width: 1900px) {
-            transform: scale(1.1);
-            right: 57.5px;
-            left: auto;
-        }
-        
-        /* for my smaller monitor */
-        @media (max-width: 1599px) {
-            transform: scale(0.9);
-            right: 20px;
-            left: auto;
-        }
-    `}
-`;
-
-// image card used for all of the images.
-const ImageCard = styled.div`
+const ImgShell = styled.div`
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: var(--img);
-  height: var(--img);
-
-  cursor: pointer;
-  border-radius: 20px;
-  transition: transform .3s ease, box-shadow .3s ease;
-  border: 2px solid rgba(255,255,255,0.2);
-  background: ${p => p.$image ? `url(${p.$image}) center/cover no-repeat`
-                               : 'rgba(255,255,255,0.1)'};
-  backdrop-filter: ${p => p.$image ? 'none' : 'blur(10px)'};
-  z-index: ${p => (p.$position === 'bottom-left' ? 2 : 1)};
-
-  /* your existing placement transforms preserved */
-  ${p => p.$position === 'top-left' && `
-    top: 0; left: 0; transform: translate(40px, 40px);
-  `}
-  ${p => p.$position === 'bottom-right' && `
-    bottom: 0; right: 0; transform: translate(20px, 50px);
-  `}
-  ${p => p.$position === 'bottom-left' && `
-    bottom: 0; left: 0; transform: translate(-20px, 20px);
-  `}
-  ${p => p.$position === 'diagonal-down-left' && `
-    top: 60%; left: 0; transform: translate(35px, 30px);
-  `}
-  ${p => p.$position === 'diagonal-down-right' && `
-    top: 60%; right: 0; transform: translate(-35px, 30px);
-  `}
-  ${p => p.$position === 'sunset' && `
-    top: 85%; right: 0; transform: translate(20px, 40px);
-  `}
-  ${p => p.$position === 'diagonal-down-left-from-right' && `
-    top: 85%; left: 0; transform: translate(-20px, 40px);
-  `}
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 280ms ease;
+  will-change: transform, opacity;
 `;
 
-// wrapper for the speech bubbles.
-const BubbleContainer = styled.div`
-    /* layout */
-    z-index: 10;
-    display: flex;
-    position: absolute;
-    flex-direction: column;
-
-    /* spacing */
-    gap: 8px;
-
-    /* styles */
-    pointer-events: none;
-    transform: scale(0.8);
-    transition: all 0.3s ease;
-    
-    /* media queries */
-    @media (min-width: 1900px) {
-        transform: scale(1);
-    }
-    
-    @media (max-width: 1599px) {
-        transform: scale(0.85);
-    }
-    
-    /* --- positioning based on $position prop --- */
-
-    ${props => props.$position === 'top-left' && `
-        top: -15px;
-        left: -140px;
-        
-        @media (min-width: 1900px) {
-            left: -20px;
-        }
-        
-        @media (max-width: 1599px) {
-            left: -35px;
-        }
-    `}
-    
-    ${props => props.$position === 'top-right' && `
-        top: -10px;
-        right: -140px;
-        
-        @media (min-width: 1900px) {
-            right: -10px;
-        }
-        
-        @media (max-width: 1599px) {
-            right: -20px;
-        }
-    `}
-    
-    ${props => props.$position === 'bottom-left' && `
-        bottom: -15px;
-        left: -20px;
-        
-        @media (min-width: 1900px) {
-            left: -10px;
-        }
-        
-        @media (max-width: 1599px) {
-            left: -40px;
-        }
-    `}
-    
-    ${props => props.$position === 'bottom-right' && `
-        bottom: -15px;
-        right: -20px;
-        
-        @media (min-width: 1900px) {
-            bottom: -10px;
-            right: -10px;
-        }
-        
-        @media (max-width: 1599px) {
-            bottom: -15px;
-            right: -35px;
-        }
-    `}
+const StyledImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border: 3px solid #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,.2);
+  display: block;
 `;
 
-// actual speed bubble component.
-const SpeechBubble = styled.div`
-    /* layout */
-    position: relative;
-
-    /* spacing */
-    width: ${props => props.$width ? props.$width : '75%'};
-    padding: 8px 16px 6px 16px;
-    border-radius: 18px;
-
-    /* styles */
-    color: white;
-    font-weight: 500;
-    line-height: 1.2;
-    font-size: 1.15rem;
-    text-align: justify;    
-    border-radius: 18px;
-    background: #007AFF;
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
-    
-    /* --- positioning based on $parentPosition prop --- */
-
-    /* right-align bubbles when parent is top-right or bottom-right */
-    ${props => (props.$parentPosition === 'top-right' || props.$parentPosition === 'bottom-right') && `
-        margin-left: auto;
-    `}
-    
-    /* speech bubble tail using svg like iphone - only on last bubble */
-    &:last-child::after {
-        position: absolute;
-        content: "";
-        bottom: -1px;
-        width: 15.515px;
-        height: 17.5px;
-        z-index: 1;
-        background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='15.515px' height='17.5px' viewBox='32.484 17.5 15.515 17.5' enable-background='new 32.484 17.5 15.515 17.5'><path fill='%23007AFF' d='M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'/></svg>") no-repeat;
-        background-size: 15.515px 17.5px;
-        
-        /* tail positioning based on parent bubble container position */
-        /* so i can get the tail to point to the correct side based on where i placed it */
-        ${props => {
-            const parentPosition = props.$parentPosition;
-            if (parentPosition === 'top-left' || parentPosition === 'bottom-left') {
-                return `
-                    left: -6px;
-                    transform: scaleX(1);
-                `;
-            } else {
-                return `
-                    right: -6px;
-                    transform: scaleX(-1);
-                `;
-            }
-        }}
-    }
+const RightCol = styled.div`
+  width: 100%;
+  min-width: 0;
 `;
 
-// wrapper for the text on left or right side of the screen.
-const TextContainer = styled.div`
-  grid-area: text;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-
-  color: white;
-  padding: 0 2rem 2rem 2rem;
-  max-width: var(--text-max);
+const ContentBox = styled.div`
+  display: grid;
+  gap: 1rem;
 `;
 
-// section title like "The One-Liner", "Now", "Superpowers".
-const SectionTitle = styled.div`
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg,
-    rgba(255,255,255,0.9) 0%,
-    rgba(200,180,255,0.8) 50%,
-    rgba(150,200,255,0.9) 100%);
-  background-clip: text;
+const LiveRegion = styled.span`
+  position: relative;
+`;
+
+const GradientSpan = styled.span`
+  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(200,180,255,.9));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: clamp(2.25rem, 3.8vw, 4.5rem);
 `;
 
-// simplified text container - combines all content
-const SimplifiedText = styled.div`
-  line-height: 1.65;
-  color: rgba(255,255,255,0.9);
-  font-size: clamp(1.05rem, 1.1vw, 1.3rem);
+const NavRow = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 3rem;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
-// one-liner text - single sentence summary
-const OneLinerText = styled.div`
-  line-height: 1.65;
-  color: rgba(255,255,255,0.9);
-  font-size: clamp(1.05rem, 1.1vw, 1.3rem);
+const NavBtn = styled.button`
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.75);
+  transition: transform 200ms ease, background 200ms ease, color 200ms ease, border-color 200ms ease;
   
-  /* small styles for some of the text in the story, just to give it a bit more flair and make it less boring. */
-  .location {
-      color: rgb(120, 200, 200);
-      font-weight: 500;
+  &:hover {
+    transform: scale(1.08);
+    background: rgba(150,200,255,.25);
+    color: #fff;
+    border-color: rgba(150,200,255,.5);
   }
   
-  .special-moment {
-      color: rgb(180, 200, 255);
-      font-weight: 600;
-  }
-  
-  .activity {
-      color: rgb(150, 200, 180);
-      font-weight: 500;
-  }
-  
-  .subject-good {
-      color: rgb(120, 180, 220);
-      font-weight: 500;
-  }
-  
-  .subject-bad {
-      color: rgb(220, 140, 180);
-      font-weight: 500;
-      font-style: italic;
-  }
-  
-  .emphasis {
-      color: rgb(140, 180, 255);
-      font-weight: 600;
-  }
-  
-  .negative {
-      color: rgb(200, 150, 200);
-      font-weight: 500;
-      font-style: italic;
-  }
-  
-  .ucf {
-      color: rgb(255, 200, 100);
-      font-weight: 600;
-  }
-  
-  .major {
-      color: rgb(180, 150, 220);
-      font-weight: 500;
-  }
-  
-  .python {
-      color: rgb(120, 180, 255);
-      font-weight: 600;
-  }
-  
-  .skill {
-      color: rgb(140, 180, 240);
-      font-weight: 500;
+  &:active {
+    transform: scale(.95);
   }
 `;
 
-// now text - 3 short bullets
-const NowText = styled.div`
-  line-height: 1.65;
-  color: rgba(255,255,255,0.9);
-  font-size: clamp(1.05rem, 1.1vw, 1.3rem);
+// Title
+const H2 = styled.div`
+    margin-bottom: 0.25rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  display: flex;
+  align-items: center;       /* vertically center the "A" with the typed text */
+  gap: 0.5rem;
 `;
 
-// now bullet - individual bullet point
-const NowBullet = styled.div`
-  margin-bottom: clamp(12px, 1.2vh, 20px);
+// Static "A" that doesn't move
+const StaticA = styled.span`
+  color: rgba(255,255,255,.9);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5vw, 3rem);
+  line-height: 1;
+  align-self: flex-start;
+`;
+
+// Container for typed text
+const TypedBox = styled.span`
+  display: inline-block;
+  min-width: 18ch;             /* reserve space for the longest title */
+  position: relative;
+`;
+
+// Invisible placeholder to stabilize width before typing starts
+const Ghost = styled.span`
+  visibility: hidden;
+`;
+
+// Frozen role display (when typing is complete)
+const FrozenRole = styled.span`
+  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(200,180,255,.9));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+`;
+
+const Caret = styled.span`
+  display: inline-block;
+  margin-left: 2px;
+  -webkit-text-fill-color: rgba(200,180,255,.9);
+  animation: blink 1s steps(1) infinite;
   
-  /* small styles for some of the text in the story, just to give it a bit more flair and make it less boring. */
-  .location {
-      color: rgb(120, 200, 200);
-      font-weight: 500;
-  }
-  
-  .special-moment {
-      color: rgb(180, 200, 255);
-      font-weight: 600;
-  }
-  
-  .activity {
-      color: rgb(150, 200, 180);
-      font-weight: 500;
-  }
-  
-  .subject-good {
-      color: rgb(120, 180, 220);
-      font-weight: 500;
-  }
-  
-  .subject-bad {
-      color: rgb(220, 140, 180);
-      font-weight: 500;
-      font-style: italic;
-  }
-  
-  .emphasis {
-      color: rgb(140, 180, 255);
-      font-weight: 600;
-  }
-  
-  .negative {
-      color: rgb(200, 150, 200);
-      font-weight: 500;
-      font-style: italic;
-  }
-  
-  .ucf {
-      color: rgb(255, 200, 100);
-      font-weight: 600;
-  }
-  
-  .major {
-      color: rgb(180, 150, 220);
-      font-weight: 500;
-  }
-  
-  .python {
-      color: rgb(120, 180, 255);
-      font-weight: 600;
-  }
-  
-  .skill {
-      color: rgb(140, 180, 240);
-      font-weight: 500;
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
   }
 `;
 
-// superpowers text - 5 concise tags
-const SuperpowersText = styled.div`
-  line-height: 1.65;
-  color: rgba(255,255,255,0.9);
-  font-size: clamp(1.05rem, 1.1vw, 1.3rem);
-`;
-
-// superpower tag - individual strength tag
-const SuperpowerTag = styled.div`
-  margin-bottom: clamp(12px, 1.2vh, 20px);
+const ContentWrapper = styled.div`
+  display: grid;
+  animation: slideIn 800ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   
-  /* small styles for some of the text in the story, just to give it a bit more flair and make it less boring. */
-  .location {
-      color: rgb(120, 200, 200);
-      font-weight: 500;
+  > * {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: slideIn 800ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   }
   
-  .special-moment {
-      color: rgb(180, 200, 255);
-      font-weight: 600;
-  }
+  > *:nth-child(1) { animation-delay: 260ms; }    /* OneLiner */
+  > *:nth-child(2) { animation-delay: 520ms; }   /* SectionTitle */
+  > *:nth-child(3) { animation-delay: 780ms; }   /* BulletList */
+  > *:nth-child(4) { animation-delay: 1040ms; }   /* Closer */
   
-  .activity {
-      color: rgb(150, 200, 180);
-      font-weight: 500;
-  }
-  
-  .subject-good {
-      color: rgb(120, 180, 220);
-      font-weight: 500;
-  }
-  
-  .subject-bad {
-      color: rgb(220, 140, 180);
-      font-weight: 500;
-      font-style: italic;
-  }
-  
-  .emphasis {
-      color: rgb(140, 180, 255);
-      font-weight: 600;
-  }
-  
-  .negative {
-      color: rgb(200, 150, 200);
-      font-weight: 500;
-      font-style: italic;
-  }
-  
-  .ucf {
-      color: rgb(255, 200, 100);
-      font-weight: 600;
-  }
-  
-  .major {
-      color: rgb(180, 150, 220);
-      font-weight: 500;
-  }
-  
-  .python {
-      color: rgb(120, 180, 255);
-      font-weight: 600;
-  }
-  
-  .skill {
-      color: rgb(140, 180, 240);
-      font-weight: 500;
-  }
-`;
-
-// space station - static in top right of Early Years section
-const SpaceStation = styled.div`
-    /* layout */
-    top: 0%;
-    right: 5%;
-    z-index: 0;
-    position: absolute;
-
-    /* spacing */
-    width: 250px;
-    height: 250px;
-
-    /* styles */
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(${spaceStation});
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
-    opacity: 0.7;
-    will-change: transform;
-    contain: layout style paint;
-    
-    /* subtle floating animation - optimized */
-    animation: spaceStationFloat 8s ease-in-out infinite;
-    
-    @keyframes spaceStationFloat {
-        0%, 100% { 
-            transform: translate3d(0, 0, 0) rotate(0deg);
-        }
-        50% { 
-            transform: translate3d(0, -8px, 0) rotate(2deg);
-        }
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
     }
-`;
-
-// satellite 1 - floating through background
-const Satellite1 = styled.div`
-    /* layout */
-    top: 12.5%;
-    left: -15%;
-    z-index: 0;
-    position: absolute;
-
-    /* spacing */
-    width: 100px;
-    height: 180px;
-
-    /* styles */
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(${satellite1});
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
-    opacity: 0.6;
-    will-change: transform;
-    contain: layout style paint;
-    
-    /* floating animation with delay - optimized */
-    animation-delay: 3s;
-    animation: satellite1Float 25s linear infinite;
-    
-    @keyframes satellite1Float {
-        0% {
-            transform: translate3d(0, 0, 0) rotate(0deg);
-        }
-        25% {
-            transform: translate3d(calc(25vw + 40px), -30px, 0) rotate(90deg);
-        }
-        50% {
-            transform: translate3d(calc(50vw + 80px), 0, 0) rotate(180deg);
-        }
-        75% {
-            transform: translate3d(calc(75vw + 120px), 30px, 0) rotate(270deg);
-        }
-        100% {
-            transform: translate3d(calc(100vw + 160px), 0, 0) rotate(360deg);
-        }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-`;
-
-// satellite 2 - floating through background with different path
-const Satellite2 = styled.div`
-    /* layout */
-    top: 22.5%;
-    right: -15%;
-    z-index: 0;
-    position: absolute;
-
-    /* spacing */
-    width: 100px;
-    height: 180px;
-
-    /* styles */
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(${satellite2});
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
-    opacity: 0.5;
-    will-change: transform;
-    contain: layout style paint;
-    
-    /* floating animation with different delay and path - right to left - optimized */
-    animation-delay: 7s;
-    animation: satellite2Float 30s linear infinite;
-    
-    @keyframes satellite2Float {
-        0% {
-            transform: translate3d(0, 0, 0) rotate(0deg);
-        }
-        20% {
-            transform: translate3d(calc(-20vw - 30px), -20px, 0) rotate(72deg);
-        }
-        40% {
-            transform: translate3d(calc(-40vw - 60px), 0, 0) rotate(144deg);
-        }
-        60% {
-            transform: translate3d(calc(-60vw - 90px), 20px, 0) rotate(216deg);
-        }
-        80% {
-            transform: translate3d(calc(-80vw - 120px), -10px, 0) rotate(288deg);
-        }
-        100% {
-            transform: translate3d(calc(-100vw - 150px), 0, 0) rotate(360deg);
-        }
+  }
+  
+  &.slideOut {
+    animation: slideOut 400ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+  
+  @keyframes slideOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
     }
+    to {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    > * {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
 `;
 
-// export.
-export default WhoIAm;
+// One-liner section
+const OneLiner = styled.div`
+    text-align: justify;
+  line-height: 1.8; 
+  color: rgba(255,255,255,.88);
+  font-size: clamp(0.9rem, 2vw, 1.3rem);
+  
+  strong {
+    font-weight: 600;
+    color: rgba(150, 200, 255, 1);
+  }
+`;
+
+// Section title for "What I'm Up To Right Now"
+const SectionTitle = styled.div`
+    margin: 1rem 0;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 600;
+    color: rgba(200, 180, 255, 1);
+`;
+
+// Bullet list container
+const BulletList = styled.div`
+  padding: 0;
+  list-style: none;
+`;
+
+// Individual bullet item
+const BulletItem = styled.div`
+  position: relative;
+  padding-left: 2.5rem;
+  margin-bottom: 1rem;
+  color: rgba(255,255,255,.85);
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  line-height: 1.6;
+  
+  &::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(150, 200, 255, 0.9);
+    font-size: 1.5rem;
+    font-weight: 400;
+    animation: twinkle 2s ease-in-out infinite;
+    animation-delay: ${props => props.$delay || 0}s;
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { 
+      opacity: 0.6; 
+    }
+    50% { 
+      opacity: 1; 
+    }
+  }
+`;
+
+// Closer paragraph
+const Closer = styled.div`
+  line-height: 1.8; 
+  color: rgba(255,255,255,.88);
+  font-size: clamp(0.9rem, 2vw, 1.3rem);
+  
+  strong {
+    font-weight: 600;
+    color: rgba(150, 200, 255, 1);
+  }
+`;
