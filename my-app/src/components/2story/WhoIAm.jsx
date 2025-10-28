@@ -2,99 +2,135 @@ import styled from 'styled-components';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
 import { useTypewriter } from '@/hooks/useTypewriter';
+import engineeringGuy from '@/images/story/engineeringGuy.jpg';
+import ucfCampus from '@/images/story/ucf4.jpg';
+import creativeDesk from '@/images/story/mySetUp.jpg';
 
-const TYPE_SPEED = 90;       // ms/char (typing)
-const DELETE_SPEED = 65;     // ms/char (deleting)
+const TYPE_SPEED = 40;       // ms/char (typing)
+const DELETE_SPEED = 30;     // ms/char (deleting)
 const EXTRA_PAUSE = 150;     // pause before revealing content
 
 const WhoIAm = memo(() => {
-    const [index, setIndex] = useState(0);
-    const [frozen, setFrozen] = useState(false);
-    const [showContent, setShowContent] = useState(false);
-    const [isSlidingOut, setIsSlidingOut] = useState(false);
-    const [startInitial, setStartInitial] = useState(false);
-    const nextIdxRef = useRef(0);
-    const triggerRef = useRef(null);
+  const [index, setIndex] = useState(0);
+  const [frozen, setFrozen] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+  const [isSlidingOut, setIsSlidingOut] = useState(false);
+  const [startInitial, setStartInitial] = useState(false);
+  const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
+  const [previousIndex, setPreviousIndex] = useState(0);
+  const [showImages, setShowImages] = useState(true);
+  const nextIdxRef = useRef(0);
+  const triggerRef = useRef(null);
 
-    // Hook: start by typing the current role
-    const role = CARDS[index].role;
-    const { out, phase, setPhase, resetTo } = useTypewriter(role, {
-        typeMs: TYPE_SPEED,
-        deleteMs: DELETE_SPEED,
-        start: startInitial,
-        mode: 'type',
-        onDone: (donePhase) => {
-            if (donePhase === 'type') {
-                setFrozen(true);
-                setShowContent(true);
-                setPhase('idle');
-            }
-            if (donePhase === 'delete') {
-                // Switch to next role
-                const ni = nextIdxRef.current;
-                const nextRole = CARDS[ni].role;
-                setIndex(ni);
-                resetTo('');
-                setPhase('type');
-            }
-        }
-    });
+  // Hook: start by typing the current role
+  const role = CARDS[index].role;
+  const { out, phase, setPhase, resetTo } = useTypewriter(role, {
+      typeMs: TYPE_SPEED,
+      deleteMs: DELETE_SPEED,
+      start: startInitial,
+      mode: 'type',
+      onDone: (donePhase) => {
+          if (donePhase === 'type') {
+              setFrozen(true);
+              setShowContent(true);
+              setPhase('idle');
+          }
+          if (donePhase === 'delete') {
+              // Switch to next role
+              const ni = nextIdxRef.current;
+              const nextRole = CARDS[ni].role;
+              setIndex(ni);
+              resetTo('');
+              setPhase('type');
+          }
+      }
+  });
 
-    // Preload first card image
-    useEffect(() => {
-        const i = new Image();
-        i.src = CARDS[0].image;
-    }, []);
+  // Preload first card image
+  useEffect(() => {
+      const i = new Image();
+      i.src = CARDS[0].image;
+  }, []);
 
-    // Start initial typing when H2 is in view
-    useEffect(() => {
-        const el = triggerRef.current;
-        if (!el || startInitial) return;
-        
-        const obs = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setStartInitial(true);
-                    obs.disconnect();
-                }
-            },
-            { threshold: 0.25, rootMargin: '0px 0px -30% 0px' }
-        );
-        
-        obs.observe(el);
-        return () => obs.disconnect();
-    }, [startInitial]);
+  // Start initial typing when H2 is in view
+  useEffect(() => {
+      const el = triggerRef.current;
+      if (!el || startInitial) return;
+      
+      const obs = new IntersectionObserver(
+          ([entry]) => {
+              if (entry.isIntersecting) {
+                  setStartInitial(true);
+                  obs.disconnect();
+              }
+          },
+          { threshold: 0.25, rootMargin: '0px 0px -30% 0px' }
+      );
+      
+      obs.observe(el);
+      return () => obs.disconnect();
+  }, [startInitial]);
 
-    // Nav function
-    const goTo = (nextIndex) => {
-        if (phase === 'delete') return; // Ignore rapid clicks during delete
-        nextIdxRef.current = nextIndex;
-        
-        // First slide out existing content
-        setIsSlidingOut(true);
-        
-        // Wait for slide-out animation, then start deleting text
-        setTimeout(() => {
-            setShowContent(false);
-            setIsSlidingOut(false);
-            setFrozen(false);
-            setPhase('delete');
-        }, 400); // Match slideOut duration
-    };
+  // Nav function
+  const goTo = (nextIndex) => {
+      if (phase === 'delete') return; // Ignore rapid clicks during delete
+      nextIdxRef.current = nextIndex;
+      
+      // Determine slide direction
+      const direction = nextIndex > index ? 'right' : 'left';
+      setSlideDirection(direction);
+      
+      // Store previous index for animation tracking
+      setPreviousIndex(index);
+      
+      // First slide out existing content
+      setIsSlidingOut(true);
+      
+      // Wait for slide-out animation, then hide images and start deleting text
+      setTimeout(() => {
+          setShowImages(false); // Hide images during text transition
+          setShowContent(false);
+          setIsSlidingOut(false);
+          setFrozen(false);
+          setPhase('delete');
+      }, 600); // Match slide-out duration
+  };
 
-    const next = () => goTo((index + 1) % CARDS.length);
-    const prev = () => goTo((index - 1 + CARDS.length) % CARDS.length);
+  const next = () => goTo((index + 1) % CARDS.length);
+  const prev = () => goTo((index - 1 + CARDS.length) % CARDS.length);
 
-    // Image shuffle transforms
-    const decor = (i) => {
-        const d = (i - index + CARDS.length) % CARDS.length;
-        const tx = Math.min(d * 14, 42);
-        const rot = Math.min(d * 2.5, 10);
-        const z = CARDS.length - d;
-        return { tx, rot, z };
-    };
+  // Get current card's images for the zigzag
+  const getCurrentImageSet = () => {
+    const currentCard = CARDS[index];
+    
+    // Each card has 3 images in its array
+    return [
+      { image: currentCard.images[0], position: 'top-left', z: 1 },
+      { image: currentCard.images[1], position: 'middle-right', z: 2 },
+      { image: currentCard.images[2], position: 'bottom-left', z: 3 },
+    ];
+  };
 
-    const card = CARDS[index];
+  const card = CARDS[index];
+  const imageSet = getCurrentImageSet();
+  
+  // Track if we just switched cards (for slide-in animation)
+  const isNewCardSet = index !== previousIndex;
+  
+  // Show images when new card set and update previousIndex after slide-in
+  useEffect(() => {
+      if (isNewCardSet && !isSlidingOut && !showImages) {
+          // Show images for new card (they will slide in)
+          setShowImages(true);
+          
+          // Update previousIndex after slide-in completes
+          const timer = setTimeout(() => {
+              setPreviousIndex(index);
+          }, 500); // Wait for slide-in animation to complete (400ms + buffer)
+          
+          return () => clearTimeout(timer);
+      }
+  }, [isNewCardSet, isSlidingOut, index, showImages]);
 
     return (
         <SectionWrap>
@@ -102,25 +138,62 @@ const WhoIAm = memo(() => {
 
             <Grid>
                 <LeftCol>
-                    <ImageStack>
-                        {CARDS.map((c, i) => {
-                            const { tx, rot, z } = decor(i);
-                            const active = i === index;
+                    <ImageStack $slideDirection={slideDirection} $isSlidingOut={isSlidingOut}>
+                        {showImages && imageSet.map((img, i) => {
+                            let positioning = {};
+                            
+                            if (img.position === 'top-left') {
+                                positioning = { top: 0, left: 0 };
+                            } else if (img.position === 'middle-right') {
+                                positioning = { top: '50%', right: 0 };
+                            } else if (img.position === 'bottom-left') {
+                                positioning = { bottom: 0, left: 0 };
+                            }
+                            
+                            // Determine individual image slide direction based on position
+                            let imgSlideDirection = 'left'; // default
+                            if (img.position === 'middle-right') {
+                                imgSlideDirection = 'right';
+                            } else if (img.position === 'top-left' || img.position === 'bottom-left') {
+                                imgSlideDirection = 'left';
+                            }
+                            
+                            // Get bubbles for this specific image
+                            const imageBubbles = CARDS[index].imageBubbles ? CARDS[index].imageBubbles[i] : [];
+                            
                             return (
                                 <ImgShell
-                                    key={c.image}
+                                    key={`${img.image}-${index}-${i}`}
+                                    $imgPosition={img.position}
+                                    $isSlidingOut={isSlidingOut}
+                                    $slideDirection={slideDirection}
+                                    $imgSlideDirection={imgSlideDirection}
+                                    $isNewCardSet={isNewCardSet}
                                     style={{
-                                        zIndex: z,
-                                        transform: `translateX(${active ? 0 : tx}px) rotate(${active ? 0 : rot}deg)`,
-                                        opacity: active ? 1 : 0.9
+                                        ...positioning,
+                                        zIndex: img.z,
                                     }}
                                 >
-                                    <StyledImage src={c.image} alt={c.imageAlt} />
+                                    <StyledImage src={img.image} alt={img.position} />
+                                    {imageBubbles && imageBubbles.length > 0 && (
+                                        <BubbleContainer $position={img.position}>
+                                            {imageBubbles.map((bubbleText, bi) => (
+                                                <SpeechBubble 
+                                                    key={bi}
+                                                    $parentPosition={img.position}
+                                                >
+                                                    {bubbleText}
+                                                </SpeechBubble>
+                                            ))}
+                                        </BubbleContainer>
+                                    )}
                                 </ImgShell>
                             );
                         })}
                     </ImageStack>
                 </LeftCol>
+
+                <Spacer />
                 
                 <RightCol>
                     <ContentBox>
@@ -145,26 +218,30 @@ const WhoIAm = memo(() => {
                             </TypedBox>
                         </H2>
 
-                        {showContent && (
-                            <ContentWrapper className={isSlidingOut ? 'slideOut' : ''}>
-                                <OneLiner>{card.oneLiner}</OneLiner>
-                                <SectionTitle>What I'm Up To Right Now...</SectionTitle>
-                                <BulletList>
-                                    {card.bullets.map((b, i) => (
-                                        <BulletItem key={i}>{b}</BulletItem>
-                                    ))}
-                                </BulletList>
-                                <Closer>{card.closer}</Closer>
-                            </ContentWrapper>
-                        )}
+                        <ContentWrapper
+                          className={`${isSlidingOut ? 'slideOut' : ''} ${showContent ? 'visible' : 'hidden'}`}
+                        >
+                          <OneLiner>{card.oneLiner}</OneLiner>
+                          <SectionTitle>{card.sectionTitle}</SectionTitle>
+                          <BulletList>
+                            {card.bullets.map((b, i) => (
+                              <BulletItem key={i}>{b}</BulletItem>
+                            ))}
+                          </BulletList>
+                          <Closer>{card.closer}</Closer>
+                        </ContentWrapper>
+
                     </ContentBox>
+                    <NavRow>
+                        <NavBtn onClick={prev} aria-label="Previous" disabled={isSlidingOut || phase === 'delete'}>‹</NavBtn>
+                        <PageIndicator>
+                            {index + 1} / {CARDS.length}
+                        </PageIndicator>
+                        <NavBtn onClick={next} aria-label="Next" disabled={isSlidingOut || phase === 'delete'}>›</NavBtn>
+                    </NavRow>
                 </RightCol>
             </Grid>
-            
-            <NavRow>
-                <NavBtn onClick={prev} aria-label="Previous">‹</NavBtn>
-                <NavBtn onClick={next} aria-label="Next">›</NavBtn>
-            </NavRow>
+        
         </SectionWrap>
     );
 });
@@ -188,12 +265,12 @@ const SectionWrap = styled.section`
   }
 `;
 
-const PageTitle = styled.h1`
+const PageTitle = styled.div`
   margin: 0 0 3rem;
   font-weight: 800;
-  opacity: 0.75;
   text-align: center;
-  font-size: clamp(3rem, 8vw, 6rem);
+  font-size: 5rem;
+  opacity: 0.7;
   background: linear-gradient(135deg, #fff 0%, rgba(200,180,255,.95) 50%, rgba(150,200,255,1) 100%);
   -webkit-background-clip: text; 
   background-clip: text; 
@@ -201,45 +278,137 @@ const PageTitle = styled.h1`
 `;
 
 const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 520px 1fr;
-  gap: clamp(3rem, 6vw, 7rem);
-  align-items: start;
-  justify-items: start;
-  max-width: 1400px;
-  margin: 0 auto;
+    display: grid;
+    grid-template-columns: 45% 2.5% 52.5%;
+    align-items: center;
+    justify-items: start;
+    margin: 0 auto;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
 `;
 
 const LeftCol = styled.div`
-  width: 520px;
+  height: 100%;
+  width: 100%;
   @media (max-width: 768px) {
     width: 100%;
   }
+  justify-content: center;
 `;
 
 const ImageStack = styled.div`
   position: relative;
   width: 100%;
-  height: 520px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
 `;
 
 const ImgShell = styled.div`
   position: absolute;
-  inset: 0 auto auto 0;
-  width: 100%;
-  height: 100%;
-  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 280ms ease;
-  will-change: transform, opacity;
+  width: 350px;
+  height: 350px;
+  
+  /* Calculate which direction this image should slide based on navigation direction */
+  ${props => {
+    const isMiddleRight = props.$imgPosition === 'middle-right';
+    const baseTransform = isMiddleRight ? 'translateY(-50%)' : '';
+    
+    // Always apply the base transform for middle-right images
+    let styles = '';
+    if (baseTransform) {
+      styles += `transform: ${baseTransform};`;
+    }
+    
+    // When sliding out (old images)
+    if (props.$isSlidingOut) {
+      // When sliding out, images on the left go left, images on the right go right
+      if (props.$imgSlideDirection === 'right') {
+        return `
+          ${styles}
+          animation: slideOutRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+        `;
+      } else {
+        return `
+          ${styles}
+          animation: slideOutLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+        `;
+      }
+    }
+    
+    // When sliding in (new images) - only when NOT sliding out
+    if (props.$isNewCardSet && !props.$isSlidingOut) {
+      // New images slide in from the same direction they'll slide out to
+      if (props.$imgSlideDirection === 'right') {
+        return `
+          ${styles}
+          animation: slideInRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+        `;
+      } else {
+        return `
+          ${styles}
+          animation: slideInLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+        `;
+      }
+    }
+    
+    return styles;
+  }}
+  
+  @keyframes slideOutRight {
+    0% { transform: translateX(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateX(80%); opacity: 0; }
+  }
+  
+  @keyframes slideOutRightVert {
+    0% { transform: translateY(-50%) translateX(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateY(-50%) translateX(80%); opacity: 0; }
+  }
+  
+  @keyframes slideOutLeft {
+    0% { transform: translateX(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateX(-80%); opacity: 0; }
+  }
+  
+  @keyframes slideOutLeftVert {
+    0% { transform: translateY(-50%) translateX(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
+  }
+  
+  @keyframes slideInRight {
+    0% { transform: translateX(80%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes slideInRightVert {
+    0% { transform: translateY(-50%) translateX(80%); opacity: 0; }
+    100% { transform: translateY(-50%) translateX(0); opacity: 1; }
+  }
+  
+  @keyframes slideInLeft {
+    0% { transform: translateX(-80%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes slideInLeftVert {
+    0% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
+    100% { transform: translateY(-50%) translateX(0); opacity: 1; }
+  }
 `;
 
 const StyledImage = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 340px;
+  height: 340px;
   object-fit: cover;
   aspect-ratio: 1 / 1;
   border-radius: 12px;
@@ -251,11 +420,14 @@ const StyledImage = styled.img`
 const RightCol = styled.div`
   width: 100%;
   min-width: 0;
+  overflow: hidden;
 `;
 
 const ContentBox = styled.div`
   display: grid;
   gap: 1rem;
+  width: 100%;
+  overflow: hidden;
 `;
 
 const LiveRegion = styled.span`
@@ -271,37 +443,81 @@ const GradientSpan = styled.span`
 
 const NavRow = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
+  align-items: center;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: 1.5rem;
   width: 100%;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 1rem;
+`;
+
+const PageIndicator = styled.div`
+  /* Typography */
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.5px;
+  
+  /* Spacing */
+  padding: 0.25rem 1rem;
+  
+  /* Style */
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  
+  /* Effects */
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const NavBtn = styled.button`
-  width: 42px;
-  height: 42px;
+  /* Dimensions */
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
+  
+  /* Layout */
   display: grid;
   place-items: center;
-  font-size: 1.4rem;
+  
+  /* Typography */
+  font-size: 1.6rem;
+  font-weight: 300;
+  
+  /* Colors */
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  
+  /* Effects */
   cursor: pointer;
-  border: 2px solid rgba(255,255,255,.2);
-  background: rgba(255,255,255,.08);
-  color: rgba(255,255,255,.75);
-  transition: transform 200ms ease, background 200ms ease, color 200ms ease, border-color 200ms ease;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   
   &:hover {
-    transform: scale(1.08);
-    background: rgba(150,200,255,.25);
-    color: #fff;
-    border-color: rgba(150,200,255,.5);
+    transform: translateY(-2px) scale(1.05);
+    background: rgba(150, 200, 255, 0.15);
+    border-color: rgba(150, 200, 255, 0.4);
+    color: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 16px rgba(150, 200, 255, 0.2);
   }
   
   &:active {
-    transform: scale(.95);
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 6px rgba(150, 200, 255, 0.15);
+  }
+  
+  /* Disabled state for when animation is happening */
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    
+    &:hover {
+      transform: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
   }
 `;
 
@@ -358,40 +574,49 @@ const Caret = styled.span`
 
 const ContentWrapper = styled.div`
   display: grid;
-  animation: slideIn 800ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  min-height: 580px;
+  transition: opacity 400ms ease, transform 400ms ease;
+  opacity: 0;
+  transform: translateY(12px);
   
   > * {
     opacity: 0;
     transform: translateY(16px);
-    animation: slideIn 800ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    transition: opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1), 
+                transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   
-  > *:nth-child(1) { animation-delay: 260ms; }    /* OneLiner */
-  > *:nth-child(2) { animation-delay: 520ms; }   /* SectionTitle */
-  > *:nth-child(3) { animation-delay: 780ms; }   /* BulletList */
-  > *:nth-child(4) { animation-delay: 1040ms; }   /* Closer */
-  
-  @keyframes slideIn {
-    from {
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+    
+    > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    > *:nth-child(1) { transition-delay: 260ms; }
+    > *:nth-child(2) { transition-delay: 520ms; }
+    > *:nth-child(3) { transition-delay: 780ms; }
+    > *:nth-child(4) { transition-delay: 1040ms; }
+  }
+
+  &.hidden {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    
+    > * {
       opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+      transform: translateY(12px);
     }
   }
-  
+
   &.slideOut {
-    animation: slideOut 400ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-  }
-  
-  @keyframes slideOut {
-    from {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    to {
+    opacity: 0;
+    transform: translateY(-16px);
+    
+    > * {
       opacity: 0;
       transform: translateY(-16px);
     }
@@ -399,19 +624,26 @@ const ContentWrapper = styled.div`
   
   @media (prefers-reduced-motion: reduce) {
     > * {
-      animation: none;
+      transition: none;
       opacity: 1;
       transform: none;
+    }
+    
+    &.visible, &.hidden, &.slideOut {
+      transition: none;
     }
   }
 `;
 
 // One-liner section
 const OneLiner = styled.div`
-    text-align: justify;
+  text-align: justify;
   line-height: 1.8; 
   color: rgba(255,255,255,.88);
-  font-size: clamp(0.9rem, 2vw, 1.3rem);
+  font-size: clamp(0.85rem, 1.8vw, 1.275rem);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
   
   strong {
     font-weight: 600;
@@ -422,7 +654,7 @@ const OneLiner = styled.div`
 // Section title for "What I'm Up To Right Now"
 const SectionTitle = styled.div`
     margin: 1rem 0;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-size: clamp(1.5rem, 2.2vw, 2.5rem);
     font-weight: 600;
     color: rgba(200, 180, 255, 1);
 `;
@@ -439,8 +671,11 @@ const BulletItem = styled.div`
   padding-left: 2.5rem;
   margin-bottom: 1rem;
   color: rgba(255,255,255,.85);
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-size: clamp(1rem, 1.6vw, 1.275rem);
   line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
   
   &::before {
     content: '✦';
@@ -467,12 +702,126 @@ const BulletItem = styled.div`
 
 // Closer paragraph
 const Closer = styled.div`
+    text-align: justify;
   line-height: 1.8; 
   color: rgba(255,255,255,.88);
-  font-size: clamp(0.9rem, 2vw, 1.3rem);
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
   
   strong {
     font-weight: 600;
     color: rgba(150, 200, 255, 1);
   }
+`;
+
+// Speech bubble container
+const BubbleContainer = styled.div`
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  transform: scale(0.9);
+  min-width: 0;
+  max-width: calc(100% - 20px);
+  
+  /* Position based on image position */
+  ${props => props.$position === 'top-left' && `
+    top: -20px;
+    left: -25px;
+  `}
+  
+  ${props => props.$position === 'middle-right' && `
+    top: -20px;
+    right: -20px;
+  `}
+  
+  ${props => props.$position === 'bottom-left' && `
+    bottom: -15px;
+    left: -25px;
+  `}
+  
+  /* Pop-in animation for all bubbles */
+  > * {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.9);
+    animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  
+  > *:nth-child(1) { animation-delay: 200ms; }
+  > *:nth-child(2) { animation-delay: 400ms; }
+`;
+
+const SpeechBubble = styled.div`
+  position: relative;
+  width: max-content;
+  max-width: max-content;
+  padding: 10px 18px 8px 18px;
+  border-radius: 18px;
+  color: white;
+  font-weight: 500;
+  line-height: 1.3;
+  font-size: 1.1rem;
+  text-align: justify;
+  background: #007AFF;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+  
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* Right-align bubbles when on right side */
+  ${props => props.$parentPosition === 'middle-right' && `
+    margin-left: auto;
+  `}
+  
+  /* Left-align bubbles when on left side */
+  ${props => (props.$parentPosition === 'top-left' || props.$parentPosition === 'bottom-left') && `
+    margin-right: auto;
+  `}
+  
+  /* Speech bubble tail - only on the last bubble */
+  &:last-child::after {
+    position: absolute;
+    content: "";
+    width: 15.515px;
+    height: 17.5px;
+    z-index: 1;
+    background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='15.515px' height='17.5px' viewBox='32.484 17.5 15.515 17.5' enable-background='new 32.484 17.5 15.515 17.5'><path fill='%23007AFF' d='M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'/></svg>") no-repeat;
+    background-size: 15.515px 17.5px;
+    
+    /* Tail positioning based on parent bubble container position */
+    ${props => {
+      const parentPosition = props.$parentPosition;
+      if (parentPosition === 'top-left' || parentPosition === 'bottom-left') {
+        return `
+          left: -6px;
+          bottom: -1px;
+        `;
+      } else {
+        return `
+          right: -6px;
+          bottom: -1px;
+          transform: scaleX(-1);
+        `;
+      }
+    }}
+  }
+`;
+
+const Spacer = styled.div`
+  width: 100%;
+  height: 100%;
 `;

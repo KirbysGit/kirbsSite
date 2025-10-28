@@ -14,8 +14,8 @@ import { useEffect, useRef, useState } from 'react';
 export function useTypewriter(
     text,
     {
-        typeMs = 70,
-        deleteMs = 45,
+        typeMs = 100,
+        deleteMs = 40,
         start = true,
         mode = 'type',
         onDone,

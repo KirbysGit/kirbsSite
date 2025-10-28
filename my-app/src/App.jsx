@@ -13,10 +13,10 @@ import Hero from './components/1hero/Hero';
 import Story from './components/2story/Story';
 import WhoIAm from './components/2story/WhoIAm';
 import GlobalStyle from './styles/GlobalStyle';
-//import Projects from './components/Projects/Projects';
-//import AExperience from './components/Experience/ActualExperience';
+import Projects from './components/Projects/Projects';
+import AExperience from './components/Experience/ActualExperience';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
-//import Skills from './components/Skills/Skills.jsx';
+import Skills from './components/Skills/Skills.jsx';
 import Background from './components/Background/Background.jsx';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 
@@ -147,7 +147,7 @@ function App() {
                 {/* <AExperience /> */}
                 {/* <Projects /> */}
                 {/* <Skills /> */}
-                <Background />
+                {/* <Background /> */}
               </>
             }
           />
