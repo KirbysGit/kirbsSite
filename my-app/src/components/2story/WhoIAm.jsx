@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
 import { useTypewriter } from '@/hooks/useTypewriter';
-import engineeringGuy from '@/images/story/engineeringGuy.jpg';
-import ucfCampus from '@/images/story/ucf4.jpg';
-import creativeDesk from '@/images/story/mySetUp.jpg';
 
 const TYPE_SPEED = 40;       // ms/char (typing)
 const DELETE_SPEED = 30;     // ms/char (deleting)
@@ -21,7 +18,6 @@ const WhoIAm = memo(() => {
   const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
   const [previousIndex, setPreviousIndex] = useState(0);
   const [showImages, setShowImages] = useState(true);
-  const [fontsReady, setFontsReady] = useState(false);
   const nextIdxRef = useRef(0);
   const triggerRef = useRef(null);
 
@@ -49,66 +45,34 @@ const WhoIAm = memo(() => {
       }
   });
 
-  // Load the exact font weights used before allowing first navigation
-  useEffect(() => {
-      if (!document.fonts) {
-          setFontsReady(true);
-          return;
-      }
-      
-      // Load the weights we use (Medium=500 for Hero, Bold=700/800, Black=900)
-      const samples = 'AaBb✦_'; // include special glyphs used
-      Promise.all([
-          document.fonts.load('500 1rem "Red Hat Display"', samples),
-          document.fonts.load('700 1rem "Red Hat Display"', samples),
-          document.fonts.load('900 1rem "Red Hat Display"', samples),
-      ]).then(() => setFontsReady(true));
-  }, []);
-
-  // Set loading flag to pause animations until fonts are ready
-  useEffect(() => {
-      document.documentElement.dataset.loading = "true";
-      const fontsPromise = document.fonts 
-          ? document.fonts.ready 
-          : Promise.resolve();
-      
-      fontsPromise.then(() => {
-          document.documentElement.dataset.loading = "false";
-      });
-  }, []);
-
   // Preload first card image
   useEffect(() => {
       const i = new Image();
       i.src = CARDS[0].image;
   }, []);
 
-  // Start initial typing when H2 is in view AND fonts are ready
+  // Start initial typing when H2 is in view
   useEffect(() => {
       const el = triggerRef.current;
       if (!el || startInitial) return;
       
-      const tryStart = () => {
-          if (document.fonts && !fontsReady) return; // wait for fonts
-          setStartInitial(true);
-          obs.disconnect();
-      };
-      
       const obs = new IntersectionObserver(
           ([entry]) => {
-              if (entry.isIntersecting) tryStart();
+              if (entry.isIntersecting) {
+                  setStartInitial(true);
+                  obs.disconnect();
+              }
           },
           { threshold: 0.25, rootMargin: '0px 0px -30% 0px' }
       );
       
       obs.observe(el);
       return () => obs.disconnect();
-  }, [startInitial, fontsReady]);
+  }, [startInitial]);
 
   // Nav function
   const goTo = (nextIndex) => {
       if (phase === 'delete') return; // Ignore rapid clicks during delete
-      if (!fontsReady) return; // Wait for fonts to be ready before first navigation
       nextIdxRef.current = nextIndex;
       
       // Determine slide direction
@@ -171,28 +135,9 @@ const WhoIAm = memo(() => {
           return () => clearTimeout(timer);
       }
   }, [isNewCardSet, isSlidingOut, index, showImages]);
-  
-  // Preload next and previous card images for smooth transitions
-  useEffect(() => {
-      const preload = (imgs = []) => {
-          imgs.forEach(src => {
-              const img = new Image();
-              img.decoding = 'async';
-              img.src = src;
-          });
-      };
-      
-      const next = CARDS[(index + 1) % CARDS.length];
-      const prev = CARDS[(index - 1 + CARDS.length) % CARDS.length];
-      
-      preload(next?.images);
-      preload(prev?.images);
-  }, [index]);
 
     return (
         <SectionWrap>
-            {/* Font warmup component to prevent FOUT */}
-            <FontWarmUp />
             
             <PageTitle>Who I Am</PageTitle>
 
@@ -302,33 +247,6 @@ const WhoIAm = memo(() => {
     );
 });
 
-// FontWarmUp component to prevent FOUT on first navigation
-const FontWarmUp = () => (
-    <span aria-hidden style={{ 
-        position: 'absolute', 
-        opacity: 0, 
-        pointerEvents: 'none', 
-        inset: '-9999px auto auto -9999px' 
-    }}>
-        <span style={{ 
-            fontFamily: 'Red Hat Display, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial',
-            fontWeight: 800 
-        }}>
-            AaBb 1234 ✦_
-        </span>
-        <span style={{
-            fontFamily: 'Red Hat Display, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial',
-            fontWeight: 800,
-            background: 'linear-gradient(135deg, rgba(255,255,255,.95), rgba(200,180,255,.9))',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-        }}>
-            Warmup
-        </span>
-    </span>
-);
-
 export default WhoIAm;
 
 /* ========== styled ========== */
@@ -339,14 +257,6 @@ const SectionWrap = styled.section`
     rgb(13,7,27) 0%, rgb(13,7,27) 25%, rgb(30,20,55) 50%,
     rgb(45,30,80) 65%, rgb(65,45,110) 80%, rgb(85,60,135) 90%, rgb(100,70,150) 100%);
   min-height: 100vh;
-  
-  /* DIAGNOSTIC: Force system font to rule out font loading issues */
-  /* Uncomment below to test if flicker is font-related */
-  /*
-  * {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial !important;
-  }
-  */
   
   @media (prefers-reduced-motion: reduce) {
     * {
@@ -370,17 +280,6 @@ const PageTitle = styled.div`
   -webkit-background-clip: text; 
   background-clip: text; 
   -webkit-text-fill-color: transparent;
-  
-  /* Promote to dedicated GPU layer and isolate from layout */
-  position: relative;
-  z-index: 0;
-  isolation: isolate;
-  contain: layout style paint;
-  will-change: auto; /* Don't hint at changes - we want it stable */
-  transform: translateZ(0); /* Force GPU layer now, before animations */
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const Grid = styled.div`
@@ -389,10 +288,8 @@ const Grid = styled.div`
     align-items: center;
     justify-items: start;
     margin: 0 auto;
+    width: 100%;
     
-    /* Isolate layout to prevent cascading reflows */
-    contain: layout;
-
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -407,7 +304,6 @@ const LeftCol = styled.div`
     width: 100%;
   }
   justify-content: center;
-  contain: layout paint; /* isolates reflow/paint inside */
 `;
 
 const ImageStack = styled.div`
@@ -424,9 +320,6 @@ const ImgShell = styled.div`
   position: absolute;
   width: 350px;
   height: 350px;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  transform: translateZ(0);
   
   /* Calculate which direction this image should slide based on navigation direction */
   ${props => {
@@ -528,23 +421,21 @@ const StyledImage = styled.img`
   border: 3px solid #fff;
   box-shadow: 0 0 10px rgba(0,0,0,.2);
   display: block;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  transform: translateZ(0);
 `;
 
 const RightCol = styled.div`
   width: 100%;
   min-width: 0;
-  overflow: hidden;
-  contain: layout paint; /* isolates reflow/paint inside */
+  max-width: 100%;
 `;
 
 const ContentBox = styled.div`
   display: grid;
   gap: 1rem;
   width: 100%;
-  overflow: hidden;
+  max-width: 100%;
+  min-width: 0;          /* allow shrinking inside the grid track */
+  overflow: hidden;      /* guard against overflow */
 `;
 
 const LiveRegion = styled.span`
@@ -650,6 +541,7 @@ const H2 = styled.div`
   display: flex;
   align-items: center;       /* vertically center the "A" with the typed text */
   gap: 0.5rem;
+  min-width: 0;              /* allow shrinking in grid */
 `;
 
 // Static "A" that doesn't move
@@ -665,13 +557,9 @@ const StaticA = styled.span`
 // Container for typed text
 const TypedBox = styled.span`
   display: inline-block;
-  min-width: 18ch;             /* reserve space for the longest title */
+  min-width: 0;                /* allow shrinking in grid */
   position: relative;
-`;
-
-// Invisible placeholder to stabilize width before typing starts
-const Ghost = styled.span`
-  visibility: hidden;
+  flex-shrink: 1;              /* allow flex shrinking if needed */
 `;
 
 // Frozen role display (when typing is complete)
@@ -700,11 +588,13 @@ const Caret = styled.span`
 const ContentWrapper = styled.div`
   display: grid;
   min-height: 580px;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  box-sizing: border-box;
+  min-width: 0;
   transition: opacity 400ms ease, transform 400ms ease;
   opacity: 0;
   transform: translateY(12px);
-  will-change: opacity, transform;
-  
   > * {
     opacity: 0;
     transform: translateY(16px);

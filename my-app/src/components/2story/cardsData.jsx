@@ -26,7 +26,7 @@ export const CARDS = [
       // bubbles for middle-right image (engineeringGuy)
       ['Big Engineering Guy 💻 #2EZ', '#ItWasActuallyWayTooHard'],
       // bubbles for bottom-left image (coding)
-      ['Late night coding sessions 🚀', 'Always Debugging 🔧'],
+      ['DS&A was brutal 💀', 'Always Debugging 🔧'],
     ],
     role: 'Software Engineer',
     bubbles: [
@@ -39,13 +39,13 @@ export const CARDS = [
         shipping end-to-end. The 0 → 1 process is my favorite: taking an idea, designing it,
         building it, and watching it come to life. 
         Whether it's crafting front-end experiences, designing APIs, or automating daily workflows,
-        I'm driven by curiosity and the feeling of momentum when something new finally *clicks*.
+        I'm driven by curiosity and the feeling of momentum when something new finally <strong>clicks</strong>.
       </>
     ),
     sectionTitle: "What I'm Up To Right Now...",
     bullets: [
       'Polishing this portfolio to reflect my work and story 😅',
-      'Keeping my skills sharp with daily LeetCode and small algorithm challenges 🧠',
+      'Keeping my skills sharp with daily LeetCode 🧠',
       'Building personal projects to explore new tools and push my ideas into real apps 🚀',
       'Experimenting with ML integrations and data-driven features for future products 🤖',
     ],
@@ -76,7 +76,7 @@ export const CARDS = [
     ],
     oneLiner: (
       <>
-        Started out as in <strong>Mechanical Engineering</strong>, hated Statics, found some enjoyment in an 
+        Started out in <strong>Mechanical Engineering</strong>, but hated Statics, found some enjoyment in an 
         <strong> Intro to Python</strong> course, and switched to <strong>Computer Engineering </strong>
         to blend hardware fundamentals with modern software. College pushed my limits but taught
         me how to pick up things quick, stay consistent, and enjoy the process.
@@ -84,7 +84,7 @@ export const CARDS = [
     ),
     sectionTitle: "What My Education Looked Like...",
     bullets: [
-      'Struggled through the weed out classes, no failed classes though! Eventually found I really loved the project work that I got to do',
+      'Struggled through the weed out classes, no failed classes though! Eventually found I really loved the working on SW / ML projects',
       'Learned by doing, starting with early C and embedded work turned into full-stack web apps, data pipelines, and ML projects by senior year',
       'Balancing school, projects, part-time jobs, and the gym taught me structure, consistency, and how to keep improving even when it’s hectic',
     ],
@@ -101,11 +101,11 @@ export const CARDS = [
     images: [naturalAthlete, lilG, legos],
     imageBubbles: [
       // bubbles for top-left image (naturalAthlete)
-      ['Natural athlete 💯', 'That was a home run ⚾'],
+      ['Natural athlete 💯', 'Yes... That was a home run ⚾'],
       // bubbles for middle-right image (lilG)
-      ['My lil bro 🐕', 'His name is Guinness 🍺'],
+      ['Unrelated but heres my dog 🐕', 'His name is Guinness 🍺'],
       // bubbles for bottom-left image (legos)
-      ['Building something new 🧱', 'From legos to code 🚀'],
+      ['Always building something new 🧱', '#LegosToEngineeringPipeline'],
     ],
     role: 'Professional Beginner',
     bubbles: [
@@ -124,7 +124,7 @@ export const CARDS = [
     ),
     sectionTitle: "How Curiosity Shapes My Work...",
     bullets: [
-      'Treating learning like training: deliberate, iterative, and fun',
+      'Treating learning like training → deliberate, iterative, and fun',
       'Diving into new frameworks just to see what they do differently',
       'Applying lessons from hobbies like rhythm, flow, or repetition, into how I code and design',
       'Embrace the “beginner mindset” as a way to stay adaptable and creative',

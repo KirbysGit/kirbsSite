@@ -1,6 +1,16 @@
 /* Red Hat Display font definitions - load early to prevent FOUT */
-/* Add WOFF2 when available, use TTF as fallback for now */
+/* Using TTF for weights without WOFF2, WOFF2 where available for better performance */
 
+/* Regular - using TTF since no WOFF2 available */
+@font-face {
+    font-family: "Red Hat Display";
+    src: url("/fonts/RedHatDisplay-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Medium - using TTF since no WOFF2 available */
 @font-face {
     font-family: "Red Hat Display";
     src: url("/fonts/RedHatDisplay-Medium.ttf") format("truetype");
@@ -9,6 +19,16 @@
     font-display: swap;
 }
 
+/* SemiBold - using TTF since no WOFF2 available */
+@font-face {
+    font-family: "Red Hat Display";
+    src: url("/fonts/RedHatDisplay-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Bold - WOFF2 for better performance */
 @font-face {
     font-family: "Red Hat Display";
     src: url("/fonts/RedHatDisplay-Bold.woff2") format("woff2");
@@ -17,14 +37,16 @@
     font-display: swap;
 }
 
+/* ExtraBold - using TTF since no WOFF2 available, maps to Bold 700 */
 @font-face {
     font-family: "Red Hat Display";
-    src: url("/fonts/RedHatDisplay-Bold.woff2") format("woff2");
+    src: url("/fonts/RedHatDisplay-ExtraBold.ttf") format("truetype");
     font-weight: 800;
     font-style: normal;
     font-display: swap;
 }
 
+/* Black - WOFF2 for better performance */
 @font-face {
     font-family: "Red Hat Display";
     src: url("/fonts/RedHatDisplay-Black.woff2") format("woff2");
