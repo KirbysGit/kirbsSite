@@ -34,22 +34,19 @@ export function useTypewriter(
         textRef.current = text;
     }, [text]);
 
-    // Normalize indices when entering a phase
+    // Update phaseRef and initialize when entering a phase
     useEffect(() => {
         phaseRef.current = phase;
 
-        // Initialize counters when entering a phase
         if (phase === 'type') {
             iRef.current = 0;
-            setOut('');                // start from empty -> incremental typing
+            setOut('');
         } else if (phase === 'delete') {
-            // delete whatever is currently shown; if blank, delete the previous text
             iRef.current = out.length || textRef.current.length;
             if (out.length === 0) setOut(textRef.current);
         }
-        // when idle, we don't touch `out`
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [phase]); // (intentionally not including `out`)
+    }, [phase]); // intentionally not including `out` to avoid double-executions
 
     // Clear timers on unmount
     useEffect(() => () => { if (tRef.current) clearTimeout(tRef.current); }, []);

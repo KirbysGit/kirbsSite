@@ -1,152 +1,178 @@
-import styled from 'styled-components';
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
-import { useTypewriter } from '@/hooks/useTypewriter';
+// whoiam.jsx
 
-const TYPE_SPEED = 40;       // ms/char (typing)
-const DELETE_SPEED = 30;     // ms/char (deleting)
-const EXTRA_PAUSE = 150;     // pause before revealing content
+// this component gives a professional background into me, and who i am.
+// swaps between cards, showing specific info about me with some photos for personalization.
+
+// imports.
+import styled from 'styled-components';
+import { useTypewriter } from '@/hooks/useTypewriter';
+import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
+import React, { memo, useEffect, useRef, useState } from 'react';
+
+
+// extra vars for animation.
 const IMG_MS = 400;           // image slide duration
 const BUFFER_MS = 40;         // extra buffer for animation end
+const TYPE_SPEED = 40;        // ms/char (typing)
+const DELETE_SPEED = 30;      // ms/char (deleting)
 
+// whoiam component.
 const WhoIAm = memo(() => {
-  const [index, setIndex] = useState(0);
-  const [frozen, setFrozen] = useState(false);
-  const [showContent, setShowContent] = useState(false);
-  const [isSlidingOut, setIsSlidingOut] = useState(false);
-  const [startInitial, setStartInitial] = useState(false);
-  const [slideDirection, setSlideDirection] = useState(null); // 'left' or 'right'
-  const [previousIndex, setPreviousIndex] = useState(0);
-  const [showImages, setShowImages] = useState(true);
-  const nextIdxRef = useRef(0);
-  const triggerRef = useRef(null);
 
-  // Hook: start by typing the current role
-  const role = CARDS[index].role;
-  const { out, phase, setPhase, resetTo } = useTypewriter(role, {
-      typeMs: TYPE_SPEED,
-      deleteMs: DELETE_SPEED,
-      start: startInitial,
-      mode: 'type',
-      onDone: (donePhase) => {
-          if (donePhase === 'type') {
-              setFrozen(true);
-              setShowContent(true);
-              setPhase('idle');
-          }
-          if (donePhase === 'delete') {
-              // Switch to next role
-              const ni = nextIdxRef.current;
-              const nextRole = CARDS[ni].role;
-              setIndex(ni);
-              resetTo('');
-              setPhase('type');
-          }
-      }
-  });
+    // state management.
+    const [index, setIndex] = useState(0);						    // current card index.
+    const [frozen, setFrozen] = useState(false);					// whether the text is frozen.
+    const [showImages, setShowImages] = useState(true);			    // whether the images are shown.
+    const [previousIndex, setPreviousIndex] = useState(0);		    // previous card index.
+    const [showContent, setShowContent] = useState(false);		    // whether the content is shown.
+    const [isSlidingOut, setIsSlidingOut] = useState(false);		// whether the content is sliding out.
+    const [startInitial, setStartInitial] = useState(false);		// whether the initial animation has started.
+    const [slideDirection, setSlideDirection] = useState(null); 	// 'left' or 'right'
 
-  // Preload first card image
-  useEffect(() => {
-      const i = new Image();
-      i.src = CARDS[0].image;
-  }, []);
+    // refs.
+    const nextIdxRef = useRef(0);									// next card index.
+    const triggerRef = useRef(null);								// trigger reference.
 
-  // Start initial typing when H2 is in view
-  useEffect(() => {
-      const el = triggerRef.current;
-      if (!el || startInitial) return;
-      
-      const obs = new IntersectionObserver(
-          ([entry]) => {
-              if (entry.isIntersecting) {
-                  setStartInitial(true);
-                  obs.disconnect();
-              }
-          },
-          { threshold: 0.25, rootMargin: '0px 0px -30% 0px' }
-      );
-      
-      obs.observe(el);
-      return () => obs.disconnect();
-  }, [startInitial]);
+    // our hook for the typewriter effect.
+    const role = CARDS[index].role;
+    const { out, phase, setPhase, resetTo } = useTypewriter(role, {
+        typeMs: TYPE_SPEED,											    // ms/char (typing)
+        deleteMs: DELETE_SPEED,										    // ms/char (deleting)
+        start: startInitial,											// whether the initial animation has started.
+        mode: 'type',													// current phase: 'type' | 'delete' | 'idle'
+        onDone: (donePhase) => {										// callback when a phase completes.
+            if (donePhase === 'type') {
+                setFrozen(true);										// freeze the text.
+                setShowContent(true);									// show the content.
+                setPhase('idle');										// set the phase to idle.
+            }
+            if (donePhase === 'delete') {
+                const ni = nextIdxRef.current;						    // next card index.
+                setIndex(ni);											// set the index to the next card.
+                resetTo('');											// reset the text.
+                setPhase('type');										// set the phase to type.
+            }
+        }
+    });
 
-  // Nav function
-  const goTo = (nextIndex) => {
-      if (phase === 'delete') return; // Ignore rapid clicks during delete
-      nextIdxRef.current = nextIndex;
-      
-      // Determine slide direction
-      const direction = nextIndex > index ? 'right' : 'left';
-      setSlideDirection(direction);
-      
-      // Store previous index for animation tracking
-      setPreviousIndex(index);
-      
-      // First slide out existing content
-      setIsSlidingOut(true);
-      
-      // Use requestAnimationFrame to sync with animation end
-      const onEnd = () => {
-          setShowImages(false); // Hide images during text transition
-          setShowContent(false);
-          setIsSlidingOut(false);
-          setFrozen(false);
-          setPhase('delete');
-      };
-      
-      setTimeout(() => {
-          // one rAF lets the browser commit the last animation frame before we mutate
-          requestAnimationFrame(onEnd);
-      }, IMG_MS + BUFFER_MS);
-  };
+    // start initial typing when H2 is in view.
+    useEffect(() => {
+        // get the trigger element.
+        const el = triggerRef.current;
+        if (!el || startInitial) return;
 
-  const next = () => goTo((index + 1) % CARDS.length);
-  const prev = () => goTo((index - 1 + CARDS.length) % CARDS.length);
+        // use observer to start initial typing when H2 is in view.
+        const obs = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setStartInitial(true);
+                    obs.disconnect();
+                }
+            },
+            { 
+                threshold: 0.25, 
+                rootMargin: '0px 0px -30% 0px' 
+            }
+        );
 
-  // Get current card's images for the zigzag
-  const getCurrentImageSet = () => {
-    const currentCard = CARDS[index];
+        // observe the trigger element.
+        obs.observe(el);
+
+        // disconnect observer when component unmounts.
+        return () => obs.disconnect();
+    }, [startInitial]);
+
+    // navigation function.
+    const goTo = (nextIndex) => {
+        // ignore clicks during delete.
+        if (phase === 'delete') return;
+
+        // store the next index.
+        nextIdxRef.current = nextIndex;
+        
+        // determine & set slide direction.
+        const direction = nextIndex > index ? 'right' : 'left';
+        setSlideDirection(direction);
+        
+        // store previous index for animation tracking.
+        setPreviousIndex(index);
+        
+        // first slide out existing content.
+        setIsSlidingOut(true);
+        
+        // use requestAnimationFrame to sync with animation end.
+        const onEnd = () => {
+            setShowImages(false);   // hide images during text transition.
+            setShowContent(false);  // hide content during text transition.
+            setIsSlidingOut(false); // stop sliding out.
+            setFrozen(false);       // unfreeze the text.
+            setPhase('delete');     // set the phase to delete.
+        };
+        
+        // use setTimemout to sync with the end of our animation.
+        setTimeout(() => {
+            requestAnimationFrame(onEnd);
+        }, IMG_MS + BUFFER_MS);
+    };
+
+    // next function.
+    const next = () => goTo((index + 1) % CARDS.length);
+
+    // prev function.
+    const prev = () => goTo((index - 1 + CARDS.length) % CARDS.length);
+
+    // get current card's images for the zigzag.
+    const getCurrentImageSet = () => {
+        const currentCard = CARDS[index];
+        
+        // each card has 3 images in its array.
+        return [
+        { image: currentCard.images[0], position: 'top-left', z: 1 },
+        { image: currentCard.images[1], position: 'middle-right', z: 2 },
+        { image: currentCard.images[2], position: 'bottom-left', z: 3 },
+        ];
+    };
+
+    // get the current card.
+    const card = CARDS[index];
+
+    // get the current image set.
+    const imageSet = getCurrentImageSet();
     
-    // Each card has 3 images in its array
-    return [
-      { image: currentCard.images[0], position: 'top-left', z: 1 },
-      { image: currentCard.images[1], position: 'middle-right', z: 2 },
-      { image: currentCard.images[2], position: 'bottom-left', z: 3 },
-    ];
-  };
-
-  const card = CARDS[index];
-  const imageSet = getCurrentImageSet();
-  
-  // Track if we just switched cards (for slide-in animation)
-  const isNewCardSet = index !== previousIndex;
-  
-  // Show images when new card set and update previousIndex after slide-in
-  useEffect(() => {
-      if (isNewCardSet && !isSlidingOut && !showImages) {
-          // Show images for new card (they will slide in)
-          setShowImages(true);
-          
-          // Update previousIndex after slide-in completes
-          const timer = setTimeout(() => {
-              setPreviousIndex(index);
-          }, IMG_MS + BUFFER_MS); // Use animation constants
-          
-          return () => clearTimeout(timer);
-      }
-  }, [isNewCardSet, isSlidingOut, index, showImages]);
+    // track if we just switched cards (for slide-in animation).
+    const isNewCardSet = index !== previousIndex;
+    
+    // show images when new card set and update previousIndex after slide-in.
+    useEffect(() => {
+        // show images for new card (they will slide in).
+        if (isNewCardSet && !isSlidingOut && !showImages) {
+            setShowImages(true);
+            
+            const timer = setTimeout(() => {
+                setPreviousIndex(index);
+            }, IMG_MS + BUFFER_MS);
+            
+            return () => clearTimeout(timer);
+        }
+    }, [isNewCardSet, isSlidingOut, index, showImages]);
 
     return (
         <SectionWrap>
-            
+            {/* page title */}
             <PageTitle>Who I Am</PageTitle>
 
+            {/* grid container */}
             <Grid>
+                {/* left column (images w/ bubbles) */}
                 <LeftCol>
+                    {/* image stack w/ animation handling*/}
                     <ImageStack $slideDirection={slideDirection} $isSlidingOut={isSlidingOut}>
+                        {/* map over the image set */}
                         {showImages && imageSet.map((img, i) => {
+                            // determine the positioning of the image.
                             let positioning = {};
                             
+                            // set the positioning based on set.
                             if (img.position === 'top-left') {
                                 positioning = { top: 0, left: 0 };
                             } else if (img.position === 'middle-right') {
@@ -155,17 +181,18 @@ const WhoIAm = memo(() => {
                                 positioning = { bottom: 0, left: 0 };
                             }
                             
-                            // Determine individual image slide direction based on position
-                            let imgSlideDirection = 'left'; // default
+                            // determine individual image slide direction based on position.
+                            let imgSlideDirection = 'left';
                             if (img.position === 'middle-right') {
                                 imgSlideDirection = 'right';
                             } else if (img.position === 'top-left' || img.position === 'bottom-left') {
                                 imgSlideDirection = 'left';
                             }
                             
-                            // Get bubbles for this specific image
+                            // get bubbles for this specific image.
                             const imageBubbles = CARDS[index].imageBubbles ? CARDS[index].imageBubbles[i] : [];
                             
+                            // return the image shell.
                             return (
                                 <ImgShell
                                     key={`${img.image}-${index}-${i}`}
@@ -179,7 +206,9 @@ const WhoIAm = memo(() => {
                                         zIndex: img.z,
                                     }}
                                 >
+                                    {/* styled image */}
                                     <StyledImage src={img.image} alt={img.position} decoding="async" loading="eager" />
+                                    {/* bubble container */}
                                     {imageBubbles && imageBubbles.length > 0 && (
                                         <BubbleContainer $position={img.position}>
                                             {imageBubbles.map((bubbleText, bi) => (
@@ -198,43 +227,51 @@ const WhoIAm = memo(() => {
                     </ImageStack>
                 </LeftCol>
 
+                {/* spacer because grid was being annoying with gaps*/}
                 <Spacer />
                 
+                {/* right column (content) */}
                 <RightCol>
+                    {/* content box */}
                     <ContentBox>
+                        {/* title */}
                         <H2 ref={triggerRef}>
-                            <StaticA>A&nbsp;</StaticA>
-                            <TypedBox style={{ minWidth: `${LONGEST_ROLE_CH}ch` }}>
-                                <LiveRegion aria-live="polite">
-                                    <span style={{display:'inline-block', position: 'relative'}}>
-                                        <span style={{visibility: frozen ? 'hidden' : 'visible'}}>
-                                            <GradientSpan>{out}</GradientSpan>
-                                        </span>
-                                        <span style={{position:'absolute', inset:0, visibility: frozen ? 'visible' : 'hidden'}}>
-                                            <FrozenRole>{card.role}</FrozenRole>
-                                        </span>
-                                        <Caret aria-hidden $paused={isSlidingOut || phase === 'delete'}>_</Caret>
-                                    </span>
-                                </LiveRegion>
-                            </TypedBox>
+                            {/* static "A" should not move*/}
+                            <StaticA>A&nbsp;</StaticA>  
+                         {/* typed box for the role */}
+                             <TypedBox style={{ minWidth: `${LONGEST_ROLE_CH}ch` }}>
+                                 <LiveRegion aria-live="polite">
+                                     <RoleText>{frozen ? card.role : out}</RoleText>
+                                     <Caret aria-hidden $paused={isSlidingOut || phase === 'delete'}>_</Caret>
+                                 </LiveRegion>
+                             </TypedBox>
                         </H2>
 
+                        {/* content wrapper */}
                         <ContentWrapper
                           className={`${isSlidingOut ? 'slideOut' : ''} ${showContent ? 'visible' : 'hidden'}`}
                         >
+                          {/* one liner */}
                           <OneLiner>{card.oneLiner}</OneLiner>
+                          {/* section title */}
                           <SectionTitle>{card.sectionTitle}</SectionTitle>
+                          {/* bulleted list */}
                           <BulletList>
                             {card.bullets.map((b, i) => (
                               <BulletItem key={i}>{b}</BulletItem>
                             ))}
                           </BulletList>
+                          {/* closer */}
                           <Closer>{card.closer}</Closer>
                         </ContentWrapper>
 
                     </ContentBox>
+
+                    {/* navigation row */}
                     <NavRow>
+                        {/* previous button */}
                         <NavBtn onClick={prev} aria-label="Previous" disabled={isSlidingOut || phase === 'delete'}>‹</NavBtn>
+                        {/* page indicator */}
                         <PageIndicator>
                             {index + 1} / {CARDS.length}
                         </PageIndicator>
@@ -242,602 +279,696 @@ const WhoIAm = memo(() => {
                     </NavRow>
                 </RightCol>
             </Grid>
-        
         </SectionWrap>
     );
 });
 
-export default WhoIAm;
-
 /* ========== styled ========== */
 
+// entire section wrapper.
 const SectionWrap = styled.section`
-  padding: 4rem 6rem 8rem;
-  background: linear-gradient(to bottom,
-    rgb(13,7,27) 0%, rgb(13,7,27) 25%, rgb(30,20,55) 50%,
-    rgb(45,30,80) 65%, rgb(65,45,110) 80%, rgb(85,60,135) 90%, rgb(100,70,150) 100%);
-  min-height: 100vh;
-  
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0s !important;
-      transition-duration: 0s !important;
+    /* layout */
+    min-height: 100vh;
+
+    /* spacing */
+    padding: 4rem 6rem 8rem;
+
+    /* styles */
+    background: linear-gradient(
+        to bottom,
+        rgb(13,7,27) 0%, 
+        rgb(13,7,27) 25%, 
+        rgb(30,20,55) 50%,
+        rgb(45,30,80) 65%, 
+        rgb(65,45,110) 80%, 
+        rgb(85,60,135) 90%, 
+        rgb(100,70,150) 100%
+    );
+    
+    /* media queries */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+        animation-duration: 0s !important;
+        transition-duration: 0s !important;
+        }
     }
-  }
 `;
 
+// page title. ("Who I Am")
 const PageTitle = styled.div`
-  margin: 0 0 3rem;
-  font-weight: 800;
-  
-  font-family: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  font-synthesis-weight: none;
-  font-synthesis-style: none;
-  text-align: center;
-  font-size: 5rem;
-  opacity: 0.7;
-  background: linear-gradient(135deg, #fff 0%, rgba(200,180,255,.95) 50%, rgba(150,200,255,1) 100%);
-  -webkit-background-clip: text; 
-  background-clip: text; 
-  -webkit-text-fill-color: transparent;
+    /* spacing */
+    margin: 0 0 3rem;
+
+    /* styles */
+    opacity: 0.7;
+    font-size: 5rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(135deg, #fff 0%, rgba(200,180,255,.95) 50%, rgba(150,200,255,1) 100%);
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent;
 `;
 
+// grid container. left column, spacer, right column.
 const Grid = styled.div`
+    /* layout */
+    width: 100%;
     display: grid;
-    grid-template-columns: 45% 2.5% 52.5%;
     align-items: center;
     justify-items: start;
+    grid-template-columns: 45% 2.5% 52.5%;
+
+    /* spacing */
     margin: 0 auto;
-    width: 100%;
-    
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-        align-items: start;
-    }
 `;
 
+/* ========== left column ========== */
+
+// left column. images w. bubbles.
 const LeftCol = styled.div`
-  height: 100%;
-  width: 100%;
-  @media (max-width: 768px) {
+    /* layout */
     width: 100%;
-  }
-  justify-content: center;
+    height: 100%;
+    justify-content: center;
 `;
 
+// image stack set up.
 const ImageStack = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: visible;
+    /* layout */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow: visible;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+
 `;
 
+// shell for the images. (mainly for animation)
 const ImgShell = styled.div`
-  position: absolute;
-  width: 350px;
-  height: 350px;
-  
-  /* Calculate which direction this image should slide based on navigation direction */
-  ${props => {
-    const isMiddleRight = props.$imgPosition === 'middle-right';
-    const baseTransform = isMiddleRight ? 'translateY(-50%)' : '';
-    
-    // Always apply the base transform for middle-right images
-    let styles = '';
-    if (baseTransform) {
-      styles += `transform: ${baseTransform};`;
-    }
-    
-    // When sliding out (old images)
-    if (props.$isSlidingOut) {
-      // When sliding out, images on the left go left, images on the right go right
-      if (props.$imgSlideDirection === 'right') {
-        return `
-          ${styles}
-          animation: slideOutRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-        `;
-      } else {
-        return `
-          ${styles}
-          animation: slideOutLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-        `;
-      }
-    }
-    
-    // When sliding in (new images) - only when NOT sliding out
-    if (props.$isNewCardSet && !props.$isSlidingOut) {
-      // New images slide in from the same direction they'll slide out to
-      if (props.$imgSlideDirection === 'right') {
-        return `
-          ${styles}
-          animation: slideInRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-        `;
-      } else {
-        return `
-          ${styles}
-          animation: slideInLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-        `;
-      }
-    }
-    
-    return styles;
-  }}
-  
-  @keyframes slideOutRight {
-    0% { transform: translateX(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateX(80%); opacity: 0; }
-  }
-  
-  @keyframes slideOutRightVert {
-    0% { transform: translateY(-50%) translateX(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateY(-50%) translateX(80%); opacity: 0; }
-  }
-  
-  @keyframes slideOutLeft {
-    0% { transform: translateX(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateX(-80%); opacity: 0; }
-  }
-  
-  @keyframes slideOutLeftVert {
-    0% { transform: translateY(-50%) translateX(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
-  }
-  
-  @keyframes slideInRight {
-    0% { transform: translateX(80%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-  }
-  
-  @keyframes slideInRightVert {
-    0% { transform: translateY(-50%) translateX(80%); opacity: 0; }
-    100% { transform: translateY(-50%) translateX(0); opacity: 1; }
-  }
-  
-  @keyframes slideInLeft {
-    0% { transform: translateX(-80%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-  }
-  
-  @keyframes slideInLeftVert {
-    0% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
-    100% { transform: translateY(-50%) translateX(0); opacity: 1; }
-  }
-`;
-
-const StyledImage = styled.img`
-  width: 340px;
-  height: 340px;
-  object-fit: cover;
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  border: 3px solid #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,.2);
-  display: block;
-`;
-
-const RightCol = styled.div`
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-`;
-
-const ContentBox = styled.div`
-  display: grid;
-  gap: 1rem;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;          /* allow shrinking inside the grid track */
-  overflow: hidden;      /* guard against overflow */
-`;
-
-const LiveRegion = styled.span`
-  position: relative;
-  display: inline-block;
-`;
-
-const GradientSpan = styled.span`
-  font-family: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  font-weight: 800;
-  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(200,180,255,.9));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
-
-const NavRow = styled.div`
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1.5rem;
-  width: 100%;
-  padding: 1rem;
-`;
-
-const PageIndicator = styled.div`
-  /* Typography */
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
-  letter-spacing: 0.5px;
-  
-  /* Spacing */
-  padding: 0.25rem 1rem;
-  
-  /* Style */
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  
-  /* Effects */
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-`;
-
-const NavBtn = styled.button`
-  /* Dimensions */
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  
-  /* Layout */
-  display: grid;
-  place-items: center;
-  
-  /* Typography */
-  font-size: 1.6rem;
-  font-weight: 300;
-  
-  /* Colors */
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  
-  /* Effects */
-  cursor: pointer;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
-  &:hover {
-    transform: translateY(-2px) scale(1.05);
-    background: rgba(150, 200, 255, 0.15);
-    border-color: rgba(150, 200, 255, 0.4);
-    color: rgba(255, 255, 255, 1);
-    box-shadow: 0 4px 16px rgba(150, 200, 255, 0.2);
-  }
-  
-  &:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: 0 2px 6px rgba(150, 200, 255, 0.15);
-  }
-  
-  /* Disabled state for when animation is happening */
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
-    
-    &:hover {
-      transform: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-  }
-`;
-
-// Title
-const H2 = styled.div`
-  margin-bottom: 0.25rem;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 800;
-  font-family: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  display: flex;
-  align-items: center;       /* vertically center the "A" with the typed text */
-  gap: 0.5rem;
-  min-width: 0;              /* allow shrinking in grid */
-`;
-
-// Static "A" that doesn't move
-const StaticA = styled.span`
-  font-family: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  font-weight: 800;
-  font-size: clamp(2.5rem, 5vw, 3rem);
-  color: rgba(255,255,255,.9);
-  line-height: 1;
-  align-self: flex-start;
-`;
-
-// Container for typed text
-const TypedBox = styled.span`
-  display: inline-block;
-  min-width: 0;                /* allow shrinking in grid */
-  position: relative;
-  flex-shrink: 1;              /* allow flex shrinking if needed */
-`;
-
-// Frozen role display (when typing is complete)
-const FrozenRole = styled.span`
-  font-family: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  font-weight: 800;
-  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(200,180,255,.9));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
-
-const Caret = styled.span`
-  display: inline-block;
-  margin-left: 0;
-  width: auto; /* Let it size naturally */
-  -webkit-text-fill-color: rgba(200,180,255,.9);
-  animation: ${props => (props.$paused ? 'none' : 'blink 1s steps(1) infinite')};
-  
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-`;
-
-const ContentWrapper = styled.div`
-  display: grid;
-  min-height: 580px;
-  inline-size: 100%;
-  max-inline-size: 100%;
-  box-sizing: border-box;
-  min-width: 0;
-  transition: opacity 400ms ease, transform 400ms ease;
-  opacity: 0;
-  transform: translateY(12px);
-  > * {
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1), 
-                transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  
-  &.visible {
-    opacity: 1;
-    transform: translateY(0);
-    
-    > * {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    > *:nth-child(1) { transition-delay: 260ms; }
-    > *:nth-child(2) { transition-delay: 520ms; }
-    > *:nth-child(3) { transition-delay: 780ms; }
-    > *:nth-child(4) { transition-delay: 1040ms; }
-  }
-
-  &.hidden {
-    opacity: 0;
-    transform: translateY(12px);
-    pointer-events: none;
-    
-    > * {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-  }
-
-  &.slideOut {
-    opacity: 0;
-    transform: translateY(-16px);
-    
-    > * {
-      opacity: 0;
-      transform: translateY(-16px);
-    }
-  }
-  
-  @media (prefers-reduced-motion: reduce) {
-    > * {
-      transition: none;
-      opacity: 1;
-      transform: none;
-    }
-    
-    &.visible, &.hidden, &.slideOut {
-      transition: none;
-    }
-  }
-`;
-
-// One-liner section
-const OneLiner = styled.div`
-  text-align: justify;
-  line-height: 1.8; 
-  color: rgba(255,255,255,.88);
-  font-size: clamp(0.85rem, 1.8vw, 1.275rem);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  
-  strong {
-    font-weight: 600;
-    color: rgba(150, 200, 255, 1);
-  }
-`;
-
-// Section title for "What I'm Up To Right Now"
-const SectionTitle = styled.div`
-    margin: 1rem 0;
-    font-size: clamp(1.5rem, 2.2vw, 2.5rem);
-    font-weight: 600;
-    color: rgba(200, 180, 255, 1);
-`;
-
-// Bullet list container
-const BulletList = styled.div`
-  padding: 0;
-  list-style: none;
-`;
-
-// Individual bullet item
-const BulletItem = styled.div`
-  position: relative;
-  padding-left: 2.5rem;
-  margin-bottom: 1rem;
-  color: rgba(255,255,255,.85);
-  font-size: clamp(1rem, 1.6vw, 1.275rem);
-  line-height: 1.6;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  
-  &::before {
-    content: '✦';
+    /* layout */
+    width: 350px;
+    height: 350px;
     position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(150, 200, 255, 0.9);
-    font-size: 1.5rem;
-    font-weight: 400;
-    animation: twinkle 2s ease-in-out infinite;
-    animation-delay: ${props => props.$delay || 0}s;
-  }
   
-  @keyframes twinkle {
-    0%, 100% { 
-      opacity: 0.6; 
-    }
-    50% { 
-      opacity: 1; 
-    }
-  }
-`;
-
-// Closer paragraph
-const Closer = styled.div`
-    text-align: justify;
-  line-height: 1.8; 
-  color: rgba(255,255,255,.88);
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  
-  strong {
-    font-weight: 600;
-    color: rgba(150, 200, 255, 1);
-  }
-`;
-
-// Speech bubble container
-const BubbleContainer = styled.div`
-  position: absolute;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: none;
-  transform: scale(0.9);
-  min-width: 0;
-  max-width: calc(100% - 20px);
-  
-  /* Position based on image position */
-  ${props => props.$position === 'top-left' && `
-    top: -20px;
-    left: -25px;
-  `}
-  
-  ${props => props.$position === 'middle-right' && `
-    top: -20px;
-    right: -20px;
-  `}
-  
-  ${props => props.$position === 'bottom-left' && `
-    bottom: -15px;
-    left: -25px;
-  `}
-  
-  /* Pop-in animation for all bubbles */
-  > * {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.9);
-    animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  }
-  
-  > *:nth-child(1) { animation-delay: 500ms; } /* starts after slide-in (400ms) */
-  > *:nth-child(2) { animation-delay: 700ms; }
-`;
-
-const SpeechBubble = styled.div`
-  position: relative;
-  width: max-content;
-  max-width: max-content;
-  padding: 10px 18px 8px 18px;
-  border-radius: 18px;
-  color: white;
-  font-weight: 500;
-  line-height: 1.3;
-  font-size: 1.1rem;
-  text-align: justify;
-  background: #007AFF;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
-  
-  @keyframes popIn {
-    from {
-      opacity: 0;
-      transform: translateY(-8px) scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-  
-  /* Right-align bubbles when on right side */
-  ${props => props.$parentPosition === 'middle-right' && `
-    margin-left: auto;
-  `}
-  
-  /* Left-align bubbles when on left side */
-  ${props => (props.$parentPosition === 'top-left' || props.$parentPosition === 'bottom-left') && `
-    margin-right: auto;
-  `}
-  
-  /* Speech bubble tail - only on the last bubble */
-  &:last-child::after {
-    position: absolute;
-    content: "";
-    width: 15.515px;
-    height: 17.5px;
-    z-index: 1;
-    background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='15.515px' height='17.5px' viewBox='32.484 17.5 15.515 17.5' enable-background='new 32.484 17.5 15.515 17.5'><path fill='%23007AFF' d='M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'/></svg>") no-repeat;
-    background-size: 15.515px 17.5px;
-    
-    /* Tail positioning based on parent bubble container position */
+    /* calculate which direction image should slide in from */
     ${props => {
-      const parentPosition = props.$parentPosition;
-      if (parentPosition === 'top-left' || parentPosition === 'bottom-left') {
-        return `
-          left: -6px;
-          bottom: -1px;
-        `;
-      } else {
-        return `
-          right: -6px;
-          bottom: -1px;
-          transform: scaleX(-1);
-        `;
-      }
+        // determine if the image is on the middle-right.
+        const isMiddleRight = props.$imgPosition === 'middle-right';
+        
+        // base transform for middle-right images.
+        const baseTransform = isMiddleRight ? 'translateY(-50%)' : '';
+        
+        // always apply the base transform for middle-right images.
+        let styles = '';
+        if (baseTransform) {
+        styles += `transform: ${baseTransform};`;
+        }
+        
+        // when sliding out (old images).
+        if (props.$isSlidingOut) {
+            // when sliding out, images on the left go left, images on the right go right.
+            if (props.$imgSlideDirection === 'right') {
+                return `
+                    ${styles}
+                    animation: slideOutRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+                `;
+            } else {
+                return `
+                    ${styles}
+                    animation: slideOutLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+                `;
+            }
+        }
+        
+        // when sliding in (new images) - only when NOT sliding out.
+        if (props.$isNewCardSet && !props.$isSlidingOut) {
+            // new images slide in from the same direction they'll slide out to.
+            if (props.$imgSlideDirection === 'right') {
+                return `
+                    ${styles}
+                    animation: slideInRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+                `;
+            } else {
+                return `
+                    ${styles}
+                    animation: slideInLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
+                `;
+            }
+        }
+        
+        return styles;
     }}
-  }
+    
+    /* animations */
+    @keyframes slideOutRight {
+        0% { transform: translateX(0); opacity: 1; }
+        50% { opacity: 0; }
+        100% { transform: translateX(80%); opacity: 0; }
+    }
+    
+    @keyframes slideOutRightVert {
+        0% { transform: translateY(-50%) translateX(0); opacity: 1; }
+        50% { opacity: 0; }
+        100% { transform: translateY(-50%) translateX(80%); opacity: 0; }
+    }
+    
+    @keyframes slideOutLeft {
+        0% { transform: translateX(0); opacity: 1; }
+        50% { opacity: 0; }
+        100% { transform: translateX(-80%); opacity: 0; }
+    }
+    
+    @keyframes slideOutLeftVert {
+        0% { transform: translateY(-50%) translateX(0); opacity: 1; }
+        50% { opacity: 0; }
+        100% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
+    }
+    
+    @keyframes slideInRight {
+        0% { transform: translateX(80%); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInRightVert {
+        0% { transform: translateY(-50%) translateX(80%); opacity: 0; }
+        100% { transform: translateY(-50%) translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInLeft {
+        0% { transform: translateX(-80%); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInLeftVert {
+        0% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
+        100% { transform: translateY(-50%) translateX(0); opacity: 1; }
+    }
 `;
+
+// styled image.
+const StyledImage = styled.img`
+    /* layout */
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+
+    /* spacing */
+    width: 340px;
+
+    /* styles */
+    border-radius: 12px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+`;
+
+// speech bubble container.
+const BubbleContainer = styled.div`
+    /* layout */
+    z-index: 10;
+    min-width: 0;
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+
+    /* spacing */
+    gap: 8px;   
+    max-width: calc(100% - 20px);
+
+    /* styles */
+    pointer-events: none;
+    transform: scale(0.9);
+    
+    /* positioning based on image position */
+    ${props => props.$position === 'top-left' && `
+        top: -20px;
+        left: -25px;
+    `}
+    
+    ${props => props.$position === 'middle-right' && `
+        top: -20px;
+        right: -20px;
+    `}
+    
+    ${props => props.$position === 'bottom-left' && `
+        bottom: -15px;
+        left: -25px;
+    `}
+    
+    /* cool pop in animation for the bubbles. */
+    > * {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.9);
+        animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    
+    > *:nth-child(1) { animation-delay: 500ms; } /* starts after slide-in (400ms) */
+    > *:nth-child(2) { animation-delay: 700ms; }
+`;
+
+// speech bubble.
+const SpeechBubble = styled.div`
+    /* layout */
+    position: relative;
+
+    /* spacing */
+    width: max-content;
+    max-width: max-content;
+    padding: 10px 18px 8px 18px;
+
+    /* styles */
+    color: white;
+    font-weight: 500;
+    line-height: 1.3;
+    font-size: 1.1rem;
+    text-align: justify;
+    border-radius: 18px;
+    background: #007AFF;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+        
+    /* cool pop in animation for the bubbles. */
+    @keyframes popIn {
+        from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.9);
+        }
+        to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        }
+    }
+    
+    /* right-align bubbles when on right side */
+    ${props => props.$parentPosition === 'middle-right' && `
+        margin-left: auto;
+    `}
+    
+    /* left-align bubbles when on left side */
+    ${props => (props.$parentPosition === 'top-left' || props.$parentPosition === 'bottom-left') && `
+        margin-right: auto;
+    `}
+    
+    /* speech bubble tail - only on the last bubble */
+    &:last-child::after {
+        /* layout */
+        z-index: 1;
+        content: "";
+        position: absolute;
+
+        /* spacing */
+        width: 15.515px;
+        height: 17.5px;
+
+        /* styles */
+        background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='15.515px' height='17.5px' viewBox='32.484 17.5 15.515 17.5' enable-background='new 32.484 17.5 15.515 17.5'><path fill='%23007AFF' d='M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'/></svg>") no-repeat;
+        background-size: 15.515px 17.5px;
+        
+        /* tail positioning based on parent bubble container position */
+        ${props => {
+        const parentPosition = props.$parentPosition;
+        if (parentPosition === 'top-left' || parentPosition === 'bottom-left') {
+            return `
+            left: -6px;
+            bottom: -1px;
+            `;
+        } else {
+            return `
+            right: -6px;
+            bottom: -1px;
+            transform: scaleX(-1);
+            `;
+        }
+        }}
+    }
+`;
+
+/* ========== spacer ========== */
 
 const Spacer = styled.div`
   width: 100%;
   height: 100%;
 `;
+
+/* ========== right column ========== */
+
+// right column. content.
+const RightCol = styled.div`
+    /* layout */
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+`;
+
+// sub-container for content.
+const ContentBox = styled.div`
+    /* layout */
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    max-width: 100%;
+    overflow: hidden;
+
+    /* spacing */
+    gap: 1rem;
+`;
+
+// content wrapper for the animations.
+const ContentWrapper = styled.div`
+    /* layout */
+    min-width: 0;
+    display: grid;
+    inline-size: 100%;
+    min-height: 580px;
+    max-inline-size: 100%;
+    box-sizing: border-box;
+
+    /* styles */
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 400ms ease, transform 400ms ease;
+
+    /* child elements */
+    > * {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1), 
+                    transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    
+    /* visible state */
+    &.visible {
+        opacity: 1;
+        transform: translateY(0);
+        
+        > * {
+        opacity: 1;
+        transform: translateY(0);
+        }
+        
+        > *:nth-child(1) { transition-delay: 260ms; }
+        > *:nth-child(2) { transition-delay: 520ms; }
+        > *:nth-child(3) { transition-delay: 780ms; }
+        > *:nth-child(4) { transition-delay: 1040ms; }
+    }
+
+    /* hidden state */
+    &.hidden {
+        opacity: 0;
+        transform: translateY(12px);
+        pointer-events: none;
+        
+        > * {
+        opacity: 0;
+        transform: translateY(12px);
+        }
+    }
+
+    /* slide out state */
+    &.slideOut {
+        opacity: 0;
+        transform: translateY(-16px);
+        
+        > * {
+        opacity: 0;
+        transform: translateY(-16px);
+        }
+    }
+    
+    /* media queries */
+    @media (prefers-reduced-motion: reduce) {
+        > * {
+        transition: none;
+        opacity: 1;
+        transform: none;
+        }
+        
+        &.visible, &.hidden, &.slideOut {
+        transition: none;
+        }
+    }
+`;
+
+// title. "A" and the role.
+const H2 = styled.div`
+    /* layout */
+    min-width: 0;
+    display: flex;
+    align-items: center;
+
+    /* spacing */
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+
+    /* styles */
+    font-weight: 800;    
+    font-size: clamp(1.8rem, 4vw, 2.5rem);    
+`;
+
+// static "A" that doesn't move.
+const StaticA = styled.span`
+    /* layout */
+    align-self: flex-start;
+
+    /* styles */
+    line-height: 1;
+    font-weight: 800;
+    font-size: clamp(2.5rem, 5vw, 3rem);
+    color: rgba(255,255,255,.9);
+`;
+
+// container for typed text.
+const TypedBox = styled.span`
+    /* layout */
+    min-width: 0;               
+    flex-shrink: 1;
+    position: relative; 
+    display: inline-block;
+`;
+
+// blinking caret for the typewriter effect.
+const Caret = styled.span`
+    /* layout */
+    width: auto;
+    margin-left: 0;
+    display: inline-block;
+
+    /* styles */
+    -webkit-text-fill-color: rgba(200,180,255,.9);
+    animation: ${props => (props.$paused ? 'none' : 'blink 1s steps(1) infinite')};
+  
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+`;
+
+// live region for accessibility (screen readers).
+const LiveRegion = styled.span`
+    /* layout */
+    position: relative;
+    display: inline-block;
+`;
+
+// gradient text for the role.
+const RoleText = styled.span`
+    /* styles */
+    font-weight: 800;
+    background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(200,180,255,.9));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+`;
+
+// one-liner section.
+const OneLiner = styled.div`
+    /* spacing */
+    max-width: 100%;
+
+    /* styles */
+    line-height: 1.8; 
+    text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    color: rgba(255,255,255,.88);
+    font-size: clamp(0.85rem, 1.8vw, 1.275rem);
+
+    /* strong text */
+    strong {
+        font-weight: 600;
+        color: rgba(150, 200, 255, 1);
+    }
+`;
+
+// section title. "What I'm Up To Right Now..."
+const SectionTitle = styled.div`
+    /* spacing */
+    margin: 1rem 0;
+
+    /* styles */
+    font-weight: 600;
+    color: rgba(200, 180, 255, 1);
+    font-size: clamp(1.5rem, 2.2vw, 2.5rem);
+`;
+
+// bullet list container.
+const BulletList = styled.div`
+    /* spacing */
+    padding: 0;
+
+    /* styles */
+    list-style: none;
+`;
+
+// individual bullet item.
+const BulletItem = styled.div`
+    /* layout */
+    position: relative;
+
+    /* spacing */
+    max-width: 100%;
+    margin-bottom: 1rem;
+    padding-left: 2.5rem;
+
+    /* styles */
+    line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    color: rgba(255,255,255,.85);
+    font-size: clamp(1rem, 1.6vw, 1.275rem);
+    
+    /* star bullet point */
+    &::before {
+        /* layout */
+        left: 0;
+        top: 50%;
+        content: '✦';
+        position: absolute;
+        transform: translateY(-50%);
+
+        /* styles */
+        font-weight: 400;
+        font-size: 1.5rem;
+        color: rgba(150, 200, 255, 0.9);
+        animation: twinkle 2s ease-in-out infinite;
+        animation-delay: ${props => props.$delay || 0}s;
+    }
+
+    /* keyframes for the twinkle animation */
+    @keyframes twinkle {
+        0%, 100% { 
+            opacity: 0.6; 
+        }
+        50% { 
+            opacity: 1; 
+        }
+    }
+`;
+
+// closer paragraph.
+const Closer = styled.div`
+    /* spacing */
+    max-width: 100%;
+
+    /* styles */
+    line-height: 1.8; 
+    text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    color: rgba(255,255,255,.88);
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    
+    /* strong text */
+    strong {
+        font-weight: 600;
+        color: rgba(150, 200, 255, 1);
+    }
+`;
+
+// navigation row. previous, page indicator, next.
+const NavRow = styled.div`
+    /* layout */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* spacing */
+    gap: 1.5rem;
+    padding: 1rem;
+    margin-top: 1.5rem;  
+`;
+
+// page indicator. (current page / total pages)
+const PageIndicator = styled.div`
+    /* spacing */
+    padding: 0.25rem 1rem;
+    
+    /* styles */
+    font-weight: 500;
+    font-size: 1.1rem;
+    border-radius: 24px;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+`;
+
+// navigation button. previous, next. 
+const NavBtn = styled.button`  
+    /* layout */
+    display: grid;
+    place-items: center;
+
+    /* spacing */
+    width: 48px;
+    height: 48px;
+    
+
+    /* styles */
+    cursor: pointer;
+    font-weight: 300;
+    font-size: 1.6rem;
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* hover effects of buttons */
+    &:hover {
+        transform: translateY(-2px) scale(1.05);
+        background: rgba(150, 200, 255, 0.15);
+        border-color: rgba(150, 200, 255, 0.4);
+        color: rgba(255, 255, 255, 1);
+        box-shadow: 0 4px 16px rgba(150, 200, 255, 0.2);
+    }
+    
+    /* active state of buttons */
+    &:active {
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 2px 6px rgba(150, 200, 255, 0.15);
+    }
+    
+    /* disabled state for when animation is happening */
+    &:disabled {
+        /* styles */
+        opacity: 0.4;
+        transform: none;
+        cursor: not-allowed;
+        
+        &:hover {
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    }
+`;
+
+// export component.
+export default WhoIAm;
