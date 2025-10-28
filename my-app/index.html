@@ -4,8 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Colin Kirby - Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Preload only the WOFF2 weights we have -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/RedHatDisplay-Bold.woff2" crossorigin="anonymous">
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/RedHatDisplay-Black.woff2" crossorigin="anonymous">
+    <!-- Load font definitions early -->
+    <link rel="stylesheet" href="/fonts.css">
   </head>
   <body>
     <div id="root"></div>

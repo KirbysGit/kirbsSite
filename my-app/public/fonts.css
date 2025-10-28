@@ -1,0 +1,35 @@
+/* Red Hat Display font definitions - load early to prevent FOUT */
+/* Add WOFF2 when available, use TTF as fallback for now */
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url("/fonts/RedHatDisplay-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url("/fonts/RedHatDisplay-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url("/fonts/RedHatDisplay-Bold.woff2") format("woff2");
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Red Hat Display";
+    src: url("/fonts/RedHatDisplay-Black.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+

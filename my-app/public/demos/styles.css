@@ -1,5 +1,4 @@
-    /* Import Fonts */
-    @import url('https://fonts.googleapis.com/css?family=Lato:700|Open+Sans&display=swap');
+
 
     /* Root Variables */
     :root {
@@ -23,7 +22,6 @@
         padding: 0;
         background-color: var(--background-color);
         color: #fff;
-        font-family: 'Open Sans', sans-serif;
         line-height: 1.6;
     }
 
