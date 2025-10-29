@@ -3,31 +3,31 @@ import styled from 'styled-components';
 import React, { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
 
 // map pin component.
-import MapPin from '../Experience/MapPin';
+import MapPin from './MapPin';
 
 // aurora component
-import Aurora from './Aurora';
+import Aurora from '../2story/Aurora';
 
 // meteor shower component
 import MeteorShower from './MeteorShower';
 
 // images.
-import ucf4 from '@/images/story/ucf4.jpg';
-import lilG from '@/images/story/lilG.jpg';
-import mySetUp from '@/images/story/mySetUp.jpg';
-import secondHome from '@/images/story/secondHome.jpg';
-import campingTrip from '@/images/story/campingTrip.jpg';
-import alwaysChillin from '@/images/story/alwaysChillin.jpg';
-import naturalAthlete from '@/images/story/naturalAthlete.jpg';
-import engineeringGuy from '@/images/story/engineeringGuy.jpg';
-import sanduskySunset from '@/images/story/sanduskySunset.jpg';
-import spaceStation from '@/images/story/spacestation.png';
-import satellite1 from '@/images/story/satellite1.png';
-import satellite2 from '@/images/story/satellite2.png';
-import asteroid1 from '@/images/story/asteroid1.png';
-import asteroid2 from '@/images/story/asteroid2.png';
-import asteroid3 from '@/images/story/asteroid3.png';
-import asteroid4 from '@/images/story/asteroid4.png';
+import ucf4 from '@/images/2story/ucf4.jpg';
+import lilG from '@/images/2story/lilG.jpg';
+import mySetUp from '@/images/2story/mySetUp.jpg';
+import secondHome from '@/images/2story/secondHome.jpg';
+import campingTrip from '@/images/2story/campingTrip.jpg';
+import alwaysChillin from '@/images/2story/alwaysChillin.jpg';
+import naturalAthlete from '@/images/2story/naturalAthlete.jpg';
+import engineeringGuy from '@/images/2story/engineeringGuy.jpg';
+import sanduskySunset from '@/images/2story/sanduskySunset.jpg';
+import spaceStation from '@/images/2story/spacestation.png';
+import satellite1 from '@/images/2story/satellite1.png';
+import satellite2 from '@/images/2story/satellite2.png';
+import asteroid1 from '@/images/2story/asteroid1.png';
+import asteroid2 from '@/images/2story/asteroid2.png';
+import asteroid3 from '@/images/2story/asteroid3.png';
+import asteroid4 from '@/images/2story/asteroid4.png';
 
 const Story = memo(() => {
     

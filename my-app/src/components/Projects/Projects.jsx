@@ -15,7 +15,7 @@ import OceanLifeCard from './Cards/OceanLifeCard';
 import { themes } from './shared/themes';
 
 // Import Cloud component from Experience
-import Cloud from '../Experience/Cloud';
+import Cloud from '../3experience/Cloud';
 
 // Import Sun component
 import Sun from './Sun';

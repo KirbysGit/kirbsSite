@@ -10,11 +10,11 @@ import styled from 'styled-components';
 
 // local imports.
 import Hero from './components/1hero/Hero';
-import Story from './components/2story/Story';
+import Story from './components/extra/Story';
 import WhoIAm from './components/2story/WhoIAm';
 import GlobalStyle from './styles/GlobalStyle';
 import Projects from './components/Projects/Projects';
-import AExperience from './components/Experience/ActualExperience';
+import AExperience from './components/3experience/ActualExperience';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
 import Skills from './components/Skills/Skills.jsx';
 import Background from './components/Background/Background.jsx';

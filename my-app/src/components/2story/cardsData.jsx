@@ -2,19 +2,19 @@
 // images (swap these to your actual assets)
 
 // card1.
-import engineeringGuy from '@/images/story/engineeringGuy.jpg';
-import mySetUp from '@/images/story/mySetUp.jpg';
-import coding from '@/images/story/coding.jpg';
+import engineeringGuy from '@/images/2story/engineeringGuy.jpg';
+import mySetUp from '@/images/2story/mySetUp.jpg';
+import coding from '@/images/2story/coding.jpg';
 
 // card2.
-import sdGroup from '@/images/story/sdGroup.jpg';
-import secondHome from '@/images/story/secondHome.jpg';
-import gradDog from '@/images/story/gradDog.jpg';
+import sdGroup from '@/images/2story/sdGroup.jpg';
+import secondHome from '@/images/2story/secondHome.jpg';
+import gradDog from '@/images/2story/gradDog.jpg';
 
 // card3.
-import naturalAthlete from '@/images/story/naturalAthlete.jpg';
-import legos from '@/images/story/legos.jpg';
-import lilG from '@/images/story/lilG.jpg';
+import naturalAthlete from '@/images/2story/naturalAthlete.jpg';
+import legos from '@/images/2story/legos.jpg';
+import lilG from '@/images/2story/lilG.jpg';
 
 export const CARDS = [
   // 1) SWE - full-stack + ML

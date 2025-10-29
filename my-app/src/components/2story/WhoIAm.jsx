@@ -10,9 +10,9 @@ import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 // space elements images.
-import spaceStation from '@/images/story/spacestation.png';
-import satellite1 from '@/images/story/satellite1.png';
-import satellite2 from '@/images/story/satellite2.png';
+import spaceStation from '@/images/2story/spacestation.png';
+import satellite1 from '@/images/2story/satellite1.png';
+import satellite2 from '@/images/2story/satellite2.png';
 
 // aurora effects component.
 import Aurora from './Aurora';

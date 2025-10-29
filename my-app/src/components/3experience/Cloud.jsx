@@ -18,13 +18,14 @@ const cloudImages = {
 };
 
 // Main Cloud Component with parallax layers
-const Cloud = ({ top, delay, duration, layer = 'mid', type = 1 }) => {
+const Cloud = ({ top, delay, duration, layer = 'mid', type = 1, direction = 'left' }) => {
     return (
         <CloudContainer 
             $top={top} 
             $delay={delay} 
             $duration={duration}
             $layer={layer}
+            $direction={direction}
         >
             <CloudImage 
                 src={cloudImages[type]} 
@@ -36,8 +37,8 @@ const Cloud = ({ top, delay, duration, layer = 'mid', type = 1 }) => {
     );
 };
 
-// Animation 1: Horizontal drift (main motion)
-const horizontalDrift = keyframes`
+// Animation 1: Horizontal drift left to right
+const horizontalDriftLeft = keyframes`
     0% {
         transform: translateX(0);
     }
@@ -46,7 +47,17 @@ const horizontalDrift = keyframes`
     }
 `;
 
-// Animation 2: Vertical float (breathing motion)
+// Animation 2: Horizontal drift right to left
+const horizontalDriftRight = keyframes`
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-120vw);
+    }
+`;
+
+// Animation 3: Vertical float (breathing motion)
 const verticalFloat = keyframes`
     0%, 100% {
         transform: translateY(0);
@@ -56,7 +67,7 @@ const verticalFloat = keyframes`
     }
 `;
 
-// Animation 3: Scale breathing (subtle expansion)
+// Animation 4: Scale breathing (subtle expansion)
 const scaleBreathing = keyframes`
     0%, 100% {
         transform: scale(1);
@@ -66,7 +77,7 @@ const scaleBreathing = keyframes`
     }
 `;
 
-// Animation 4: Opacity drift (atmosphere shimmer)
+// Animation 5: Opacity drift (atmosphere shimmer)
 const opacityDrift = keyframes`
     0%, 100% {
         opacity: 0.95;
@@ -96,7 +107,7 @@ const fadeInOut = keyframes`
 const CloudContainer = styled.div`
     position: absolute;
     top: ${props => props.$top};
-    left: -20%;
+    ${props => props.$direction === 'left' ? 'left: -20%;' : 'right: -20%;'}
     z-index: ${props => {
         switch(props.$layer) {
             case 'far': return 1;
@@ -106,9 +117,9 @@ const CloudContainer = styled.div`
         }
     }};
     
-    /* Main horizontal drift animation */
+    /* Main horizontal drift animation - depends on direction */
     animation: 
-        ${horizontalDrift} ${props => props.$duration}s linear ${props => props.$delay}s infinite,
+        ${props => props.$direction === 'left' ? horizontalDriftLeft : horizontalDriftRight} ${props => props.$duration}s linear ${props => props.$delay}s infinite,
         ${fadeInOut} ${props => props.$duration}s linear ${props => props.$delay}s infinite;
 `;
 
