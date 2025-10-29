@@ -144,7 +144,7 @@ function App() {
                 {/* Always mounted and visible - loading screen overlays on top */}
                 <Hero />
                 <WhoIAm />
-                {/* <AExperience /> */}
+                <AExperience />
                 {/* <Projects /> */}
                 {/* <Skills /> */}
                 {/* <Background /> */}

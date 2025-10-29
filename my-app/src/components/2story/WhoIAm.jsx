@@ -9,12 +9,34 @@ import { useTypewriter } from '@/hooks/useTypewriter';
 import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
+// space elements images.
+import spaceStation from '@/images/story/spacestation.png';
+import satellite1 from '@/images/story/satellite1.png';
+import satellite2 from '@/images/story/satellite2.png';
+
+// aurora effects component.
+import Aurora from './Aurora';
 
 // extra vars for animation.
 const IMG_MS = 400;           // image slide duration
 const BUFFER_MS = 40;         // extra buffer for animation end
 const TYPE_SPEED = 40;        // ms/char (typing)
 const DELETE_SPEED = 30;      // ms/char (deleting)
+
+// SVG chevrons (too lazy to do FontAwesome)
+const ChevronRight = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6" />
+    </svg>
+);
+
+const ChevronLeft = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6" />
+    </svg>
+);
 
 // whoiam component.
 const WhoIAm = memo(() => {
@@ -157,7 +179,12 @@ const WhoIAm = memo(() => {
     }, [isNewCardSet, isSlidingOut, index, showImages]);
 
     return (
-        <SectionWrap>
+        <SectionWrap id="who-i-am">
+            {/* space elements - satellites and space station */}
+            <SpaceStation />
+            <Satellite1 />
+            <Satellite2 />
+            
             {/* page title */}
             <PageTitle>Who I Am</PageTitle>
 
@@ -241,7 +268,7 @@ const WhoIAm = memo(() => {
                          {/* typed box for the role */}
                              <TypedBox style={{ minWidth: `${LONGEST_ROLE_CH}ch` }}>
                                  <LiveRegion aria-live="polite">
-                                     <RoleText>{frozen ? card.role : out}</RoleText>
+                                     <RoleText $roleIndex={index}>{frozen ? card.role : out}</RoleText>
                                      <Caret aria-hidden $paused={isSlidingOut || phase === 'delete'}>_</Caret>
                                  </LiveRegion>
                              </TypedBox>
@@ -256,7 +283,7 @@ const WhoIAm = memo(() => {
                           {/* section title */}
                           <SectionTitle>{card.sectionTitle}</SectionTitle>
                           {/* bulleted list */}
-                          <BulletList>
+                          <BulletList $cardIndex={index}>
                             {card.bullets.map((b, i) => (
                               <BulletItem key={i}>{b}</BulletItem>
                             ))}
@@ -270,15 +297,24 @@ const WhoIAm = memo(() => {
                     {/* navigation row */}
                     <NavRow>
                         {/* previous button */}
-                        <NavBtn onClick={prev} aria-label="Previous" disabled={isSlidingOut || phase === 'delete'}>‹</NavBtn>
+                        <NavBtn onClick={prev} aria-label="Previous" disabled={isSlidingOut || phase === 'delete'}>
+                            <ChevronLeft />
+                        </NavBtn>
                         {/* page indicator */}
                         <PageIndicator>
                             {index + 1} / {CARDS.length}
                         </PageIndicator>
-                        <NavBtn onClick={next} aria-label="Next" disabled={isSlidingOut || phase === 'delete'}>›</NavBtn>
+                        <NavBtn onClick={next} aria-label="Next" disabled={isSlidingOut || phase === 'delete'}>
+                            <ChevronRight />
+                        </NavBtn>
                     </NavRow>
                 </RightCol>
             </Grid>
+            
+            {/* aurora effects at the bottom */}
+            <AuroraWrapper>
+                <Aurora />
+            </AuroraWrapper>
         </SectionWrap>
     );
 });
@@ -288,21 +324,32 @@ const WhoIAm = memo(() => {
 // entire section wrapper.
 const SectionWrap = styled.section`
     /* layout */
-    min-height: 100vh;
+    min-height: 110vh;
+    position: relative;
 
     /* spacing */
     padding: 4rem 6rem 8rem;
+    
+    /* compact at 1600px */
+    @media (max-width: 1600px) {
+        padding: 3rem 4rem 4rem;
+    }
 
     /* styles */
     background: linear-gradient(
         to bottom,
         rgb(13,7,27) 0%, 
         rgb(13,7,27) 25%, 
-        rgb(30,20,55) 50%,
-        rgb(45,30,80) 65%, 
-        rgb(65,45,110) 80%, 
-        rgb(85,60,135) 90%, 
-        rgb(100,70,150) 100%
+        rgb(14,8,28) 30%,
+        rgb(16,10,32) 40%,
+        rgb(20,15,40) 50%,
+        rgb(28,20,52) 60%,
+        rgb(38,28,68) 70%,
+        rgb(50,38,88) 78%,
+        rgb(65,48,108) 85%,
+        rgb(80,58,128) 91%,
+        rgb(90,64,138) 95%,
+        rgb(95,67,142) 100%
     );
     
     /* media queries */
@@ -317,11 +364,15 @@ const SectionWrap = styled.section`
 // page title. ("Who I Am")
 const PageTitle = styled.div`
     /* spacing */
-    margin: 0 0 3rem;
+    margin: 0 0 2rem;
+    
+    @media (max-width: 1600px) {
+        margin: 0 0 1.5rem;
+    }
 
     /* styles */
-    opacity: 0.7;
-    font-size: 5rem;
+    opacity: 0.9;
+    font-size: clamp(2.6rem, 4.2vw, 5rem);
     font-weight: 800;
     text-align: center;
     background: linear-gradient(135deg, #fff 0%, rgba(200,180,255,.95) 50%, rgba(150,200,255,1) 100%);
@@ -341,6 +392,11 @@ const Grid = styled.div`
 
     /* spacing */
     margin: 0 auto;
+
+    /* compact at 1600px - give more space to text */
+    @media (max-width: 1600px) {
+        grid-template-columns: 42% 2% 56%;
+    }
 `;
 
 /* ========== left column ========== */
@@ -369,9 +425,22 @@ const ImageStack = styled.div`
 // shell for the images. (mainly for animation)
 const ImgShell = styled.div`
     /* layout */
-    width: 350px;
-    height: 350px;
+    --width: 360px;  
+    --height: 360px;
+    width: var(--width);
+    height: var(--height);
     position: absolute;
+    
+    @media (max-width: 2000px) {
+        --width: 400px;
+        --height: 360px;
+    }
+    
+    /* a bit bigger at 1600px */
+    @media (max-width: 1600px) {
+        --width: 320px;
+        --height: 320px;
+    }
   
     /* calculate which direction image should slide in from */
     ${props => {
@@ -476,7 +545,8 @@ const StyledImage = styled.img`
     aspect-ratio: 1 / 1;
 
     /* spacing */
-    width: 340px;
+    width: calc(var(--width) - 10px);
+    height: calc(var(--height) - 10px);
 
     /* styles */
     border-radius: 12px;
@@ -642,7 +712,7 @@ const ContentWrapper = styled.div`
     min-width: 0;
     display: grid;
     inline-size: 100%;
-    min-height: 580px;
+    min-height: clamp(420px, 60vh, 620px);
     max-inline-size: 100%;
     box-sizing: border-box;
 
@@ -721,11 +791,11 @@ const H2 = styled.div`
 
     /* spacing */
     gap: 0.5rem;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.1rem;
 
     /* styles */
     font-weight: 800;    
-    font-size: clamp(1.8rem, 4vw, 2.5rem);    
+    font-size: clamp(1.8rem, 3.6vw, 2.3rem);
 `;
 
 // static "A" that doesn't move.
@@ -736,7 +806,7 @@ const StaticA = styled.span`
     /* styles */
     line-height: 1;
     font-weight: 800;
-    font-size: clamp(2.5rem, 5vw, 3rem);
+    font-size: clamp(2.2rem, 4.4vw, 2.7rem);
     color: rgba(255,255,255,.9);
 `;
 
@@ -777,7 +847,40 @@ const LiveRegion = styled.span`
 const RoleText = styled.span`
     /* styles */
     font-weight: 800;
-    background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(200,180,255,.9));
+    
+    /* different gradients based on role index */
+    ${props => {
+        switch(props.$roleIndex) {
+            case 0: // Software Engineer - darker purple gradient
+                return `
+                    background: linear-gradient(135deg, 
+                        rgba(180, 140, 255, 0.95), 
+                        rgba(120, 100, 200, 0.95),
+                        rgba(80, 60, 150, 0.9));
+                `;
+            case 1: // UCF Computer Engineering Grad - gold/amber gradient
+                return `
+                    background: linear-gradient(135deg, 
+                        rgba(255, 220, 150, 0.95), 
+                        rgba(255, 180, 100, 0.95),
+                        rgba(255, 160, 80, 0.9));
+                `;
+            case 2: // Professional Beginner - green/emerald gradient
+                return `
+                    background: linear-gradient(135deg, 
+                        rgba(150, 255, 200, 0.95), 
+                        rgba(120, 220, 170, 0.95),
+                        rgba(100, 180, 140, 0.9));
+                `;
+            default: // fallback
+                return `
+                    background: linear-gradient(135deg, 
+                        rgba(255,255,255,.95), 
+                        rgba(200,180,255,.9));
+                `;
+        }
+    }}
+    
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -796,6 +899,12 @@ const OneLiner = styled.div`
     color: rgba(255,255,255,.88);
     font-size: clamp(0.85rem, 1.8vw, 1.275rem);
 
+    /* smaller at 1600px */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+        line-height: 1.7;
+    }
+
     /* strong text */
     strong {
         font-weight: 600;
@@ -812,6 +921,12 @@ const SectionTitle = styled.div`
     font-weight: 600;
     color: rgba(200, 180, 255, 1);
     font-size: clamp(1.5rem, 2.2vw, 2.5rem);
+
+    /* smaller at 1600px */
+    @media (max-width: 1600px) {
+        font-size: clamp(1.3rem, 1.8vw, 2rem);
+        margin: 0.8rem 0;
+    }
 `;
 
 // bullet list container.
@@ -821,6 +936,16 @@ const BulletList = styled.div`
 
     /* styles */
     list-style: none;
+    
+    /* two columns at 1600px to save vertical space - skip for card index 1 (second card) */
+    @media (max-width: 1600px) {
+        display: ${props => props.$cardIndex === 1 ? 'block' : 'grid'};
+        ${props => props.$cardIndex !== 1 && `
+            grid-template-columns: 1fr 1fr;
+            column-gap: 1rem;
+            row-gap: 0.5rem;
+        `}
+    }
 `;
 
 // individual bullet item.
@@ -831,7 +956,21 @@ const BulletItem = styled.div`
     /* spacing */
     max-width: 100%;
     margin-bottom: 1rem;
-    padding-left: 2.5rem;
+    padding-left: 1.75rem;
+    
+    
+    /* compact at 1600px */
+    @media (max-width: 1600px) {
+        text-align: left;
+        font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+        margin-bottom: 0.5rem;
+        padding-left: 1.8rem;
+        
+        /* smaller bullet at 1600px */
+        &::before {
+            font-size: 1.3rem;
+        }
+    }
 
     /* styles */
     line-height: 1.6;
@@ -880,6 +1019,12 @@ const Closer = styled.div`
     overflow-wrap: break-word;
     color: rgba(255,255,255,.88);
     font-size: clamp(1rem, 1.8vw, 1.3rem);
+
+    /* smaller at 1600px */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.9rem, 1.4vw, 1.2rem);
+        line-height: 1.7;
+    }
     
     /* strong text */
     strong {
@@ -899,55 +1044,56 @@ const NavRow = styled.div`
     /* spacing */
     gap: 1.5rem;
     padding: 1rem;
-    margin-top: 1.5rem;  
+    margin-bottom: 1rem;  
 `;
 
 // page indicator. (current page / total pages)
 const PageIndicator = styled.div`
     /* spacing */
-    padding: 0.25rem 1rem;
+    padding: 0.4rem 1.3rem;
     
     /* styles */
     font-weight: 500;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     border-radius: 24px;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 // navigation button. previous, next. 
 const NavBtn = styled.button`  
     /* layout */
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     /* spacing */
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     
 
     /* styles */
     cursor: pointer;
-    font-weight: 300;
-    font-size: 1.6rem;
     border-radius: 50%;
-    backdrop-filter: blur(10px);
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
     
     /* hover effects of buttons */
     &:hover {
         transform: translateY(-2px) scale(1.05);
-        background: rgba(150, 200, 255, 0.15);
-        border-color: rgba(150, 200, 255, 0.4);
+        background: rgba(150, 200, 255, 0.3);
+        border-color: rgba(150, 200, 255, 0.6);
         color: rgba(255, 255, 255, 1);
-        box-shadow: 0 4px 16px rgba(150, 200, 255, 0.2);
+        box-shadow: 0 6px 20px rgba(150, 200, 255, 0.3);
     }
     
     /* active state of buttons */
@@ -967,6 +1113,173 @@ const NavBtn = styled.button`
             transform: none;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+    }
+`;
+
+// space station - static in top right corner
+const SpaceStation = styled.div`
+    /* layout */
+    top: 3.5%;
+    right: 5%;
+    z-index: 2;
+    position: absolute;
+
+    /* spacing */
+    width: 250px;
+    height: 250px;
+
+    /* styles */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(${spaceStation});
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
+    opacity: 1;
+    will-change: transform;
+    contain: layout style paint;
+    
+    /* subtle floating animation - optimized */
+    animation: spaceStationFloat 8s ease-in-out infinite;
+    
+    @keyframes spaceStationFloat {
+        0%, 100% { 
+            transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        50% { 
+            transform: translate3d(0, -8px, 0) rotate(2deg);
+        }
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        width: 200px;
+        height: 200px;
+        opacity: 0.6;
+    }
+`;
+
+// satellite 1 - floating across the top of the screen
+const Satellite1 = styled.div`
+    /* layout */
+    top: 10%;
+    left: -15%;
+    z-index: 0;
+    position: absolute;
+
+    /* spacing */
+    width: 80px;
+    height: 144px;
+
+    /* styles */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(${satellite1});
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
+    opacity: 0.6;
+    will-change: transform;
+    contain: layout style paint;
+    
+    /* floating animation with delay - optimized */
+    animation-delay: 6s;
+    animation: satellite1Float 25s linear infinite;
+    
+    @keyframes satellite1Float {
+        0% {
+            transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        25% {
+            transform: translate3d(calc(25vw + 40px), -30px, 0) rotate(90deg);
+        }
+        50% {
+            transform: translate3d(calc(50vw + 80px), 0, 0) rotate(180deg);
+        }
+        75% {
+            transform: translate3d(calc(75vw + 120px), 30px, 0) rotate(270deg);
+        }
+        100% {
+            transform: translate3d(calc(100vw + 160px), 0, 0) rotate(360deg);
+        }
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        width: 60px;
+        height: 108px;
+        opacity: 0.5;
+    }
+`;
+
+// satellite 2 - floating across slightly lower
+const Satellite2 = styled.div`
+    /* layout */
+    top: 25%;
+    right: -15%;
+    z-index: 0;
+    position: absolute;
+
+    /* spacing */
+    width: 80px;
+    height: 144px;
+
+    /* styles */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(${satellite2});
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
+    opacity: 0.5;
+    will-change: transform;
+    contain: layout style paint;
+    
+    /* floating animation with different delay and path - right to left - optimized */
+    animation-delay: 7s;
+    animation: satellite2Float 30s linear infinite;
+    
+    @keyframes satellite2Float {
+        0% {
+            transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        20% {
+            transform: translate3d(calc(-20vw - 30px), -20px, 0) rotate(72deg);
+        }
+        40% {
+            transform: translate3d(calc(-40vw - 60px), 0, 0) rotate(144deg);
+        }
+        60% {
+            transform: translate3d(calc(-60vw - 90px), 20px, 0) rotate(216deg);
+        }
+        80% {
+            transform: translate3d(calc(-80vw - 120px), -10px, 0) rotate(288deg);
+        }
+        100% {
+            transform: translate3d(calc(-100vw - 150px), 0, 0) rotate(360deg);
+        }
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        width: 60px;
+        height: 108px;
+        opacity: 0.4;
+    }
+`;
+
+// aurora wrapper - positions aurora at the bottom of the section
+const AuroraWrapper = styled.div`
+    /* layout */
+    position: absolute;
+    top: 60%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        top: 55%;
     }
 `;
 

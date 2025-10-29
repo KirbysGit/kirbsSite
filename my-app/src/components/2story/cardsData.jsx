@@ -45,7 +45,7 @@ export const CARDS = [
     sectionTitle: "What I'm Up To Right Now...",
     bullets: [
       'Polishing this portfolio to reflect my work and story 😅',
-      'Keeping my skills sharp with daily LeetCode 🧠',
+      'Keeping my skills sharp with daily LeetCode and algorithm practices 🧠',
       'Building personal projects to explore new tools and push my ideas into real apps 🚀',
       'Experimenting with ML integrations and data-driven features for future products 🤖',
     ],

@@ -12,6 +12,34 @@ import { motion } from 'framer-motion';
 
 // hero component.
 const Hero = () => {
+    
+    // smooth scroll function with media query-aware offset
+    const scrollToSection = (sectionId, desktopOffset = 0, mobileOffset = 0) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            // get responsive offset based on screen width.
+            const getOffset = () => {
+                const width = window.innerWidth;
+                if (width >= 2000) return desktopOffset;
+                if (width >= 1600) return mobileOffset;
+                return mobileOffset;
+            };
+            
+            // get the offset.
+            const offset = getOffset();
+            
+            // get the element position.
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - offset;
+            
+            // scroll to the offset position.
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    };
+
     return (
         <HeroContainer>
             
@@ -128,13 +156,15 @@ const Hero = () => {
                             transition={{ delay: 5.4, duration: 1.2, ease: "easeOut" }}
                         >
                             {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
-                            <NavPill $variant="projects">
+                            {/* Adjust the first number for 2000px+, second for 1600-1999px */}
+                            <NavPill $variant="projects" onClick={() => scrollToSection('projects', 120, 80)}>
                                 <NavPillBackground $variant="projects" />
                                 <NavPillText>Strictly business</NavPillText>
                                 <NavPillIcon>✈️</NavPillIcon>
                             </NavPill>
                             {/* who even are you? (tim robinson type shi) */}
-                            <NavPill $variant="story">
+                            {/* Adjust the first number for 2000px+, second for 1600-1999px */}
+                            <NavPill $variant="story" onClick={() => scrollToSection('who-i-am', -25, -35)}>
                                 <NavPillBackground $variant="story" />
                                 <NavPillText>Who even are you?</NavPillText>
                                 <NavPillIcon>👨‍🚀</NavPillIcon>
@@ -159,6 +189,8 @@ const Hero = () => {
         </HeroContainer>
     )
 }
+
+/* ========== styled ========== */
 
 // entire container for the hero content.
 const HeroContainer = styled.div`
@@ -692,7 +724,7 @@ const NavPills = styled(motion.div)`
 `;
 
 // navigation pill.
-const NavPill = styled.div`
+const NavPill = styled.button`
     /* layout */
     width: 100%;
     min-width: 0;
@@ -708,10 +740,12 @@ const NavPill = styled.div`
 
     /* styles */
     cursor: pointer;
+    font: inherit;
     border-radius: 50px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
     
     /* gradient background based on variant */
 
@@ -887,6 +921,7 @@ const NavPillText = styled.span`
     /* styles */
     color: white;
     font-size: 1rem;
+    font-family: inherit;
     font-weight: 500;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 `;
@@ -995,4 +1030,5 @@ const SimpleArrow = styled(motion.div)`
     transition: all 0.3s ease;
 `;
 
+// export component.
 export default Hero;

@@ -4,22 +4,39 @@ import styled from 'styled-components';
 // Generate smooth sinusoidal wave paths with consistent thickness
 function generateWavePath(width = 2400, height = 100, amplitude = 20, frequency = 4, phase = 0, thickness = 40) {
   const step = width / (frequency * 20);
-  let path = `M0,${height/2}`;
+  let topPath = [];
+  let bottomPath = [];
   
-  // Generate top wave
+  // Generate top wave from left to right
   for (let x = 0; x <= width; x += step) {
     const y = height/2 + Math.sin((x / width) * frequency * 2 * Math.PI + phase) * amplitude;
-    path += ` L${x},${y}`;
+    topPath.push({ x, y });
   }
   
-  // Generate bottom wave (same pattern but offset by thickness) - go backwards
+  // Generate bottom wave from right to left (same pattern but offset by thickness)
   for (let x = width; x >= 0; x -= step) {
     const y = height/2 + Math.sin((x / width) * frequency * 2 * Math.PI + phase) * amplitude + thickness;
-    path += ` L${x},${y}`;
+    bottomPath.push({ x, y });
   }
   
-  // Close the path properly to prevent rendering artifacts
-  return path + ` Z`;
+  // Build the path: move to first top point, line through top points, 
+  // then go back through bottom points, and explicitly close
+  let path = `M${topPath[0].x},${topPath[0].y}`;
+  
+  // Draw top wave
+  for (let i = 1; i < topPath.length; i++) {
+    path += ` L${topPath[i].x},${topPath[i].y}`;
+  }
+  
+  // Draw bottom wave
+  for (let i = 0; i < bottomPath.length; i++) {
+    path += ` L${bottomPath[i].x},${bottomPath[i].y}`;
+  }
+  
+  // Explicitly close the path to prevent rendering artifacts
+  path += ` Z`;
+  
+  return path;
 }
 
 // Aurora layer container
@@ -86,47 +103,58 @@ const AuroraWave = styled.div`
   top: ${props => props.$top || '36.25%'};
   left: 0;
   opacity: ${props => props.$opacity || 0.3};
-  mix-blend-mode: screen;
-  filter: blur(${props => props.$blur || 50}px);
-  background: linear-gradient(
-    90deg,
-    rgba(80, 255, 180, 0.5) 0%,
-    rgba(150, 120, 255, 0.4) 50%,
-    rgba(255, 150, 200, 0.4) 100%
-  );
-  background-size: 200% 100%;
-  background-position: 0% 50%;
   clip-path: path("${props => props.$wavePath}");
-  animation: waveMove ${props => props.$duration || 60}s ease-in-out infinite, 
-             colorFlow 15s linear infinite;
-  animation-delay: ${props => props.$delay || 0}s;
-  will-change: transform, clip-path;
+  isolation: isolate;             /* avoid blend seams across siblings */
+  will-change: clip-path;         /* keep transforms off this layer */
+  
   contain: layout style paint;
   transform: translateZ(0); /* force GPU layer */
   backface-visibility: hidden; /* prevent rendering artifacts */
+  -webkit-backface-visibility: hidden; /* Safari support */
+  -webkit-transform: translate3d(0, 0, 0); /* Force hardware acceleration */
 
-  @keyframes waveMove {
-    0%, 100% {
-      transform: translateX(0) translateY(0);
-      clip-path: path("${props => props.$wavePath}");
-    }
-    25% {
-      transform: translateX(-20px) translateY(-8px);
-      clip-path: path("${props => props.$wavePath2}");
-    }
-    50% {
-      transform: translateX(-40px) translateY(-15px);
-      clip-path: path("${props => props.$wavePath3}");
-    }
-    75% {
-      transform: translateX(-20px) translateY(-8px);
-      clip-path: path("${props => props.$wavePath4}");
-    }
+  /* animate only the mask shape on the parent */
+  animation: maskPath ${props => props.$duration || 60}s ease-in-out infinite;
+  animation-delay: ${props => props.$delay || 0}s;
+
+  /* the blurred, blended pixels live on a larger pseudo-element */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -${props => (props.$blur || 50) * 2}px;  /* overscan = 2x blur radius */
+    background: linear-gradient(
+      90deg,
+      rgba(80, 255, 180, 0.5) 0%,
+      rgba(150, 120, 255, 0.4) 50%,
+      rgba(255, 150, 200, 0.4) 100%
+    );
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    filter: blur(${props => props.$blur || 50}px);
+    mix-blend-mode: screen;
+    will-change: transform, background-position;
+    animation: colorFlow 15s linear infinite, waveDrift ${props => props.$duration || 60}s ease-in-out infinite;
+    animation-delay: ${props => props.$delay || 0}s;
   }
 
-  @keyframes colorFlow {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
+  @keyframes maskPath {
+    0%, 100% { clip-path: path("${props => props.$wavePath}"); }
+    25%      { clip-path: path("${props => props.$wavePath2}"); }
+    50%      { clip-path: path("${props => props.$wavePath3}"); }
+    75%      { clip-path: path("${props => props.$wavePath4}"); }
+  }
+  
+  /* Use whole-pixel drift values to avoid sub-pixel shimmer */
+  @keyframes waveDrift {
+    0%, 100% { transform: translate3d(0px, 0px, 0); }
+    25%      { transform: translate3d(-24px, -8px, 0); }
+    50%      { transform: translate3d(-48px, -16px, 0); }
+    75%      { transform: translate3d(-24px, -8px, 0); }
+  }
+  
+  @keyframes colorFlow { 
+    0% { background-position: 0% 50%; } 
+    100% { background-position: 200% 50%; } 
   }
 `;
 
@@ -161,7 +189,7 @@ const Aurora = () => {
       
       <AuroraWave 
         $top="39.25%"
-        $opacity={0.15}
+        $opacity={0.55}
         $blur={50}
         $duration={60}
         $delay={0}
@@ -173,7 +201,7 @@ const Aurora = () => {
       
       <AuroraWave 
         $top="48%"
-        $opacity={0.125}
+        $opacity={0.525}
         $blur={60}
         $duration={65}
         $delay={8}
@@ -185,7 +213,7 @@ const Aurora = () => {
       
       <AuroraWave 
         $top="56.75%"
-        $opacity={0.175}
+        $opacity={0.5}
         $blur={70}
         $duration={70}
         $delay={15}
@@ -197,7 +225,7 @@ const Aurora = () => {
       
       <AuroraWave 
         $top="63%"
-        $opacity={0.075}
+        $opacity={0.575}
         $blur={80}
         $duration={75}
         $delay={22}
