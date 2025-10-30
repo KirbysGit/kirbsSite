@@ -142,11 +142,11 @@ function App() {
             element={
               <>
                 {/* Always mounted and visible - loading screen overlays on top */}
-                <Hero />
-                <WhoIAm />
+                {/* <Hero /> */}
+                {/* <WhoIAm /> */}
                 <AExperience />
-                {/* <Projects /> */}
-                {/* <Skills /> */}
+                <Projects />
+                <Skills />
                 {/* <Background /> */}
               </>
             }

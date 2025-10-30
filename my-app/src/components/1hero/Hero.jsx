@@ -157,7 +157,7 @@ const Hero = () => {
                         >
                             {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
                             {/* Adjust the first number for 2000px+, second for 1600-1999px */}
-                            <NavPill $variant="projects" onClick={() => scrollToSection('projects', 120, 80)}>
+                            <NavPill $variant="projects" onClick={() => scrollToSection('experience', 20, -110)}>
                                 <NavPillBackground $variant="projects" />
                                 <NavPillText>Strictly business</NavPillText>
                                 <NavPillIcon>✈️</NavPillIcon>

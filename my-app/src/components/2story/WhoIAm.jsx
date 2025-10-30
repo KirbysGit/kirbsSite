@@ -14,8 +14,8 @@ import spaceStation from '@/images/2story/spacestation.png';
 import satellite1 from '@/images/2story/satellite1.png';
 import satellite2 from '@/images/2story/satellite2.png';
 
-// aurora effects component.
-import Aurora from './Aurora';
+// Shared seam color for smooth gradient transition (slightly darker)
+export const SEAM_RGB = '78, 58, 128'; // rgb(78, 58, 128)
 
 // extra vars for animation.
 const IMG_MS = 400;           // image slide duration
@@ -311,10 +311,6 @@ const WhoIAm = memo(() => {
                 </RightCol>
             </Grid>
             
-            {/* aurora effects at the bottom */}
-            <AuroraWrapper>
-                <Aurora />
-            </AuroraWrapper>
         </SectionWrap>
     );
 });
@@ -336,27 +332,41 @@ const SectionWrap = styled.section`
     }
 
     /* styles */
+    --seam-rgb: ${SEAM_RGB};
+    --seam: rgb(var(--seam-rgb));
+
+    /* Fallback (RGB) */
     background: linear-gradient(
         to bottom,
-        rgb(13,7,27) 0%, 
-        rgb(13,7,27) 25%, 
-        rgb(14,8,28) 30%,
-        rgb(16,10,32) 40%,
-        rgb(20,15,40) 50%,
-        rgb(28,20,52) 60%,
-        rgb(38,28,68) 70%,
-        rgb(50,38,88) 78%,
-        rgb(65,48,108) 85%,
-        rgb(80,58,128) 91%,
-        rgb(90,64,138) 95%,
-        rgb(95,67,142) 100%
+        rgb(13 7 27) 0%,
+        rgb(13 7 27) 15%,
+        /* begin easing into lighter purples a bit earlier */
+        rgb(16 10 32) 40%,
+        rgb(25 18 48) 65%,
+        rgb(40 28 75) 82%,
+        /* finish on the seam for a perfect handoff */
+        var(--seam) 92%,
+        var(--seam) 100%
     );
+    
+    /* Perceptual blend - smoother on modern browsers */
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+        background: linear-gradient(
+            to bottom in oklch,
+            /* simple perceptual ramp from deep space to seam */
+            rgb(13 7 27) 0%,
+            var(--seam) 100%
+        );
+    }
     
     /* media queries */
     @media (prefers-reduced-motion: reduce) {
         * {
-        animation-duration: 0s !important;
-        transition-duration: 0s !important;
+            animation-duration: 0s !important;
+            transition-duration: 0s !important;
+        }
+        &::after {
+            display: none;
         }
     }
 `;
@@ -372,7 +382,7 @@ const PageTitle = styled.div`
 
     /* styles */
     opacity: 0.9;
-    font-size: clamp(2.6rem, 4.2vw, 5rem);
+    font-size: clamp(2.6rem, 4.2vw, 6rem);
     font-weight: 800;
     text-align: center;
     background: linear-gradient(135deg, #fff 0%, rgba(200,180,255,.95) 50%, rgba(150,200,255,1) 100%);
@@ -1262,24 +1272,6 @@ const Satellite2 = styled.div`
         width: 60px;
         height: 108px;
         opacity: 0.4;
-    }
-`;
-
-// aurora wrapper - positions aurora at the bottom of the section
-const AuroraWrapper = styled.div`
-    /* layout */
-    position: absolute;
-    top: 60%;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-    
-    /* media queries */
-    @media (max-width: 1600px) {
-        top: 55%;
     }
 `;
 

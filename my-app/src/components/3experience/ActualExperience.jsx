@@ -1,7 +1,11 @@
+// Shared seam color for smooth gradient transition (slightly darker)
+export const SEAM_RGB = '78, 58, 128'; // rgb(78, 58, 128)
+
 // Imports.
 import React, { useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Cloud from './Cloud';
+import Aurora from '../2story/Aurora';
 
 // Import company logos
 import bitgoLogo from '@/images/3experience/bitgoSmall.jpg';
@@ -21,6 +25,7 @@ import nginxLogo from '@/images/logos/nginx.png';
 import gunicornLogo from '@/images/logos/gunicorn.png';
 import awsLogo from '@/images/logos/aws.png';
 import googleOAuthLogo from '@/images/logos/googleoauth.png';
+import curiousImg from '@/images/3experience/curious.jpg';
 
 // Helper function to get logo for a skill name
 const getLogo = (name) => {
@@ -146,11 +151,12 @@ const getBrandColors = (name) => {
 
 // ActualExperience Component.
 const ActualExperience = () => {
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(1);
     const [paused, setPaused] = useState(false);
     const drag = useRef({ x: 0, active: false });
     
     const experiences = [
+        { id: 'hire', name: "What's Next?", type: 'hire' },
         { id: 'bitgo', name: 'BitGo', type: 'tech' },
         { id: 'barlouie', name: 'Bar Louie', type: 'service' },
         { id: 'hawkers', name: 'Hawkers', type: 'service' }
@@ -185,34 +191,39 @@ const ActualExperience = () => {
     };
     
     return (
-        <ExperienceContainer>
+        <ExperienceContainer id="experience">
+            {/* Aurora effects at the top */}
+            <AuroraWrapper >
+                <Aurora />
+            </AuroraWrapper>
+            
             {/* Parallax Cloud Layers - Far, Mid, Near */}
             <CloudLayer>
-                {/* FAR LAYER - 6 clouds: mostly top/middle, some near bottom */}
-                <Cloud top="5%" delay="0" duration="180" layer="far" type={1} direction="left" />
-                <Cloud top="18%" delay="10" duration="200" layer="far" type={3} direction="right" />
-                <Cloud top="30%" delay="20" duration="190" layer="far" type={2} direction="left" />
-                <Cloud top="42%" delay="30" duration="195" layer="far" type={5} direction="right" />
-                <Cloud top="55%" delay="40" duration="185" layer="far" type={4} direction="left" />
-                <Cloud top="70%" delay="50" duration="192" layer="far" type={1} direction="right" />
+                {/* FAR LAYER - 6 clouds: positioned in bottom 30% */}
+                <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" />
+                <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" />
+                <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" />
+                <Cloud top="80%" delay="30" duration="195" layer="far" type={5} direction="right" />
+                <Cloud top="85%" delay="40" duration="185" layer="far" type={4} direction="left" />
+                <Cloud top="90%" delay="50" duration="192" layer="far" type={1} direction="right" />
                 
-                {/* MID LAYER - 7 clouds: top to mid */}
-                <Cloud top="8%" delay="3" duration="145" layer="mid" type={4} direction="left" />
-                <Cloud top="22%" delay="13" duration="140" layer="mid" type={2} direction="right" />
-                <Cloud top="35%" delay="23" duration="150" layer="mid" type={5} direction="left" />
-                <Cloud top="48%" delay="33" duration="155" layer="mid" type={1} direction="right" />
-                <Cloud top="60%" delay="43" duration="142" layer="mid" type={3} direction="left" />
-                <Cloud top="14%" delay="53" duration="148" layer="mid" type={4} direction="right" />
-                <Cloud top="65%" delay="57" duration="143" layer="mid" type={2} direction="left" />
+                {/* MID LAYER - 7 clouds: positioned in bottom 30% */}
+                <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" />
+                <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" />
+                <Cloud top="77%" delay="23" duration="150" layer="mid" type={5} direction="left" />
+                <Cloud top="82%" delay="33" duration="155" layer="mid" type={1} direction="right" />
+                <Cloud top="87%" delay="43" duration="142" layer="mid" type={3} direction="left" />
+                <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" />
+                <Cloud top="92%" delay="57" duration="143" layer="mid" type={2} direction="left" />
                 
-                {/* NEAR LAYER - 7 clouds: spread from top to bottom (4 at bottom) */}
-                <Cloud top="12%" delay="6" duration="115" layer="near" type={3} direction="left" />
-                <Cloud top="28%" delay="17" duration="125" layer="near" type={1} direction="right" />
-                <Cloud top="50%" delay="27" duration="120" layer="near" type={4} direction="left" />
-                <Cloud top="68%" delay="37" duration="118" layer="near" type={5} direction="right" />
-                <Cloud top="38%" delay="47" duration="116" layer="near" type={2} direction="left" />
-                <Cloud top="75%" delay="54" duration="122" layer="near" type={3} direction="right" />
-                <Cloud top="80%" delay="60" duration="119" layer="near" type={1} direction="left" />
+                {/* NEAR LAYER - 7 clouds: positioned in bottom 30% */}
+                <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" />
+                <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" />
+                <Cloud top="83%" delay="27" duration="120" layer="near" type={4} direction="left" />
+                <Cloud top="88%" delay="37" duration="118" layer="near" type={5} direction="right" />
+                <Cloud top="79%" delay="47" duration="116" layer="near" type={2} direction="left" />
+                <Cloud top="91%" delay="54" duration="122" layer="near" type={3} direction="right" />
+                <Cloud top="94%" delay="60" duration="119" layer="near" type={1} direction="left" />
             </CloudLayer>
             
             <ContentWrapper>
@@ -232,9 +243,36 @@ const ActualExperience = () => {
                     aria-label="Experience carousel"
                 >
                     <Track>
-                        {/* BitGo Card */}
+                        {/* Hire Me Intro Card */}
                         {(() => {
                             const cardStyle = getCardStyle(0);
+                            if (!cardStyle) return null;
+                            return (
+                                <Slide $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
+                                    <HireCard>
+                                        <HireHeader>
+                                            <HireTitle>What’s Next?</HireTitle>
+                                            <HireSubtitle>Honestly, I'm not 100% sure yet. I’m keeping an open mind and exploring where I can make the biggest impact.</HireSubtitle>
+                                        </HireHeader>
+                                        <HireBody>
+                                            <HireAvatar src={curiousImg} alt="Curious" />
+                                            <HireBlurb>
+                                                If you’re a recruiter or company interested in working together, I’d love to chat about potential roles or projects. Let’s build something great!                                           </HireBlurb>
+                                            <HireActions>
+                                                <Divider $themeColor="rgb(200, 180, 255)" />
+                                                <HireReach>Reach out to me at:</HireReach>
+                                                <HireButton as="div" role="button" aria-label="Email">
+                                                    kirbycolin26@gmail.com
+                                                </HireButton>
+                                            </HireActions>
+                                        </HireBody>
+                                    </HireCard>
+                                </Slide>
+                            );
+                        })()}
+                        {/* BitGo Card */}
+                        {(() => {
+                            const cardStyle = getCardStyle(1);
                             if (!cardStyle) return null;
                             return (
                                 <Slide $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
@@ -243,7 +281,7 @@ const ActualExperience = () => {
                             <HeaderTop>
                                 <CompanyInfo>
                                     <CompanyName>BitGo</CompanyName>
-                                    <DateRange>May 2024 - Present</DateRange>
+                                    <DateRange>May 2024 - June 2025</DateRange>
                                 </CompanyInfo>
                                                 <CompanyLogo src={bitgoLogo} alt="BitGo logo" $themeColor="rgba(13, 173, 220, 0.5)" />
                             </HeaderTop>
@@ -260,17 +298,17 @@ const ActualExperience = () => {
                         <CardBody>
                             <AchievementsList>
                                 <Achievement>
-                                    <AchievementIcon>🔧</AchievementIcon>
+                                                    <AchievementIcon $themeColor="13, 173, 220" />
                                     <AchievementText>Automated 20+ IT workflows with OAuth SSO and role-based access</AchievementText>
                                 </Achievement>
                                 
                                 <Achievement>
-                                    <AchievementIcon>⏱️</AchievementIcon>
+                                                    <AchievementIcon $themeColor="13, 173, 220" />
                                     <AchievementText>Saved ~150 staff hours annually with real-time monitoring dashboards</AchievementText>
                                 </Achievement>
                                 
                                 <Achievement>
-                                    <AchievementIcon>✂️</AchievementIcon>
+                                                    <AchievementIcon $themeColor="13, 173, 220" />
                                     <AchievementText>Cut script debugging time from hours to minutes with real-time WebSocket dashboards</AchievementText>
                                 </Achievement>
                             </AchievementsList>
@@ -468,7 +506,7 @@ const ActualExperience = () => {
                         
                         {/* Bar Louie Card */}
                         {(() => {
-                            const cardStyle = getCardStyle(1);
+                            const cardStyle = getCardStyle(2);
                             if (!cardStyle) return null;
                             return (
                                 <Slide $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
@@ -485,7 +523,7 @@ const ActualExperience = () => {
                                             <HeaderOverview>
                                                 <JobTitle $theme="barlouie">Server</JobTitle>
                                                 <ProjectDescription>
-                                                    Progressed from barback to server in a high-volume environment, consistently delivering exceptional service while managing $2500+ in sales per shift.
+                                                    Progressed from barback to server in a high-volume environment, consistently delivering exceptional service while managing $1250+ in sales per shift.
                                                 </ProjectDescription>
                                             </HeaderOverview>
                                             <Divider $themeColor="rgb(203, 192, 196)" />
@@ -494,21 +532,34 @@ const ActualExperience = () => {
                                         <CardBody>
                                             <AchievementsList>
                                                 <Achievement $themeColor="203, 192, 196">
-                                                    <AchievementIcon $themeColor="203, 192, 196">💪</AchievementIcon>
+                                                    <AchievementIcon $themeColor="203, 192, 196" />
                                                     <AchievementText>Adapting to high-pressure situations and thriving under stress</AchievementText>
                                                 </Achievement>
                                                 
                                                 <Achievement $themeColor="203, 192, 196">
-                                                    <AchievementIcon $themeColor="203, 192, 196">📊</AchievementIcon>
+                                                    <AchievementIcon $themeColor="203, 192, 196" />
                                                     <AchievementText>Effective communication with guests, kitchen, and bar teams</AchievementText>
                                                 </Achievement>
                                                 
                                                 <Achievement $themeColor="203, 192, 196">
-                                                    <AchievementIcon $themeColor="203, 192, 196">👥</AchievementIcon>
+                                                    <AchievementIcon $themeColor="203, 192, 196" />
                                                     <AchievementText>Working seamlessly in fast-paced collaborative environments</AchievementText>
                                                 </Achievement>
                                             </AchievementsList>
                                         </CardBody>
+                                        
+                                        <CardFooter>
+                                            <Divider $themeColor="rgb(203, 192, 196)" />
+                                            <TechConnection>
+                                                <TechConnectionTitle>How This Maps To Software</TechConnectionTitle>
+                                                <TechConnectionItem $themeColor="203, 192, 196">
+                                                    <TechConnectionDot $themeColor="203, 192, 196" />
+                                                    <TechConnectionText>
+                                                        Code reviews are stressful, but no sort of stress can ever top someone who's hungry and asking where their food is.
+                                                    </TechConnectionText>
+                                                </TechConnectionItem>
+                                            </TechConnection>
+                                        </CardFooter>
                                     </ServiceExperienceCard>
                                 </Slide>
                             );
@@ -516,7 +567,7 @@ const ActualExperience = () => {
                         
                         {/* Hawkers Card */}
                         {(() => {
-                            const cardStyle = getCardStyle(2);
+                            const cardStyle = getCardStyle(3);
                             if (!cardStyle) return null;
                             return (
                                 <Slide $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
@@ -533,7 +584,7 @@ const ActualExperience = () => {
                                             <HeaderOverview>
                                                 <JobTitle $theme="hawkers">Host / HTO</JobTitle>
                                                 <ProjectDescription>
-                                                    Managed guest relations and takeout operations that contributed to 40% of the store's total sales.
+                                                    Managed guest relations and takeout operations that contributed to ~35% of the store's total sales.
                                                 </ProjectDescription>
                                             </HeaderOverview>
                                             <Divider $themeColor="rgb(245, 148, 40)" />
@@ -542,21 +593,34 @@ const ActualExperience = () => {
                                         <CardBody>
                                             <AchievementsList>
                                                 <Achievement $themeColor="245, 148, 40">
-                                                    <AchievementIcon $themeColor="245, 148, 40">🔍</AchievementIcon>
+                                                    <AchievementIcon $themeColor="245, 148, 40" />
                                                     <AchievementText>Attention to detail in every order for consistent quality</AchievementText>
                                                 </Achievement>
                                                 
                                                 <Achievement $themeColor="245, 148, 40">
-                                                    <AchievementIcon $themeColor="245, 148, 40">💬</AchievementIcon>
+                                                    <AchievementIcon $themeColor="245, 148, 40" />
                                                     <AchievementText>Clear communication with customers, kitchen, and delivery teams</AchievementText>
                                                 </Achievement>
                                                 
                                                 <Achievement $themeColor="245, 148, 40">
-                                                    <AchievementIcon $themeColor="245, 148, 40">🎯</AchievementIcon>
-                                                    <AchievementText>Direct impact on business revenue - managing 40% of store sales</AchievementText>
+                                                    <AchievementIcon $themeColor="245, 148, 40" />
+                                                    <AchievementText>Direct impact on business revenue - managing ~35% of store sales</AchievementText>
                                                 </Achievement>
                                             </AchievementsList>
                                         </CardBody>
+                                        
+                                        <CardFooter>
+                                            <Divider $themeColor="rgb(245, 148, 40)" />
+                                            <TechConnection>
+                                                <TechConnectionTitle>Why This Helps With Tech</TechConnectionTitle>
+                                                <TechConnectionItem $themeColor="245, 148, 40">
+                                                    <TechConnectionDot $themeColor="245, 148, 40" />
+                                                    <TechConnectionText>
+                                                        I don't think explaining a missed Q1 target tops telling a family with a reservation that their table still isn't ready.
+                                                    </TechConnectionText>
+                                                </TechConnectionItem>
+                                            </TechConnection>
+                                        </CardFooter>
                                     </ServiceExperienceCard>
                                 </Slide>
                             );
@@ -572,30 +636,37 @@ const ActualExperience = () => {
     );
 }
 
-// Main container - beautiful sky gradient
+// Main container - darker gradient transitioning to sky
 const ExperienceContainer = styled.div`
+    --seam-rgb: ${SEAM_RGB};
+    --seam: rgb(var(--seam-rgb));
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background: linear-gradient(to bottom,
-        rgb(95, 67, 142) 0%,
-        rgb(98, 70, 146) 2%,
-        rgb(102, 74, 152) 5%,
-        rgb(108, 80, 162) 10%,
-        rgb(115, 88, 172) 16%,
-        rgb(120, 95, 180) 22%,
-        rgb(125, 105, 190) 30%,
-        rgb(128, 120, 200) 40%,
-        rgb(132, 135, 208) 50%,
-        rgb(136, 150, 218) 60%,
-        rgb(140, 165, 228) 70%,
-        rgb(144, 180, 236) 80%,
-        rgb(148, 190, 242) 90%,
-        rgb(150, 198, 246) 97%,
-        rgb(150, 200, 246) 100%);
+
+    /* Fallback (RGB) */
+    background: linear-gradient(
+        to bottom,
+        var(--seam) 0%,
+        /* hold the seam a bit, then progressively lighten without hue jumps */
+        var(--seam) 10%,
+        rgb(92 74 155) 32%,
+        rgb(112 95 182) 54%,
+        rgb(132 127 210) 78%,
+        rgb(148 180 243) 100%
+    );
+
+    /* Perceptual blend - keeps hue stable while lightening */
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+        background: linear-gradient(
+            to bottom in oklch,
+            /* single perceptual ramp from the seam to the sky */
+            var(--seam) 0%,
+            #a8c2f6 100%
+        );
+    }
     width: 100%;
     padding: 4rem 2rem;
-    padding-bottom: 0;
     position: relative;
     overflow: hidden;
 `;
@@ -623,11 +694,16 @@ const ContentWrapper = styled.div`
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    
+    @media (max-width: 1600px) {
+        max-width: 1200px;
+        padding: 1.5rem;
+    }
 `;
 
 // Section title
 const SectionTitle = styled.h1`
-    font-size: 6rem;
+    font-size: 5.5rem;
     font-weight: 900;
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.95) 0%,
@@ -638,25 +714,33 @@ const SectionTitle = styled.h1`
     background-clip: text;
     text-align: center;
     margin: 0;
+    margin-top: 2rem;
     
     @media (max-width: 1600px) {
-        font-size: 4rem;
+        font-size: 3.6rem;
+        margin-bottom: 0.25rem;
     }
 `;
 
 // Section subtitle
-const SectionSubtitle = styled.h2`
-    font-size: 2rem;
+const SectionSubtitle = styled.div`
+    font-size: 1.75rem;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.7);
     text-align: center;
     font-style: italic;
     margin: 0;
     margin-top: 1rem;
-    margin-bottom: 2rem;
+    position: relative;
+    z-index: 3;
+    text-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        0 1px 4px rgba(0, 0, 0, 0.2);
     
     @media (max-width: 1600px) {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1.25rem;
     }
 `;
 
@@ -667,12 +751,25 @@ const Stage = styled.div`
     min-height: 80vh;
     padding: 40px 0;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
     width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    
+    @media (min-width: 2000px) {
+        overflow: visible;
+        padding-bottom: 2rem;
+    }
+    
+    @media (max-width: 2000px) {
+    max-width: 1400px;
+    }
     
     @media (max-width: 1600px) {
-        min-height: 70vh;
-        padding: 30px 0;
+        min-height: 64vh;
+        padding: 0;
+        max-width: 100%;
+        overflow: visible;
     }
     
     @media (max-width: 1200px) {
@@ -684,14 +781,22 @@ const Stage = styled.div`
 // Track - holds the slides
 const Track = styled.div`
     position: relative;
-    width: 50vw;
+    width: 90%;
+    max-width: 1400px;
     height: clamp(600px, 70vh, 800px);
     perspective: 1200px;
     overflow: visible;
+    margin: 0 auto;
+    
+    @media (max-width: 2000px) {
+        width: 85%;
+        max-width: 1200px;
+    }
     
     @media (max-width: 1600px) {
-        width: 60vw;
-        height: clamp(550px, 65vh, 750px);
+        width: 88%;
+        max-width: 980px;
+        height: clamp(560px, 60vh, 680px);
     }
     
     @media (max-width: 1200px) {
@@ -720,17 +825,30 @@ const Slide = styled.div`
         transform: translateX(0) translateZ(0) scale(1);
         opacity: 1;
         z-index: 10;
-        filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.25));
         pointer-events: auto;
     `}
     
     /* Adjacent card */
     ${({ $distance, $position }) => $distance === 1 && `
-        transform: translateX(${$position > 0 ? '35%' : '-35%'}) scale(0.75) translateZ(-30px);
-        opacity: 0.4;
+        transform: translateX(${$position > 0 ? '28%' : '-28%'}) scale(0.8) translateZ(-30px);
+        opacity: 0.5;
         z-index: 5;
-        filter: blur(2px) saturate(0.7);
+        filter: blur(1.5px) saturate(0.75);
     `}
+    
+    @media (min-width: 2000px) {
+        ${({ $distance, $position }) => $distance === 1 && `
+            transform: translateX(${$position > 0 ? '25%' : '-25%'}) scale(0.85) translateZ(-30px);
+            opacity: 0.6;
+        `}
+    }
+    
+    @media (max-width: 1600px) {
+        ${({ $distance, $position }) => $distance === 1 && `
+            transform: translateX(${$position > 0 ? '30%' : '-30%'}) scale(0.75) translateZ(-30px);
+            opacity: 0.4;
+        `}
+    }
     
     @media (max-width: 1200px) {
         ${({ $distance, $position }) => $distance === 1 && `
@@ -750,13 +868,36 @@ const CompanyLogo = styled.img`
     object-fit: cover;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     cursor: pointer;
+    
+    @media (max-width: 1600px) {
+        width: 84px;
+        height: 84px;
+        right: 4%;
+        top: 4%;
+    }
+    
+    &:hover {
+        transform: scale(1.15) translateY(-8px) rotate(5deg);
+        filter: drop-shadow(0 8px 24px ${({ $themeColor }) => $themeColor || 'rgba(13, 173, 220, 0.5)'});
+    }
 `;
 
 // Individual experience card - phone screen style with frosted glass
 const ExperienceCard = styled.div`
+    --theme-rgb: 13, 173, 220; /* BitGo */
+    
     /* Phone screen dimensions */
     width: 500px;
-    min-height: 600px;
+    height: fit-content;
+    
+    @media (min-width: 2000px) {
+        width: 500px;
+    }
+    
+    @media (max-width: 1600px) {
+        width: 450px;
+        padding: 1.5rem 1.25rem 0 1.25rem;
+    }
     
     /* Solid phone screen background with BitGo gradient */
     background: linear-gradient(135deg,
@@ -772,22 +913,29 @@ const ExperienceCard = styled.div`
     border: 1px solid rgba(13, 173, 220, 0.4);
     border-radius: 24px;
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 8px 16px rgba(0, 0, 0, 0.3),
         inset 0 1px 2px rgba(13, 173, 220, 0.3),
         inset 0 -1px 2px rgba(0, 0, 0, 0.2),
-        0 0 40px rgba(13, 173, 220, 0.2);
+        0 0 20px rgba(13, 173, 220, 0.2);
     
     /* Layout */
-    padding: 2rem 1.5rem;
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
     display: flex;
     flex-direction: column;
     
     /* Smooth transitions */
     transition: all 0.4s ease;
     
-    &:hover ${CompanyLogo} {
-        transform: scale(1.15) rotate(5deg);
-        filter: drop-shadow(0 8px 24px rgba(13, 173, 220, 0.5));
+    @media (min-width: 2000px) {
+        padding-bottom: 2.5rem;
+        box-shadow: 
+            0 4px 16px rgba(0, 0, 0, 0.2),
+            0 8px 32px rgba(0, 0, 0, 0.15),
+            0 16px 48px rgba(0, 0, 0, 0.1),
+            0 24px 64px rgba(0, 0, 0, 0.05),
+            inset 0 1px 2px rgba(13, 173, 220, 0.3),
+            inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+            0 0 40px rgba(13, 173, 220, 0.2);
     }
     
     @media (max-width: 1200px) {
@@ -831,6 +979,10 @@ const CompanyName = styled.h3`
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     letter-spacing: -0.5px;
     line-height: 1.2;
+    
+    @media (max-width: 1600px) {
+        font-size: 2.2rem;
+    }
 `;
 
 const DateRange = styled.span`
@@ -839,6 +991,10 @@ const DateRange = styled.span`
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    
+    @media (max-width: 1600px) {
+        font-size: 0.9rem;
+    }
 `;
 
 const Divider = styled.div`
@@ -850,12 +1006,16 @@ const Divider = styled.div`
     box-shadow: 0 0 10px ${props => props.$themeColor || 'rgba(255, 255, 255, 0.2)'};
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    
+    @media (max-width: 1600px) {
+        margin-top: 0.4rem;
+        margin-bottom: 0.4rem;
+    }
 `;
 
 const CardBody = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1;
 `;
 
 const JobTitle = styled.div`
@@ -928,13 +1088,22 @@ const JobTitle = styled.div`
             background-position: 100% 50%;
         }
     }
+    
+    @media (max-width: 1600px) {
+        font-size: 1.1rem;
+    }
 `;
 
 // Achievements list - Icon + One-Liner style
 const AchievementsList = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    padding: 0;
+    gap: 1rem;
+    
+    @media (max-width: 1600px) {
+        gap: 0.6rem;
+    }
 `;
 
 const Achievement = styled.div`
@@ -947,6 +1116,10 @@ const Achievement = styled.div`
     border: 1px solid ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.2)` : 'rgba(13, 173, 220, 0.2)'};
     transition: all 0.3s ease;
     
+    @media (max-width: 1600px) {
+        padding: 0.65rem;
+    }
+    
     &:hover {
         background: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.1)` : 'rgba(13, 173, 220, 0.1)'};
         border-color: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.4)` : 'rgba(13, 173, 220, 0.4)'};
@@ -956,21 +1129,49 @@ const Achievement = styled.div`
 `;
 
 const AchievementIcon = styled.div`
-    font-size: 1.8rem;
     flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.15)` : 'rgba(13, 173, 220, 0.15)'};
-    border-radius: 10px;
-    box-shadow: 0 2px 8px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.2)` : 'rgba(13, 173, 220, 0.2)'};
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: ${({ $themeColor }) => {
+        if ($themeColor) {
+            return `linear-gradient(135deg, 
+                rgba(${$themeColor}, 1) 0%,
+                rgba(${$themeColor}, 0.85) 50%,
+                rgba(${$themeColor}, 0.7) 100%
+            )`;
+        }
+        return `linear-gradient(135deg, 
+            rgba(13, 173, 220, 1) 0%,
+            rgba(13, 173, 220, 0.85) 50%,
+            rgba(13, 173, 220, 0.7) 100%
+        )`;
+    }};
+    box-shadow: 
+        0 0 10px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.5)` : 'rgba(13, 173, 220, 0.5)'},
+        inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    position: relative;
+    margin-top: 2px;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+    }
+    
     transition: all 0.3s ease;
     
     ${Achievement}:hover & {
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.3)` : 'rgba(13, 173, 220, 0.3)'};
+        transform: scale(1.25);
+        box-shadow: 
+            0 0 16px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.7)` : 'rgba(13, 173, 220, 0.7)'},
+            inset 0 1px 2px rgba(255, 255, 255, 0.35);
     }
 `;
 
@@ -981,14 +1182,116 @@ const AchievementText = styled.p`
     margin: 0;
     flex: 1;
     font-weight: 400;
+    
+    @media (max-width: 1600px) {
+        font-size: 0.85rem;
+        line-height: 1.45;
+    }
 `;
 
 const CardFooter = styled.div`
+    margin-top: auto;
+    padding-top: 0.75rem;
+    padding-bottom: 1rem;
     display: flex;
     flex-direction: column;
-    padding-top: 0.25rem;
-    margin-top: auto;
-    gap: 0.5rem;
+    gap: 0.75rem;
+`;
+
+// Tech Connection Section
+const TechConnection = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+`;
+
+const TechConnectionTitle = styled.h4`
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+
+    @media (max-width: 1600px) {
+        font-size: 0.8rem;
+        letter-spacing: 0.7px;
+    }
+`;
+
+const TechConnectionItem = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.2)` : 'rgba(13, 173, 220, 0.2)'};
+    transition: all 0.3s ease;
+    
+    @media (max-width: 1600px) {
+        padding: 0.65rem;
+    }
+    
+    &:hover {
+        background: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.1)` : 'rgba(13, 173, 220, 0.1)'};
+        border-color: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.4)` : 'rgba(13, 173, 220, 0.4)'};
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.2)` : 'rgba(13, 173, 220, 0.2)'};
+    }
+`;
+
+const TechConnectionDot = styled.div`
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: ${({ $themeColor }) => {
+        if ($themeColor) {
+            return `linear-gradient(135deg, 
+                rgba(${$themeColor}, 1) 0%,
+                rgba(${$themeColor}, 0.85) 50%,
+                rgba(${$themeColor}, 0.7) 100%
+            )`;
+        }
+        return `linear-gradient(135deg, 
+            rgba(13, 173, 220, 1) 0%,
+            rgba(13, 173, 220, 0.85) 50%,
+            rgba(13, 173, 220, 0.7) 100%
+        )`;
+    }};
+    box-shadow: 
+        0 0 10px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.5)` : 'rgba(13, 173, 220, 0.5)'},
+        inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    position: relative;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+    }
+`;
+
+const TechConnectionText = styled.p`
+    margin: 0;
+    text-align: justify;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.88);
+    font-weight: 400;
+    font-style: italic;
+    flex: 1;
+
+    @media (max-width: 1600px) {
+        font-size: 0.85rem;
+        line-height: 1.45;
+    }
 `;
 
 // Project Description
@@ -999,16 +1302,11 @@ const ProjectDescription = styled.p`
     margin: 0;
     font-weight: 400;
     font-style: italic;
-`;
 
-// Forecast Label for Skills Section
-const ForecastLabel = styled.div`
+    @media (max-width: 1600px) {
     font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 0.5rem;
+        line-height: 1.45;
+    }
 `;
 
 // Carousel Container
@@ -1016,6 +1314,10 @@ const SkillsCarousel = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
+    
+    @media (max-width: 1600px) {
+        gap: 0.45rem;
+    }
 `;
 
 // A single row = label + viewport
@@ -1034,6 +1336,12 @@ const RowLabel = styled.div`
     color: rgba(255, 255, 255, 0.65);
     min-width: 70px;
     flex-shrink: 0;
+    
+    @media (max-width: 1600px) {
+        min-width: 62px;
+        font-size: 0.7rem;
+        letter-spacing: 0.4px;
+    }
 `;
 
 // Viewport with soft edge fade (smooth in/out of frame)
@@ -1045,6 +1353,10 @@ const RowViewport = styled.div`
     /* Fade edges for smooth entry/exit */
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
     mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+    
+    @media (max-width: 1600px) {
+        height: 30px;
+    }
 `;
 
 // Animation for scrolling
@@ -1063,6 +1375,10 @@ const RowTrack = styled.div`
     animation: ${scroll} var(--dur, 20s) linear infinite;
     animation-delay: var(--delay, 0s);
     animation-direction: ${({ $reverse }) => ($reverse ? 'reverse' : 'normal')};
+    
+    @media (max-width: 1600px) {
+        gap: 0.32rem;
+    }
 
     /* Pause on hover for readability */
     ${RowViewport}:hover & { animation-play-state: paused; }
@@ -1080,6 +1396,10 @@ const Sequence = styled.div`
     gap: 0.4rem;
     flex: 0 0 auto;
     white-space: nowrap;
+    
+    @media (max-width: 1600px) {
+        gap: 0.32rem;
+    }
 `;
 
 const SkillPill = styled.div`
@@ -1156,6 +1476,11 @@ const SkillPill = styled.div`
     &:active {
         transform: translateY(-1px) scale(1);
     }
+    
+    @media (max-width: 1600px) {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.75rem;
+    }
 `;
 
 const SkillPillIcon = styled.img`
@@ -1166,6 +1491,11 @@ const SkillPillIcon = styled.img`
     align-items: center;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     transition: transform 0.3s ease;
+    
+    @media (max-width: 1600px) {
+        width: 0.95rem;
+        height: 0.95rem;
+    }
     
     ${SkillPill}:hover & {
         transform: scale(1.1) rotate(5deg);
@@ -1179,13 +1509,23 @@ const SkillPillName = styled.span`
     letter-spacing: 0.3px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
     font-weight: 600;
+    
+    @media (max-width: 1600px) {
+        font-size: 0.75rem;
+        letter-spacing: 0.25px;
+    }
 `;
 
 /* ========== Service Experience Cards ========== */
 
 const ServiceExperienceCard = styled.div`
-    width: 450px;
-    min-height: 550px;
+    --theme-rgb: ${({ $theme }) =>
+        $theme === 'barlouie' ? '203, 192, 196'
+        : $theme === 'hawkers' ? '245, 148, 40'
+        : '255,255,255'};
+    
+    width: 500px;
+    height: fit-content;
     background: ${({ $theme }) => {
         if ($theme === 'barlouie') {
             return `linear-gradient(135deg,
@@ -1210,7 +1550,7 @@ const ServiceExperienceCard = styled.div`
         return 'rgba(255, 255, 255, 0.3)';
     }};
     border-radius: 24px;
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.5rem 0rem 1.5rem;
     display: flex;
     flex-direction: column;
     transition: all 0.4s ease;
@@ -1218,25 +1558,13 @@ const ServiceExperienceCard = styled.div`
         0 8px 32px rgba(0, 0, 0, 0.3),
         inset 0 1px 2px rgba(255, 255, 255, 0.1);
     
-    &:hover ${CompanyLogo} {
-        ${({ $theme }) => {
-            if ($theme === 'barlouie') {
-                return `
-                    transform: scale(1.15) rotate(5deg);
-                    filter: drop-shadow(0 8px 24px rgba(203, 192, 196, 0.6));
-                `;
-            } else if ($theme === 'hawkers') {
-                return `
-                    transform: scale(1.15) rotate(5deg);
-                    filter: drop-shadow(0 8px 24px rgba(245, 148, 40, 0.6));
-                `;
-            } else {
-                return `
-                    transform: scale(1.15) rotate(5deg);
-                    filter: drop-shadow(0 8px 24px rgba(13, 173, 220, 0.5));
-                `;
-            }
-        }}
+    @media (min-width: 2000px) {
+        width: 500px;
+    }
+    
+    @media (max-width: 1600px) {
+        width: 450px;
+        padding: 1.5rem 1.25rem;
     }
     
     @media (max-width: 1200px) {
@@ -1311,6 +1639,140 @@ const ArrowRight = styled(ArrowBase)`
     right: max(12px, 4vw);
     animation: ${rightBounce} 2s ease-in-out infinite;
     animation-delay: 1s;
+`;
+
+// Aurora wrapper - positions aurora at the top of the section
+const AuroraWrapper = styled.div`
+    /* layout */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 35vh; /* smaller, hugs the visible wave spread */
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        height: 22vh;
+    }
+`;
+
+/* ========== Hire Me Intro Card ========== */
+
+const HireCard = styled.div`
+    width: 380px;
+    max-width: 90vw;
+    padding: 1.25rem 1.1rem 1rem 1.1rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg,
+        rgba(76, 54, 134, 0.98) 0%,
+        rgba(108, 85, 181, 0.96) 50%,
+        rgba(170, 150, 235, 0.95) 100%
+    );
+    border: 1.5px solid rgba(200, 180, 255, 0.45);
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.25),
+        0 0 24px rgba(180, 160, 255, 0.25),
+        inset 0 1px 2px rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    align-items: stretch;
+    text-align: left;
+
+    @media (max-width: 1600px) {
+        width: 340px;
+        padding: 1rem 1rem 0.9rem 1rem;
+    }
+`;
+
+const HireHeader = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+    text-align: center;
+`;
+
+const HireTitle = styled.h3`
+    margin: 0;
+    font-weight: 900;
+    font-size: 1.9rem;
+    background: linear-gradient(135deg, #fff, rgba(210,190,255,.95));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    @media (max-width: 1600px) {
+        font-size: 1.5rem;
+    }
+`;
+
+const HireSubtitle = styled.div`
+    color: rgba(255,255,255,0.78);
+    font-size: 0.95rem;
+`;
+
+const HireBody = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+`;
+
+const HireBlurb = styled.p`
+    margin: 0;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: center;
+`;
+
+const HireActions = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-direction: column;
+`;
+
+const HireAvatar = styled.img`
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    object-fit: cover;
+    align-self: center;
+    border: 2px solid rgba(230,210,255,0.7);
+    box-shadow: 0 4px 14px rgba(180,160,255,0.25);
+`;
+
+const HireButton = styled.button`
+    padding: 0.65rem 1rem;
+    border-radius: 12px;
+    border: 1.5px solid rgba(200, 180, 255, 0.65);
+    color: rgba(255,255,255,0.98);
+    background: linear-gradient(135deg, rgba(200,180,255,0.38), rgba(150,120,255,0.25));
+    box-shadow: 0 6px 16px rgba(180, 160, 255, 0.3);
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 200ms ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        border-color: rgba(200, 180, 255, 0.9);
+        background: linear-gradient(135deg, rgba(210,190,255,0.5), rgba(160,130,255,0.35));
+        box-shadow: 0 10px 24px rgba(180, 160, 255, 0.4);
+    }
+`;
+
+/* Removed secondary link per request */
+
+const HireReach = styled.div`
+    color: rgba(230, 220, 255, 0.9);
+    font-size: 0.85rem;
+    letter-spacing: 0.3px;
 `;
 
 // Export.
