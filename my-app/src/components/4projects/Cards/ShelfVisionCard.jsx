@@ -121,6 +121,14 @@ const ResourcesGrid = styled.div`
   gap: 0.75rem;
   width: 100%;
   
+  @media (max-width: 2000px) {
+    gap: 0.65rem;
+  }
+
+  @media (max-width: 1600px) {
+    gap: 0.55rem;
+  }
+  
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
@@ -162,6 +170,14 @@ const ResourcePreview = styled.div`
   position: relative;
   overflow: hidden;
   
+  @media (max-width: 2000px) {
+    height: 75px;
+  }
+
+  @media (max-width: 1600px) {
+    height: 70px;
+  }
+  
   &::before {
     content: '';
     position: absolute;
@@ -179,6 +195,10 @@ const ResourceIcon = styled.div`
   z-index: 1;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   transition: transform 0.3s ease;
+
+  @media (max-width: 1600px) {
+    font-size: 1.75rem;
+  }
   
   ${ResourceCard}:hover & {
     transform: scale(1.15);
@@ -192,6 +212,16 @@ const GitHubLogoIcon = styled.div`
   color: rgba(255, 255, 255, 0.95);
   filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
   transition: all 0.3s ease;
+
+  @media (max-width: 2000px) {
+    width: 55px;
+    height: 55px;
+  }
+
+  @media (max-width: 1600px) {
+    width: 50px;
+    height: 50px;
+  }
   
   svg {
     width: 100%;
@@ -212,6 +242,16 @@ const ResourceCaption = styled.div`
   text-align: center;
   background: rgba(0,0,0,0.15);
   letter-spacing: 0.3px;
+
+  @media (max-width: 2000px) {
+    padding: 0.45rem;
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 1600px) {
+    padding: 0.4rem;
+    font-size: 0.7rem;
+  }
 `;
 
 export default ShelfVisionCard;

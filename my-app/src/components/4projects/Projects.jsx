@@ -92,6 +92,10 @@ const Projects = () => {
         <ProjectsContainer>
             {/* Lower Sky Atmospheric Elements */}
             <AtmosphereLayer>
+                {/* Seam softener between Experience and Projects */}
+                <TopSeamFade />
+                {/* Seam softener at bottom to blend into Skills */}
+                <BottomSeamFade />
                 {/* Parallax Cloud Layers - Decreasing frequency from top to bottom */}
                 <CloudLayer>
                     {/* TOP LAYER - Dense clouds (continuing from Experience) */}
@@ -135,13 +139,6 @@ const Projects = () => {
                 {/* Sun - positioned like it's at the horizon */}
                 <Sun />
                 
-                {/* Flying birds - scattered across the sky */}
-                <Bird top="20%" left="15%" delay="0s" duration="25s" />
-                <Bird top="35%" left="65%" delay="5s" duration="30s" />
-                <Bird top="50%" left="25%" delay="10s" duration="28s" />
-                <Bird top="28%" left="85%" delay="3s" duration="32s" />
-                <Bird top="45%" left="50%" delay="8s" duration="27s" />
-                
                 {/* Wispy horizon clouds - lighter and more transparent */}
                 <HorizonCloud top="60%" left="-10%" delay="0s" />
                 <HorizonCloud top="65%" left="30%" delay="15s" />
@@ -184,18 +181,7 @@ const Projects = () => {
           {index > 0 && <ArrowLeft aria-label="Previous project" onClick={prev}>‹</ArrowLeft>}
           {index < n - 1 && <ArrowRight aria-label="Next project" onClick={next}>›</ArrowRight>}
 
-          <Dots>
-            {cards.map((card, i) => (
-              <Dot
-                key={i}
-                $theme={card.theme}
-                $isActive={i === index}
-                aria-label={`Go to project ${i + 1}`}
-                aria-selected={i === index}
-                onClick={() => setIndex(i)}
-              />
-            ))}
-          </Dots>
+      
         </Stage>
             </ContentWrapper>
         </ProjectsContainer>
@@ -206,34 +192,42 @@ export default Projects;
 
 /* ------------------ styles ------------------ */
 
-// Main container - brighter lower sky gradient
+// Main container - continue the darker gradient from Experience into horizon
 const ProjectsContainer = styled.div`
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     
-    /* Transition from Experience's ending blue to vibrant horizon */
+    /* Transition from Experience's ending blue to darker blue, ending to match Skills start */
     background: linear-gradient(to bottom,
-        rgb(150, 200, 246) 0%,     /* Match Experience ending */
-        rgb(145, 198, 246) 6%,
-        rgb(138, 194, 246) 12%,
-        rgb(130, 190, 246) 18%,
-        rgb(122, 186, 245) 24%,
-        rgb(114, 182, 244) 32%,
-        rgb(106, 178, 243) 40%,
-        rgb(98, 174, 242) 48%,
-        rgb(92, 171, 241) 56%,
-        rgb(86, 168, 240) 64%,
-        rgb(82, 166, 239) 72%,
-        rgb(78, 164, 239) 80%,
-        rgb(75, 162, 238) 88%,
-        rgb(73, 161, 238) 94%,
-        rgb(72, 160, 238) 97%,
-        rgb(71, 160, 238) 100%);  /* Vibrant horizon blue */
+        rgb(148, 180, 243) 0%,   /* Match Experience ending */
+        rgb(140, 175, 240) 10%,
+        rgb(130, 170, 237) 20%,
+        rgb(120, 165, 234) 30%,
+        rgb(110, 160, 232) 40%,
+        rgb(100, 155, 230) 50%,
+        rgb(90, 150, 228) 60%,    /* Darker blue transition */
+        rgb(85, 155, 235) 70%,    /* Slightly brighter but still muted */
+        rgb(80, 158, 237) 80%,    /* Approaching Skills color */
+        rgb(75, 159, 238) 90%,    /* Close to Skills start */
+        rgb(71, 160, 238) 100%);  /* Exact match Skills start */
+
+    /* Match Experience's oklch fallback when supported - transition to darker blue matching Skills */
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+        background: linear-gradient(
+            to bottom in oklch,
+            #a8c2f6 0%,  /* exact match of Experience end */
+            #9fbaf3 25%,
+            #8db2f0 50%,
+            #7db5f3 75%,
+            #6eb0f2 100%  /* darker blue matching Skills start rgb(71, 160, 238) */
+        );
+    }
     
     width: 100%;
     padding: 4rem 2rem;
     padding-top: 0;
+    padding-bottom: 6rem;
     position: relative;
     overflow: hidden;
 `;
@@ -262,6 +256,56 @@ const CloudLayer = styled.div`
     overflow: hidden;
 `;
 
+// Soft gradient at the very top to blend the seam from Experience into Projects
+const TopSeamFade = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 14vh;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(148, 180, 243, 1) 0%,
+        rgba(148, 180, 243, 0.6) 40%,
+        rgba(148, 180, 243, 0) 100%
+    );
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+        background: linear-gradient(
+            to bottom in oklch,
+            #a8c2f6 0%,
+            color-mix(in oklch, #a8c2f6 60%, transparent) 60%,
+            transparent 100%
+        );
+    }
+`;
+
+// Soft gradient at the bottom to blend the seam from Projects into Skills
+const BottomSeamFade = styled.div`
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 16vh;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(71, 160, 238, 0) 0%,
+        rgba(71, 160, 238, 0.5) 50%,
+        rgba(71, 160, 238, 1) 100%
+    );
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+        background: linear-gradient(
+            to bottom in oklch,
+            transparent 0%,
+            color-mix(in oklch, #6eb0f2 50%, transparent) 50%,
+            #6eb0f2 100%
+        );
+    }
+`;
+
 // Content wrapper
 const ContentWrapper = styled.div`
     position: relative;
@@ -284,8 +328,8 @@ const ContentWrapper = styled.div`
 `;
 
 // Section title
-const SectionTitle = styled.h1`
-    font-size: 6rem;
+const SectionTitle = styled.div`
+    font-size: 5.2rem;
     font-weight: 900;
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.95) 0%,
@@ -299,7 +343,7 @@ const SectionTitle = styled.h1`
     text-shadow: 0 4px 20px rgba(255, 220, 100, 0.3);
     
     @media (max-width: 1600px) {
-        font-size: 4rem;
+        font-size: 3.6rem;
     }
 `;
 
@@ -311,13 +355,13 @@ const SectionSubtitle = styled.h2`
     text-align: center;
     font-style: italic;
     margin: 0;
-    margin-top: 1rem;
+    margin-top: 0.25rem;
     margin-bottom: 2rem;
     text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
     
     @media (max-width: 1600px) {
-        font-size: 1.5rem;
-        margin-bottom: 2.5rem;
+        font-size: 1.35rem;
+        margin-bottom: 1.75rem;
     }
     
     @media (max-width: 1200px) {
@@ -334,19 +378,24 @@ const SectionSubtitle = styled.h2`
 const Stage = styled.div`
   display: grid;
   place-items: center;
-  min-height: 80vh;
+  min-height: 72vh; /* ensure some bottom breathing room on very large displays */
   padding: 40px 0;
   position: relative;
   overflow: visible;
   width: 100%;
   
+  @media (min-width: 2000px) {
+    min-height: 70vh; /* keep card from consuming full viewport */
+    padding: 32px 0;
+  }
+  
   @media (max-width: 1600px) {
-    min-height: 70vh;
-    padding: 30px 0;
+    min-height: 60vh; /* reduce height so title/subtitle + card fit comfortably */
+    padding: 24px 0;
   }
   
   @media (max-width: 1200px) {
-    min-height: 60vh;
+    min-height: 56vh;
     padding: 20px 0;
   }
 `;
@@ -354,23 +403,27 @@ const Stage = styled.div`
 const Track = styled.div`
     position: relative;
   width: 50vw;
-  height: clamp(560px, 70vh, 760px);
+  height: clamp(520px, 60vh, 720px);
   perspective: 1200px;
   overflow: visible;
   
+  @media (min-width: 2000px) {
+    height: clamp(560px, 58vh, 780px);
+  }
+  
   @media (max-width: 1600px) {
     width: 60vw;
-    height: clamp(500px, 65vh, 700px);
+    height: clamp(480px, 55vh, 660px);
   }
   
   @media (max-width: 1200px) {
     width: 70vw;
-    height: clamp(450px, 60vh, 650px);
+    height: clamp(440px, 52vh, 620px);
   }
   
   @media (max-width: 900px) {
     width: 85vw;
-    height: clamp(400px, 55vh, 600px);
+    height: clamp(400px, 50vh, 580px);
   }
 `;
 
@@ -430,59 +483,6 @@ const Slide = styled.div`
   }
 `;
 
-
-// Bird animation path
-const fly = keyframes`
-    0% {
-        transform: translateX(-50px) translateY(0) scale(0.8);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateX(calc(100vw + 50px)) translateY(-20px) scale(1);
-        opacity: 0;
-    }
-`;
-
-// Flying bird silhouette
-const Bird = styled.div`
-    position: absolute;
-    top: ${props => props.top};
-    left: ${props => props.left};
-    width: 20px;
-    height: 8px;
-    animation: ${fly} ${props => props.duration} linear infinite;
-    animation-delay: ${props => props.delay};
-    opacity: 0;
-    
-    /* Bird shape using pseudo-elements (simple V shape) */
-    &::before,
-    &::after {
-        content: '';
-        position: absolute;
-        width: 10px;
-        height: 2px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 1px;
-    }
-    
-    &::before {
-        left: 0;
-        transform: rotate(-25deg);
-        transform-origin: right center;
-    }
-    
-    &::after {
-        right: 0;
-        transform: rotate(25deg);
-        transform-origin: left center;
-    }
-`;
 
 // Horizon cloud animation
 const drift = keyframes`
@@ -610,78 +610,4 @@ const ArrowRight = styled(ArrowBase)`
   right: max(12px, 4vw);
   animation: ${rightBounce} 2s ease-in-out infinite;
   animation-delay: 1s;
-`;
-
-const Dots = styled.div`
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  
-  @media (max-width: 1600px) {
-    bottom: 12px;
-  }
-  
-  @media (max-width: 1200px) {
-    bottom: 8px;
-  }
-  
-  @media (max-width: 900px) {
-    bottom: 4px;
-  }
-`;
-
-const Dot = styled.button`
-  width: 8px; 
-  height: 8px; 
-  border-radius: 999px; 
-  border: 0;
-  background: ${({ $theme }) => {
-    const theme = themes[$theme];
-    return theme?.colors?.pillBackground || 'rgba(255,255,255,0.45)';
-  }};
-  border: 1px solid ${({ $theme }) => {
-    const theme = themes[$theme];
-    return theme?.colors?.pillBorder || 'rgba(255,255,255,0.3)';
-  }};
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  box-shadow: ${({ $theme }) => {
-    const theme = themes[$theme];
-    return theme?.colors?.pillShadow || '0 2px 8px rgba(255,255,255,0.2)';
-  }};
-  
-  &:hover {
-    transform: scale(1.2);
-    background: ${({ $theme }) => {
-      const theme = themes[$theme];
-      return theme?.colors?.pillHoverBackground || 'rgba(255,255,255,0.7)';
-    }};
-    border-color: ${({ $theme }) => {
-      const theme = themes[$theme];
-      return theme?.colors?.pillHoverBorder || 'rgba(255,255,255,0.6)';
-    }};
-    box-shadow: ${({ $theme }) => {
-      const theme = themes[$theme];
-      return theme?.colors?.pillHoverShadow || '0 4px 12px rgba(255,255,255,0.4)';
-    }};
-  }
-  
-  &[aria-selected="true"] {
-    width: 24px;
-    background: ${({ $theme }) => {
-      const theme = themes[$theme];
-      return theme?.colors?.pillHoverBackground || '#fff';
-    }};
-    border-color: ${({ $theme }) => {
-      const theme = themes[$theme];
-      return theme?.colors?.pillHoverBorder || 'rgba(255,255,255,0.8)';
-    }};
-    box-shadow: ${({ $theme }) => {
-      const theme = themes[$theme];
-      return theme?.colors?.pillHoverShadow || '0 4px 16px rgba(255,255,255,0.5)';
-    }};
-  }
 `;

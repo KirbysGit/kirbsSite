@@ -78,27 +78,29 @@ const ActualExperience = () => {
                 <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" />
                 <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" />
                 <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" />
-                <Cloud top="80%" delay="30" duration="195" layer="far" type={5} direction="right" />
-                <Cloud top="85%" delay="40" duration="185" layer="far" type={4} direction="left" />
-                <Cloud top="90%" delay="50" duration="192" layer="far" type={1} direction="right" />
+                {/** removed lowest far-layer cloud to avoid boundary cutoff */}
+                {/* added extra far-layer coverage within safe range */}
+                <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" />
+                <Cloud top="78%" delay="26" duration="192" layer="far" type={1} direction="right" />
                 
                 {/* mid layer - 7 clouds */}
                 <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" />
                 <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" />
                 <Cloud top="77%" delay="23" duration="150" layer="mid" type={5} direction="left" />
-                <Cloud top="82%" delay="33" duration="155" layer="mid" type={1} direction="right" />
                 <Cloud top="87%" delay="43" duration="142" layer="mid" type={3} direction="left" />
                 <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" />
-                <Cloud top="92%" delay="57" duration="143" layer="mid" type={2} direction="left" />
+                {/** removed lowest mid-layer cloud to avoid boundary cutoff */}
+                {/* added extra mid-layer coverage within safe range */}
+                <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" />
+                <Cloud top="79%" delay="19" duration="152" layer="mid" type={3} direction="left" />
                 
                 {/* near layer - 7 clouds */}
                 <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" />
                 <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" />
-                <Cloud top="83%" delay="27" duration="120" layer="near" type={4} direction="left" />
-                <Cloud top="88%" delay="37" duration="118" layer="near" type={5} direction="right" />
-                <Cloud top="79%" delay="47" duration="116" layer="near" type={2} direction="left" />
-                <Cloud top="91%" delay="54" duration="122" layer="near" type={3} direction="right" />
-                <Cloud top="94%" delay="60" duration="119" layer="near" type={1} direction="left" />
+                {/** removed lowest near-layer clouds to avoid boundary cutoff */}
+                {/* added extra near-layer coverage within safe range */}
+                <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" />
+                <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" />
             </CloudLayer>
             
             {/* entire content wrapper */}
@@ -303,6 +305,8 @@ const ActualExperience = () => {
                     {index < n - 1 && <ArrowRight aria-label="Next experience" onClick={next}>›</ArrowRight>}
                 </Stage>
             </ContentWrapper>
+            {/* Bottom seam softener to blend into Projects */}
+            <BottomSeamFade />
         </ExperienceContainer>
     );
 }
@@ -349,6 +353,31 @@ const CloudLayer = styled.div`
     /* styles */
     overflow: hidden;
     pointer-events: none;
+`;
+
+// Bottom seam fade to reduce perceived cutoff against Projects
+const BottomSeamFade = styled.div`
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 14vh;
+    z-index: 3;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(148, 180, 243, 0) 0%,
+        rgba(148, 180, 243, 0.6) 60%,
+        rgba(148, 180, 243, 1) 100%
+    );
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+        background: linear-gradient(
+            to bottom in oklch,
+            transparent 0%,
+            color-mix(in oklch, #a8c2f6 60%, transparent) 60%,
+            #a8c2f6 100%
+        );
+    }
 `;
 
 // overall content wrapper for experience.

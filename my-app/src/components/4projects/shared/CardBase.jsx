@@ -45,7 +45,8 @@ const ProjectCard = styled.div`
   border: 1px solid ${({ $theme, $themeColors }) => $theme ? $themeColors.border : 'rgba(255,180,100,0.4)'};
   border-radius: 24px;
   
-  box-shadow: ${({ $theme, $themeColors }) => $theme ? $themeColors.boxShadow : '0 8px 32px rgba(0,0,0,0.3)'};
+  /* Light, barely noticeable shadow */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 
   padding: 2rem 1.5rem;
   display: flex;
@@ -53,7 +54,6 @@ const ProjectCard = styled.div`
   transition: all 0.4s ease;
 
   &:hover {
-    transform: translateY(-8px);
     background: ${({ $theme, $themeColors, $isFocused }) => {
       if (!$theme) return undefined;
       
@@ -64,16 +64,21 @@ const ProjectCard = styled.div`
       
       return $themeColors.hoverBackground;
     }};
-    box-shadow: ${({ $theme, $themeColors }) => $theme ? $themeColors.hoverBoxShadow : undefined};
+    /* Light hover shadow - barely noticeable */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     border-color: ${({ $theme, $themeColors }) => $theme ? $themeColors.hoverBorder : undefined};
   }
 
   /* Responsive breakpoints */
+  @media (max-width: 2000px) {
+    padding: 1.85rem 1.4rem;
+  }
+
   @media (max-width: 1600px) {
     width: 100%;
-    max-width: 480px;
-    min-height: 550px;
-    padding: 1.8rem 1.3rem;
+    max-width: 500px;
+    min-height: 540px;
+    padding: 1.6rem 1.2rem;
   }
   
   @media (max-width: 1200px) {
@@ -99,6 +104,10 @@ export const CardHeader = styled.div`
   gap: 0.5rem;
   position: relative;
   z-index: 1;
+
+  @media (max-width: 1600px) {
+    gap: 0.4rem;
+  }
 `;
 
 export const HeaderTop = styled.div`
@@ -113,6 +122,10 @@ export const ProjectInfo = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
+
+  @media (max-width: 1600px) {
+    gap: 0.4rem;
+  }
 `;
 
 export const ProjectName = styled.h3`
@@ -129,6 +142,15 @@ export const ProjectName = styled.h3`
     -webkit-text-fill-color: transparent;
     background-clip: text;
   ` : `color: #fff;`}
+
+  @media (max-width: 2000px) {
+    font-size: 2.35rem;
+  }
+
+  @media (max-width: 1600px) {
+    font-size: 2.1rem;
+    line-height: 1.15;
+  }
 `;
 
 export const ProjectSubtitle = styled.div`
@@ -145,6 +167,10 @@ export const ProjectDate = styled.span`
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+
+  @media (max-width: 1600px) {
+    font-size: 0.85rem;
+  }
 `;
 
 export const ProjectLogoImage = styled.img`
@@ -152,6 +178,14 @@ export const ProjectLogoImage = styled.img`
   height: auto;
   border-radius: 12px;
   object-fit: contain;
+
+  @media (max-width: 2000px) {
+    width: 100px;
+  }
+
+  @media (max-width: 1600px) {
+    width: 95px;
+  }
 `;
 
 export const ProjectDescription = styled.p`
@@ -161,6 +195,16 @@ export const ProjectDescription = styled.p`
   margin: 0;
   font-weight: 400;
   text-align: justify;
+
+  @media (max-width: 2000px) {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 1600px) {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
 `;
 
 export const Divider = styled.div`
@@ -172,6 +216,11 @@ export const Divider = styled.div`
   box-shadow: ${({ $themeColors }) => $themeColors?.dividerShadow || '0 0 10px rgba(255,255,255,0.2)'};
   margin-top: 0.25rem;
   margin-bottom: 0.75rem;
+
+  @media (max-width: 1600px) {
+    margin-top: 0.2rem;
+    margin-bottom: 0.65rem;
+  }
 `;
 
 export const CardBody = styled.div`
@@ -181,6 +230,10 @@ export const CardBody = styled.div`
   gap: 0.25rem;
   position: relative;
   z-index: 1;
+
+  @media (max-width: 1600px) {
+    gap: 0.2rem;
+  }
 `;
 
 export const SectionLabel = styled.div`
@@ -195,6 +248,11 @@ export const SectionLabel = styled.div`
     -webkit-text-fill-color: transparent;
     background-clip: text;
   ` : `color: rgba(255,255,255,0.9);`}
+
+  @media (max-width: 1600px) {
+    font-size: 0.8rem;
+    letter-spacing: 0.9px;
+  }
 `;
 
 export const CardFooter = styled.div`
@@ -204,4 +262,8 @@ export const CardFooter = styled.div`
   margin-top: auto;
   position: relative;
   z-index: 1;
+
+  @media (max-width: 1600px) {
+    padding-top: 0.4rem;
+  }
 `;

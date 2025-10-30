@@ -42,6 +42,8 @@ const Skills = () => {
         <SkillsContainer>
             {/* Atmospheric Elements */}
             <AtmosphereLayer>
+                {/* Seam softener between Projects and Skills */}
+                <TopSeamFade />
                 
                 {/* Distant clouds */}
                 <DistantCloud top="15%" left="10%" delay="0s" />
@@ -228,6 +230,31 @@ const AtmosphereLayer = styled.div`
     z-index: 1;
     pointer-events: none;
     overflow: hidden;
+`;
+
+// Soft gradient at the top to blend the seam from Projects into Skills
+const TopSeamFade = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 16vh;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(71, 160, 238, 1) 0%,
+        rgba(71, 160, 238, 0.5) 50%,
+        rgba(71, 160, 238, 0) 100%
+    );
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+        background: linear-gradient(
+            to bottom in oklch,
+            #6eb0f2 0%,
+            color-mix(in oklch, #6eb0f2 50%, transparent) 50%,
+            transparent 100%
+        );
+    }
 `;
 
 // Distant cloud animation

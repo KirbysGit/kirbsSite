@@ -21,6 +21,14 @@ const HighlightsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+
+  @media (max-width: 2000px) {
+    gap: 0.65rem;
+  }
+
+  @media (max-width: 1600px) {
+    gap: 0.6rem;
+  }
 `;
 
 const Highlight = styled.div`
@@ -42,6 +50,15 @@ const Highlight = styled.div`
   
   transition: all 0.3s ease;
 
+  @media (max-width: 2000px) {
+    padding: 0.55rem 0.9rem 0.55rem 1.1rem;
+  }
+
+  @media (max-width: 1600px) {
+    padding: 0.5rem 0.85rem 0.5rem 1rem;
+    border-left-width: 3px;
+  }
+
   &:hover {
     background: ${({ $themeColors }) => 
       $themeColors?.highlightHoverBackground || 'rgba(255,180,100,0.15)'};
@@ -62,4 +79,14 @@ const HighlightText = styled.p`
   flex: 1;
   font-weight: 400;
   text-align: justify;
+
+  @media (max-width: 2000px) {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 1600px) {
+    font-size: 0.83rem;
+    line-height: 1.5;
+  }
 `;

@@ -10,11 +10,13 @@ import styled from 'styled-components';
 
 // local imports.
 import Hero from './components/1hero/Hero';
-import Story from './components/extra/Story';
 import WhoIAm from './components/2story/WhoIAm';
-import GlobalStyle from './styles/GlobalStyle';
-import Projects from './components/Projects/Projects';
 import AExperience from './components/3experience/ActualExperience';
+import Projects from './components/4projects/Projects';
+
+
+import Story from './components/extra/Story';
+import GlobalStyle from './styles/GlobalStyle';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
 import Skills from './components/Skills/Skills.jsx';
 import Background from './components/Background/Background.jsx';
@@ -143,10 +145,10 @@ function App() {
               <>
                 {/* Always mounted and visible - loading screen overlays on top */}
                 {/* <Hero /> */}
-                {/* <WhoIAm /> */}
-                <AExperience />
+                {/*<WhoIAm /> */}
+                {/*<AExperience />*/}
                 <Projects />
-                {/* <Skills /> */}
+                <Skills />
                 {/* <Background /> */}
               </>
             }

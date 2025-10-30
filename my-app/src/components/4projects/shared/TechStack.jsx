@@ -34,6 +34,14 @@ const TechStackContainer = styled.div`
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
+
+  @media (max-width: 2000px) {
+    gap: 0.65rem;
+  }
+
+  @media (max-width: 1600px) {
+    gap: 0.6rem;
+  }
 `;
 
 const TechPillWrapper = styled.div`
@@ -56,6 +64,17 @@ const TechPill = styled.div`
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   cursor: pointer;
 
+  @media (max-width: 2000px) {
+    width: 42px;
+    height: 42px;
+  }
+
+  @media (max-width: 1600px) {
+    width: 40px;
+    height: 40px;
+    border-width: 1.5px;
+  }
+
   ${TechPillWrapper}:hover & {
     transform: translateY(-4px) scale(1.08);
     box-shadow: ${({ $themeColors }) => 
@@ -70,6 +89,16 @@ const TechLogo = styled.img`
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
   transition: filter 0.3s ease;
+
+  @media (max-width: 2000px) {
+    width: 26px;
+    height: 26px;
+  }
+
+  @media (max-width: 1600px) {
+    width: 24px;
+    height: 24px;
+  }
 
   ${TechPillWrapper}:hover & {
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
