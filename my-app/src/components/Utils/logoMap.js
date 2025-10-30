@@ -73,11 +73,13 @@ import msofficeLogo from '@/images/logos/msoffice.png';
 const logoMap = {
     // Technologies - Web/Cloud
     'AWS': awsLogo,
+    'AWS EC2': awsLogo,
     'Celery': celeryLogo,
     'Django': djangoLogo,
     'Docker': dockerLogo,
     'FastAPI': fastApiLogo,
     'Google OAuth': googleOAuthLogo,
+    'OAuth SSO': googleOAuthLogo,
     'Gunicorn': gunicornLogo,
     'JavaScript': javascriptLogo,
     'JWT': jwtLogo,

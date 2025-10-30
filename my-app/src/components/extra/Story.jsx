@@ -6,7 +6,7 @@ import React, { useState, useEffect, useRef, memo, useMemo, useCallback } from '
 import MapPin from './MapPin';
 
 // aurora component
-import Aurora from '../2story/Aurora';
+import Aurora from '../3experience/Aurora';
 
 // meteor shower component
 import MeteorShower from './MeteorShower';

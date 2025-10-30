@@ -10,12 +10,9 @@ import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 // space elements images.
-import spaceStation from '@/images/2story/spacestation.png';
 import satellite1 from '@/images/2story/satellite1.png';
 import satellite2 from '@/images/2story/satellite2.png';
-
-// Shared seam color for smooth gradient transition (slightly darker)
-export const SEAM_RGB = '78, 58, 128'; // rgb(78, 58, 128)
+import spaceStation from '@/images/2story/spacestation.png';
 
 // extra vars for animation.
 const IMG_MS = 400;           // image slide duration
@@ -23,7 +20,7 @@ const BUFFER_MS = 40;         // extra buffer for animation end
 const TYPE_SPEED = 40;        // ms/char (typing)
 const DELETE_SPEED = 30;      // ms/char (deleting)
 
-// SVG chevrons (too lazy to do FontAwesome)
+// svg chevrons (too lazy to do FontAwesome).
 const ChevronRight = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -331,11 +328,7 @@ const SectionWrap = styled.section`
         padding: 3rem 4rem 4rem;
     }
 
-    /* styles */
-    --seam-rgb: ${SEAM_RGB};
-    --seam: rgb(var(--seam-rgb));
-
-    /* Fallback (RGB) */
+    /* styles - gradient fallback */
     background: linear-gradient(
         to bottom,
         rgb(13 7 27) 0%,
@@ -345,17 +338,17 @@ const SectionWrap = styled.section`
         rgb(25 18 48) 65%,
         rgb(40 28 75) 82%,
         /* finish on the seam for a perfect handoff */
-        var(--seam) 92%,
-        var(--seam) 100%
+        rgb(78 58 128) 92%,
+        rgb(78 58 128) 100%
     );
     
-    /* Perceptual blend - smoother on modern browsers */
+    /* perceptual blend - smoother on modern browsers */
     @supports (background: linear-gradient(in oklch, red, blue)) {
         background: linear-gradient(
             to bottom in oklch,
             /* simple perceptual ramp from deep space to seam */
             rgb(13 7 27) 0%,
-            var(--seam) 100%
+            rgb(78 58 128) 100%
         );
     }
     

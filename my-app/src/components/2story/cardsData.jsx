@@ -1,5 +1,4 @@
-// Cards data for WhoIAm component
-// images (swap these to your actual assets)
+// cardsData.jsx
 
 // card1.
 import engineeringGuy from '@/images/2story/engineeringGuy.jpg';
@@ -58,7 +57,7 @@ export const CARDS = [
   },
   
 
-  // 2) UCF CompEng Grad - your path into software
+  // 2) UCF CompEng Grad - my path into software
   {
     images: [secondHome, sdGroup, gradDog],
     imageBubbles: [
@@ -96,7 +95,7 @@ export const CARDS = [
     ),
   },
 
-  // 3) Professional Beginner - curiosity drives learning
+  // 3) Professional Beginner - curious typa guy
   {
     images: [naturalAthlete, lilG, legos],
     imageBubbles: [
@@ -139,5 +138,6 @@ export const CARDS = [
   },  
 ];
 
+// longest role character count (for spacing of role text).
 export const LONGEST_ROLE_CH = Math.max(...CARDS.map(c => c.role.length));
 

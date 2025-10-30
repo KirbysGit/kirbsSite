@@ -1,14 +1,17 @@
-// Imports.
+// cloud.jsx
+
+// imports.
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-// Import cloud images
+// import cloud images.
 import cloud1 from '@/images/clouds/cloud1.png';
 import cloud2 from '@/images/clouds/cloud2.png';
 import cloud3 from '@/images/clouds/cloud3.png';
 import cloud4 from '@/images/clouds/cloud4.png';
 import cloud5 from '@/images/clouds/cloud5.png';
 
+// cloud images.
 const cloudImages = {
     1: cloud1,
     2: cloud2,
@@ -17,7 +20,7 @@ const cloudImages = {
     5: cloud5
 };
 
-// Main Cloud Component with parallax layers
+// main cloud component with parallax layers.
 const Cloud = ({ top, delay, duration, layer = 'mid', type = 1, direction = 'left' }) => {
     return (
         <CloudContainer 
@@ -37,7 +40,7 @@ const Cloud = ({ top, delay, duration, layer = 'mid', type = 1, direction = 'lef
     );
 };
 
-// Animation 1: Horizontal drift left to right
+// animation 1: horizontal drift left to right.
 const horizontalDriftLeft = keyframes`
     0% {
         transform: translateX(0);
@@ -47,7 +50,7 @@ const horizontalDriftLeft = keyframes`
     }
 `;
 
-// Animation 2: Horizontal drift right to left
+// animation 2: horizontal drift right to left.
 const horizontalDriftRight = keyframes`
     0% {
         transform: translateX(0);
@@ -57,7 +60,7 @@ const horizontalDriftRight = keyframes`
     }
 `;
 
-// Animation 3: Vertical float (breathing motion)
+// animation 3: vertical float (breathing motion).
 const verticalFloat = keyframes`
     0%, 100% {
         transform: translateY(0);
@@ -67,7 +70,7 @@ const verticalFloat = keyframes`
     }
 `;
 
-// Animation 4: Scale breathing (subtle expansion)
+// animation 4: scale breathing (subtle expansion).
 const scaleBreathing = keyframes`
     0%, 100% {
         transform: scale(1);
@@ -77,7 +80,7 @@ const scaleBreathing = keyframes`
     }
 `;
 
-// Animation 5: Opacity drift (atmosphere shimmer)
+// animation 5: opacity drift (atmosphere shimmer).
 const opacityDrift = keyframes`
     0%, 100% {
         opacity: 0.95;
@@ -87,7 +90,7 @@ const opacityDrift = keyframes`
     }
 `;
 
-// Fade in/out at edges
+// fade in/out at edges.
 const fadeInOut = keyframes`
     0% {
         opacity: 0;
@@ -103,8 +106,9 @@ const fadeInOut = keyframes`
     }
 `;
 
-// Main container - handles horizontal drift (main motion)
+// main container - handles horizontal drift (main motion).
 const CloudContainer = styled.div`
+    /* layout */
     position: absolute;
     top: ${props => props.$top};
     ${props => props.$direction === 'left' ? 'left: -20%;' : 'right: -20%;'}
@@ -117,14 +121,15 @@ const CloudContainer = styled.div`
         }
     }};
     
-    /* Main horizontal drift animation - depends on direction */
+    /* main horizontal drift animation - depends on direction */
     animation: 
         ${props => props.$direction === 'left' ? horizontalDriftLeft : horizontalDriftRight} ${props => props.$duration}s linear ${props => props.$delay}s infinite,
         ${fadeInOut} ${props => props.$duration}s linear ${props => props.$delay}s infinite;
 `;
 
-// Cloud image - handles vertical float, scale breathing, and opacity drift
+// cloud image - handles our vertical float, scale breathing, and opacity drift.
 const CloudImage = styled.img`
+    /* layout */
     display: block;
     width: auto;
     height: ${props => {
@@ -138,7 +143,7 @@ const CloudImage = styled.img`
     object-fit: contain;
     pointer-events: none;
     
-    /* Add subtle blur for realistic atmosphere */
+    /* add subtle blur for more realism */
     filter: blur(${props => {
         switch(props.$layer) {
             case 'far': return '1.5px';
@@ -148,7 +153,7 @@ const CloudImage = styled.img`
         }
     }});
     
-    /* Apply all secondary animations */
+    /* apply all secondary animations. */
     animation: 
         ${verticalFloat} ${props => {
             switch(props.$layer) {
@@ -176,4 +181,5 @@ const CloudImage = styled.img`
         }} ease-in-out ${props => props.$delay * 0.7}s infinite;
 `;
 
+// export component.
 export default Cloud;
