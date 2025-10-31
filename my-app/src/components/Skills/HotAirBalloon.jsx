@@ -205,12 +205,19 @@ const Wrap = styled.div`
   position: absolute;
   height: auto;
   z-index: 3;
+  opacity: 0.92; /* Atmospheric perspective for distance */
+  cursor: pointer;
+  will-change: transform;
+  
+  /* Scale down balloons at 1600px */
+  @media (max-width: 1600px) {
+    transform: scale(0.88);
+  }
+  
+  /* Animation after scale to preserve both transforms */
   animation: ${({ $floatMs }) => float($floatMs)} ease-in-out infinite;
   animation-duration: ${({ $floatMs }) => `${$floatMs}ms`};
   animation-delay: ${({ $delay }) => $delay};
-  will-change: transform;
-  opacity: 0.92; /* Atmospheric perspective for distance */
-  cursor: pointer;
   
   &:hover {
     opacity: 1;

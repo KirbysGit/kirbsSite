@@ -8,6 +8,8 @@ import {
   buildingMaterialMap, 
   buildings
 } from './skylineConfig';
+// Import Cloud component from Experience for horizontal moving clouds
+import Cloud from '../3experience/Cloud';
 
 // Import balloon logos
 import gitLogo from '@/images/logos/git.png';
@@ -44,6 +46,33 @@ const Skills = () => {
             <AtmosphereLayer>
                 {/* Seam softener between Projects and Skills */}
                 <TopSeamFade />
+                
+                {/* Horizontal moving clouds at the top - left to right */}
+                <CloudLayer>
+                    {/* Far layer clouds */}
+                    <Cloud top="8%" delay="0" duration="200" layer="far" type={1} direction="left" />
+                    <Cloud top="12%" delay="40" duration="220" layer="far" type={3} direction="left" />
+                    <Cloud top="5%" delay="80" duration="190" layer="far" type={2} direction="left" />
+                    
+                    {/* Mid layer clouds */}
+                    <Cloud top="10%" delay="15" duration="160" layer="mid" type={4} direction="left" />
+                    <Cloud top="6%" delay="60" duration="175" layer="mid" type={2} direction="left" />
+                    
+                    {/* Near layer clouds */}
+                    <Cloud top="9%" delay="50" duration="140" layer="near" type={5} direction="left" />
+                    
+                    {/* Additional clouds that come in later */}
+                    {/* Far layer - later arrivals */}
+                    <Cloud top="7%" delay="80" duration="205" layer="far" type={4} direction="left" />
+                    <Cloud top="11%" delay="90" duration="195" layer="far" type={5} direction="left" />
+                    
+                    {/* Mid layer - later arrivals */}
+                    <Cloud top="9%" delay="120" duration="170" layer="mid" type={1} direction="left" />
+                    <Cloud top="4%" delay="85" duration="165" layer="mid" type={3} direction="left" />
+                    
+                    {/* Near layer - later arrivals */}
+                    <Cloud top="8%" delay="110" duration="145" layer="near" type={3} direction="left" />
+                </CloudLayer>
                 
                 {/* Distant clouds */}
                 <DistantCloud top="15%" left="10%" delay="0s" />
@@ -218,10 +247,27 @@ const SkillsContainer = styled.div`
     padding-top: 0;
     position: relative;
     overflow: hidden;
+    
+    @media (max-width: 1600px) {
+        padding-top: 4rem; /* More top padding to prevent title/subtitle cutoffs */
+        min-height: 95vh; /* Slightly reduce height */
+    }
 `;
 
 // atmosphere layer for visual elements
 const AtmosphereLayer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+`;
+
+// Cloud layer container for horizontal moving clouds
+const CloudLayer = styled.div`
     position: absolute;
     top: 0;
     left: 0;
@@ -292,6 +338,7 @@ const ContentWrapper = styled.div`
     
     @media (max-width: 1600px) {
         padding: 1.5rem;
+        margin-top: -0.5rem; /* Move title up a bit */
     }
     
     @media (max-width: 1200px) {
@@ -327,7 +374,7 @@ const SectionSubtitle = styled.h2`
     text-align: center;
     font-style: italic;
     margin: 0;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     margin-bottom: 3rem;
     text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
     
@@ -340,13 +387,18 @@ const SectionSubtitle = styled.h2`
 // Road below sidewalk with perspective
 const Road = styled.div`
     position: absolute;
-    bottom: 12%;
+    bottom: 11.5%;
     left: 0;
     width: 120%;
     height: 3rem;
     z-index: 2;
 
     transform: translateX(-7.5%);
+    
+    @media (max-width: 1600px) {
+        bottom: 12.5%; /* Move down to maintain spacing */
+        height: 2.5rem; /* Slightly smaller */
+    }
     
     /* Road surface with perspective */
     &::before {
@@ -396,6 +448,14 @@ const SkylineRow = styled.div`
   
   /* Buildings position themselves absolutely within this container */
   z-index: 1.5;
+  
+  @media (max-width: 1600px) {
+    left: -5%;
+    bottom: 18.5%; /* Move down slightly to prevent cutoffs */
+    transform: scale(0.82); /* Scale both width and height proportionally to maintain aspect ratio */
+    transform-origin: bottom center; /* Scale from bottom center */
+    z-index: 3; /* Higher z-index to ensure buildings stay above foundation and water with transform stacking context */
+  }
 `;
 
 // Building Foundation - base for buildings to sit on
@@ -408,6 +468,11 @@ const BuildingFoundation = styled.div`
   z-index: 2;
   
   transform: translateX(-10.5%);
+  
+  @media (max-width: 1600px) {
+    bottom: 17.5%; /* Move down proportionally with skyline */
+    width: 40%; /* Slightly narrower */
+  }
   
   /* Foundation surface with depth */
   &::before {
@@ -459,6 +524,11 @@ const GrassyBase = styled.div`
     z-index: 4;
 
     transform: translateX(-7.5%);
+    
+    @media (max-width: 1600px) {
+        bottom: 8%; /* Move down proportionally */
+        height: 1.75rem; /* Slightly smaller */
+    }
     
     /* Grass surface with perspective and multi-layer texture */
     &::before {
@@ -575,6 +645,11 @@ const UpperSidewalk = styled.div`
 
     transform: translateX(-10.5%);
     
+    @media (max-width: 1600px) {
+        bottom: 16.5%; /* Move down proportionally */
+        height: 1.1rem; /* Slightly smaller */
+    }
+    
     /* Sidewalk surface with perspective */
     &::before {
         content: '';
@@ -623,6 +698,11 @@ const LowerSidewalk = styled.div`
     z-index: 2;
 
     transform: translateX(-5.5%);
+    
+    @media (max-width: 1600px) {
+        bottom: 11%; /* Move down proportionally */
+        height: 1.1rem; /* Slightly smaller */
+    }
     
     /* Sidewalk surface with perspective */
     &::before {
@@ -680,12 +760,16 @@ const HarborWater = styled.div`
   bottom: 0;
   width: 150%;
   height: 30rem;
-  z-index: 1;
+  z-index: 0.5; /* Lower than buildings (z-index: 1.5) and foundation (z-index: 2) */
   overflow: hidden;
 
   /* Rotate the whole plane once */
   transform: perspective(220px) rotateX(12deg) translateZ(0);
   transform-origin: bottom right;
+  
+  @media (max-width: 1600px) {
+    height: 26rem; /* Slightly smaller */
+  }
 
   /* Base water fill */
   background: linear-gradient(to top,
@@ -724,6 +808,7 @@ const RippleLayer = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 0.5; /* Inherit from parent container context */
   /* Soft oval ripples at various positions */
   background:
     radial-gradient(40px 20px at 20% 65%, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.08) 45%, transparent 70%),
@@ -742,6 +827,11 @@ const BridgeRail = styled.div`
   width: 50%;
   height: 1.5rem;
   z-index: 1;
+  
+  @media (max-width: 1600px) {
+    bottom: 18.5%; /* Move down proportionally */
+    width: 59%;
+  }
 
   /* posts */
   background:
@@ -772,6 +862,10 @@ const FloatingTextContainer = styled.div`
   width: 33%;
   max-width: 45%;
   z-index: 5;
+  @media (max-width: 1600px) {
+    top: 34%; /* Move up slightly to prevent overlap */
+    width: 36%; /* Slightly narrower */
+  }
 `;
 
 const FloatingText = styled.p`
@@ -784,6 +878,12 @@ const FloatingText = styled.p`
     0 2px 4px rgba(0, 0, 0, 0.6),
     0 4px 8px rgba(0, 0, 0, 0.4);
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  
+  @media (max-width: 1600px) {
+    font-size: 1.1rem; /* Reduced font size */
+    line-height: 1.6; /* Tighter line height */
+    margin: 0 0 14px 0; /* Reduced spacing */
+  }
   
   em {
     font-style: italic;
@@ -818,6 +918,13 @@ const PSNote = styled.p`
     0 4px 8px rgba(0, 0, 0, 0.4);
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
   
+  @media (max-width: 1600px) {
+    top: 62%; /* Move up to prevent overlap */
+    width: 28%; /* Slightly narrower */
+    font-size: 0.9rem; /* Reduced font size */
+    line-height: 1.6; /* Tighter line height */
+  }
+  
   em {
     font-weight: 700;
     font-style: italic;
@@ -837,6 +944,11 @@ const OceanRail = styled.div`
   width: 100%;
   height: 1.5rem;
   z-index: 4;
+  
+  @media (max-width: 1600px) {
+    bottom: 8%; /* Move down proportionally */
+    height: 1.3rem; /* Slightly smaller */
+  }
 
   /* posts - same style as bridge rail */
   background:
@@ -866,6 +978,10 @@ const OceanWall = styled.div`
   width: 100%;
   height: 10%;
   z-index: 3;
+  
+  @media (max-width: 1600px) {
+    height: 9%; /* Slightly smaller */
+  }
   
   /* Stone texture base with gradient - fully opaque */
   background: 

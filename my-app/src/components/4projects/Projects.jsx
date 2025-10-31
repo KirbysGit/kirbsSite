@@ -447,7 +447,6 @@ const Slide = styled.div`
     transform: translateX(0) translateZ(0) scale(1);
     opacity: 1;
     z-index: 10;
-    filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.25));
     pointer-events: auto;
   `}
 

@@ -334,13 +334,23 @@ const floatParticles = keyframes`
 `;
 
 const BackgroundContainer = styled.section`
+  margin-top: -5vh;
   position: relative;
   width: 100%;
-  min-height: 100dvh;         /* at least full screen */
-  overflow: visible;           /* allow all overflow - horizontal is controlled at body level */
+  /* Remove fixed min-height that might be causing scroll issues */
+  min-height: auto;
+  /* Calculate proper height accounting for negative margins */
+  height: auto;
+  /* Prevent this container from creating its own scroll context */
+  overflow: visible;
+  overflow-x: visible;
+  overflow-y: visible;
   isolation: auto;             /* don't isolate stacking context - allow Footer to overlap */
   --surface-h: 5vh;          /* same as your SurfaceWater height */
   --section-pad: clamp(24px, 4vw, 56px);
+  /* Account for Footer's negative margin - ensure container doesn't expand unnecessarily */
+  padding-bottom: 0;
+  margin-bottom: 0;
 `;
 
 // Surface water - connects to ocean wall in Skills section (same animation as HarborWater)
@@ -413,15 +423,19 @@ const UnderwaterSection = styled.div`
   margin-top: var(--surface-h);      /* keep clear of the surface overlay */
   width: 100%;
 
-  /* grow with content but still cover a full screen if short */
-  min-height: calc(100dvh - var(--surface-h));
-  padding: var(--section-pad) 0 calc(var(--section-pad) * 1.5);
+  /* Let content determine height naturally - don't force min-height that creates scroll */
+  min-height: auto;
+  /* Account for Footer overlap by adding padding-bottom */
+  padding: var(--section-pad) 0 calc(var(--section-pad) * 1.5 + 10vh);
   
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: 1;
-  overflow: visible;                 /* allow Footer elements to overflow into this section */
+  /* Prevent this section from creating its own scroll context */
+  overflow: visible;
+  overflow-x: visible;
+  overflow-y: visible;
   
   /* Subtle waterline effect at the top */
   box-shadow: 

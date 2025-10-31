@@ -1880,6 +1880,8 @@ const Wrap = styled.div`
   z-index: ${({ $z }) => $z};
   transform: scale(${({ $scale }) => $scale});
   filter: brightness(${({ $brightness }) => $brightness}) saturate(${({ $saturation }) => $saturation}) blur(${({ $blur }) => $blur}px);
+  
+  /* Note: Individual building scaling removed - now handled by SkylineRow container scale */
 
   /* Logo hover effect - darken background and show tooltip */
   @media (hover:hover) {

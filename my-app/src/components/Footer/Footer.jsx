@@ -200,12 +200,19 @@ export default Footer;
 
 // Footer container - sandy ocean floor theme
 const FooterContainer = styled.footer`
+    border: 2px solid white;
   position: relative;
   width: 100%;
-  height: max-content;
-  overflow: visible;           /* allow all overflow - horizontal is controlled at body level */
+  height: auto;
+  /* Prevent creating scroll context */
+  overflow: visible;
+  overflow-x: visible;
+  overflow-y: visible;
+  /* Use negative margin to overlap, but this won't create scroll issues if parent handles overflow */
   margin-top: -10vh;           /* overlap with UnderwaterSection to allow rock piles to extend up */
   padding-top: 10vh;           /* compensate for negative margin */
+  /* Ensure footer doesn't expand document height unnecessarily */
+  margin-bottom: 0;
   z-index: 5;                  /* higher than UnderwaterSection (z-index: 1) */
   
   /* shared vars for all sand text/icons */

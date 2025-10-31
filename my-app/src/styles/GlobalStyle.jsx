@@ -7,7 +7,8 @@ export const GlobalStyle = createGlobalStyle`
 
     /* Smooth scrolling optimizations */
     html {
-        overflow-y: scroll;
+        /* Use 'auto' instead of 'scroll' - only show scrollbar when content overflows */
+        overflow-y: auto;
         scroll-behavior: smooth;
         overscroll-behavior: contain;
         font-family: "Red Hat Display", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -19,11 +20,14 @@ export const GlobalStyle = createGlobalStyle`
     body {
         margin: 0;
         overflow-x: hidden;
+        /* Prevent body from creating its own scroll context - let html handle all scrolling */
+        overflow-y: visible;
         scroll-behavior: smooth;
         padding: 0;
         background-color: #000;
         color: white;
         overscroll-behavior-y: contain;
+        /* Ensure body doesn't create unnecessary height */
     }
     
     /* Prevent scroll-induced re-renders - only on animated elements */
