@@ -1,7 +1,12 @@
+// sentimenttradercard.jsx
+
+// card for the sentiment trader project, made up a new styling.
+
+// imports.
 import React from 'react';
 import styled from 'styled-components';
 
-// Shared components
+// shared components.
 import CardBase, { 
   CardHeader, 
   HeaderTop, 
@@ -16,17 +21,18 @@ import CardBase, {
   SectionLabel, 
   CardFooter 
 } from '../shared/CardBase';
+import WIPRibbon from '../WIPRibbon';
+import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
-import { themes } from '../shared/themes';
-import WIPRibbon from '../WIPRibbon';
 
-// Project assets
+// import project assets.
 import sentimentTraderLogo from '@/images/projects/sentiment_trader/sentimenttrader.png';
 import lightningTalkPreview from '@/images/projects/sentiment_trader/lightningtalkpreview.png';
 import paperPreview from '@/images/projects/sentiment_trader/paperpreview.png';
 
 const SentimentTraderCard = ({ isFocused = false }) => {
+    // tech, highlights, & theme.
     const techs = [
         'Python',
         'PyTorch',
@@ -36,21 +42,22 @@ const SentimentTraderCard = ({ isFocused = false }) => {
         'NumPy'
     ];
 
-  const highlights = [
-    'Streams Reddit finance posts and filters relevant stock ticker mentions with confidence',
-    'Analyzes sentiment using FinBERT NLP and merges with real-time Yahoo Finance data',
-    'Generates next-day buy/sell signals per ticker using trained XGBoost machine learning models'
-  ];
+    const highlights = [
+        'Streams Reddit finance posts and filters relevant stock ticker mentions with confidence',
+        'Analyzes sentiment using FinBERT NLP and merges with real-time Yahoo Finance data',
+        'Generates next-day buy/sell signals per ticker using trained XGBoost machine learning models'
+    ];
 
-  const theme = themes.sentiment;
+    const theme = themes.sentiment;
 
-    return (
-    <CardBase theme={true} themeName="sentiment" themeColors={theme.colors} isFocused={isFocused}>
-      <WIPRibbon text="IN PROGRESS" />
+        return (
+        <CardBase theme={true} themeName="sentiment" themeColors={theme.colors} isFocused={isFocused}>
+            <WIPRibbon text="IN PROGRESS" />
+            {/* card header */}
             <CardHeader>
                 <HeaderTop>
                     <ProjectInfo>
-            <ProjectName $themeColors={theme.colors}>SentimentTrader</ProjectName>
+                        <ProjectName $themeColors={theme.colors}>SentimentTrader</ProjectName>
                         <ProjectSubtitle>Real-Time Stock Analysis Pipeline</ProjectSubtitle>
                         <ProjectDate>Jan 2025 – May 2025</ProjectDate>
                     </ProjectInfo>
@@ -62,25 +69,27 @@ const SentimentTraderCard = ({ isFocused = false }) => {
                     Basically reads stock chatter, tags bullish/bearish, gives buy/sell picks.
                 </ProjectDescription>
 
-        <Divider $themeColors={theme.colors} />
+                <Divider $themeColors={theme.colors} />
             </CardHeader>
 
+            {/* card body */}
             <CardBody>
-        <SectionLabel $themeColors={theme.colors}>Tech Stack</SectionLabel>
-        <TechStack techs={techs} themeColors={theme.colors} />
+                <SectionLabel $themeColors={theme.colors}>Tech Stack</SectionLabel>
+                <TechStack techs={techs} themeColors={theme.colors} />
 
-        <SectionLabel style={{ marginTop: '0.75rem' }} $themeColors={theme.colors}>What It Does</SectionLabel>
-        <Highlights highlights={highlights} themeColors={theme.colors} />
+                <SectionLabel style={{ marginTop: '0.75rem' }} $themeColors={theme.colors}>What It Does</SectionLabel>
+                <Highlights highlights={highlights} themeColors={theme.colors} />
             </CardBody>
 
+            {/* card footer */}
             <CardFooter>
-        <Divider $themeColors={theme.colors} />
+                <Divider $themeColors={theme.colors} />
                 
-                {/* Resources Grid - LinkedIn style preview cards */}
+                {/* resources grid  */}
                 <ResourcesGrid>
-                    {/* YouTube Video Card */}
+                        {/* lightning talk video card */}
                     <ResourceCard
-            $themeColors={theme.colors}
+                        $themeColors={theme.colors}
                         onClick={() => window.open('https://www.youtube.com/watch?v=lhisabRnFw0', '_blank')}
                     >
                         <ResourcePreview $type="youtube" $preview={lightningTalkPreview}>
@@ -89,9 +98,9 @@ const SentimentTraderCard = ({ isFocused = false }) => {
                         <ResourceCaption>Lightning Talk</ResourceCaption>
                     </ResourceCard>
 
-                    {/* Paper/PDF Card */}
+                    {/* ieee paper card */}
                     <ResourceCard
-            $themeColors={theme.colors}
+                        $themeColors={theme.colors}
                         onClick={() => window.open('/projects/sentiment_trader/sentimenttrader_paper.pdf', '_blank')}
                     >
                         <ResourcePreview $type="paper" $preview={paperPreview}>
@@ -100,9 +109,9 @@ const SentimentTraderCard = ({ isFocused = false }) => {
                         <ResourceCaption>IEEE Paper</ResourceCaption>
                     </ResourceCard>
 
-                    {/* GitHub Card */}
+                    {/* github card */}
                     <ResourceCard
-            $themeColors={theme.colors}
+                        $themeColors={theme.colors}
                         onClick={() => window.open('https://github.com/KirbysGit/sentimentTrader', '_blank')}
                     >
                         <ResourcePreview $type="github">
@@ -116,20 +125,22 @@ const SentimentTraderCard = ({ isFocused = false }) => {
                     </ResourceCard>
                 </ResourcesGrid>
             </CardFooter>
-    </CardBase>
-  );
+        </CardBase>
+    );
 };
 
-/* ================= SentimentTrader-specific Footer Components ================= */
-
-/* ========================= Resources Grid (LinkedIn-style) ========================= */
+/* ================= sentiment trader-specific resource grid components ================= */
 
 const ResourcesGrid = styled.div`
+    /* layout */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-    width: 100%;
     
+    /* spacing */
+    width: 100%;
+    gap: 0.75rem;
+    
+    /* media queries */
     @media (max-width: 2000px) {
         gap: 0.65rem;
     }
@@ -144,29 +155,40 @@ const ResourcesGrid = styled.div`
 `;
 
 const ResourceCard = styled.div`
+    /* layout */
     display: flex;
-    flex-direction: column;
-    border-radius: 10px;
     overflow: hidden;
-    background: ${({ $themeColors }) => $themeColors?.previewBackground || 'rgba(255,180,100,0.1)'};
-    border: 1.5px solid ${({ $themeColors }) => $themeColors?.previewBorder || 'rgba(255,180,100,0.3)'};
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    flex-direction: column;
     
+    /* styles */
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1.5px solid ${({ $themeColors }) => $themeColors?.previewBorder || 'rgba(255,180,100,0.3)'};
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    background: ${({ $themeColors }) => $themeColors?.previewBackground || 'rgba(255,180,100,0.1)'};
+    
+    /* hover effects */
     &:hover {
         transform: translateY(-4px);
         border-color: ${({ $themeColors }) => $themeColors?.previewHoverBorder || 'rgba(255,180,100,0.5)'};
-        box-shadow: ${({ $themeColors }) => $themeColors?.previewHoverShadow || '0 6px 20px rgba(255,180,100,0.25)'};
         background: ${({ $themeColors }) => $themeColors?.previewHoverBackground || 'rgba(255,180,100,0.15)'};
+        box-shadow: ${({ $themeColors }) => $themeColors?.previewHoverShadow || '0 6px 20px rgba(255,180,100,0.25)'};
     }
 `;
 
 const ResourcePreview = styled.div`
-    width: 100%;
-    height: 80px;
+    /* layout */
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+    
+    /* spacing */
+    width: 100%;
+    height: 80px;
+    
+    /* styles */
     background: ${({ $type, $preview }) => {
         if ($preview) {
             return `url(${$preview}) center/cover no-repeat`;
@@ -176,9 +198,23 @@ const ResourcePreview = styled.div`
         if ($type === 'github') return 'linear-gradient(135deg, rgba(50, 50, 50, 0.3), rgba(30, 30, 30, 0.2))';
         return 'rgba(255,255,255,0.05)';
     }};
-    position: relative;
-    overflow: hidden;
     
+    /* overlay gradient */
+    &::before {
+        /* layout */
+        content: '';
+        position: absolute;
+        inset: 0;
+        
+        /* styles */
+        background: ${({ $preview }) => 
+            $preview 
+                ? 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%)'
+                : 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 100%)'
+        };
+    }
+    
+    /* media queries */
     @media (max-width: 2000px) {
         height: 75px;
     }
@@ -186,42 +222,54 @@ const ResourcePreview = styled.div`
     @media (max-width: 1600px) {
         height: 70px;
     }
-    
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: ${({ $preview }) => 
-            $preview 
-                ? 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%)'
-                : 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 100%)'
-        };
-    }
 `;
 
 const ResourceIcon = styled.div`
-    font-size: 2rem;
+    /* layout */
     z-index: 1;
+    
+    /* styles */
+    font-size: 2rem;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     transition: transform 0.3s ease;
-
-    @media (max-width: 1600px) {
-        font-size: 1.75rem;
-    }
     
+    /* hover effects */
     ${ResourceCard}:hover & {
         transform: scale(1.15);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: 1.75rem;
     }
 `;
 
 const GitHubLogoIcon = styled.div`
+    /* layout */
+    z-index: 1;
+    
+    /* spacing */
     width: 60px;
     height: 60px;
-    z-index: 1;
+    
+    /* styles */
     color: rgba(255, 255, 255, 0.95);
     filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
     transition: all 0.3s ease;
-
+    
+    /* svg sizing */
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* hover effects */
+    ${ResourceCard}:hover & {
+        transform: scale(1.1);
+        color: rgba(255, 255, 255, 1);
+    }
+    
+    /* media queries */
     @media (max-width: 2000px) {
         width: 55px;
         height: 55px;
@@ -231,27 +279,23 @@ const GitHubLogoIcon = styled.div`
         width: 50px;
         height: 50px;
     }
-    
-    svg {
-        width: 100%;
-        height: 100%;
-    }
-    
-    ${ResourceCard}:hover & {
-        transform: scale(1.1);
-        color: rgba(255, 255, 255, 1);
-    }
 `;
 
 const ResourceCaption = styled.div`
+    /* layout */
+    text-align: center;
+    
+    /* spacing */
     padding: 0.5rem;
+    
+    /* styles */
     font-size: 0.8rem;
     font-weight: 600;
-    color: rgba(255,255,255,0.95);
-    text-align: center;
-    background: rgba(0,0,0,0.15);
     letter-spacing: 0.3px;
-
+    color: rgba(255,255,255,0.95);
+    background: rgba(0,0,0,0.15);
+    
+    /* media queries */
     @media (max-width: 2000px) {
         padding: 0.45rem;
         font-size: 0.75rem;
@@ -263,6 +307,7 @@ const ResourceCaption = styled.div`
     }
 `;
 
+// export component.
 export default SentimentTraderCard;
 
 

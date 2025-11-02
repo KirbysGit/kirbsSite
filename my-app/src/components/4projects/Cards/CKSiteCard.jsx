@@ -1,7 +1,12 @@
+// cksitecard.jsx
+
+// card for my site!
+
+// imports.
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-// Shared components
+// shared components.
 import CardBase, { 
   CardHeader, 
   HeaderTop, 
@@ -14,25 +19,34 @@ import CardBase, {
   CardBody, 
   SectionLabel 
 } from '../shared/CardBase';
+import WIPRibbon from '../WIPRibbon';
+import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
-import { themes } from '../shared/themes';
-import WIPRibbon from '../WIPRibbon';
 
+// main cksite card component.
 const CKSiteCard = ({ isFocused = false }) => {
+
+  // the tech stack for the cksite card.
   const techs = ['React', 'JavaScript', 'Vercel'];
 
+  // the highlights for the cksite card.
   const highlights = [
     'Real projects I\'ve built including full-stack web applications and machine learning experiments',
     'Complete education journey at UCF and all the technical skills I\'ve picked up along the way',
     'Work experience from internships to leadership roles showing what I learned and shipped to production'
   ];
 
+  // the theme for the cksite card.
   const theme = themes.cosmic;
 
+  // return the cksite card.
   return (
     <CardBase theme={true} themeName="cosmic" themeColors={theme.colors} isFocused={isFocused}>
+      {/* wip ribbon */}
       <WIPRibbon text="IN PROGRESS" />
+      
+      {/* star field */}
       <StarField>
         <Star top="15%" left="10%" size="2px" delay="0s" />
         <Star top="25%" left="80%" size="1.5px" delay="1s" />
@@ -44,6 +58,7 @@ const CKSiteCard = ({ isFocused = false }) => {
         <Star top="20%" left="45%" size="1.5px" delay="2.5s" />
       </StarField>
 
+      {/* card header */}
       <CardHeader>
         <HeaderTop>
           <ProjectInfo>
@@ -60,6 +75,7 @@ const CKSiteCard = ({ isFocused = false }) => {
         <Divider $themeColors={theme.colors} />
       </CardHeader>
 
+      {/* card body */}
       <CardBody>
         <SectionLabel $themeColors={theme.colors}>Tech Stack</SectionLabel>
         <TechStack techs={techs} themeColors={theme.colors} />
@@ -67,35 +83,52 @@ const CKSiteCard = ({ isFocused = false }) => {
         <SectionLabel style={{ marginTop: '0.75rem' }} $themeColors={theme.colors}>What It Shows</SectionLabel>
         <Highlights highlights={highlights} themeColors={theme.colors} />
       </CardBody>
+
+      {/* no footer yet */}
     </CardBase>
   );
 };
 
-/* ================= CKSite-specific Starfield Animation ================= */
+/* ================= cksite-specific styles ================= */
 
 const twinkle = keyframes`
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: scale(1); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2); 
+    }
 `;
 
 const StarField = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+    /* layout */
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    
+    /* styles */
+    pointer-events: none;
 `;
 
 const Star = styled.div`
-  position: absolute;
-  top: ${props => props.top};
-  left: ${props => props.left};
-  width: ${props => props.size};
-  height: ${props => props.size};
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
-  animation: ${twinkle} 3s ease-in-out infinite;
-  animation-delay: ${props => props.delay};
+    /* layout */
+    position: absolute;
+    top: ${props => props.top};
+    left: ${props => props.left};
+    
+    /* spacing */
+    width: ${props => props.size};
+    height: ${props => props.size};
+    
+    /* styles */
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+    animation: ${twinkle} 3s ease-in-out infinite;
+    animation-delay: ${props => props.delay};
 `;
 
+// export component.
 export default CKSiteCard;

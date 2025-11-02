@@ -18,7 +18,7 @@ import Projects from './components/4projects/Projects';
 import Story from './components/extra/Story';
 import GlobalStyle from './styles/GlobalStyle';
 import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
-import Skills from './components/Skills/Skills.jsx';
+import Skills from './components/5skills/Skills.jsx';
 import Background from './components/Background/Background.jsx';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 
