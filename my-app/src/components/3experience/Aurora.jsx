@@ -49,7 +49,7 @@ function generateWavePath(width = 2400, height = 120, amplitude = 26, frequency 
   return path;
 }
 
-// actul component.
+// actual component.
 const Aurora = () => {
   // generate different wave patterns for each layer with increased thickness.
   const wave1Path = generateWavePath(2400, 120, 30, 4, 0, 40);
@@ -196,167 +196,167 @@ const AuroraGlow = styled.div`
 
 // aurora wave.
 const AuroraWave = styled.div`
-  /* layout */
-  position: absolute;
-  inset-inline-start: 0;
-  top: ${p => p.$top || '26.25%'};
-  width: 100%;
-  height: 40vh;
-  isolation: isolate;
-
-  /* styles */
-  opacity: ${p => p.$opacity || 0.3};
-  clip-path: path("${p => p.$wavePath}");              /* ribbon silhouette */
-  will-change: clip-path;                               /* we morph clip-path */
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-
-  animation: maskPath ${p => p.$duration || 60}s ease-in-out infinite;
-  animation-delay: ${p => p.$delay || 0}s;
-
-  /* effect layer 1 - main glow, rim, curtain banding */
-  &::before {
     /* layout */
-    content: "";
     position: absolute;
-    inset: -${p => (p.$blur || 50) * 2}px;
+    inset-inline-start: 0;
+    top: ${p => p.$top || '26.25%'};
+    width: 100%;
+    height: 40vh;
+    isolation: isolate;
 
     /* styles */
-    background:
-      linear-gradient(90deg,
-        rgba(80, 255, 180, 0.55) 0%,
-        rgba(150, 120, 255, 0.42) 50%,
-        rgba(255, 150, 200, 0.45) 100%),
-      radial-gradient(140% 60% at 50% 0%,
-        rgba(255,255,255,0.25) 0%,
-        rgba(255,255,255,0.10) 35%,
-        rgba(255,255,255,0.00) 60%),
-      linear-gradient(180deg,
-        rgba(0,0,0,0.0) 0%,
-        rgba(0,0,0,0.08) 80%,
-        rgba(0,0,0,0.12) 100%);
-    background-size: 200% 100%, 100% 100%, 100% 100%;
-    background-position: 0% 50%, 50% 0%, 50% 100%;
-    filter: blur(${p => p.$blur || 50}px);
-    mix-blend-mode: screen;
+    opacity: ${p => p.$opacity || 0.3};
+    clip-path: path("${p => p.$wavePath}");              /* ribbon silhouette */
+    will-change: clip-path;                               /* we morph clip-path */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 
-    animation:
-      colorFlow 18s linear infinite,
-      waveDrift ${p => p.$duration || 60}s ease-in-out infinite,
-      flicker 10s ease-in-out infinite,
-      bandDrift 22s linear infinite;
+    animation: maskPath ${p => p.$duration || 60}s ease-in-out infinite;
     animation-delay: ${p => p.$delay || 0}s;
 
-    /* Curtain banding mask that drifts horizontally */
-    -webkit-mask-image:
-      linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-      repeating-linear-gradient(
-        90deg,
-        #000 0 16px,
-        rgba(0,0,0,.7) 16px 26px,
-        rgba(0,0,0,.35) 26px 40px,
-        transparent 40px 64px
-      );
-    -webkit-mask-size: auto, 220% 100%;
-    -webkit-mask-position: 0 0, 0% 0;
-            mask-image:
-      linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-      repeating-linear-gradient(
-        90deg,
-        #000 0 16px,
-        rgba(0,0,0,.7) 16px 26px,
-        rgba(0,0,0,.35) 26px 40px,
-        transparent 40px 64px
-      );
-            mask-size: auto, 220% 100%;
-            mask-position: 0 0, 0% 0;
+    /* effect layer 1 - main glow, rim, curtain banding */
+    &::before {
+      /* layout */
+      content: "";
+      position: absolute;
+      inset: -${p => (p.$blur || 50) * 2}px;
 
-    /* reduce overscan/blur on mid-width screens to avoid clipping */
-    @media (max-width: 1600px) {
-      inset: -${p => (p.$blur || 50) * 1.4}px;
+      /* styles */
+      background:
+        linear-gradient(90deg,
+          rgba(80, 255, 180, 0.55) 0%,
+          rgba(150, 120, 255, 0.42) 50%,
+          rgba(255, 150, 200, 0.45) 100%),
+        radial-gradient(140% 60% at 50% 0%,
+          rgba(255,255,255,0.25) 0%,
+          rgba(255,255,255,0.10) 35%,
+          rgba(255,255,255,0.00) 60%),
+        linear-gradient(180deg,
+          rgba(0,0,0,0.0) 0%,
+          rgba(0,0,0,0.08) 80%,
+          rgba(0,0,0,0.12) 100%);
+      background-size: 200% 100%, 100% 100%, 100% 100%;
+      background-position: 0% 50%, 50% 0%, 50% 100%;
+      filter: blur(${p => p.$blur || 50}px);
+      mix-blend-mode: screen;
+
+      animation:
+        colorFlow 18s linear infinite,
+        waveDrift ${p => p.$duration || 60}s ease-in-out infinite,
+        flicker 10s ease-in-out infinite,
+        bandDrift 22s linear infinite;
+      animation-delay: ${p => p.$delay || 0}s;
+
+      /* Curtain banding mask that drifts horizontally */
+      -webkit-mask-image:
+        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+        repeating-linear-gradient(
+          90deg,
+          #000 0 16px,
+          rgba(0,0,0,.7) 16px 26px,
+          rgba(0,0,0,.35) 26px 40px,
+          transparent 40px 64px
+        );
+      -webkit-mask-size: auto, 220% 100%;
+      -webkit-mask-position: 0 0, 0% 0;
+              mask-image:
+        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+        repeating-linear-gradient(
+          90deg,
+          #000 0 16px,
+          rgba(0,0,0,.7) 16px 26px,
+          rgba(0,0,0,.35) 26px 40px,
+          transparent 40px 64px
+        );
+              mask-size: auto, 220% 100%;
+              mask-position: 0 0, 0% 0;
+
+      /* reduce overscan/blur on mid-width screens to avoid clipping */
+      @media (max-width: 1600px) {
+        inset: -${p => (p.$blur || 50) * 1.4}px;
+        filter: blur(${p => (p.$blur || 50) * 0.85}px);
+      }
+    }
+
+    /* effect layer 2 - faint secondary tint */
+    &::after{
+      /* layout */
+      content: "";
+      position: absolute;
+      inset: -${p => (p.$blur || 50) * 2}px;
+
+      /* styles */
+      background: linear-gradient(90deg,
+        rgba(120, 220, 255, 0.28) 0%,
+        rgba(110, 255, 190, 0.22) 50%,
+        rgba(170, 140, 255, 0.20) 100%);
       filter: blur(${p => (p.$blur || 50) * 0.85}px);
+      mix-blend-mode: screen;
+      opacity: 0.45;
+      transform: translate3d(0, -2px, 0);
+      animation: colorFlow 26s linear infinite reverse;
+      animation-delay: ${p => (Number(p.$delay) || 0) * 0.5}s;
+
+      -webkit-mask-image:
+        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+        repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
+      -webkit-mask-size: auto, 220% 100%;
+      -webkit-mask-position: 0 0, 0% 0;
+              mask-image:
+        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+        repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
+              mask-size: auto, 220% 100%;
+              mask-position: 0 0, 0% 0;
+
+      /* reduce overscan/blur on mid-width screens to avoid clipping */
+      @media (max-width: 1600px) {
+        inset: -${p => (p.$blur || 50) * 1.3}px;
+        filter: blur(${p => (p.$blur || 50) * 0.75}px);
+      }
     }
-  }
 
-  /* effect layer 2 - faint secondary tint */
-  &::after{
-    /* layout */
-    content: "";
-    position: absolute;
-    inset: -${p => (p.$blur || 50) * 2}px;
-
-    /* styles */
-    background: linear-gradient(90deg,
-      rgba(120, 220, 255, 0.28) 0%,
-      rgba(110, 255, 190, 0.22) 50%,
-      rgba(170, 140, 255, 0.20) 100%);
-    filter: blur(${p => (p.$blur || 50) * 0.85}px);
-    mix-blend-mode: screen;
-    opacity: 0.45;
-    transform: translate3d(0, -2px, 0);
-    animation: colorFlow 26s linear infinite reverse;
-    animation-delay: ${p => (Number(p.$delay) || 0) * 0.5}s;
-
-    -webkit-mask-image:
-      linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-      repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
-    -webkit-mask-size: auto, 220% 100%;
-    -webkit-mask-position: 0 0, 0% 0;
-            mask-image:
-      linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-      repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
-            mask-size: auto, 220% 100%;
-            mask-position: 0 0, 0% 0;
-
-    /* reduce overscan/blur on mid-width screens to avoid clipping */
-    @media (max-width: 1600px) {
-      inset: -${p => (p.$blur || 50) * 1.3}px;
-      filter: blur(${p => (p.$blur || 50) * 0.75}px);
+    /* keyframes */
+    @keyframes maskPath {
+      0%,100% { clip-path: path("${p => p.$wavePath}"); }
+      25%     { clip-path: path("${p => p.$wavePath2}"); }
+      50%     { clip-path: path("${p => p.$wavePath3}"); }
+      75%     { clip-path: path("${p => p.$wavePath4}"); }
     }
-  }
 
-  /* keyframes */
-  @keyframes maskPath {
-    0%,100% { clip-path: path("${p => p.$wavePath}"); }
-    25%     { clip-path: path("${p => p.$wavePath2}"); }
-    50%     { clip-path: path("${p => p.$wavePath3}"); }
-    75%     { clip-path: path("${p => p.$wavePath4}"); }
-  }
-
-  @keyframes waveDrift {
-    0%,100% { transform: translate3d(0px, 0px, 0); }
-    50%     { transform: translate3d(-48px, -14px, 0); }
-  }
-
-  @keyframes bandDrift {
-    0%   { -webkit-mask-position: 0 0, 0% 0; mask-position: 0 0, 0% 0; }
-    100% { -webkit-mask-position: 0 0, 200% 0; mask-position: 0 0, 200% 0; }
-  }
-
-  @keyframes colorFlow {
-    0%   { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
-  }
-
-  @keyframes flicker {
-    0%,100% { opacity: .55 }
-    45%     { opacity: .70 }
-    60%     { opacity: .42 }
-    75%     { opacity: .64 }
-  }
-
-  /* media */
-  @media (max-width: 900px) {
-    &::before, &::after {
-      filter: blur(${p => (p.$blur || 50) * 0.7}px);
-      opacity: 0.85;
+    @keyframes waveDrift {
+      0%,100% { transform: translate3d(0px, 0px, 0); }
+      50%     { transform: translate3d(-48px, -14px, 0); }
     }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    &::before, &::after { animation: none; }
-  }
+
+    @keyframes bandDrift {
+      0%   { -webkit-mask-position: 0 0, 0% 0; mask-position: 0 0, 0% 0; }
+      100% { -webkit-mask-position: 0 0, 200% 0; mask-position: 0 0, 200% 0; }
+    }
+
+    @keyframes colorFlow {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    @keyframes flicker {
+      0%,100% { opacity: .55 }
+      45%     { opacity: .70 }
+      60%     { opacity: .42 }
+      75%     { opacity: .64 }
+    }
+
+    /* media */
+    @media (max-width: 900px) {
+      &::before, &::after {
+        filter: blur(${p => (p.$blur || 50) * 0.7}px);
+        opacity: 0.85;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      &::before, &::after { animation: none; }
+    }
 `;
 
 

@@ -1,5 +1,7 @@
 // cloud.jsx
 
+// chatgpt generated cloud cartoon images, just floating across the screen because why not.
+
 // imports.
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
