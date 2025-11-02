@@ -148,7 +148,7 @@ function App() {
                 {/*<WhoIAm /> */}
                 {/*<AExperience />*/}
                 <Projects />
-                {/*<Skills />*/}
+                <Skills />
                 {/*<Background />*/}
               </>
             }

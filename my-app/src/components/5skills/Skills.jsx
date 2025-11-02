@@ -1,32 +1,32 @@
+// skills.jsx
+
+// where i show off the skills i think are relevant to me. 
+// decided to make it a building skyline style to make it more interesting.
+
+// imports.
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import HotAirBalloon from './HotAirBalloon';
+
+// local imports.
 import SkillTower from './SkillTower';
 import { getLogo } from '../Utils/logoMap';
-import { 
-  buildingPalettes, 
-  buildingMaterialMap, 
-  buildings
-} from './skylineConfig';
-// Import Cloud component from Experience for horizontal moving clouds
+import HotAirBalloon from './HotAirBalloon';
+import { buildingPalettes, buildingMaterialMap, buildings } from './skylineConfig';
+
+// cloud component from experience.
 import Cloud from '../3experience/Cloud';
 
-// Import balloon logos
+// import balloon logos.
 import gitLogo from '@/images/logos/git.png';
 import canvaLogo from '@/images/logos/canva.png';
 import figmaLogo from '@/images/logos/figma.png';
 import msofficeLogo from '@/images/logos/msoffice.png';
 
-// Import top skill logos
-import pythonLogo from '@/images/logos/python.png';
-import javascriptLogo from '@/images/logos/javascript.png';
-import reactLogo from '@/images/logos/react.png';
-
 // utility to create layered skyline config
 const makeLayeredSkyline = () => {
   return buildings.map((building) => {
     const logoSrc = getLogo(building.name);
-    const material = buildingMaterialMap[building.name] || "steel"; // default to steel if not mapped
+    const material = buildingMaterialMap[building.name] || "steel";
     const palette = buildingPalettes[material];
     
     return {
@@ -38,54 +38,52 @@ const makeLayeredSkyline = () => {
 };
 
 const Skills = () => {
+    // make layered skyline.
     const skyline = makeLayeredSkyline();
 
     return (
         <SkillsContainer>
-            {/* Atmospheric Elements */}
+            {/* atmospheric elements */}
             <AtmosphereLayer>
-                {/* Seam softener between Projects and Skills */}
+                {/* seam softener between projects and skills */}
                 <TopSeamFade />
                 
-                {/* Horizontal moving clouds at the top - left to right */}
+                {/* horizontal moving clouds at the top - left to right */}
                 <CloudLayer>
-                    {/* Far layer clouds */}
+                    {/* far layer clouds */}
                     <Cloud top="8%" delay="0" duration="200" layer="far" type={1} direction="left" />
                     <Cloud top="12%" delay="40" duration="220" layer="far" type={3} direction="left" />
                     <Cloud top="5%" delay="80" duration="190" layer="far" type={2} direction="left" />
                     
-                    {/* Mid layer clouds */}
+                    {/* mid layer clouds */}
                     <Cloud top="10%" delay="15" duration="160" layer="mid" type={4} direction="left" />
                     <Cloud top="6%" delay="60" duration="175" layer="mid" type={2} direction="left" />
                     
-                    {/* Near layer clouds */}
+                    {/* near layer clouds */}
                     <Cloud top="9%" delay="50" duration="140" layer="near" type={5} direction="left" />
                     
-                    {/* Additional clouds that come in later */}
-                    {/* Far layer - later arrivals */}
+                    {/* additional clouds that come in later */}
+                    {/* far layer */}
                     <Cloud top="7%" delay="80" duration="205" layer="far" type={4} direction="left" />
                     <Cloud top="11%" delay="90" duration="195" layer="far" type={5} direction="left" />
                     
-                    {/* Mid layer - later arrivals */}
+                    {/* mid layer */}
                     <Cloud top="9%" delay="120" duration="170" layer="mid" type={1} direction="left" />
                     <Cloud top="4%" delay="85" duration="165" layer="mid" type={3} direction="left" />
                     
-                    {/* Near layer - later arrivals */}
+                    {/* near layer */}
                     <Cloud top="8%" delay="110" duration="145" layer="near" type={3} direction="left" />
                 </CloudLayer>
                 
-                {/* Distant clouds */}
-                <DistantCloud top="15%" left="10%" delay="0s" />
-                <DistantCloud top="25%" left="70%" delay="5s" />
-                <DistantCloud top="20%" left="85%" delay="3s" />
-                
             </AtmosphereLayer>
             
+            {/* content wrapper */}
             <ContentWrapper>
                 <SectionTitle>Skills</SectionTitle>
                 <SectionSubtitle>Technologies I work with</SectionSubtitle>
             </ContentWrapper>
 
+            {/* skyline row */}
             <SkylineRow>
                 {skyline.map((b) => (
                     <SkillTower
@@ -102,22 +100,22 @@ const Skills = () => {
                 ))}
             </SkylineRow>
 
-            {/* Building Foundation Base */}
+            {/* building foundation base */}
             <BuildingFoundation />
 
-            {/* Upper Sidewalk (above road) */}
+            {/* upper sidewalk (above road) */}
             <UpperSidewalk />
             
-            {/* Road leading to buildings */}
+            {/* road leading to buildings */}
             <Road />
             
-            {/* Harbor water - behind the bridge rail */}
+            {/* harbor water - behind the bridge rail */}
             <HarborWater>
                 <RippleLayer />
             </HarborWater>
             
-            {/* Hot air balloons above the water - distant, over the harbor */}
-            {/* Git - Orange and white */}
+            {/* hot air balloons above the water - distant, over the harbor */}
+            {/* git - orange and white */}
             <HotAirBalloon
                 top="12%"
                 left="81%"
@@ -130,7 +128,7 @@ const Skills = () => {
                 tooltipColor="#F05032"
             />
             
-            {/* Canva - Teal and white/purple */}
+            {/* canva - teal and white/purple */}
             <HotAirBalloon
                 top="5%"
                 left="90%"
@@ -143,7 +141,7 @@ const Skills = () => {
                 tooltipColor="#00C4CC"
             />
             
-            {/* Figma - Multicolor with white */}
+            {/* figma - multicolor with white */}
             <HotAirBalloon
                 top="8%"
                 left="70%"
@@ -156,7 +154,7 @@ const Skills = () => {
                 tooltipColor="#A259FF"
             />
             
-            {/* MS Office - Red, orange, blue, green */}
+            {/* ms office - red, orange, blue, green */}
             <HotAirBalloon
                 top="15%"
                 left="60%"
@@ -169,7 +167,7 @@ const Skills = () => {
                 tooltipColor="#0078D4"
             />
             
-            {/* Floating text section */}
+            {/* floating text section */}
             <FloatingTextContainer>
                 <FloatingText>
                     Across most portfolio sites I've seen, I never saw a skills section that wasn't 
@@ -189,73 +187,78 @@ const Skills = () => {
             </PSNote>
             
             <BridgeRail />
-            {/* Right-side bridge group (unified) */}
+            {/* right-side bridge group (unified) */}
             
-            {/* Lower Sidewalk (below road) */}
+            {/* lower sidewalk (below road) */}
             <LowerSidewalk />
             
-            {/* Grassy Base Layer - left side only */}
+            {/* grassy base layer - left side only */}
             <GrassyBase />
             
-            {/* Ocean rail at bottom of grass */}
+            {/* ocean rail at bottom of grass */}
             <OceanRail />
             
-            {/* Ocean wall below rail - water starts in Background section */}
+            {/* ocean wall below rail - water starts in background section */}
             <OceanWall />
             
         </SkillsContainer>
     );
 };
 
+// export component.
 export default Skills;
 
-/* ================= Styles ================= */
+/* ================= styles ================= */
 
-// Main container - bright blue sky with grassy base and ocean
+// main container - bright blue sky with grassy base and ocean.
 const SkillsContainer = styled.div`
+    /* layout */
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    overflow-x: hidden;
-    
-    /* Smooth transition from Projects ending to bright sky with grassy base */
-    background: linear-gradient(to bottom,
-        rgb(71, 160, 238) 0%,      /* Match Projects ending exactly */
-        rgb(75, 165, 240) 5%,      /* Slight brightening */
-        rgb(80, 170, 242) 10%,     /* Continue brightening */
-        rgb(85, 175, 244) 15%,     /* Getting lighter */
-        rgb(90, 180, 246) 20%,     /* Light sky blue */
-        rgb(95, 185, 248) 25%,     /* Brighter */
-        rgb(100, 190, 250) 30%,    /* Even brighter */
-        rgb(105, 195, 252) 35%,    /* Very bright */
-        rgb(110, 200, 254) 40%,    /* Brightest */
-        rgb(115, 205, 255) 45%,    /* Peak brightness */
-        rgb(120, 210, 255) 50%,    /* Maintain peak */
-        rgb(125, 215, 255) 55%,    /* Still bright */
-        rgb(130, 220, 255) 60%,    /* Keep bright */
-        rgb(135, 225, 255) 65%,    /* Very light */
-        rgb(140, 230, 255) 70%,    /* Start transition */
-        rgb(135, 225, 250) 75%,    /* Slight shift */
-        rgb(130, 220, 245) 80%,    /* Transition begins */
-        rgb(125, 215, 240) 85%,    /* Getting deeper */
-        rgb(120, 210, 235) 90%,    /* Transition to base */
-        rgb(115, 205, 230) 95%,    /* Near base */
-        rgb(110, 200, 225) 100%);  /* Base blue */
-    
-    width: 100%;
-    padding: 4rem 2rem;
-    padding-top: 0;
     position: relative;
     overflow: hidden;
+    overflow-x: hidden;
     
+    /* spacing */
+    width: 100%;
+    min-height: 100vh;
+    padding: 4rem 2rem;
+    padding-top: 0;
+    
+    /* styles */
+    background: linear-gradient(to bottom,
+        rgb(71, 160, 238) 0%,
+        rgb(75, 165, 240) 5%,
+        rgb(80, 170, 242) 10%,
+        rgb(85, 175, 244) 15%,
+        rgb(90, 180, 246) 20%,
+        rgb(95, 185, 248) 25%,
+        rgb(100, 190, 250) 30%,
+        rgb(105, 195, 252) 35%,
+        rgb(110, 200, 254) 40%,
+        rgb(115, 205, 255) 45%,
+        rgb(120, 210, 255) 50%,
+        rgb(125, 215, 255) 55%,
+        rgb(130, 220, 255) 60%,
+        rgb(135, 225, 255) 65%,
+        rgb(140, 230, 255) 70%,
+        rgb(135, 225, 250) 75%,
+        rgb(130, 220, 245) 80%,
+        rgb(125, 215, 240) 85%,
+        rgb(120, 210, 235) 90%,
+        rgb(115, 205, 230) 95%,
+        rgb(110, 200, 225) 100%);
+    
+    /* media queries */
     @media (max-width: 1600px) {
         padding-top: 4rem; /* More top padding to prevent title/subtitle cutoffs */
         min-height: 95vh; /* Slightly reduce height */
     }
 `;
 
-// atmosphere layer for visual elements
+// atmosphere layer for visual elements.
 const AtmosphereLayer = styled.div`
+    /* layout */
     position: absolute;
     top: 0;
     left: 0;
@@ -266,8 +269,9 @@ const AtmosphereLayer = styled.div`
     overflow: hidden;
 `;
 
-// Cloud layer container for horizontal moving clouds
+// cloud layer container for horizontal moving clouds.
 const CloudLayer = styled.div`
+    /* layout */
     position: absolute;
     top: 0;
     left: 0;
@@ -278,15 +282,20 @@ const CloudLayer = styled.div`
     overflow: hidden;
 `;
 
-// Soft gradient at the top to blend the seam from Projects into Skills
+// soft gradient at the top to blend the seam from projects into skills.
 const TopSeamFade = styled.div`
+    /* layout */
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 16vh;
     z-index: 2;
     pointer-events: none;
+    
+    /* spacing */
+    height: 16vh;
+    
+    /* styles */
     background: linear-gradient(
         to bottom,
         rgba(71, 160, 238, 1) 0%,
@@ -303,42 +312,25 @@ const TopSeamFade = styled.div`
     }
 `;
 
-// Distant cloud animation
-const cloudDrift = keyframes`
-    0% { transform: translateX(0); }
-    100% { transform: translateX(20px); }
-`;
-
-const DistantCloud = styled.div`
-    position: absolute;
-    top: ${props => props.top};
-    left: ${props => props.left};
-    width: 200px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    filter: blur(15px);
-    animation: ${cloudDrift} 25s ease-in-out infinite alternate;
-    animation-delay: ${props => props.delay};
-    opacity: 0.6;
-`;
-
-
-// Content wrapper
+// content wrapper.
 const ContentWrapper = styled.div`
+    /* layout */
     position: relative;
-    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    z-index: 2;
+    
+    /* spacing */
+    width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    width: 100%;
+    padding: 2rem;
     
+    /* media queries */
     @media (max-width: 1600px) {
         padding: 1.5rem;
-        margin-top: -0.5rem; /* Move title up a bit */
+        margin-top: -0.5rem;
     }
     
     @media (max-width: 1200px) {
@@ -346,86 +338,104 @@ const ContentWrapper = styled.div`
     }
 `;
 
-// Section title
+// section title.
 const SectionTitle = styled.h1`
+    /* layout */
+    text-align: center;
+    margin: 0;
+    
+    /* styles */
     font-size: 6rem;
     font-weight: 900;
+    text-shadow: 0 4px 20px rgba(255, 150, 50, 0.3);
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.95) 0%,
         rgba(255, 200, 100, 0.9) 50%,
         rgba(255, 150, 50, 0.95) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-align: center;
-    margin: 0;
-    text-shadow: 0 4px 20px rgba(255, 150, 50, 0.3);
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	-webkit-background-clip: text;
     
+    /* media queries */
     @media (max-width: 1600px) {
         font-size: 4rem;
     }
 `;
 
-// Section subtitle
+// section subtitle.
 const SectionSubtitle = styled.h2`
-    font-size: 2rem;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    /* layout */
     text-align: center;
-    font-style: italic;
     margin: 0;
     margin-top: 0.5rem;
     margin-bottom: 3rem;
+    
+    /* styles */
+    font-size: 2rem;
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
     text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
     
+    /* media queries */
     @media (max-width: 1600px) {
         font-size: 1.5rem;
         margin-bottom: 2.5rem;
     }
 `;
 
-// Road below sidewalk with perspective
+// road below sidewalk with perspective.
 const Road = styled.div`
+    /* layout */
     position: absolute;
     bottom: 11.5%;
     left: 0;
+    transform: translateX(-7.5%);
+    z-index: 2;
+    
+    /* spacing */
     width: 120%;
     height: 3rem;
-    z-index: 2;
-
-    transform: translateX(-7.5%);
     
-    @media (max-width: 1600px) {
-        bottom: 12.5%; /* Move down to maintain spacing */
-        height: 2.5rem; /* Slightly smaller */
-    }
-    
-    /* Road surface with perspective */
+    /* road surface */
     &::before {
+        /* layout */
         content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
+        
+        /* spacing */
         height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
         background: linear-gradient(to top,
             rgb(60, 60, 60) 0%,      /* Dark asphalt */
             rgb(80, 80, 80) 30%,    /* Medium gray */
             rgb(100, 100, 100) 60%, /* Lighter gray */
             rgb(120, 120, 120) 100% /* Light gray */
         );
-        transform: perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
     }
     
-    /* Center line markings with perspective */
+    /* center line markings */
     &::after {
+        /* layout */
         content: '';
         position: absolute;
         bottom: 45%;
         left: 0;
         right: 0;
-        height: 2px; 
+        
+        /* spacing */
+        height: 2px;
+        
+        /* styles */
+        opacity: 0.8;
+        transform: translateX(-2.5%) perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
         background: repeating-linear-gradient(
             90deg,
             transparent 0px,
@@ -433,111 +443,134 @@ const Road = styled.div`
             rgb(255, 255, 255) 20px,
             rgb(255, 255, 255) 40px
         );
-        transform: translateX(-2.5%) perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
-        opacity: 0.8;
     }
-`;
-
-const SkylineRow = styled.div`
-  position: absolute;
-  bottom: 17%;
-  left: 0;
-  width: 60%;  /* Match sidewalk width */
-  height: px;  /* Tall enough for scaled-up buildings */
-  
-  /* Buildings position themselves absolutely within this container */
-  z-index: 1.5;
-  
-  @media (max-width: 1600px) {
-    left: -5%;
-    bottom: 18.5%; /* Move down slightly to prevent cutoffs */
-    transform: scale(0.82); /* Scale both width and height proportionally to maintain aspect ratio */
-    transform-origin: bottom center; /* Scale from bottom center */
-    z-index: 3; /* Higher z-index to ensure buildings stay above foundation and water with transform stacking context */
-  }
-`;
-
-// Building Foundation - base for buildings to sit on
-const BuildingFoundation = styled.div`
-  position: absolute;
-  bottom: 16%;
-  left: 0;
-  width: 59.25%;
-  height: 1.5rem;
-  z-index: 2;
-  
-  transform: translateX(-10.5%);
-  
-  @media (max-width: 1600px) {
-    bottom: 17.5%; /* Move down proportionally with skyline */
-    width: 40%; /* Slightly narrower */
-  }
-  
-  /* Foundation surface with depth */
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background: linear-gradient(to top,
-      rgb(80, 80, 85) 0%,      /* Dark concrete base */
-      rgb(95, 95, 100) 25%,    /* Medium dark */
-      rgb(110, 110, 115) 50%,  /* Medium */
-      rgb(125, 125, 130) 75%,  /* Medium light */
-      rgb(140, 140, 145) 100%  /* Light concrete top */
-    );
-    transform: perspective(150px) rotateX(15deg);
-    transform-origin: bottom;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Foundation edge detail - brick/block pattern */
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background: repeating-linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.08) 0px,
-      rgba(0, 0, 0, 0.08) 2px,
-      transparent 2px,
-      transparent 30px
-    );
-    transform: perspective(150px) rotateX(15deg);
-    transform-origin: bottom;
-  }
-`;
-
-// Grassy base layer for buildings with perspective (shrunk for ocean)
-const GrassyBase = styled.div`
-    position: absolute;
-    bottom: 7%;
-    left: 0;
-    width: 120%;
-    height: 2rem;
-    z-index: 4;
-
-    transform: translateX(-7.5%);
     
+    /* media queries */
     @media (max-width: 1600px) {
-        bottom: 8%; /* Move down proportionally */
-        height: 1.75rem; /* Slightly smaller */
+        bottom: 12.5%; /* Move down to maintain spacing */
+        height: 2.5rem; /* Slightly smaller */
     }
+`;
+
+// skyline row.
+const SkylineRow = styled.div`
+    /* layout */
+    position: absolute;
+    bottom: 17%;
+    left: 0;
+    z-index: 1.5;
     
-    /* Grass surface with perspective and multi-layer texture */
+    /* spacing */
+    width: 60%;  /* Match sidewalk width */
+    height: px;  /* Tall enough for scaled-up buildings */
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        left: -5%;
+        bottom: 18.5%; /* Move down slightly to prevent cutoffs */
+        transform: scale(0.82); /* Scale both width and height proportionally to maintain aspect ratio */
+        transform-origin: bottom center; /* Scale from bottom center */
+        z-index: 3; /* Higher z-index to ensure buildings stay above foundation and water with transform stacking context */
+    }
+`;
+
+// building foundation - base for buildings to sit on.
+const BuildingFoundation = styled.div`
+    /* layout */
+    position: absolute;
+    bottom: 16%;
+    left: 0;
+    transform: translateX(-10.5%);
+    z-index: 2;
+    
+    /* spacing */
+    width: 59.25%;
+    height: 1.5rem;
+    
+    /* foundation surface */
     &::before {
+        /* layout */
         content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
+        
+        /* spacing */
         height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(to top,
+            rgb(80, 80, 85) 0%,      /* Dark concrete base */
+            rgb(95, 95, 100) 25%,    /* Medium dark */
+            rgb(110, 110, 115) 50%,  /* Medium */
+            rgb(125, 125, 130) 75%,  /* Medium light */
+            rgb(140, 140, 145) 100%  /* Light concrete top */
+        );
+    }
+    
+    /* foundation edge detail */
+    &::after {
+        /* layout */
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        
+        /* spacing */
+        height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
+        background: repeating-linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.08) 0px,
+            rgba(0, 0, 0, 0.08) 2px,
+            transparent 2px,
+            transparent 30px
+        );
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        bottom: 17.5%; /* Move down proportionally with skyline */
+        width: 40%; /* Slightly narrower */
+    }
+`;
+
+// grassy base layer for buildings (shrunk for ocean).
+const GrassyBase = styled.div`
+    /* layout */
+    position: absolute;
+    bottom: 7%;
+    left: 0;
+    transform: translateX(-7.5%);
+    z-index: 4;
+    
+    /* spacing */
+    width: 120%;
+    height: 2rem;
+    
+    /* grass surface */
+    &::before {
+        /* layout */
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        
+        /* spacing */
+        height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
         background: 
             /* Base color gradient */
             linear-gradient(to top,
@@ -548,18 +581,25 @@ const GrassyBase = styled.div`
                 rgb(80, 180, 80) 80%,    /* Light green */
                 rgb(90, 190, 90) 100%   /* Very light green */
             );
-        transform: perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
     }
     
-    /* Multi-layered grass texture with perspective */
+    /* multi-layered grass texture */
     &::after {
+        /* layout */
         content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
+        
+        /* spacing */
         height: 100%;
+        
+        /* styles */
+        opacity: 0.85;
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
+        mix-blend-mode: multiply;
         background: 
             /* Fine vertical grass blades */
             repeating-linear-gradient(
@@ -627,55 +667,133 @@ const GrassyBase = styled.div`
                 rgba(140, 200, 100, 0.12) 0%,
                 transparent 60%
             );
-        transform: perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
-        mix-blend-mode: multiply;
-        opacity: 0.85;
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        bottom: 8%; /* Move down proportionally */
+        height: 1.75rem; /* Slightly smaller */
     }
 `;
 
-// Upper Sidewalk (above road) with perspective
+// upper sidewalk. (above road)
 const UpperSidewalk = styled.div`
+    /* layout */
     position: absolute;
     bottom: 15.5%;
     left: 0;
+    transform: translateX(-10.5%);
+    z-index: 2;
+    
+    /* spacing */
     width: 120%;
     height: 1.25rem;
-    z-index: 2;
-
-    transform: translateX(-10.5%);
     
+    /* sidewalk surface */
+    &::before {
+        /* layout */
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        
+        /* spacing */
+        height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
+        background: linear-gradient(to top,
+            rgb(180, 180, 180) 0%,    /* Light grey sidewalk */
+            rgb(200, 200, 200) 30%,  /* Medium light grey */
+            rgb(220, 220, 220) 60%,  /* Lighter grey */
+            rgb(240, 240, 240) 100%  /* Very light grey */
+        );
+    }
+    
+    /* sidewalk texture */
+    &::after {
+        /* layout */
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        
+        /* spacing */
+        height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 12px,
+            rgba(0, 0, 0, 0.05) 12px,
+            rgba(0, 0, 0, 0.05) 24px
+        );
+    }
+    
+    /* media queries */
     @media (max-width: 1600px) {
         bottom: 16.5%; /* Move down proportionally */
         height: 1.1rem; /* Slightly smaller */
     }
+`;
+
+// lower sidewalk. (below road)
+const LowerSidewalk = styled.div`
+    /* layout */
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    transform: translateX(-5.5%);
+    z-index: 2;
     
-    /* Sidewalk surface with perspective */
+    /* spacing */
+    width: 110%;
+    height: 1.25rem;
+    
+    /* sidewalk surface */
     &::before {
+        /* layout */
         content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
+        
+        /* spacing */
         height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
         background: linear-gradient(to top,
             rgb(180, 180, 180) 0%,    /* Light grey sidewalk */
             rgb(200, 200, 200) 30%,  /* Medium light grey */
             rgb(220, 220, 220) 60%,  /* Lighter grey */
             rgb(240, 240, 240) 100%  /* Very light grey */
         );
-        transform: perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
     }
     
-    /* Sidewalk texture - subtle concrete pattern */
+    /* sidewalk texture */
     &::after {
+        /* layout */
         content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
+        
+        /* spacing */
         height: 100%;
+        
+        /* styles */
+        transform: perspective(150px) rotateX(15deg);
+        transform-origin: bottom;
         background: repeating-linear-gradient(
             90deg,
             transparent 0px,
@@ -683,355 +801,363 @@ const UpperSidewalk = styled.div`
             rgba(0, 0, 0, 0.05) 12px,
             rgba(0, 0, 0, 0.05) 24px
         );
-        transform: perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
     }
-`;
-
-// Lower Sidewalk (below road) with perspective
-const LowerSidewalk = styled.div`
-    position: absolute;
-    bottom: 10%;
-    left: 0;
-    width: 110%;
-    height: 1.25rem;
-    z-index: 2;
-
-    transform: translateX(-5.5%);
     
+    /* media queries */
     @media (max-width: 1600px) {
         bottom: 11%; /* Move down proportionally */
         height: 1.1rem; /* Slightly smaller */
     }
-    
-    /* Sidewalk surface with perspective */
-    &::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background: linear-gradient(to top,
-            rgb(180, 180, 180) 0%,    /* Light grey sidewalk */
-            rgb(200, 200, 200) 30%,  /* Medium light grey */
-            rgb(220, 220, 220) 60%,  /* Lighter grey */
-            rgb(240, 240, 240) 100%  /* Very light grey */
-        );
-        transform: perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
-    }
-    
-    /* Sidewalk texture - subtle concrete pattern */
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background: repeating-linear-gradient(
-            90deg,
-            transparent 0px,
-            transparent 12px,
-            rgba(0, 0, 0, 0.05) 12px,
-            rgba(0, 0, 0, 0.05) 24px
-        );
-        transform: perspective(150px) rotateX(15deg);
-        transform-origin: bottom;
-    }
 `;
 
-// Keyframes for water animations
+// keyframes for water animations.
 const waveScroll = keyframes`
   0%   { background-position: 0 0, 0 0; }
   100% { background-position: -140px 0, -80px 0; }
 `;
 
+// ripple pulse.
 const ripplePulse = keyframes`
   0%   { opacity: 0.30; }
   100% { opacity: 0.55; }
 `;
 
-// Unified harbor water - all layers in same rotated plane
+// unified harbor water.
 const HarborWater = styled.div`
-  position: absolute;
-  right: -50%;
-  bottom: 0;
-  width: 150%;
-  height: 30rem;
-  z-index: 0.5; /* Lower than buildings (z-index: 1.5) and foundation (z-index: 2) */
-  overflow: hidden;
-
-  /* Rotate the whole plane once */
-  transform: perspective(220px) rotateX(12deg) translateZ(0);
-  transform-origin: bottom right;
-  
-  @media (max-width: 1600px) {
-    height: 26rem; /* Slightly smaller */
-  }
-
-  /* Base water fill */
-  background: linear-gradient(to top,
-    #1b517a 0%,
-    #2b6a96 35%,
-    #3b82b1 65%,
-    #61b9e0 100%
-  );
-
-  /* Horizon bloom (soft fade at the top of water) */
-  &::before {
-    content: '';
+    /* layout */
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, transparent 70%, rgba(255, 255, 255, 0.25));
-    pointer-events: none;
-  }
+    right: -50%;
+    bottom: 0;
+    transform: perspective(220px) rotateX(12deg) translateZ(0);
+    transform-origin: bottom right;
+    overflow: hidden;
+    z-index: 0.5; /* Lower than buildings (z-index: 1.5) and foundation (z-index: 2) */
+    
+    /* spacing */
+    width: 150%;
+    height: 30rem;
+    
+    /* styles */
+    background: linear-gradient(to top,
+        #1b517a 0%,
+        #2b6a96 35%,
+        #3b82b1 65%,
+        #61b9e0 100%
+    );
+    
+    /* horizon bloom */
+    &::before {
+        /* layout */
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        
+        /* styles */
+        background: linear-gradient(to top, transparent 70%, rgba(255, 255, 255, 0.25));
+    }
 
-  /* Shimmer stripes that move via background-position */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 42px),
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 66px);
-    mix-blend-mode: screen;
-    opacity: 0.35;
-    animation: ${waveScroll} 12s linear infinite;
-    will-change: background-position;
-  }
+    /* shimmer stripes */
+    &::after {
+        /* layout */
+        content: '';
+        position: absolute;
+        inset: 0;
+        
+        /* styles */
+        opacity: 0.35;
+        will-change: background-position;
+        mix-blend-mode: screen;
+        animation: ${waveScroll} 12s linear infinite;
+        background:
+            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 42px),
+            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 66px);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        height: 26rem; /* Slightly smaller */
+    }
 `;
 
-// Ripple layer - sits inside the rotated plane
+// ripple layer. (sits inside the rotated plane)
 const RippleLayer = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0.5; /* Inherit from parent container context */
-  /* Soft oval ripples at various positions */
-  background:
-    radial-gradient(40px 20px at 20% 65%, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.08) 45%, transparent 70%),
-    radial-gradient(55px 25px at 48% 50%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.07) 40%, transparent 70%),
-    radial-gradient(34px 18px at 70% 60%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.06) 30%, transparent 70%);
-  mix-blend-mode: screen;
-  mask-image: linear-gradient(to top, black 60%, transparent 95%); /* fade near horizon */
-  animation: ${ripplePulse} 5s ease-in-out infinite alternate;
+    /* layout */
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0.5; /* Inherit from parent container context */
+    
+    /* styles */
+    mix-blend-mode: screen;
+    mask-image: linear-gradient(to top, black 60%, transparent 95%); /* fade near horizon */
+    animation: ${ripplePulse} 5s ease-in-out infinite alternate;
+    background:
+        radial-gradient(40px 20px at 20% 65%, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.08) 45%, transparent 70%),
+        radial-gradient(55px 25px at 48% 50%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.07) 40%, transparent 70%),
+        radial-gradient(34px 18px at 70% 60%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.06) 30%, transparent 70%);
 `;
 
-/* Compact guardrail with posts, sharing the same slant */
+// compact guardrail with posts, sharing the same slant.
 const BridgeRail = styled.div`
-  position: absolute;
-  right: 0%;
-  bottom: 17%;
-  width: 50%;
-  height: 1.5rem;
-  z-index: 1;
-  
-  @media (max-width: 1600px) {
-    bottom: 18.5%; /* Move down proportionally */
-    width: 59%;
-  }
-
-  /* posts */
-  background:
-    repeating-linear-gradient(
-      90deg, 
-      transparent 0 16px,
-      rgba(85,85,90,.95) 16px 20px
-    );
-
-  /* two rails */
-  &::after {
-    content:'';
+    /* layout */
     position: absolute;
-    left: 0; right: 0;
-    top: 3px;
-    height: 3px;
-    background: #6b6b70;
-    box-shadow: 0 9px 0 #6b6b70; /* lower rail */
-    clip-path: inherit;
-  }
+    right: 0%;
+    bottom: 17%;
+    z-index: 1;
+    
+    /* spacing */
+    width: 50%;
+    height: 1.5rem;
+    
+    /* styles */
+    background:
+        repeating-linear-gradient(
+            90deg, 
+            transparent 0 16px,
+            rgba(85,85,90,.95) 16px 20px
+        );
+    
+    /* two rails */
+    &::after {
+        /* layout */
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 3px;
+        
+        /* spacing */
+        height: 3px;
+        
+        /* styles */
+        clip-path: inherit;
+        background: #6b6b70;
+        box-shadow: 0 9px 0 #6b6b70; /* lower rail */
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        bottom: 18.5%; /* Move down proportionally */
+        width: 59%;
+    }
 `;
 
-// Floating Text Container (no card background)
+// floating text container.
 const FloatingTextContainer = styled.div`
-  position: absolute;
-  top: 34%;
-  right: 5%;
-  width: 33%;
-  max-width: 45%;
-  z-index: 5;
-  @media (max-width: 1600px) {
-    top: 34%; /* Move up slightly to prevent overlap */
-    width: 36%; /* Slightly narrower */
-  }
+    /* layout */
+    position: absolute;
+    top: 34%;
+    right: 5%;
+    z-index: 5;
+    
+    /* spacing */
+    width: 33%;
+    max-width: 45%;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        top: 34%; /* Move up slightly to prevent overlap */
+        width: 36%; /* Slightly narrower */
+    }
 `;
 
+// floating text for explaining skills.
 const FloatingText = styled.p`
-  margin: 0 0 18px 0;
-  font-size: 1.25rem;
-  line-height: 1.7;
-  color: rgb(255, 255, 255);
-  text-align: right;
-  text-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.6),
-    0 4px 8px rgba(0, 0, 0, 0.4);
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
-  
-  @media (max-width: 1600px) {
-    font-size: 1.1rem; /* Reduced font size */
-    line-height: 1.6; /* Tighter line height */
-    margin: 0 0 14px 0; /* Reduced spacing */
-  }
-  
-  em {
-    font-style: italic;
-    font-weight: 700;
-    color: #ffffff;
+    /* layout */
+    text-align: right;
+    margin: 0 0 18px 0;
+    
+    /* styles */
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: rgb(255, 255, 255);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
     text-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.7),
-      0 4px 8px rgba(0, 0, 0, 0.5),
-      0 0 20px rgba(0, 0, 0, 0.4);
-  }
-  
-  strong {
-    font-weight: 700;
-  }
+        0 2px 4px rgba(0, 0, 0, 0.6),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+    
+    em {
+        font-style: italic;
+        font-weight: 700;
+        color: #ffffff;
+        text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.7),
+            0 4px 8px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    strong {
+        font-weight: 700;
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: 1.1rem; /* Reduced font size */
+        line-height: 1.6; /* Tighter line height */
+        margin: 0 0 14px 0; /* Reduced spacing */
+    }
 `;
 
+// little ps note at bottom.
 const PSNote = styled.p`
-  position: absolute;
-  top: 60%;
-  right: 5%;
-  width: 30%;
-  max-width: 45%;
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.7;
-  color: rgb(255, 255, 255);
-  text-align: right;
-  font-style: italic;
-  z-index: 5;
-  text-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.6),
-    0 4px 8px rgba(0, 0, 0, 0.4);
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
-  
-  @media (max-width: 1600px) {
-    top: 62%; /* Move up to prevent overlap */
-    width: 28%; /* Slightly narrower */
-    font-size: 0.9rem; /* Reduced font size */
-    line-height: 1.6; /* Tighter line height */
-  }
-  
-  em {
-    font-weight: 700;
+    /* layout */
+    position: absolute;
+    top: 60%;
+    right: 5%;
+    text-align: right;
+    z-index: 5;
+    margin: 0;
+    
+    /* spacing */
+    width: 30%;
+    max-width: 45%;
+    
+    /* styles */
+    font-size: 1rem;
     font-style: italic;
-    color: #ffffff;
+    line-height: 1.7;
+    color: rgb(255, 255, 255);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
     text-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.7),
-      0 4px 8px rgba(0, 0, 0, 0.5),
-      0 0 20px rgba(0, 0, 0, 0.4);
-  }
+        0 2px 4px rgba(0, 0, 0, 0.6),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+    
+    em {
+        font-weight: 700;
+        font-style: italic;
+        color: #ffffff;
+        text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.7),
+            0 4px 8px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        top: 62%; /* Move up to prevent overlap */
+        width: 28%; /* Slightly narrower */
+        font-size: 0.9rem; /* Reduced font size */
+        line-height: 1.6; /* Tighter line height */
+    }
 `;
 
-// Ocean rail at bottom of grassy area
+// ocean rail at bottom of grassy area.
 const OceanRail = styled.div`
-  position: absolute;
-  left: 0;
-  bottom: 7%;
-  width: 100%;
-  height: 1.5rem;
-  z-index: 4;
-  
-  @media (max-width: 1600px) {
-    bottom: 8%; /* Move down proportionally */
-    height: 1.3rem; /* Slightly smaller */
-  }
-
-  /* posts - same style as bridge rail */
-  background:
-    repeating-linear-gradient(
-      90deg, 
-      transparent 0 16px,
-      rgba(85,85,90,.95) 16px 20px
-    );
-
-  /* two rails */
-  &::after {
-    content:'';
+    /* layout */
     position: absolute;
-    left: 0; right: 0;
-    top: 3px;
-    height: 3px;
-    background: #6b6b70;
-    box-shadow: 0 9px 0 #6b6b70; /* lower rail */
-  }
+    left: 0;
+    bottom: 7%;
+    z-index: 4;
+    
+    /* spacing */
+    width: 100%;
+    height: 1.5rem;
+    
+    /* styles */
+    background:
+        repeating-linear-gradient(
+            90deg, 
+            transparent 0 16px,
+            rgba(85,85,90,.95) 16px 20px
+        );
+    
+    /* two rails */
+    &::after {
+        /* layout */
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 3px;
+        
+        /* spacing */
+        height: 3px;
+        
+        /* styles */
+        background: #6b6b70;
+        box-shadow: 0 9px 0 #6b6b70; /* lower rail */
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        bottom: 8%; /* Move down proportionally */
+        height: 1.3rem; /* Slightly smaller */
+    }
 `;
 
-// Stone/concrete ocean wall below rail
+// stone/concrete ocean wall below rail.
 const OceanWall = styled.div`
-  position: absolute;
-  left: 0;
-  bottom: 0%;
-  width: 100%;
-  height: 10%;
-  z-index: 3;
-  
-  @media (max-width: 1600px) {
-    height: 9%; /* Slightly smaller */
-  }
-  
-  /* Stone texture base with gradient - fully opaque */
-  background: 
-    linear-gradient(to bottom,
-      rgb(80, 90, 95) 0%,
-      rgb(70, 80, 85) 20%,
-      rgb(60, 70, 75) 40%,
-      rgb(50, 60, 70) 60%,
-      rgb(40, 55, 65) 80%,
-      rgb(35, 50, 60) 100%
-    );
-  
-  /* Stone block pattern */
-  &::before {
-    content: '';
+    /* layout */
     position: absolute;
-    inset: 0;
-    background-image:
-      /* Horizontal mortar lines */
-      repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        transparent 40px,
-        rgba(30, 30, 35, 0.5) 40px,
-        rgba(30, 30, 35, 0.5) 43px
-      ),
-      /* Vertical mortar lines */
-      repeating-linear-gradient(
-        90deg,
-        transparent 0px,
-        transparent 90px,
-        rgba(30, 30, 35, 0.4) 90px,
-        rgba(30, 30, 35, 0.4) 93px
-      );
-    opacity: 1;
-    mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
-  }
-  
-  /* Stone texture detail */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.12) 0%, transparent 4%),
-      radial-gradient(circle at 45% 35%, rgba(255,255,255,0.08) 0%, transparent 3%),
-      radial-gradient(circle at 70% 55%, rgba(255,255,255,0.1) 0%, transparent 3.5%),
-      radial-gradient(circle at 30% 70%, rgba(0,0,0,0.15) 0%, transparent 4%),
-      radial-gradient(circle at 85% 25%, rgba(0,0,0,0.12) 0%, transparent 3%),
-      radial-gradient(circle at 60% 85%, rgba(255,255,255,0.09) 0%, transparent 3%);
-    opacity: 0.7;
-  }
+    left: 0;
+    bottom: 0%;
+    z-index: 3;
+    
+    /* spacing */
+    width: 100%;
+    height: 10%;
+    
+    /* styles */
+    background: 
+        linear-gradient(to bottom,
+            rgb(80, 90, 95) 0%,
+            rgb(70, 80, 85) 20%,
+            rgb(60, 70, 75) 40%,
+            rgb(50, 60, 70) 60%,
+            rgb(40, 55, 65) 80%,
+            rgb(35, 50, 60) 100%
+        );
+    
+    /* stone block pattern */
+    &::before {
+        /* layout */
+        content: '';
+        position: absolute;
+        inset: 0;
+        
+        /* styles */
+        opacity: 1;
+        mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+        background-image:
+            /* Horizontal mortar lines */
+            repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                transparent 40px,
+                rgba(30, 30, 35, 0.5) 40px,
+                rgba(30, 30, 35, 0.5) 43px
+            ),
+            /* Vertical mortar lines */
+            repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 90px,
+                rgba(30, 30, 35, 0.4) 90px,
+                rgba(30, 30, 35, 0.4) 93px
+            );
+    }
+    
+    /* stone texture detail */
+    &::after {
+        /* layout */
+        content: '';
+        position: absolute;
+        inset: 0;
+        
+        /* styles */
+        opacity: 0.7;
+        background-image:
+            radial-gradient(circle at 15% 20%, rgba(255,255,255,0.12) 0%, transparent 4%),
+            radial-gradient(circle at 45% 35%, rgba(255,255,255,0.08) 0%, transparent 3%),
+            radial-gradient(circle at 70% 55%, rgba(255,255,255,0.1) 0%, transparent 3.5%),
+            radial-gradient(circle at 30% 70%, rgba(0,0,0,0.15) 0%, transparent 4%),
+            radial-gradient(circle at 85% 25%, rgba(0,0,0,0.12) 0%, transparent 3%),
+            radial-gradient(circle at 60% 85%, rgba(255,255,255,0.09) 0%, transparent 3%);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        height: 9%; /* Slightly smaller */
+    }
 `;
