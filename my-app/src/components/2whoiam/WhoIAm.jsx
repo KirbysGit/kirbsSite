@@ -5,8 +5,8 @@
 
 // imports.
 import styled from 'styled-components';
-import { useTypewriter } from '@/hooks/useTypewriter';
-import { CARDS, LONGEST_ROLE_CH } from './cardsData.jsx';
+import { useTypewriter } from '@/components/2whoiam/useTypewriter.js';
+import { CARDS, LONGEST_ROLE_CH } from '../../data/aboutData.jsx';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 // space elements images.

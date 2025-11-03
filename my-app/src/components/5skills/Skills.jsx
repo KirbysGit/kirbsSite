@@ -9,7 +9,7 @@ import styled, { keyframes } from 'styled-components';
 
 // local imports.
 import SkillTower from './SkillTower';
-import { getLogo } from '../Utils/logoMap';
+import { getLogo } from '../utils/logoMap';
 import HotAirBalloon from './HotAirBalloon';
 import { buildingPalettes, buildingMaterialMap, buildings } from './skylineConfig';
 

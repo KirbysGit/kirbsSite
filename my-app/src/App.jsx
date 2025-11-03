@@ -10,17 +10,15 @@ import styled from 'styled-components';
 
 // local imports.
 import Hero from './components/1hero/Hero';
-import WhoIAm from './components/2story/WhoIAm';
-import AExperience from './components/3experience/ActualExperience';
+import WhoIAm from './components/2whoiam/WhoIAm';
+import AExperience from './components/3experience/Experience';
 import Projects from './components/4projects/Projects';
-
-
-import Story from './components/extra/Story';
-import GlobalStyle from './styles/GlobalStyle';
-import CheatSheet from './components/CheatSheet/CheatSheet.jsx';
 import Skills from './components/5skills/Skills.jsx';
-import Background from './components/Background/Background.jsx';
-import LoadingScreen from './components/LoadingScreen/LoadingScreen';
+import About from './components/6about/About.jsx';
+import LoadingScreen from './components/7loading/LoadingScreen';
+
+import GlobalStyle from './styles/GlobalStyle';
+
 
 // Progress UI
 const Progress = styled.div`
@@ -144,26 +142,15 @@ function App() {
             element={
               <>
                 {/* Always mounted and visible - loading screen overlays on top */}
-                {/* <Hero /> */}
-                {/*<WhoIAm /> */}
-                {/*<AExperience />*/}
+                <Hero />
+                <WhoIAm />
+                <AExperience />
                 <Projects />
                 <Skills />
-                {/*<Background />*/}
+                <About />
               </>
             }
           />
-          <Route 
-            path="/story"
-            element={
-              <>
-                <Hero />
-                <Story />
-                <Background />
-              </>
-            }
-          />
-          <Route path="/ui-cheatsheet" element={<CheatSheet />} />
         </Routes>
       </BrowserRouter>
       

@@ -1,41 +1,41 @@
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import shellphone from '../../images/footer/shellphone.png';
+import messageBottle from '../../../images/footer/messagebottle.png';
 
-// Interactive Shell Phone Component with bubble tooltip
-const ShellPhoneWithTooltip = () => {
+// Interactive Message in Bottle Component with bubble tooltip
+const MessageInBottleWithTooltip = () => {
     const [showBubble, setShowBubble] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
-    const phoneNumber = '407-876-8172';
+    const email = 'kirbycolin26@gmail.com';
 
     const handleClick = () => {
         setShowBubble(!showBubble);
     };
 
-    const handleCopyPhone = (e) => {
+    const handleCopyEmail = (e) => {
         e.stopPropagation();
-        navigator.clipboard.writeText(phoneNumber);
+        navigator.clipboard.writeText(email);
         setIsCopied(true);
         
-        // Reset back to copy icon after 4 seconds
+        // Reset back to copy icon after 2 seconds
         setTimeout(() => {
             setIsCopied(false);
         }, 4000);
     };
 
     return (
-        <PhoneContainer onClick={handleClick}>
-            <PhoneImage 
-                style={{ width: '200px', height: '200px' }} 
-                src={shellphone} 
-                alt="Shell Phone - Click for contact"
+        <BottleContainer onClick={handleClick}>
+            <BottleImage 
+                style={{ width: '175px', height: '175px' }} 
+                src={messageBottle} 
+                alt="Message in a Bottle - Click for contact"
                 $isActive={showBubble}
             />
-            <PhoneBubble $show={showBubble}>
-                <PhoneContent>
-                    <BubbleText>{phoneNumber}</BubbleText>
+            <EmailBubble $show={showBubble}>
+                <EmailContent>
+                    <EmailText>{email}</EmailText>
                     <ActionButton 
-                        onClick={handleCopyPhone} 
+                        onClick={handleCopyEmail} 
                         title={isCopied ? "Copied!" : "Copy to clipboard"}
                         $isCopied={isCopied}
                     >
@@ -53,15 +53,15 @@ const ShellPhoneWithTooltip = () => {
                             )}
                         </IconWrapper>
                     </ActionButton>
-                </PhoneContent>
-            </PhoneBubble>
+                </EmailContent>
+            </EmailBubble>
             <BubbleTail1 $show={showBubble} />
             <BubbleTail2 $show={showBubble} />
-        </PhoneContainer>
+        </BottleContainer>
     );
 };
 
-export default ShellPhoneWithTooltip;
+export default MessageInBottleWithTooltip;
 
 /* ================= Styled Components ================= */
 
@@ -108,16 +108,16 @@ const iconScaleIn = keyframes`
   }
 `;
 
-// Phone container
-const PhoneContainer = styled.div`
+// Bottle container
+const BottleContainer = styled.div`
   position: relative;
   cursor: pointer;
   display: inline-block;
   pointer-events: auto;
 `;
 
-// Phone image with hover effect
-const PhoneImage = styled.img`
+// Bottle image with hover effect
+const BottleImage = styled.img`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &:hover {
@@ -132,14 +132,13 @@ const PhoneImage = styled.img`
 `;
 
 // Main bubble tooltip (glassmorphic style like social bubbles)
-const PhoneBubble = styled.div`
+const EmailBubble = styled.div`
   position: absolute;
-  bottom: calc(100% + 40px);
-  left: 55%;
-  transform: translateX(-50%);
+  bottom: 127.5%;
+  left: -75%;  /* Positioned to the left */
   
-  min-width: 230px;
-  padding: 1rem 1.5rem;
+  min-width: 220px;
+  padding: 0.75rem 1rem;
   border-radius: 20px;
   z-index: 2;
   
@@ -197,8 +196,8 @@ const PhoneBubble = styled.div`
   z-index: 100;
 `;
 
-// Phone content container (horizontal layout)
-const PhoneContent = styled.div`
+// Email content container (horizontal layout)
+const EmailContent = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -207,15 +206,13 @@ const PhoneContent = styled.div`
   white-space: nowrap;  /* Prevent text wrapping */
 `;
 
-// Bubble text
-const BubbleText = styled.span`
+// Email text
+const EmailText = styled.span`
   display: block;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.95);
-  letter-spacing: 0.5px;
-  position: relative;
-  z-index: 1;
+  letter-spacing: 0.3px;
   flex: 1;
   
   /* Text shadow for readability */
@@ -263,13 +260,12 @@ const IconWrapper = styled.div`
 `;
 
 // Bubble tail - first circle (larger, closer to main bubble)
-// Positioned to create trail from phone upward and to the right
-// Matching social bubble glossy style
+// Positioned to create trail on the RIGHT side (between main bubble and bottle)
 const BubbleTail1 = styled.div`
   position: absolute;
   bottom: calc(100% + 12px);  /* Just below the main bubble */
   left: 50%;
-  transform: translateX(-30%);  /* Slightly offset to the left */
+  transform: translateX(20%);  /* Offset to the RIGHT */
   
   width: 24px;
   height: 24px;
@@ -343,13 +339,12 @@ const BubbleTail1 = styled.div`
 `;
 
 // Bubble tail - second circle (smaller, further from main bubble)
-// Positioned between phone and first tail bubble
-// Matching social bubble glossy style
+// Positioned between bottle and first tail bubble (RIGHT side, closest to bottle)
 const BubbleTail2 = styled.div`
   position: absolute;
-  bottom: calc(100% - 12px);  /* Between phone and first tail */
+  bottom: calc(100% - 12px);  /* Between bottle and first tail */
   left: 50%;
-  transform: translateX(-60%);  /* More offset to the left */
+  transform: translateX(50%);  /* More offset to the RIGHT */
   
   width: 14px;
   height: 14px;

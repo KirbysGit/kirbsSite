@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { loadStarsPreset } from 'tsparticles-preset-stars';
 
 // Local Imports.
-import experience from '../../data/experience'
+import experience from '../../data/extra/experience'
 import MemoExperienceCard from './TimelineRow';
 
 const Experience = () => {

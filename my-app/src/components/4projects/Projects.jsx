@@ -21,6 +21,7 @@ import Cloud from '../3experience/Cloud';
 // sun component from experience.
 import Sun from './Sun';
 
+// main projects component.
 const Projects = () => { 
 
 	// memo for cards.

@@ -1,16 +1,11 @@
+// useTypewriter.js
+
+// custom hook for typewriter effect with precise control.
+
+// imports.
 import { useEffect, useRef, useState } from 'react';
 
-/**
- * Custom hook for typewriter effect with precise control
- * @param {string} text - The text to type/delete
- * @param {object} options - Configuration options
- * @param {number} options.typeMs - Milliseconds per character when typing (default 70)
- * @param {number} options.deleteMs - Milliseconds per character when deleting (default 45)
- * @param {boolean} options.start - Whether to start the animation (default true)
- * @param {string} options.mode - Current phase: 'type' | 'delete' | 'idle' (default 'type')
- * @param {function} options.onDone - Callback when a phase completes
- * @returns {object} - { out: string, phase: string, setPhase: function, resetTo: function }
- */
+// useTypewriter hook.
 export function useTypewriter(
     text,
     {
@@ -21,56 +16,63 @@ export function useTypewriter(
         onDone,
     } = {}
 ) {
+    // state variables.
     const [out, setOut] = useState('');
     const [phase, setPhase] = useState(mode);
 
-    const iRef = useRef(0);                // current char index
-    const tRef = useRef(null);
-    const phaseRef = useRef(phase);        // prevent stale timers
-    const textRef = useRef(text);
+    // refs.
+    const iRef = useRef(0);                 // current char index.
+    const tRef = useRef(null);              // timer reference.
+    const phaseRef = useRef(phase);         // prevent stale timers.
+    const textRef = useRef(text);           // text reference.
 
-    // Remember the target text
+    // remember the target text.
     useEffect(() => {
         textRef.current = text;
     }, [text]);
 
-    // Update phaseRef and initialize when entering a phase
+    // update phaseRef and initialize when entering a phase.
     useEffect(() => {
         phaseRef.current = phase;
 
+        // if the phase is type, initialize the current char index to 0.
         if (phase === 'type') {
             iRef.current = 0;
             setOut('');
+            // if the phase is delete, initialize the current char index to the length of the text.
         } else if (phase === 'delete') {
             iRef.current = out.length || textRef.current.length;
+            // if the output length is 0, set the output to the text.
             if (out.length === 0) setOut(textRef.current);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [phase]); // intentionally not including `out` to avoid double-executions
+    }, [phase]); // intentionally not including `out` to avoid double-executions.
 
-    // Clear timers on unmount
+    // clear timers on unmount.
     useEffect(() => () => { if (tRef.current) clearTimeout(tRef.current); }, []);
 
     useEffect(() => {
-        // Check for reduced motion preference
+        // check for reduced motion preference.
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         if (!start || phase === 'idle') {
+            // if the phase is idle, set the output to the text.
             if (prefersReducedMotion && phase === 'type' && !out) {
                 setOut(text);
                 onDone?.('type');
+            } else {
+                return;
             }
-            return;
         }
 
+        // step function.
         const step = () => {
-            if (phaseRef.current !== phase) return; // phase changed; abort this cycle
+            if (phaseRef.current !== phase) return; // phase changed; abort this cycle.
 
             if (phase === 'type') {
                 const target = textRef.current;
                 if (iRef.current < target.length) {
                     if (prefersReducedMotion) {
-                        // Show all at once for reduced motion
+                        // show all at once for reduced motion.
                         setOut(target);
                         iRef.current = target.length;
                         onDone?.('type');
@@ -88,7 +90,7 @@ export function useTypewriter(
             if (phase === 'delete') {
                 if (iRef.current > 0) {
                     if (prefersReducedMotion) {
-                        // Clear instantly for reduced motion
+                        // clear instantly for reduced motion.
                         setOut('');
                         iRef.current = 0;
                         onDone?.('delete');
@@ -104,19 +106,21 @@ export function useTypewriter(
             }
         };
 
-        // Kill any previous timer before starting a new cycle
+        // kill any previous timer before starting a new cycle.
         if (tRef.current) clearTimeout(tRef.current);
         tRef.current = window.setTimeout(step, phase === 'type' ? typeMs : deleteMs);
 
-        // Also clear if deps change
+        // also clear if deps change.
         return () => { if (tRef.current) clearTimeout(tRef.current); };
     }, [start, phase, typeMs, deleteMs, onDone, out]);
 
+    // reset to function.
     const resetTo = (s) => {
         iRef.current = s.length;
         setOut(s);
     };
 
+    // return the output, phase, setPhase, and resetTo functions.
     return { out, phase, setPhase, resetTo };
 }
 

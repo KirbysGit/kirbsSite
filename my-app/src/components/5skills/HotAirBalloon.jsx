@@ -233,7 +233,7 @@ const Wrap = styled.div`
     }
 `;
 
-/* Tooltip fade-in animation */
+/* tooltip fade-in animation */
 const tooltipFadeIn = keyframes`
   0% {
     opacity: 0;
@@ -248,7 +248,7 @@ const tooltipFadeIn = keyframes`
   }
 `;
 
-/* Tooltip that appears on hover - positioned below basket */
+/* tooltip that appears on hover - positioned below basket */
 const Tooltip = styled.div`
     /* layout */
     position: absolute;
@@ -318,7 +318,7 @@ const Tooltip = styled.div`
     }
 `;
 
-/* SVG Balloon wrapper */
+/* svg balloon wrapper */
 const SvgWrap = styled.svg`
     /* layout */
     position: absolute;
@@ -329,7 +329,7 @@ const SvgWrap = styled.svg`
     z-index: 3;
 `;
 
-/* Logo overlay on balloon */
+/* logo overlay on balloon */
 const LogoOverlay = styled.div`
     /* layout */
     position: absolute;
@@ -357,7 +357,7 @@ const LogoImage = styled.img`
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
 `;
 
-/* Metal attachment ring */
+/* metal attachment ring */
 const AttachmentRing = styled.div`
     /* layout */
     position: absolute;
@@ -392,7 +392,7 @@ const AttachmentRing = styled.div`
     }
 `;
 
-/* SVG rigging container */
+/* svg rigging container */
 const RiggingSvg = styled.svg`
     /* layout */
     position: absolute;
@@ -404,134 +404,7 @@ const RiggingSvg = styled.svg`
     height: auto;
 `;
 
-/* Burner flame animation */
-const flicker = keyframes`
-  0%, 100% { 
-    transform: translateX(-50%) scaleY(0.94) scaleX(0.98);
-    opacity: 0.96;
-  }
-  40% { 
-    transform: translateX(-50%) scaleY(1.08) scaleX(1.02);
-    opacity: 1;
-  }
-  70% { 
-    transform: translateX(-50%) scaleY(1.0) scaleX(1.0);
-    opacity: 0.98;
-  }
-`;
-
-/* Burner cage with 3D depth */
-const BurnerCage = styled.div`
-    /* layout */
-    position: absolute;
-    left: 50%;
-    top: ${({ $w }) => Math.round($w * 1.20)}px;
-    transform: translateX(-50%);
-    overflow: visible;
-    z-index: 3;
-    
-    /* spacing */
-    width: ${({ $w }) => Math.round($w * 0.16)}px;
-    height: ${({ $w }) => Math.round($w * 0.12)}px;
-    
-    /* styles */
-    border: 1.5px solid rgba(30, 30, 35, 0.6);
-    border-radius: 2px;
-    background: linear-gradient(180deg, #9ca5af, #6b747e);
-    box-shadow:
-        0 3px 8px rgba(0, 0, 0, 0.4),
-        inset 0 2px 4px rgba(255, 255, 255, 0.3),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
-    
-    /* grill pattern */
-    &::before {
-        /* layout */
-        content: '';
-        position: absolute;
-        left: 3px;
-        right: 3px;
-        top: 3px;
-        bottom: 3px;
-        
-        /* styles */
-        background: 
-            repeating-linear-gradient(0deg,
-                rgba(30, 30, 35, 0.4) 0px,
-                rgba(30, 30, 35, 0.4) 1px,
-                transparent 1px,
-                transparent 4px
-            );
-    }
-`;
-
-/* Cage depth - side panels */
-const CageDepth = styled.div`
-    /* left side panel */
-    &::before {
-        /* layout */
-        content: '';
-        position: absolute;
-        left: -2px;
-        top: 0;
-        bottom: 0;
-        
-        /* spacing */
-        width: 3px;
-        
-        /* styles */
-        border-left: 1px solid rgba(30, 30, 35, 0.6);
-        background: linear-gradient(90deg, #4a5259, #6b747e);
-    }
-    
-    /* right side panel */
-    &::after {
-        /* layout */
-        content: '';
-        position: absolute;
-        right: -2px;
-        top: 0;
-        bottom: 0;
-        
-        /* spacing */
-        width: 3px;
-        
-        /* styles */
-        border-right: 1px solid rgba(30, 30, 35, 0.6);
-        background: linear-gradient(90deg, #6b747e, #4a5259);
-    }
-`;
-
-/* Flame inside burner */
-const FlameCore = styled.div`
-    /* layout */
-    position: absolute;
-    left: 50%;
-    top: -2px;
-    transform: translateX(-50%);
-    
-    /* spacing */
-    width: 70%;
-    height: 120%;
-    
-    /* styles */
-    border-radius: 50% 50% 48% 48% / 55% 55% 45% 45%;
-    filter: blur(0.3px);
-    background:
-        radial-gradient(ellipse 50% 65% at 50% 30%, 
-            #ffffff 0%, 
-            #ffeb99 18%,
-            #ffc44d 38%, 
-            #ff9920 62%, 
-            #ff6600 88%,
-            #cc4400 100%
-        );
-    box-shadow: 
-        0 0 16px rgba(255, 140, 30, 0.8),
-        0 0 8px rgba(255, 200, 100, 0.6);
-    animation: ${flicker} 360ms ease-in-out infinite;
-`;
-
-/* Wicker basket with depth */
+/* wicker basket with depth */
 const Basket = styled.div`
     /* layout */
     position: absolute;
@@ -600,7 +473,7 @@ const Basket = styled.div`
     }
 `;
 
-/* Basket rim/lip */
+/* basket rim/lip */
 const BasketLip = styled.div`
     /* layout */
     position: absolute;

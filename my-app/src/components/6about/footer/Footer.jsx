@@ -2,19 +2,19 @@ import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 
 // Footer images
-import rockpileImage from '../../images/footer/rockpile.png';
-import bluecoral from '../../images/footer/bluecoral.png';
-import flatrock from '../../images/footer/flatrock.png';
-import orangecoral from '../../images/footer/orangecoral.png';
-import pinkcoral from '../../images/footer/pinkcoral.png';
-import rockwithseaweed from '../../images/footer/rockwithseaweed.png';
-import seaweed from '../../images/footer/seaweed.png';
-import seaweed2 from '../../images/footer/seaweed2.png';
-import seaweed3 from '../../images/footer/seaweed3.png';
-import tallrock from '../../images/footer/tallrock.png';
-import yellowcoral from '../../images/footer/yellowcoral.png';
-import purplecoral from '../../images/footer/purplecoral.png';
-import rocket from '../../images/footer/rocket.png';
+import rockpileImage from '../../../images/footer/rockpile.png';
+import bluecoral from '../../../images/footer/bluecoral.png';
+import flatrock from '../../../images/footer/flatrock.png';
+import orangecoral from '../../../images/footer/orangecoral.png';
+import pinkcoral from '../../../images/footer/pinkcoral.png';
+import rockwithseaweed from '../../../images/footer/rockwithseaweed.png';
+import seaweed from '../../../images/footer/seaweed.png';
+import seaweed2 from '../../../images/footer/seaweed2.png';
+import seaweed3 from '../../../images/footer/seaweed3.png';
+import tallrock from '../../../images/footer/tallrock.png';
+import yellowcoral from '../../../images/footer/yellowcoral.png';
+import purplecoral from '../../../images/footer/purplecoral.png';
+import rocket from '../../../images/footer/rocket.png';
 
 // Interactive components
 import ShellPhoneWithTooltip from './ShellPhone';
@@ -41,7 +41,7 @@ const Footer = () => {
             <SandPlane />
             
             <SandTextLayer>
-                {/* Contact Me – sits near the bottom center (adjusted for perspective) */}
+                
                 <SandText
                     style={{ left: '94.25%', bottom: '-87%', fontSize: '2.25rem', fontWeight: 700 }}
                     data-text="Contact Me!"
@@ -50,30 +50,29 @@ const Footer = () => {
                 </SandText>
                 
 
-                {/* To The Moon – just below the rocket (adjusted for perspective) */}
+                
                 <SandText
                     style={{ left: '96%', bottom: '-47.5%', fontSize: '1.3rem', fontWeight: 500 }}
                     data-text="To The Moon!"
                 >
-                    To The Moon!
+                    Back To Top!
                 </SandText>
 
-                {/* Email icon near the bottle (adjusted for perspective) */}
+                
                 <SandIconWrap style={{ left: '42%', bottom: '-10%' }}>
                     <SandIcon width="40" height="40" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M3 6h18v12H3zM3 6l9 6 9-6" />
                     </SandIcon>
                 </SandIconWrap>
 
-                {/* Phone icon near the shell phone (adjusted for perspective) */}
+                
                 <SandIconWrap style={{ left: '58%', bottom: '-10%' }}>
                     <SandIcon width="40" height="40" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M6.6 10.8c1.5 2.9 3.8 5.1 6.7 6.6l2.2-2.2c.3-.3.7-.4 1.1-.2a13 13 0 003.6.6c.6 0 1 .5 1 1V20a1 1 0 01-1 1c-9.4 0-17-7.6-17-17a1 1 0 011-1H7a1 1 0 011 1c0 1.2.2 2.4.6 3.6.1.3 0 .7-.3 1l-1.7 1.7z"/>
                     </SandIcon>
                 </SandIconWrap>
             </SandTextLayer>
-            
-            {/* FAR LEFT - Large rock pile with seaweed cluster (pushed to wall) */}
+
             <UnderwaterObject style={{ bottom: '32%', left: '1%' }}>
                 <img style={{ width: '245px', height: '245px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
             </UnderwaterObject>
@@ -98,9 +97,6 @@ const Footer = () => {
                 <img style={{ width: '220px', height: '220px' }} src={seaweed3} alt="Seaweed" />
             </UnderwaterObject>
 
-
-            {/* LEFT CORAL GROUP - Spread out more to the left */}
-
             <UnderwaterObject style={{ bottom: '17%', left: '16%' }}>
                 <img style={{ width: '225px', height: '225px' }} src={yellowcoral} alt="Yellow Coral" />
             </UnderwaterObject>
@@ -121,15 +117,14 @@ const Footer = () => {
                 <img style={{ width: '260px', height: '260px' }} src={bluecoral} alt="Blue Coral" />
             </UnderwaterObject>
 
-            {/* CENTER SECTION - More space around rocket */}
+            
 
-            {/* Interactive Message in a Bottle with email tooltip - LEFT of center (centered at 35%) */}
             <UnderwaterObject style={{ bottom: '10%', left: '37.5%', transform: 'translateX(-50%)'}}>
                 <MessageInBottleWithTooltip />
             </UnderwaterObject>
             
             {/* Rocket - CENTERED at 50% */}
-            <RocketContainer style={{ bottom: '20%', left: '49.75%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
+            <RocketContainer style={{ bottom: '20%', left: '50%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
                 <RocketImage style={{ width: '250px', height: '250px' }} src={rocket} alt="Rocket - Back to top" />
             </RocketContainer>
             
@@ -138,7 +133,6 @@ const Footer = () => {
                 <ShellPhoneWithTooltip />
             </UnderwaterObject>
 
-            {/* RIGHT CORAL GROUP - Spread out more to the right */}
             
             <UnderwaterObject style={{ bottom: '17%', right: '16%' }}>
                 <img style={{ width: '235px', height: '235px' }} src={bluecoral} alt="Blue Coral" />
@@ -160,7 +154,6 @@ const Footer = () => {
                 <img style={{ width: '265px', height: '265px' }} src={pinkcoral} alt="Pink Coral" />
             </UnderwaterObject>
 
-            {/* FAR RIGHT - Rock pile and seaweed cluster (pushed to wall) */}
 
             <UnderwaterObject style={{ bottom: '32%', right: '1%' }}>
                 <img style={{ width: '240px', height: '240px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
@@ -185,11 +178,7 @@ const Footer = () => {
             <UnderwaterObject style={{ bottom: '9%', right: '7%' }}>
                 <img style={{ width: '220px', height: '220px', transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" />
             </UnderwaterObject>
-        
 
-            <FooterContent>
-                {/* Underwater objects are now in Background component */}
-            </FooterContent>
         </FooterContainer>
     );
 };
@@ -200,42 +189,41 @@ export default Footer;
 
 // Footer container - sandy ocean floor theme
 const FooterContainer = styled.footer`
-    border: 2px solid white;
-  position: relative;
-  width: 100%;
-  height: auto;
-  /* Prevent creating scroll context */
-  overflow: visible;
-  overflow-x: visible;
-  overflow-y: visible;
-  /* Use negative margin to overlap, but this won't create scroll issues if parent handles overflow */
-  margin-top: -10vh;           /* overlap with UnderwaterSection to allow rock piles to extend up */
-  padding-top: 10vh;           /* compensate for negative margin */
-  /* Ensure footer doesn't expand document height unnecessarily */
-  margin-bottom: 0;
-  z-index: 5;                  /* higher than UnderwaterSection (z-index: 1) */
-  
-  /* shared vars for all sand text/icons */
-  --tilt: 55deg;
-  --sand-base: #b39873;
-  --sand-dark: #6e5843;
-  --sand-light: #efe2cc;
+    position: relative;
+    width: 100%;
+    min-height: 30vh;            /* Minimum height for SandPlane */
+    /* Allow objects to overflow upward into About container */
+
+    /* Use negative margin to allow overlap upward */
+    /* Ensure footer doesn't expand document height unnecessarily */
+    margin-bottom: 0;
+    z-index: 5;                  /* higher than UnderwaterSection (z-index: 1) */
+    
+    /* shared vars for all sand text/icons */
+    --tilt: 55deg;
+    --sand-base: #b39873;
+    --sand-dark: #6e5843;
+    --sand-light: #efe2cc;
 `;
 
 
 const SandPlane = styled.div`
-    height: 50vh;
+    height: 30vh;
     width: 100%;
     position: absolute;
-    top: 10vh;               /* align with padding-top to start at visible footer area */
+    bottom: 0;                /* Anchor to bottom of container */
+    left: 0;                  /* Anchor to left edge */
     z-index: 0;           
-    overflow: visible;       /* don't clip children */
+    overflow: hidden;          /* Contain 3D transform overflow */
     
     /* Moved perspective here to avoid clipping issues */
     perspective: 400px;
     perspective-origin: 50% 100%;
     transform: rotateX(55deg);
     transform-origin: top center;
+    
+    /* Isolate 3D rendering to prevent parent overflow */
+    contain: layout style paint;
 
     background: linear-gradient(
         to bottom,
@@ -351,7 +339,7 @@ const SandPlane = styled.div`
     }
 `;
 
-// Rock pile component - positioned on the sandy bottom
+// Rock pile component - positioned on the sandy bottom, can extend upward
 const UnderwaterObject = styled.div`
     position: absolute;
     z-index: 20;                /* very high z-index to appear above all content */
@@ -368,6 +356,8 @@ const UnderwaterObject = styled.div`
     /* Allow images inside to receive pointer events */
     img {
         pointer-events: auto;
+        /* Allow images to extend beyond container bounds */
+        display: block;
     }
 `;
 

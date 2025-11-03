@@ -21,9 +21,9 @@ import barLouieLogo from '@/images/3experience/blSmall.png';
 import hawkersLogo from '@/images/3experience/hawkersSmall.png';
 
 // utility imports.
-import { getLogo } from '@/components/Utils/logoMap.js';
-import { getBrandColors } from '@/components/Utils/brandColors.js';
-import { EXPERIENCE_CARDS } from '@/data/experienceCards.js';
+import { getLogo } from '@/components/utils/logoMap.js';
+import { getBrandColors } from '@/components/utils/brandColors.js';
+import { EXPERIENCE_CARDS } from '@/data/experienceData.jsx';
 
 // actual experience component.
 const ActualExperience = () => {
