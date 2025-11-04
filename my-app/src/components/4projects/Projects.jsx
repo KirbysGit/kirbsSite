@@ -4,7 +4,8 @@
 
 // imports.
 import styled, { keyframes } from 'styled-components';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback, memo } from 'react';
+import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // my project cards.
 import CentiCard from './Cards/CentiCard';
@@ -22,7 +23,9 @@ import Cloud from '../3experience/Cloud';
 import Sun from './Sun';
 
 // main projects component.
-const Projects = () => { 
+const Projects = memo(() => { 
+	// Performance monitoring
+	useComponentPerformance('Projects', process.env.NODE_ENV === 'development');
 
 	// memo for cards.
 	const cards = useMemo(
@@ -39,21 +42,17 @@ const Projects = () => {
 	);
 
 	// state variables.
-	const n = cards.length;
+	const n = useMemo(() => cards.length, [cards.length]);
 	const [index, setIndex] = useState(0);
 	const [paused, setPaused] = useState(false);
 
-	// next & previous functions.
-	const next = () => setIndex((i) => (i + 1) % n);
-	const prev = () => setIndex((i) => (i - 1 + n) % n);
-
-	// autoplay (30s).
-	useEffect(() => {
-		const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-		if (paused || reduced) return;
-		const t = setInterval(next, 30000);
-		return () => clearInterval(t);
-	}, [paused, n]);
+	// Memoized navigation functions
+	const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
+	const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
+	
+	// Memoized pause handlers
+	const handleMouseEnter = useCallback(() => setPaused(true), []);
+	const handleMouseLeave = useCallback(() => setPaused(false), []);
 
 	// keyboard navigation. (right & left arrows)
 	useEffect(() => {
@@ -63,25 +62,25 @@ const Projects = () => {
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
-	}, []);
+	}, [next, prev]);
 
 	// simple drag / swipe.
 	const drag = useRef({ x: 0, active: false });
-	const onPointerDown = (e) => {
+	const onPointerDown = useCallback((e) => {
 		drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
 		setPaused(true);
-	};
-	const onPointerUp = (e) => {
+	}, []);
+	const onPointerUp = useCallback((e) => {
 		if (!drag.current.active) return;
 		const upX = e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0;
 		const dx = upX - drag.current.x;
 		drag.current.active = false;
 		if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
 		setPaused(false);
-	};
+	}, [next, prev]);
 
-	// index-based positioning system.
-	const getCardStyle = (cardIndex) => {
+	// Memoized card style calculation
+	const getCardStyle = useCallback((cardIndex) => {
 		const distance = Math.abs(cardIndex - index);
 		
 		// only show cards within 2 positions of current index.
@@ -92,54 +91,35 @@ const Projects = () => {
 			isFocused: cardIndex === index,
 			distance: distance
 		};
-	};
+	}, [index]);
 
     return (
-        <ProjectsContainer>
+        <ProjectsContainer id="projects" data-section-snap>
             {/* lower sky atmospheric elements */}
             <AtmosphereLayer>
                 {/* seam softener between experience and projects */}
                 <TopSeamFade />
                 {/* seam softener at bottom to blend into skills. */}
                 <BottomSeamFade />
-                {/* parallax cloud layers - decreasing frequency from top to bottom. */}
+                {/* parallax cloud layers - reduced from 22 to 10 clouds for better performance */}
                 <CloudLayer>
                     {/* top layer - dense clouds (continuing from experience). */}
                     <Cloud top="2%" delay="0" duration="180" layer="far" type={1} />
                     <Cloud top="8%" delay="60" duration="200" layer="far" type={3} />
                     <Cloud top="15%" delay="120" duration="190" layer="far" type={2} />
-                    <Cloud top="22%" delay="35" duration="195" layer="far" type={5} />
-                    <Cloud top="28%" delay="90" duration="185" layer="far" type={4} />
                     
                     <Cloud top="5%" delay="30" duration="145" layer="mid" type={4} />
                     <Cloud top="12%" delay="80" duration="140" layer="mid" type={2} />
                     <Cloud top="18%" delay="15" duration="150" layer="mid" type={5} />
-                    <Cloud top="25%" delay="100" duration="155" layer="mid" type={1} />
                 
                     <Cloud top="3%" delay="10" duration="115" layer="near" type={3} />
                     <Cloud top="10%" delay="55" duration="125" layer="near" type={1} />
-                    <Cloud top="16%" delay="90" duration="120" layer="near" type={4} />
                     
                     {/* mid layer - medium density clouds. */}
-                    <Cloud top="32%" delay="45" duration="175" layer="far" type={1} />
-                    <Cloud top="38%" delay="105" duration="185" layer="far" type={3} />
-                    <Cloud top="45%" delay="25" duration="180" layer="far" type={2} />
-
                     <Cloud top="35%" delay="70" duration="135" layer="mid" type={4} />
-                    <Cloud top="42%" delay="20" duration="145" layer="mid" type={2} />
-
-                    <Cloud top="30%" delay="40" duration="110" layer="near" type={5} />
-                    <Cloud top="40%" delay="85" duration="115" layer="near" type={1} />
                     
                     {/* lower layer - sparse clouds. */}
-                    <Cloud top="52%" delay="15" duration="160" layer="far" type={4} />
-                    <Cloud top="58%" delay="75" duration="170" layer="far" type={1} />
-
-                    <Cloud top="50%" delay="50" duration="125" layer="mid" type={3} />
-                    
-                    {/* very lower layer - minimal clouds (transition to horizon). */}
                     <Cloud top="65%" delay="30" duration="140" layer="far" type={2} />
-                    <Cloud top="72%" delay="90" duration="150" layer="far" type={5} />
                 </CloudLayer>
                 
                 {/* sun - positioned like it's at the horizon. */}
@@ -150,13 +130,13 @@ const Projects = () => {
 			{/* content wrapper - container for actual card carousel. */}
             <ContentWrapper>
 				{/* title and subtitle */}
-                <SectionTitle>Projects</SectionTitle>
+                <SectionTitle data-snap-title>Projects</SectionTitle>
                 <SectionSubtitle>What I've built and shipped</SectionSubtitle>
 				
 				{/* stage - where the cards are displayed. */}
 				<Stage
-					onMouseEnter={() => setPaused(true)}
-					onMouseLeave={() => setPaused(false)}
+					onMouseEnter={handleMouseEnter}
+					onMouseLeave={handleMouseLeave}
 					onPointerDown={onPointerDown}
 					onPointerUp={onPointerUp}
 					onTouchStart={onPointerDown}
@@ -190,8 +170,9 @@ const Projects = () => {
 			</ContentWrapper>
         </ProjectsContainer>
     );
-};
+});
 
+Projects.displayName = 'Projects';
 export default Projects;
 
 /* ------------------ styles ------------------ */
@@ -205,6 +186,10 @@ const ProjectsContainer = styled.div`
 	position: relative;
 	flex-direction: column;
     
+    /* GPU acceleration */
+    transform: translateZ(0);
+    contain: layout style;
+    
     /* spacing */
     width: 100%;
     padding-top: 0;
@@ -212,19 +197,11 @@ const ProjectsContainer = styled.div`
     padding-bottom: 6rem;
     
     /* styles */
-    /* transition from experience's ending blue to darker blue, ending to match skills start. */
+    /* Simplified gradient - reduced from 11 to 3 color stops for better performance */
     background: linear-gradient(to bottom,
         rgb(148, 180, 243) 0%,   /* Match Experience ending */
-        rgb(140, 175, 240) 10%,
-        rgb(130, 170, 237) 20%,
-        rgb(120, 165, 234) 30%,
-        rgb(110, 160, 232) 40%,
-        rgb(100, 155, 230) 50%,
-        rgb(90, 150, 228) 60%,    /* Darker blue transition */
-        rgb(85, 155, 235) 70%,    /* Slightly brighter but still muted */
-        rgb(80, 158, 237) 80%,    /* Approaching Skills color */
-        rgb(75, 159, 238) 90%,    /* Close to Skills start */
-        rgb(71, 160, 238) 100%);  /* Exact match Skills start */
+        rgb(120, 165, 234) 50%,  /* Mid transition */
+        rgb(71, 160, 238) 100%); /* Exact match Skills start */
 
     /* media queries */
     @supports (background: linear-gradient(in oklch, red, blue)) {
@@ -258,6 +235,16 @@ const CloudLayer = styled.div`
     z-index: 1;
     overflow: hidden;
 	position: absolute;
+    
+    /* GPU acceleration and containment */
+    transform: translateZ(0);
+    contain: layout style paint;
+    will-change: transform;
+    
+    /* Pause animations during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
     
     /* styles */
     pointer-events: none;
@@ -420,10 +407,14 @@ const Stage = styled.div`
     position: relative;
     place-items: center;
     
+    /* GPU acceleration */
+    transform: translateZ(0);
+    contain: layout style; /* Removed paint containment to allow overflow */
+    
     /* spacing */
     width: 100%;
     min-height: 72vh;
-    padding: 40px 0;
+    padding: 40px 0 60px 0; /* Extra bottom padding for card overflow */
     
     /* media queries */
     @media (min-width: 2000px) {
@@ -448,6 +439,11 @@ const Track = styled.div`
     overflow: visible;
 	position: relative;
     perspective: 1200px;
+    
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style; /* Keep layout/style containment */
     
     /* spacing */
     width: 50vw;
@@ -488,20 +484,24 @@ const Slide = styled.div`
     width: 100%;
     height: 100%;
     
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    contain: layout style; /* Removed paint containment for better overflow handling */
+    
     /* styles */
     pointer-events: none;
-    will-change: transform, opacity, filter;
     transition:
-        transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
-        opacity 220ms ease,
-        filter 220ms ease;
+        transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+        opacity 200ms ease;
     
     /* Focused card (index 0) */
     ${({ $isFocused }) => $isFocused && `
         transform: translateX(0) translateZ(0) scale(1);
         opacity: 1;
-        z-index: 10;
+        z-index: 100; /* Highest z-index for focused card */
         pointer-events: auto;
+        will-change: transform;
     `}
 
     /* Adjacent cards (distance 1) */
@@ -510,6 +510,7 @@ const Slide = styled.div`
         opacity: 0.4;
         z-index: 5;
         filter: blur(2px) saturate(0.7);
+        will-change: transform, opacity;
     `}
 
     /* Far cards (distance 2) */
@@ -518,6 +519,7 @@ const Slide = styled.div`
         opacity: 0.2;
         z-index: 1;
         filter: blur(4px) saturate(0.5);
+        will-change: transform, opacity;
     `}
     
     /* media queries */
@@ -539,28 +541,28 @@ const Slide = styled.div`
 
 /* ========== arrows ========== */
 
-// bounce animations for arrows
+// bounce animations for arrows - GPU accelerated
 const leftBounce = keyframes`
   0%, 100% {
-    transform: translateY(-50%) translateX(0);
+    transform: translateY(-50%) translateX(0) translateZ(0);
   }
   25% {
-    transform: translateY(-50%) translateX(-3px);
+    transform: translateY(-50%) translateX(-3px) translateZ(0);
   }
   75% {
-    transform: translateY(-50%) translateX(3px);
+    transform: translateY(-50%) translateX(3px) translateZ(0);
   }
 `;
 
 const rightBounce = keyframes`
   0%, 100% {
-    transform: translateY(-50%) translateX(0);
+    transform: translateY(-50%) translateX(0) translateZ(0);
   }
   25% {
-    transform: translateY(-50%) translateX(3px);
+    transform: translateY(-50%) translateX(3px) translateZ(0);
   }
   75% {
-    transform: translateY(-50%) translateX(-3px);
+    transform: translateY(-50%) translateX(-3px) translateZ(0);
   }
 `;
 
@@ -577,12 +579,16 @@ const ArrowBase = styled.button`
     width: 56px;
     height: 56px;
     
+    /* GPU acceleration */
+    transform: translateY(-50%) translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
+    
     /* styles */
     cursor: pointer;
     border: 0;
     border-radius: 16px;
     opacity: 0.95;
-    transform: translateY(-50%);
     background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
     backdrop-filter: blur(12px);
     border: 2px solid rgba(255,255,255,0.3);
@@ -594,11 +600,12 @@ const ArrowBase = styled.button`
     font-size: 32px;
     font-weight: bold;
     line-height: 1;
-    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1);
     
     /* hover effects */
     &:hover { 
-        transform: translateY(-50%) scale(1.1); 
+        transform: translateY(-50%) scale(1.1) translateZ(0); 
         background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.25));
         border-color: rgba(255,255,255,0.5);
         box-shadow: 
@@ -609,7 +616,7 @@ const ArrowBase = styled.button`
     
     /* active state */
     &:active {
-        transform: translateY(-50%) scale(0.95);
+        transform: translateY(-50%) scale(0.95) translateZ(0);
     }
 `;
 

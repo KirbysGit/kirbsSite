@@ -4,10 +4,11 @@
 // swaps between cards, showing specific info about me with some photos for personalization.
 
 // imports.
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useTypewriter } from '@/components/2whoiam/useTypewriter.js';
 import { CARDS, LONGEST_ROLE_CH } from '../../data/aboutData.jsx';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // space elements images.
 import satellite1 from '@/images/2story/satellite1.png';
@@ -19,6 +20,132 @@ const IMG_MS = 400;           // image slide duration
 const BUFFER_MS = 40;         // extra buffer for animation end
 const TYPE_SPEED = 40;        // ms/char (typing)
 const DELETE_SPEED = 30;      // ms/char (deleting)
+
+// ========== Keyframes - extracted outside components to avoid re-creation ==========
+
+// Image slide animations
+const slideOutRight = keyframes`
+    0% { transform: translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateX(80%) translateZ(0); opacity: 0; }
+`;
+
+const slideOutRightVert = keyframes`
+    0% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateY(-50%) translateX(80%) translateZ(0); opacity: 0; }
+`;
+
+const slideOutLeft = keyframes`
+    0% { transform: translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateX(-80%) translateZ(0); opacity: 0; }
+`;
+
+const slideOutLeftVert = keyframes`
+    0% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateY(-50%) translateX(-80%) translateZ(0); opacity: 0; }
+`;
+
+const slideInRight = keyframes`
+    0% { transform: translateX(80%) translateZ(0); opacity: 0; }
+    100% { transform: translateX(0) translateZ(0); opacity: 1; }
+`;
+
+const slideInRightVert = keyframes`
+    0% { transform: translateY(-50%) translateX(80%) translateZ(0); opacity: 0; }
+    100% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+`;
+
+const slideInLeft = keyframes`
+    0% { transform: translateX(-80%) translateZ(0); opacity: 0; }
+    100% { transform: translateX(0) translateZ(0); opacity: 1; }
+`;
+
+const slideInLeftVert = keyframes`
+    0% { transform: translateY(-50%) translateX(-80%) translateZ(0); opacity: 0; }
+    100% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+`;
+
+// Bubble pop-in animation
+const popIn = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.9) translateZ(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) translateZ(0);
+    }
+`;
+
+// Twinkle animation for bullet points
+const twinkle = keyframes`
+    0%, 100% { 
+        opacity: 0.6; 
+    }
+    50% { 
+        opacity: 1; 
+    }
+`;
+
+// Blink animation for caret
+const blink = keyframes`
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+`;
+
+// Space station float animation
+const spaceStationFloat = keyframes`
+    0%, 100% { 
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    50% { 
+        transform: translate3d(0, -8px, 0) rotate(2deg);
+    }
+`;
+
+// Satellite 1 float animation
+const satellite1Float = keyframes`
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate3d(calc(25vw + 40px), -30px, 0) rotate(90deg);
+    }
+    50% {
+        transform: translate3d(calc(50vw + 80px), 0, 0) rotate(180deg);
+    }
+    75% {
+        transform: translate3d(calc(75vw + 120px), 30px, 0) rotate(270deg);
+    }
+    100% {
+        transform: translate3d(calc(100vw + 160px), 0, 0) rotate(360deg);
+    }
+`;
+
+// Satellite 2 float animation
+const satellite2Float = keyframes`
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    20% {
+        transform: translate3d(calc(-20vw - 30px), -20px, 0) rotate(72deg);
+    }
+    40% {
+        transform: translate3d(calc(-40vw - 60px), 0, 0) rotate(144deg);
+    }
+    60% {
+        transform: translate3d(calc(-60vw - 90px), 20px, 0) rotate(216deg);
+    }
+    80% {
+        transform: translate3d(calc(-80vw - 120px), -10px, 0) rotate(288deg);
+    }
+    100% {
+        transform: translate3d(calc(-100vw - 150px), 0, 0) rotate(360deg);
+    }
+`;
 
 // svg chevrons (too lazy to do FontAwesome).
 const ChevronRight = () => (
@@ -35,8 +162,90 @@ const ChevronLeft = () => (
     </svg>
 );
 
+// Optimized image item component - separated to allow proper memoization
+const ImageItem = memo(({ img, index, card, cardIndex, isSlidingOut, slideDirection, isNewCardSet, loadedImages, onImageLoad }) => {
+    // Memoize positioning calculation
+    const positioning = useMemo(() => {
+        if (img.position === 'top-left') {
+            return { top: 0, left: 0 };
+        } else if (img.position === 'middle-right') {
+            return { top: '50%', right: 0 };
+        } else if (img.position === 'bottom-left') {
+            return { bottom: 0, left: 0 };
+        }
+        return {};
+    }, [img.position]);
+    
+    // Memoize slide direction calculation
+    const imgSlideDirection = useMemo(() => {
+        return img.position === 'middle-right' ? 'right' : 'left';
+    }, [img.position]);
+    
+    // Memoize bubbles lookup
+    const imageBubbles = useMemo(() => {
+        return card.imageBubbles ? card.imageBubbles[index] : [];
+    }, [card.imageBubbles, index]);
+    
+    // Create unique image key for tracking load state
+    const imageKey = useMemo(() => `${img.image}-${cardIndex}-${index}`, [img.image, cardIndex, index]);
+    const isImageLoaded = loadedImages.has(imageKey);
+    
+    // Memoized callback ref - checks if image is already loaded when element mounts
+    const imageRefCallback = useCallback((imgElement) => {
+        if (imgElement && imgElement.complete && !isImageLoaded) {
+            onImageLoad(imageKey);
+        }
+    }, [imageKey, isImageLoaded, onImageLoad]);
+    
+    // Memoized handleLoad callback
+    const handleLoad = useCallback(() => {
+        onImageLoad(imageKey);
+    }, [imageKey, onImageLoad]);
+    
+    return (
+        <ImgShell
+            $imgPosition={img.position}
+            $isSlidingOut={isSlidingOut}
+            $slideDirection={slideDirection}
+            $imgSlideDirection={imgSlideDirection}
+            $isNewCardSet={isNewCardSet}
+            $isImageLoaded={isImageLoaded}
+            style={{
+                ...positioning,
+                zIndex: img.z,
+            }}
+        >
+            {/* styled image */}
+            <StyledImage 
+                ref={imageRefCallback}
+                src={img.image} 
+                alt={img.position} 
+                decoding="async" 
+                loading="eager"
+                onLoad={handleLoad}
+                $isLoaded={isImageLoaded}
+            />
+            {/* bubble container */}
+            {imageBubbles && imageBubbles.length > 0 && (
+                <BubbleContainer $position={img.position}>
+                    {imageBubbles.map((bubbleText, bi) => (
+                        <SpeechBubble 
+                            key={bi}
+                            $parentPosition={img.position}
+                        >
+                            {bubbleText}
+                        </SpeechBubble>
+                    ))}
+                </BubbleContainer>
+            )}
+        </ImgShell>
+    );
+});
+
 // whoiam component.
 const WhoIAm = memo(() => {
+    // Performance monitoring
+    useComponentPerformance('WhoIAm', process.env.NODE_ENV === 'development');
 
     // state management.
     const [index, setIndex] = useState(0);						    // current card index.
@@ -47,13 +256,14 @@ const WhoIAm = memo(() => {
     const [isSlidingOut, setIsSlidingOut] = useState(false);		// whether the content is sliding out.
     const [startInitial, setStartInitial] = useState(false);		// whether the initial animation has started.
     const [slideDirection, setSlideDirection] = useState(null); 	// 'left' or 'right'
+    const [loadedImages, setLoadedImages] = useState(new Set());	// track which images have loaded
 
     // refs.
     const nextIdxRef = useRef(0);									// next card index.
     const triggerRef = useRef(null);								// trigger reference.
 
-    // our hook for the typewriter effect.
-    const role = CARDS[index].role;
+    // our hook for the typewriter effect - memoize role to avoid recalculation
+    const role = useMemo(() => CARDS[index].role, [index]);
     const { out, phase, setPhase, resetTo } = useTypewriter(role, {
         typeMs: TYPE_SPEED,											    // ms/char (typing)
         deleteMs: DELETE_SPEED,										    // ms/char (deleting)
@@ -101,8 +311,8 @@ const WhoIAm = memo(() => {
         return () => obs.disconnect();
     }, [startInitial]);
 
-    // navigation function.
-    const goTo = (nextIndex) => {
+    // navigation function - memoized to avoid recreation
+    const goTo = useCallback((nextIndex) => {
         // ignore clicks during delete.
         if (phase === 'delete') return;
 
@@ -132,16 +342,16 @@ const WhoIAm = memo(() => {
         setTimeout(() => {
             requestAnimationFrame(onEnd);
         }, IMG_MS + BUFFER_MS);
-    };
+    }, [phase, index]);
 
-    // next function.
-    const next = () => goTo((index + 1) % CARDS.length);
+    // next function - memoized
+    const next = useCallback(() => goTo((index + 1) % CARDS.length), [goTo, index]);
 
-    // prev function.
-    const prev = () => goTo((index - 1 + CARDS.length) % CARDS.length);
+    // prev function - memoized
+    const prev = useCallback(() => goTo((index - 1 + CARDS.length) % CARDS.length), [goTo, index]);
 
-    // get current card's images for the zigzag.
-    const getCurrentImageSet = () => {
+    // get current card's images for the zigzag - memoized
+    const getCurrentImageSet = useCallback(() => {
         const currentCard = CARDS[index];
         
         // each card has 3 images in its array.
@@ -150,16 +360,34 @@ const WhoIAm = memo(() => {
         { image: currentCard.images[1], position: 'middle-right', z: 2 },
         { image: currentCard.images[2], position: 'bottom-left', z: 3 },
         ];
-    };
+    }, [index]);
 
-    // get the current card.
-    const card = CARDS[index];
+    // get the current card - memoized
+    const card = useMemo(() => CARDS[index], [index]);
 
-    // get the current image set.
-    const imageSet = getCurrentImageSet();
+    // get the current image set - memoized
+    const imageSet = useMemo(() => getCurrentImageSet(), [getCurrentImageSet]);
     
-    // track if we just switched cards (for slide-in animation).
-    const isNewCardSet = index !== previousIndex;
+    // track if we just switched cards (for slide-in animation) - memoized
+    const isNewCardSet = useMemo(() => index !== previousIndex, [index, previousIndex]);
+    
+    // Memoized image load handler to prevent infinite re-renders
+    const handleImageLoad = useCallback((imageKey) => {
+        setLoadedImages(prev => {
+            // Only update if image isn't already loaded (prevents unnecessary re-renders)
+            if (prev.has(imageKey)) return prev;
+            const newSet = new Set(prev);
+            newSet.add(imageKey);
+            return newSet;
+        });
+    }, []);
+    
+    // Reset loaded images when card changes (before showing new images)
+    useEffect(() => {
+        if (isNewCardSet) {
+            setLoadedImages(new Set());
+        }
+    }, [isNewCardSet]);
     
     // show images when new card set and update previousIndex after slide-in.
     useEffect(() => {
@@ -182,8 +410,8 @@ const WhoIAm = memo(() => {
             <Satellite1 />
             <Satellite2 />
             
-            {/* page title */}
-            <PageTitle>Who I Am</PageTitle>
+            {/* page title - snap point for centering */}
+            <PageTitle data-snap-title>Who I Am</PageTitle>
 
             {/* grid container */}
             <Grid>
@@ -192,62 +420,20 @@ const WhoIAm = memo(() => {
                     {/* image stack w/ animation handling*/}
                     <ImageStack $slideDirection={slideDirection} $isSlidingOut={isSlidingOut}>
                         {/* map over the image set */}
-                        {showImages && imageSet.map((img, i) => {
-                            // determine the positioning of the image.
-                            let positioning = {};
-                            
-                            // set the positioning based on set.
-                            if (img.position === 'top-left') {
-                                positioning = { top: 0, left: 0 };
-                            } else if (img.position === 'middle-right') {
-                                positioning = { top: '50%', right: 0 };
-                            } else if (img.position === 'bottom-left') {
-                                positioning = { bottom: 0, left: 0 };
-                            }
-                            
-                            // determine individual image slide direction based on position.
-                            let imgSlideDirection = 'left';
-                            if (img.position === 'middle-right') {
-                                imgSlideDirection = 'right';
-                            } else if (img.position === 'top-left' || img.position === 'bottom-left') {
-                                imgSlideDirection = 'left';
-                            }
-                            
-                            // get bubbles for this specific image.
-                            const imageBubbles = CARDS[index].imageBubbles ? CARDS[index].imageBubbles[i] : [];
-                            
-                            // return the image shell.
-                            return (
-                                <ImgShell
-                                    key={`${img.image}-${index}-${i}`}
-                                    $imgPosition={img.position}
-                                    $isSlidingOut={isSlidingOut}
-                                    $slideDirection={slideDirection}
-                                    $imgSlideDirection={imgSlideDirection}
-                                    $isNewCardSet={isNewCardSet}
-                                    style={{
-                                        ...positioning,
-                                        zIndex: img.z,
-                                    }}
-                                >
-                                    {/* styled image */}
-                                    <StyledImage src={img.image} alt={img.position} decoding="async" loading="eager" />
-                                    {/* bubble container */}
-                                    {imageBubbles && imageBubbles.length > 0 && (
-                                        <BubbleContainer $position={img.position}>
-                                            {imageBubbles.map((bubbleText, bi) => (
-                                                <SpeechBubble 
-                                                    key={bi}
-                                                    $parentPosition={img.position}
-                                                >
-                                                    {bubbleText}
-                                                </SpeechBubble>
-                                            ))}
-                                        </BubbleContainer>
-                                    )}
-                                </ImgShell>
-                            );
-                        })}
+                        {showImages && imageSet.map((img, i) => (
+                            <ImageItem
+                                key={`${img.image}-${index}-${i}`}
+                                img={img}
+                                index={i}
+                                card={card}
+                                cardIndex={index}
+                                isSlidingOut={isSlidingOut}
+                                slideDirection={slideDirection}
+                                isNewCardSet={isNewCardSet}
+                                loadedImages={loadedImages}
+                                onImageLoad={handleImageLoad}
+                            />
+                        ))}
                     </ImageStack>
                 </LeftCol>
 
@@ -319,6 +505,9 @@ const SectionWrap = styled.section`
     /* layout */
     min-height: 110vh;
     position: relative;
+    
+    /* CSS containment for performance */
+    contain: layout style;
 
     /* spacing */
     padding: 4rem 6rem 8rem;
@@ -422,11 +611,13 @@ const ImageStack = styled.div`
     position: relative;
     align-items: center;
     justify-content: center;
-
+    
+    /* CSS containment for performance */
+    contain: layout style;
 `;
 
-// shell for the images. (mainly for animation)
-const ImgShell = styled.div`
+// Base image shell component
+const ImgShellBase = styled.div`
     /* layout */
     --width: 360px;  
     --height: 360px;
@@ -439,106 +630,102 @@ const ImgShell = styled.div`
         --height: 360px;
     }
     
-    /* a bit bigger at 1600px */
     @media (max-width: 1600px) {
         --width: 320px;
         --height: 320px;
     }
-  
-    /* calculate which direction image should slide in from */
-    ${props => {
-        // determine if the image is on the middle-right.
-        const isMiddleRight = props.$imgPosition === 'middle-right';
-        
-        // base transform for middle-right images.
-        const baseTransform = isMiddleRight ? 'translateY(-50%)' : '';
-        
-        // always apply the base transform for middle-right images.
-        let styles = '';
-        if (baseTransform) {
-        styles += `transform: ${baseTransform};`;
-        }
-        
-        // when sliding out (old images).
-        if (props.$isSlidingOut) {
-            // when sliding out, images on the left go left, images on the right go right.
-            if (props.$imgSlideDirection === 'right') {
-                return `
-                    ${styles}
-                    animation: slideOutRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-                `;
-            } else {
-                return `
-                    ${styles}
-                    animation: slideOutLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-                `;
-            }
-        }
-        
-        // when sliding in (new images) - only when NOT sliding out.
-        if (props.$isNewCardSet && !props.$isSlidingOut) {
-            // new images slide in from the same direction they'll slide out to.
-            if (props.$imgSlideDirection === 'right') {
-                return `
-                    ${styles}
-                    animation: slideInRight${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-                `;
-            } else {
-                return `
-                    ${styles}
-                    animation: slideInLeft${isMiddleRight ? 'Vert' : ''} 400ms ease-out forwards;
-                `;
-            }
-        }
-        
-        return styles;
-    }}
     
-    /* animations */
-    @keyframes slideOutRight {
-        0% { transform: translateX(0); opacity: 1; }
-        50% { opacity: 0; }
-        100% { transform: translateX(80%); opacity: 0; }
-    }
+    /* GPU acceleration */
+    will-change: transform, opacity;
     
-    @keyframes slideOutRightVert {
-        0% { transform: translateY(-50%) translateX(0); opacity: 1; }
-        50% { opacity: 0; }
-        100% { transform: translateY(-50%) translateX(80%); opacity: 0; }
-    }
-    
-    @keyframes slideOutLeft {
-        0% { transform: translateX(0); opacity: 1; }
-        50% { opacity: 0; }
-        100% { transform: translateX(-80%); opacity: 0; }
-    }
-    
-    @keyframes slideOutLeftVert {
-        0% { transform: translateY(-50%) translateX(0); opacity: 1; }
-        50% { opacity: 0; }
-        100% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
-    }
-    
-    @keyframes slideInRight {
-        0% { transform: translateX(80%); opacity: 0; }
-        100% { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideInRightVert {
-        0% { transform: translateY(-50%) translateX(80%); opacity: 0; }
-        100% { transform: translateY(-50%) translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideInLeft {
-        0% { transform: translateX(-80%); opacity: 0; }
-        100% { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideInLeftVert {
-        0% { transform: translateY(-50%) translateX(-80%); opacity: 0; }
-        100% { transform: translateY(-50%) translateX(0); opacity: 1; }
+    /* Pause animations during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
     }
 `;
+
+// Variant components for different animation states - eliminates expensive conditional logic
+const ImgShellSlideOutLeft = styled(ImgShellBase)`
+    transform: translateZ(0);
+    animation: ${slideOutLeft} 400ms ease-out forwards;
+`;
+
+const ImgShellSlideOutLeftVert = styled(ImgShellBase)`
+    transform: translateY(-50%) translateZ(0);
+    animation: ${slideOutLeftVert} 400ms ease-out forwards;
+`;
+
+const ImgShellSlideOutRight = styled(ImgShellBase)`
+    transform: translateZ(0);
+    animation: ${slideOutRight} 400ms ease-out forwards;
+`;
+
+const ImgShellSlideOutRightVert = styled(ImgShellBase)`
+    transform: translateY(-50%) translateZ(0);
+    animation: ${slideOutRightVert} 400ms ease-out forwards;
+`;
+
+const ImgShellSlideInLeft = styled(ImgShellBase)`
+    transform: translateZ(0);
+    animation: ${slideInLeft} 400ms ease-out forwards;
+`;
+
+const ImgShellSlideInLeftVert = styled(ImgShellBase)`
+    transform: translateY(-50%) translateZ(0);
+    animation: ${slideInLeftVert} 400ms ease-out forwards;
+`;
+
+const ImgShellSlideInRight = styled(ImgShellBase)`
+    transform: translateZ(0);
+    animation: ${slideInRight} 400ms ease-out forwards;
+`;
+
+const ImgShellSlideInRightVert = styled(ImgShellBase)`
+    transform: translateY(-50%) translateZ(0);
+    animation: ${slideInRightVert} 400ms ease-out forwards;
+`;
+
+const ImgShellStatic = styled(ImgShellBase)`
+    transform: translateZ(0);
+`;
+
+const ImgShellStaticVert = styled(ImgShellBase)`
+    transform: translateY(-50%) translateZ(0);
+`;
+
+// Wrapper component that selects the right variant - eliminates prop interpolation
+const ImgShell = ({ $imgPosition, $isSlidingOut, $imgSlideDirection, $isNewCardSet, ...props }) => {
+    const isMiddleRight = $imgPosition === 'middle-right';
+    const isRight = $imgSlideDirection === 'right';
+    
+    if ($isSlidingOut) {
+        if (isRight) {
+            return isMiddleRight 
+                ? <ImgShellSlideOutRightVert {...props} />
+                : <ImgShellSlideOutRight {...props} />;
+        } else {
+            return isMiddleRight
+                ? <ImgShellSlideOutLeftVert {...props} />
+                : <ImgShellSlideOutLeft {...props} />;
+        }
+    }
+    
+    if ($isNewCardSet) {
+        if (isRight) {
+            return isMiddleRight
+                ? <ImgShellSlideInRightVert {...props} />
+                : <ImgShellSlideInRight {...props} />;
+        } else {
+            return isMiddleRight
+                ? <ImgShellSlideInLeftVert {...props} />
+                : <ImgShellSlideInLeft {...props} />;
+        }
+    }
+    
+    return isMiddleRight 
+        ? <ImgShellStaticVert {...props} />
+        : <ImgShellStatic {...props} />;
+};
 
 // styled image.
 const StyledImage = styled.img`
@@ -555,6 +742,16 @@ const StyledImage = styled.img`
     border-radius: 12px;
     border: 3px solid #fff;
     box-shadow: 0 0 10px rgba(0,0,0,.2);
+    
+    /* Border and image will be controlled by parent ImgShell based on load state */
+    /* Start hidden, parent will show when loaded */
+    opacity: ${props => props.$isLoaded ? 1 : 0};
+    border-color: ${props => props.$isLoaded ? '#fff' : 'transparent'};
+    transition: opacity 150ms ease-in, border-color 150ms ease-in;
+    
+    /* GPU acceleration for smooth rendering */
+    transform: translateZ(0);
+    will-change: transform, opacity;
 `;
 
 // speech bubble container.
@@ -590,15 +787,21 @@ const BubbleContainer = styled.div`
         left: -25px;
     `}
     
-    /* cool pop in animation for the bubbles. */
+    /* cool pop in animation for the bubbles - GPU accelerated */
     > * {
         opacity: 0;
-        transform: translateY(-8px) scale(0.9);
-        animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transform: translateY(-8px) scale(0.9) translateZ(0);
+        animation: ${popIn} 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        will-change: transform, opacity;
     }
     
     > *:nth-child(1) { animation-delay: 500ms; } /* starts after slide-in (400ms) */
     > *:nth-child(2) { animation-delay: 700ms; }
+    
+    /* Pause animations during loading */
+    [data-loading="true"] > * {
+        animation-play-state: paused;
+    }
 `;
 
 // speech bubble.
@@ -623,17 +826,6 @@ const SpeechBubble = styled.div`
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
         
-    /* cool pop in animation for the bubbles. */
-    @keyframes popIn {
-        from {
-        opacity: 0;
-        transform: translateY(-8px) scale(0.9);
-        }
-        to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        }
-    }
     
     /* right-align bubbles when on right side */
     ${props => props.$parentPosition === 'middle-right' && `
@@ -721,25 +913,27 @@ const ContentWrapper = styled.div`
 
     /* styles */
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(12px) translateZ(0);
     transition: opacity 400ms ease, transform 400ms ease;
+    will-change: transform, opacity;
 
     /* child elements */
     > * {
         opacity: 0;
-        transform: translateY(16px);
+        transform: translateY(16px) translateZ(0);
         transition: opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1), 
                     transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+        will-change: transform, opacity;
     }
     
     /* visible state */
     &.visible {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) translateZ(0);
         
         > * {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) translateZ(0);
         }
         
         > *:nth-child(1) { transition-delay: 260ms; }
@@ -751,23 +945,23 @@ const ContentWrapper = styled.div`
     /* hidden state */
     &.hidden {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(12px) translateZ(0);
         pointer-events: none;
         
         > * {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(12px) translateZ(0);
         }
     }
 
     /* slide out state */
     &.slideOut {
         opacity: 0;
-        transform: translateY(-16px);
+        transform: translateY(-16px) translateZ(0);
         
         > * {
         opacity: 0;
-        transform: translateY(-16px);
+        transform: translateY(-16px) translateZ(0);
         }
     }
     
@@ -831,11 +1025,9 @@ const Caret = styled.span`
 
     /* styles */
     -webkit-text-fill-color: rgba(200,180,255,.9);
-    animation: ${props => (props.$paused ? 'none' : 'blink 1s steps(1) infinite')};
-  
-    @keyframes blink {
-        0%, 50% { opacity: 1; }
-        51%, 100% { opacity: 0; }
+    ${props => props.$paused 
+        ? css`animation: none;`
+        : css`animation: ${blink} 1s steps(1) infinite;`
     }
 `;
 
@@ -846,48 +1038,60 @@ const LiveRegion = styled.span`
     display: inline-block;
 `;
 
-// gradient text for the role.
-const RoleText = styled.span`
+// Base role text component
+const RoleTextBase = styled.span`
     /* styles */
     font-weight: 800;
-    
-    /* different gradients based on role index */
-    ${props => {
-        switch(props.$roleIndex) {
-            case 0: // Software Engineer - darker purple gradient
-                return `
-                    background: linear-gradient(135deg, 
-                        rgba(180, 140, 255, 0.95), 
-                        rgba(120, 100, 200, 0.95),
-                        rgba(80, 60, 150, 0.9));
-                `;
-            case 1: // UCF Computer Engineering Grad - gold/amber gradient
-                return `
-                    background: linear-gradient(135deg, 
-                        rgba(255, 220, 150, 0.95), 
-                        rgba(255, 180, 100, 0.95),
-                        rgba(255, 160, 80, 0.9));
-                `;
-            case 2: // Professional Beginner - green/emerald gradient
-                return `
-                    background: linear-gradient(135deg, 
-                        rgba(150, 255, 200, 0.95), 
-                        rgba(120, 220, 170, 0.95),
-                        rgba(100, 180, 140, 0.9));
-                `;
-            default: // fallback
-                return `
-                    background: linear-gradient(135deg, 
-                        rgba(255,255,255,.95), 
-                        rgba(200,180,255,.9));
-                `;
-        }
-    }}
-    
-    -webkit-background-clip: text;
-    background-clip: text;
     -webkit-text-fill-color: transparent;
 `;
+
+// Variant components for different role gradients (simplified from 3 color stops to 2)
+// Each variant includes both gradient AND clip properties together
+const RoleTextSoftwareEngineer = styled(RoleTextBase)`
+    background: linear-gradient(135deg, 
+        rgba(180, 140, 255, 0.95), 
+        rgba(100, 70, 175, 0.9));
+    -webkit-background-clip: text;
+    background-clip: text;
+`;
+
+const RoleTextUCFGrad = styled(RoleTextBase)`
+    background: linear-gradient(135deg, 
+        rgba(255, 220, 150, 0.95), 
+        rgba(255, 160, 80, 0.9));
+    -webkit-background-clip: text;
+    background-clip: text;
+`;
+
+const RoleTextProfessionalBeginner = styled(RoleTextBase)`
+    background: linear-gradient(135deg, 
+        rgba(150, 255, 200, 0.95), 
+        rgba(100, 180, 140, 0.9));
+    -webkit-background-clip: text;
+    background-clip: text;
+`;
+
+const RoleTextDefault = styled(RoleTextBase)`
+    background: linear-gradient(135deg, 
+        rgba(255,255,255,.95), 
+        rgba(200,180,255,.9));
+    -webkit-background-clip: text;
+    background-clip: text;
+`;
+
+// Gradient text for the role - wrapper that selects the right variant
+const RoleText = ({ $roleIndex: roleIndex, ...props }) => {
+    switch(roleIndex) {
+        case 0:
+            return <RoleTextSoftwareEngineer {...props} />;
+        case 1:
+            return <RoleTextUCFGrad {...props} />;
+        case 2:
+            return <RoleTextProfessionalBeginner {...props} />;
+        default:
+            return <RoleTextDefault {...props} />;
+    }
+};
 
 // one-liner section.
 const OneLiner = styled.div`
@@ -989,24 +1193,20 @@ const BulletItem = styled.div`
         top: 50%;
         content: '✦';
         position: absolute;
-        transform: translateY(-50%);
+        transform: translateY(-50%) translateZ(0);
 
         /* styles */
         font-weight: 400;
         font-size: 1.5rem;
         color: rgba(150, 200, 255, 0.9);
-        animation: twinkle 2s ease-in-out infinite;
+        animation: ${twinkle} 2s ease-in-out infinite;
         animation-delay: ${props => props.$delay || 0}s;
+        will-change: opacity;
     }
-
-    /* keyframes for the twinkle animation */
-    @keyframes twinkle {
-        0%, 100% { 
-            opacity: 0.6; 
-        }
-        50% { 
-            opacity: 1; 
-        }
+    
+    /* Pause animations during loading */
+    [data-loading="true"] &::before {
+        animation-play-state: paused;
     }
 `;
 
@@ -1090,9 +1290,13 @@ const NavBtn = styled.button`
     border: 1.5px solid rgba(255, 255, 255, 0.4);
     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
     
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    
     /* hover effects of buttons */
     &:hover {
-        transform: translateY(-2px) scale(1.05);
+        transform: translateY(-2px) scale(1.05) translateZ(0);
         background: rgba(150, 200, 255, 0.3);
         border-color: rgba(150, 200, 255, 0.6);
         color: rgba(255, 255, 255, 1);
@@ -1101,7 +1305,7 @@ const NavBtn = styled.button`
     
     /* active state of buttons */
     &:active {
-        transform: translateY(0) scale(0.98);
+        transform: translateY(0) scale(0.98) translateZ(0);
         box-shadow: 0 2px 6px rgba(150, 200, 255, 0.15);
     }
     
@@ -1141,16 +1345,13 @@ const SpaceStation = styled.div`
     will-change: transform;
     contain: layout style paint;
     
-    /* subtle floating animation - optimized */
-    animation: spaceStationFloat 8s ease-in-out infinite;
+    /* subtle floating animation - GPU accelerated */
+    animation: ${spaceStationFloat} 8s ease-in-out infinite;
+    transform: translateZ(0);
     
-    @keyframes spaceStationFloat {
-        0%, 100% { 
-            transform: translate3d(0, 0, 0) rotate(0deg);
-        }
-        50% { 
-            transform: translate3d(0, -8px, 0) rotate(2deg);
-        }
+    /* Pause animations during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
     }
     
     /* media queries */
@@ -1183,26 +1384,14 @@ const Satellite1 = styled.div`
     will-change: transform;
     contain: layout style paint;
     
-    /* floating animation with delay - optimized */
+    /* floating animation with delay - GPU accelerated */
     animation-delay: 6s;
-    animation: satellite1Float 25s linear infinite;
+    animation: ${satellite1Float} 25s linear infinite;
+    transform: translateZ(0);
     
-    @keyframes satellite1Float {
-        0% {
-            transform: translate3d(0, 0, 0) rotate(0deg);
-        }
-        25% {
-            transform: translate3d(calc(25vw + 40px), -30px, 0) rotate(90deg);
-        }
-        50% {
-            transform: translate3d(calc(50vw + 80px), 0, 0) rotate(180deg);
-        }
-        75% {
-            transform: translate3d(calc(75vw + 120px), 30px, 0) rotate(270deg);
-        }
-        100% {
-            transform: translate3d(calc(100vw + 160px), 0, 0) rotate(360deg);
-        }
+    /* Pause animations during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
     }
     
     /* media queries */
@@ -1235,29 +1424,14 @@ const Satellite2 = styled.div`
     will-change: transform;
     contain: layout style paint;
     
-    /* floating animation with different delay and path - right to left - optimized */
+    /* floating animation with different delay and path - right to left - GPU accelerated */
     animation-delay: 7s;
-    animation: satellite2Float 30s linear infinite;
+    animation: ${satellite2Float} 30s linear infinite;
+    transform: translateZ(0);
     
-    @keyframes satellite2Float {
-        0% {
-            transform: translate3d(0, 0, 0) rotate(0deg);
-        }
-        20% {
-            transform: translate3d(calc(-20vw - 30px), -20px, 0) rotate(72deg);
-        }
-        40% {
-            transform: translate3d(calc(-40vw - 60px), 0, 0) rotate(144deg);
-        }
-        60% {
-            transform: translate3d(calc(-60vw - 90px), 20px, 0) rotate(216deg);
-        }
-        80% {
-            transform: translate3d(calc(-80vw - 120px), -10px, 0) rotate(288deg);
-        }
-        100% {
-            transform: translate3d(calc(-100vw - 150px), 0, 0) rotate(360deg);
-        }
+    /* Pause animations during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
     }
     
     /* media queries */

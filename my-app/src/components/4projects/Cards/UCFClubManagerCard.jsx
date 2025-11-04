@@ -25,9 +25,9 @@ import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
 // import project assets.
-import ucfLogo from '@/images/projects/ucf_manager/ucflogo.png';
-import presentationPreview from '@/images/projects/ucf_manager/presentationpreview.png';
-import figmaPreview from '@/images/projects/ucf_manager/figmapreview.png';
+import ucfLogo from '@/images/4projects/ucf_manager/ucflogo.png';
+import presentationPreview from '@/images/4projects/ucf_manager/presentationpreview.png';
+import figmaPreview from '@/images/4projects/ucf_manager/figmapreview.png';
 
 // main ucf club manager card component.
 const UCFClubManagerCard = ({ isFocused = false }) => {

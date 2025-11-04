@@ -3,15 +3,15 @@
 // chatgpt generated cloud cartoon images, just floating across the screen because why not.
 
 // imports.
-import React from 'react';
+import React, { memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // import cloud images.
-import cloud1 from '@/images/clouds/cloud1.png';
-import cloud2 from '@/images/clouds/cloud2.png';
-import cloud3 from '@/images/clouds/cloud3.png';
-import cloud4 from '@/images/clouds/cloud4.png';
-import cloud5 from '@/images/clouds/cloud5.png';
+import cloud1 from '@/images/3experience/clouds/cloud1.png';
+import cloud2 from '@/images/3experience/clouds/cloud2.png';
+import cloud3 from '@/images/3experience/clouds/cloud3.png';
+import cloud4 from '@/images/3experience/clouds/cloud4.png';
+import cloud5 from '@/images/3experience/clouds/cloud5.png';
 
 // cloud images.
 const cloudImages = {
@@ -23,7 +23,7 @@ const cloudImages = {
 };
 
 // main cloud component with parallax layers.
-const Cloud = ({ top, delay, duration, layer = 'mid', type = 1, direction = 'left' }) => {
+const Cloud = memo(({ top, delay, duration, layer = 'mid', type = 1, direction = 'left' }) => {
     return (
         <CloudContainer 
             $top={top} 
@@ -40,7 +40,9 @@ const Cloud = ({ top, delay, duration, layer = 'mid', type = 1, direction = 'lef
             />
         </CloudContainer>
     );
-};
+});
+
+Cloud.displayName = 'Cloud';
 
 // animation 1: horizontal drift left to right.
 const horizontalDriftLeft = keyframes`

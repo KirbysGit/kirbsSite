@@ -1,33 +1,37 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import meImage from '../../images/about/me.jpg';
-import shpeLogo from '../../images/about/shpe.png';
-import knightHacksLogo from '../../images/about/knightshacks.png';
-import aiUcfLogo from '../../images/about/aiucf.png';
-import ieeeLogo from '../../images/about/ieee.png';
-import acmLogo from '../../images/about/acm.png';
+import { useComponentPerformance } from '../../hooks/useComponentPerformance';
+import meImage from '../../images/5about/me.jpg';
+import shpeLogo from '../../images/5about/shpe.png';
+import knightHacksLogo from '../../images/5about/knightshacks.png';
+import aiUcfLogo from '../../images/5about/aiucf.png';
+import ieeeLogo from '../../images/5about/ieee.png';
+import acmLogo from '../../images/5about/acm.png';
 import ReactionBubble from './ReactionBubble';
 
 // Footer images
-import rockpileImage from '../../images/footer/rockpile.png';
-import bluecoral from '../../images/footer/bluecoral.png';
-import flatrock from '../../images/footer/flatrock.png';
-import orangecoral from '../../images/footer/orangecoral.png';
-import pinkcoral from '../../images/footer/pinkcoral.png';
-import rockwithseaweed from '../../images/footer/rockwithseaweed.png';
-import seaweed from '../../images/footer/seaweed.png';
-import seaweed2 from '../../images/footer/seaweed2.png';
-import seaweed3 from '../../images/footer/seaweed3.png';
-import tallrock from '../../images/footer/tallrock.png';
-import yellowcoral from '../../images/footer/yellowcoral.png';
-import purplecoral from '../../images/footer/purplecoral.png';
-import rocket from '../../images/footer/rocket.png';
+import rockpileImage from '../../images/5about/footer/rockpile.png';
+import bluecoral from '../../images/5about/footer/bluecoral.png';
+import flatrock from '../../images/5about/footer/flatrock.png';
+import orangecoral from '../../images/5about/footer/orangecoral.png';
+import pinkcoral from '../../images/5about/footer/pinkcoral.png';
+import rockwithseaweed from '../../images/5about/footer/rockwithseaweed.png';
+import seaweed from '../../images/5about/footer/seaweed.png';
+import seaweed2 from '../../images/5about/footer/seaweed2.png';
+import seaweed3 from '../../images/5about/footer/seaweed3.png';
+import tallrock from '../../images/5about/footer/tallrock.png';
+import yellowcoral from '../../images/5about/footer/yellowcoral.png';
+import purplecoral from '../../images/5about/footer/purplecoral.png';
+import rocket from '../../images/5about/footer/rocket.png';
 
 // Interactive footer components
 import ShellPhoneWithTooltip from './footer/ShellPhone';
 import MessageInBottleWithTooltip from './footer/MessageInBottle';
 
 const Background = () => {
+    // Performance monitoring
+    useComponentPerformance('About', process.env.NODE_ENV === 'development');
+    
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -36,7 +40,7 @@ const Background = () => {
     };
 
     return (
-        <BackgroundContainer>
+        <BackgroundContainer id="about" data-section-snap>
             {/* Surface water layer - connects to Skills ocean wall */}
             <SurfaceWater>
                 <SurfaceRippleLayer />
@@ -46,7 +50,7 @@ const Background = () => {
             <UnderwaterSection>
                 {/* Underwater header */}
                 <UnderwaterHeader>
-                    <HeaderTitle>About Me</HeaderTitle>
+                    <HeaderTitle data-snap-title>About Me</HeaderTitle>
                     <HeaderSubtitle>Dive into my background</HeaderSubtitle>
                 </UnderwaterHeader>
                 
@@ -61,7 +65,7 @@ const Background = () => {
                         {/* Social bubbles below image */}
                         <SocialBubblesContainer>
                             <SocialBubble 
-                                href="https://www.linkedin.com/in/colin-kirby" 
+                                href="https://www.linkedin.com/in/colinwkirby/" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 delay={0}
@@ -73,7 +77,7 @@ const Background = () => {
                             </SocialBubble>
                             
                             <SocialBubble 
-                                href="https://github.com/colinkirby" 
+                                href="https://github.com/KirbysGit" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 delay={0.5}
@@ -85,7 +89,7 @@ const Background = () => {
                             </SocialBubble>
                             
                             <SocialBubble 
-                                href="https://instagram.com/colinkirby" 
+                                href="https://www.instagram.com/colin.kirby03/" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 delay={1}
@@ -366,47 +370,47 @@ const Background = () => {
                 </SandTextLayer>
 
                 <UnderwaterObject style={{ bottom: '57%', left: '1%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
+                    <img style={{ width: '245px', height: '245px' }} src={rockwithseaweed} alt="Rock with Seaweed" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '43%', left: '5%' }}>
-                    <img style={{ width: '210px', height: '210px' }} src={tallrock} alt="Tall Rock" />
+                    <img style={{ width: '210px', height: '210px' }} src={tallrock} alt="Tall Rock" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', left: '-8%' }}>
-                    <img style={{ width: '360px', height: '360px', transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" />
+                    <img style={{ width: '360px', height: '360px', transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" loading="lazy" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '25%', left: '-2%' }}>
-                    <img style={{ width: '220px', height: '220px' }} src={seaweed} alt="Seaweed" />
+                    <img style={{ width: '220px', height: '220px' }} src={seaweed} alt="Seaweed" loading="lazy" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '31%', left: '3%' }}>
-                    <img style={{ width: '200px', height: '200px' }} src={seaweed2} alt="Seaweed" />
+                    <img style={{ width: '200px', height: '200px' }} src={seaweed2} alt="Seaweed" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '34%', left: '7%' }}>
-                    <img style={{ width: '220px', height: '220px' }} src={seaweed3} alt="Seaweed" />
+                    <img style={{ width: '220px', height: '220px' }} src={seaweed3} alt="Seaweed" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', left: '16%' }}>
-                    <img style={{ width: '225px', height: '225px' }} src={yellowcoral} alt="Yellow Coral" />
+                    <img style={{ width: '225px', height: '225px' }} src={yellowcoral} alt="Yellow Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', left: '12%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={pinkcoral} alt="Pink Coral" />
+                    <img style={{ width: '245px', height: '245px' }} src={pinkcoral} alt="Pink Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', left: '20%' }}>
-                    <img style={{ width: '230px', height: '230px' }} src={purplecoral} alt="Purple Coral" />
+                    <img style={{ width: '230px', height: '230px' }} src={purplecoral} alt="Purple Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', left: '14%' }}>
-                    <img style={{ width: '235px', height: '235px' }} src={orangecoral} alt="Orange Coral" />
+                    <img style={{ width: '235px', height: '235px' }} src={orangecoral} alt="Orange Coral" loading="lazy" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', left: '17%' }}>
-                    <img style={{ width: '260px', height: '260px' }} src={bluecoral} alt="Blue Coral" />
+                    <img style={{ width: '260px', height: '260px' }} src={bluecoral} alt="Blue Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
@@ -424,47 +428,47 @@ const Background = () => {
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', right: '16%' }}>
-                    <img style={{ width: '235px', height: '235px' }} src={bluecoral} alt="Blue Coral" />
+                    <img style={{ width: '235px', height: '235px' }} src={bluecoral} alt="Blue Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', right: '12%' }}>
-                    <img style={{ width: '240px', height: '240px' }} src={yellowcoral} alt="Yellow Coral" />
+                    <img style={{ width: '240px', height: '240px' }} src={yellowcoral} alt="Yellow Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', right: '20%' }}>
-                    <img style={{ width: '230px', height: '230px' }} src={orangecoral} alt="Orange Coral" />
+                    <img style={{ width: '230px', height: '230px' }} src={orangecoral} alt="Orange Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', right: '14%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={purplecoral} alt="Purple Coral" />
+                    <img style={{ width: '245px', height: '245px' }} src={purplecoral} alt="Purple Coral" loading="lazy" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', right: '17%' }}>
-                    <img style={{ width: '265px', height: '265px' }} src={pinkcoral} alt="Pink Coral" />
+                    <img style={{ width: '265px', height: '265px' }} src={pinkcoral} alt="Pink Coral" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '57%', right: '1%' }}>
-                    <img style={{ width: '240px', height: '240px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
+                    <img style={{ width: '240px', height: '240px' }} src={rockwithseaweed} alt="Rock with Seaweed" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '44%', right: '5%' }}>
-                    <img style={{ width: '210px', height: '210px' }} src={flatrock} alt="Flat Rock" />
+                    <img style={{ width: '210px', height: '210px' }} src={flatrock} alt="Flat Rock" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', right: '-8%' }}>
-                    <img style={{ width: '360px', height: '360px' }} src={rockpileImage} alt="Rockpile" />
+                    <img style={{ width: '360px', height: '360px' }} src={rockpileImage} alt="Rockpile" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '25%', right: '-2%' }}>
-                    <img style={{ width: '215px', height: '215px' }} src={seaweed} alt="Seaweed" />
+                    <img style={{ width: '215px', height: '215px' }} src={seaweed} alt="Seaweed" loading="lazy" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '31%', right: '3%' }}>
-                    <img style={{ width: '195px', height: '195px' }} src={seaweed2} alt="Seaweed" />
+                    <img style={{ width: '195px', height: '195px' }} src={seaweed2} alt="Seaweed" loading="lazy" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '34%', right: '7%' }}>
-                    <img style={{ width: '220px', height: '220px', transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" />
+                    <img style={{ width: '220px', height: '220px', transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" loading="lazy" />
                 </UnderwaterObject>
             </SandPlane>
 
@@ -493,8 +497,8 @@ const ripplePulse = keyframes`
 `;
 
 const floatParticles = keyframes`
-  0%, 100% { opacity: 0.5; transform: translateY(0); }
-  50% { opacity: 0.8; transform: translateY(-8px); }
+  0%, 100% { opacity: 0.5; transform: translateY(0) translateZ(0); }
+  50% { opacity: 0.8; transform: translateY(-8px) translateZ(0); }
 `;
 
 const BackgroundContainer = styled.section`
@@ -584,7 +588,7 @@ const UnderwaterSection = styled.div`
 
   /* Let content determine height naturally - don't force min-height that creates scroll */
   min-height: auto;
-  padding: 6rem 2rem;
+  padding: 2rem 2rem 6rem 2rem;
   
   display: flex;
   flex-direction: column;
@@ -698,6 +702,13 @@ const UnderwaterSection = styled.div`
       radial-gradient(circle at 75% 85%, rgba(255,255,255,0.06) 0%, transparent 1.5px),
       radial-gradient(circle at 45% 92%, rgba(255,255,255,0.05) 0%, transparent 1.5px);
     animation: ${floatParticles} 15s ease-in-out infinite;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+  
+  /* Pause animations during loading */
+  [data-loading="true"] &::after {
+    animation-play-state: paused;
   }
 `;
 
@@ -737,12 +748,19 @@ const HeaderTitle = styled.h1`
     0 0 40px rgba(100, 180, 210, 0.4),
     0 4px 8px rgba(0, 60, 100, 0.3);
   
-  /* Subtle floating animation */
+  /* Subtle floating animation - GPU accelerated */
   animation: floatTitle 4s ease-in-out infinite;
+  transform: translateZ(0);
+  will-change: transform;
   
   @keyframes floatTitle {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
+    0%, 100% { transform: translateY(0px) translateZ(0); }
+    50% { transform: translateY(-8px) translateZ(0); }
+  }
+  
+  /* Pause animations during loading */
+  [data-loading="true"] & {
+    animation-play-state: paused;
   }
   
   @media (max-width: 1600px) {
@@ -764,13 +782,20 @@ const HeaderSubtitle = styled.h2`
     0 2px 8px rgba(120, 200, 220, 0.5),
     0 4px 16px rgba(80, 160, 190, 0.3);
   
-  /* Slightly offset floating animation */
+  /* Slightly offset floating animation - GPU accelerated */
   animation: floatSubtitle 4s ease-in-out infinite;
   animation-delay: 0.5s;
+  transform: translateZ(0);
+  will-change: transform, opacity;
   
   @keyframes floatSubtitle {
-    0%, 100% { transform: translateY(0px); opacity: 0.9; }
-    50% { transform: translateY(-6px); opacity: 1; }
+    0%, 100% { transform: translateY(0px) translateZ(0); opacity: 0.9; }
+    50% { transform: translateY(-6px) translateZ(0); opacity: 1; }
+  }
+  
+  /* Pause animations during loading */
+  [data-loading="true"] & {
+    animation-play-state: paused;
   }
   
   @media (max-width: 1600px) {
@@ -778,10 +803,10 @@ const HeaderSubtitle = styled.h2`
   }
 `;
 
-// Float animation for cards
+// Float animation for cards - GPU accelerated
 const floatCard = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
+  0%, 100% { transform: translateY(0px) translateZ(0); }
+  50% { transform: translateY(-5px) translateZ(0); }
 `;
 
 // Profile section - flex container
@@ -906,16 +931,16 @@ const SocialBubblesContainer = styled.div`
   }
 `;
 
-// Floating bubble animation - smooth rising motion
+// Floating bubble animation - smooth rising motion, GPU accelerated
 const floatBubble = keyframes`
   0%, 100% { 
-    transform: translateY(0px) translateX(0px) scale(1);
+    transform: translateY(0px) translateX(0px) scale(1) translateZ(0);
   }
   33% { 
-    transform: translateY(-10px) translateX(3px) scale(1.01);
+    transform: translateY(-10px) translateX(3px) scale(1.01) translateZ(0);
   }
   66% { 
-    transform: translateY(-12px) translateX(-2px) scale(1.02);
+    transform: translateY(-12px) translateX(-2px) scale(1.02) translateZ(0);
   }
 `;
 
@@ -990,6 +1015,10 @@ const SocialBubble = styled.a`
     pointer-events: none;
   }
   
+  /* GPU acceleration - applied to all bubbles */
+  transform: translateZ(0);
+  will-change: transform;
+  
   /* Vertical positioning - bubbles rising from bottom to top */
   /* Smallest bubble at bottom (LinkedIn) */
   &:nth-child(1) {
@@ -1031,11 +1060,16 @@ const SocialBubble = styled.a`
     animation-delay: ${props => props.delay}s;
   }
   
+  /* Pause animations during loading */
+  [data-loading="true"] & {
+    animation-play-state: paused;
+  }
+  
   /* Hover effects */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
   
   &:hover {
-    transform: translateY(-10px) scale(1.15);
+    transform: translateY(-10px) scale(1.15) translateZ(0);
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.35) 0%,
@@ -1200,11 +1234,15 @@ const GlassCard = styled.article`
     0 8px 32px rgba(31, 38, 135, 0.37),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   
+  /* GPU acceleration for smooth animations */
+  transform: translateZ(0);
+  will-change: transform;
+  
   /* Subtle glow on hover */
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px) translateZ(0);
     box-shadow: 
       0 12px 40px rgba(31, 38, 135, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.3),
@@ -1216,13 +1254,42 @@ const GlassCard = styled.article`
     );
   }
   
-  /* Staggered floating animation */
-  &:nth-child(1) { animation: ${floatCard} 6s ease-in-out infinite; }
-  &:nth-child(2) { animation: ${floatCard} 6s ease-in-out 0.5s infinite; }
-  &:nth-child(3) { animation: ${floatCard} 6s ease-in-out 1s infinite; }
-  &:nth-child(4) { animation: ${floatCard} 6s ease-in-out 1.5s infinite; }
-  &:nth-child(5) { animation: ${floatCard} 6s ease-in-out 2s infinite; }
-  &:nth-child(6) { animation: ${floatCard} 6s ease-in-out 2.5s infinite; }
+  /* Staggered floating animation - GPU accelerated */
+  &:nth-child(1) { 
+    animation: ${floatCard} 6s ease-in-out infinite;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  &:nth-child(2) { 
+    animation: ${floatCard} 6s ease-in-out 0.5s infinite;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  &:nth-child(3) { 
+    animation: ${floatCard} 6s ease-in-out 1s infinite;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  &:nth-child(4) { 
+    animation: ${floatCard} 6s ease-in-out 1.5s infinite;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  &:nth-child(5) { 
+    animation: ${floatCard} 6s ease-in-out 2s infinite;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  &:nth-child(6) { 
+    animation: ${floatCard} 6s ease-in-out 2.5s infinite;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  /* Pause animations during loading */
+  [data-loading="true"] & {
+    animation-play-state: paused;
+  }
 `;
 
 // Card title

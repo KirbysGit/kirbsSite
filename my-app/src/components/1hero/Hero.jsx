@@ -6,177 +6,186 @@
 // had idea of adding some more stuff in background, thinking ufo, astronaut, and maybe one more thing.
 
 // imports.
-import React from 'react';
-import styled from 'styled-components';
+import React, { memo, useCallback, useMemo } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
+import { useComponentPerformance } from '../../hooks/useComponentPerformance';
+
+// Image imports
+import astronautImg from '../../images/1hero/astronaut.png';
+import ufoImg from '../../images/1hero/ufo.png';
+import cloud1Img from '../../images/3experience/clouds/cloud1.png';
+import cloud2Img from '../../images/3experience/clouds/cloud2.png';
+import cloud3Img from '../../images/3experience/clouds/cloud3.png';
 
 // hero component.
-const Hero = () => {
+const Hero = memo(() => {
+    // Performance monitoring
+    useComponentPerformance('Hero', process.env.NODE_ENV === 'development');
     
-    // smooth scroll function with media query-aware offset
-    const scrollToSection = (sectionId, desktopOffset = 0, mobileOffset = 0) => {
+    // Pause background animations until text finishes sliding in
+    const LOADING_SCREEN_DURATION = 2500; // 2.5 seconds to match loading screen
+    const [animReady, setAnimReady] = React.useState(false);
+    
+    React.useEffect(() => {
+        // When last text animation begins (~2s after loading screen), enable background animations
+        const t = setTimeout(() => setAnimReady(true), LOADING_SCREEN_DURATION + 2000);
+        return () => clearTimeout(t);
+    }, []);
+    
+    // Memoized smooth scroll function with debouncing
+    const scrollToSection = useCallback((sectionId, desktopOffset = 0, mobileOffset = 0) => {
         const element = document.getElementById(sectionId);
-        if (element) {
-            // get responsive offset based on screen width.
-            const getOffset = () => {
+        if (!element) return;
+        
+        // Cache window width to avoid repeated calls
                 const width = window.innerWidth;
-                if (width >= 2000) return desktopOffset;
-                if (width >= 1600) return mobileOffset;
-                return mobileOffset;
-            };
-            
-            // get the offset.
-            const offset = getOffset();
-            
-            // get the element position.
+        const offset = width >= 2000 ? desktopOffset : mobileOffset;
+        
+        // Use requestAnimationFrame for smoother scrolling
+        requestAnimationFrame(() => {
             const elementPosition = element.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - offset;
             
-            // scroll to the offset position.
             window.scrollTo({
                 top: offsetPosition,
                 behavior: 'smooth'
             });
-        }
-    };
+        });
+    }, []);
+    
+    // Memoize animation configs - delayed by 2.5s to start after loading screen
+    const msgWrapperConfig = useMemo(() => ({
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 0.5, duration: 0.8, ease: "easeOut" }
+    }), []);
+    
+    const supMsgConfig = useMemo(() => ({
+        initial: { x: -500, opacity: 0 },
+        animate: { x: 0, opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 0.8, duration: 1.2, ease: "easeOut" }
+    }), []);
+    
+    const introNameConfig = useMemo(() => ({
+        initial: { x: -500, opacity: 0 },
+        animate: { x: 0, opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 1.8, duration: 1.2, ease: "easeOut" }
+    }), []);
+    
+    const nameRowConfig = useMemo(() => ({
+        initial: { x: -500, opacity: 0 },
+        animate: { x: 0, opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 2.8, duration: 1.2, ease: "easeOut" }
+    }), []);
+    
+    const subNameConfig = useMemo(() => ({
+        initial: { y: -50, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 3.8, duration: 1.2, ease: "easeOut" }
+    }), []);
+    
+    const scrollInviteConfig = useMemo(() => ({
+        initial: { y: 50, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 4.8, duration: 1.2, ease: "easeOut" }
+    }), []);
+    
+    const navPillsConfig = useMemo(() => ({
+        initial: { y: 50, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 5.4, duration: 1.2, ease: "easeOut" }
+    }), []);
+    
+    const arrowConfig = useMemo(() => ({
+        initial: { y: 30, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 6.0, duration: 1.0, ease: "easeOut" }
+    }), []);
 
     return (
-        <HeroContainer>
+        <HeroContainer id="hero" data-section-snap data-anim-ready={animReady}>
             
-            {/* stars in the background */}
-            <ParticleField className="twinkles">
-                {/* simplified starfield - reduced for performance */}
-                <Star $top="8%" $left="12%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
-                <Star $top="22%" $left="88%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
-                <Star $top="38%" $left="28%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
-                <Star $top="58%" $left="72%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
-                <Star $top="78%" $left="18%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
-                <Star $top="12%" $left="58%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
-                <Star $top="32%" $left="42%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
-                <Star $top="68%" $left="92%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
-                <Star $top="48%" $left="8%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
-                <Star $top="82%" $left="52%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
-                <Star $top="18%" $left="78%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
-                <Star $top="42%" $left="92%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
-                <Star $top="62%" $left="32%" $animation="steady" $duration="0" $opacity="0.3" $size="1px" />
-                <Star $top="28%" $left="3%" $animation="steady" $duration="0" $opacity="0.4" $size="1px" />
-                <Star $top="72%" $left="85%" $animation="steady" $duration="0" $opacity="0.5" $size="1px" />
-                
-                {/* starts that occassionally twinkle (wanted to make them look more realistic and catch the user's eye) */}
-                <Star $top="15%" $left="25%" $animation="twinkle1" $duration="23.7" $opacity="0.6" $size="2px" />
-                <Star $top="45%" $left="65%" $animation="twinkle2" $duration="31.2" $opacity="0.7" $size="1px" />
-                <Star $top="75%" $left="35%" $animation="twinkle3" $duration="18.9" $opacity="0.8" $size="2px" />
-                <Star $top="25%" $left="75%" $animation="twinkle4" $duration="42.1" $opacity="0.5" $size="1px" />
-                <Star $top="55%" $left="15%" $animation="twinkle5" $duration="27.4" $opacity="0.9" $size="2px" />
-                <Star $top="85%" $left="85%" $animation="twinkle6" $duration="35.8" $opacity="0.6" $size="1px" />
-                <Star $top="35%" $left="45%" $animation="twinkle1" $duration="19.6" $opacity="0.7" $size="2px" />
-                <Star $top="65%" $left="95%" $animation="twinkle2" $duration="38.3" $opacity="0.4" $size="1px" />
-                <Star $top="12%" $left="68%" $animation="twinkle3" $duration="25.1" $opacity="0.8" $size="1px" />
-                <Star $top="88%" $left="22%" $animation="twinkle4" $duration="29.7" $opacity="0.5" $size="2px" />
-                <Star $top="42%" $left="88%" $animation="twinkle5" $duration="33.4" $opacity="0.6" $size="1px" />
-                <Star $top="68%" $left="12%" $animation="twinkle6" $duration="21.8" $opacity="0.7" $size="2px" />
+            {/* Optimized starfield - CSS background approach for better performance */}
+            <ParticleField className="twinkles" data-anim-ready={animReady}>
+                {/* Reduced to fewer individual stars for performance - most rendered via CSS gradients */}
+                {/* Only animate the most visible/important stars */}
+                <Star style={{ '--top': '15%', '--left': '25%', '--size': '2px', '--opacity': '0.6', '--duration': '23.7' }} className="twinkle1" />
+                <Star style={{ '--top': '45%', '--left': '65%', '--size': '1px', '--opacity': '0.7', '--duration': '31.2' }} className="twinkle2" />
+                <Star style={{ '--top': '75%', '--left': '35%', '--size': '2px', '--opacity': '0.8', '--duration': '18.9' }} className="twinkle3" />
+                <Star style={{ '--top': '25%', '--left': '75%', '--size': '1px', '--opacity': '0.5', '--duration': '42.1' }} className="twinkle4" />
+                <Star style={{ '--top': '55%', '--left': '15%', '--size': '2px', '--opacity': '0.9', '--duration': '27.4' }} className="twinkle5" />
+                <Star style={{ '--top': '85%', '--left': '85%', '--size': '1px', '--opacity': '0.6', '--duration': '35.8' }} className="twinkle6" />
                 
                 {/* moon (thinking bout adding some more to it, like a guy waving on it */}
                 <Moon>
-                    <Crater $top="15%" $left="55%" $size="6px" $depth="0.1" />
-                    <Crater $top="60%" $left="25%" $size="10px" $depth="0.08" />
-                    <Crater $top="35%" $left="15%" $size="4px" $depth="0.12" />
-                    <Crater $top="70%" $left="70%" $size="7px" $depth="0.09" />
-                    <Crater $top="25%" $left="35%" $size="8px" $depth="0.15" />
-                    <Crater $top="45%" $left="60%" $size="12px" $depth="0.12" />
-                    <Crater $top="80%" $left="40%" $size="5px" $depth="0.11" />
+                    <Crater style={{ '--top': '15%', '--left': '55%', '--size': '6px', '--depth': '0.1', '--depth-half': '0.05', '--shadow-size': '1.8px', '--shadow-opacity': '0.08' }} />
+                    <Crater style={{ '--top': '60%', '--left': '25%', '--size': '10px', '--depth': '0.08', '--depth-half': '0.04', '--shadow-size': '3px', '--shadow-opacity': '0.064' }} />
+                    <Crater style={{ '--top': '35%', '--left': '15%', '--size': '4px', '--depth': '0.12', '--depth-half': '0.06', '--shadow-size': '1.2px', '--shadow-opacity': '0.096' }} />
+                    <Crater style={{ '--top': '70%', '--left': '70%', '--size': '7px', '--depth': '0.09', '--depth-half': '0.045', '--shadow-size': '2.1px', '--shadow-opacity': '0.072' }} />
+                    <Crater style={{ '--top': '25%', '--left': '35%', '--size': '8px', '--depth': '0.15', '--depth-half': '0.075', '--shadow-size': '2.4px', '--shadow-opacity': '0.12' }} />
+                    <Crater style={{ '--top': '45%', '--left': '60%', '--size': '12px', '--depth': '0.12', '--depth-half': '0.06', '--shadow-size': '3.6px', '--shadow-opacity': '0.096' }} />
+                    <Crater style={{ '--top': '80%', '--left': '40%', '--size': '5px', '--depth': '0.11', '--depth-half': '0.055', '--shadow-size': '1.5px', '--shadow-opacity': '0.088' }} />
                 </Moon>
                 
             </ParticleField>
 
             {/* floating confused astronaut */}
-            <Astronaut />
+            <Astronaut data-anim-ready={animReady} />
             
             {/* floating UFO */}
-            <UFO />
+            <UFO data-anim-ready={animReady} />
 
             {/* original messages upon load - delayed slide in */}
-                <MsgsWrapper
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-                >
+            <MsgsWrapper {...msgWrapperConfig}>
                     <Msgs>
                         {/* what's up! message */}
-                        <SupMsg
-                            initial={{ x: -500, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
-                        >
+                    <SupMsg {...supMsgConfig}>
                             What's up! 
                             <WavingHand>👋</WavingHand>
                         </SupMsg>
 
                         {/* my name's... message */}
-                        <IntroNameMsg
-                            initial={{ x: -500, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 1.8, duration: 1.2, ease: "easeOut" }}
-                        >
+                    <IntroNameMsg {...introNameConfig}>
                             My name's
                         </IntroNameMsg>
 
                         {/* my name */}
-                        <NameRow
-                            initial={{ x: -500, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 2.8, duration: 1.2, ease: "easeOut" }}
-                        >
+                    <NameRow {...nameRowConfig}>
                             <Name className="nameGradient">Colin Kirby</Name>
                         </NameRow>
 
                         {/* sub name message*/}
-                        <SubNameMsg
-                            initial={{ y: -50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 3.8, duration: 1.2, ease: "easeOut" }}
-                        >
+                    <SubNameMsg {...subNameConfig}>
                             <b>* Most people just call me Kirby</b>
                         </SubNameMsg>
 
                         {/* scroll invitation message */}
                     {/* give the user options to navigate the site */}
-                        <ScrollInvite
-                        initial={{ y: 50, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 4.8, duration: 1.2, ease: "easeOut" }}
-                    >
+                    <ScrollInvite {...scrollInviteConfig}>
                         {/* cta */}
                         <ScrollText>What do you want to see?</ScrollText>
                         
                         {/* navigation pills */}
-                        <NavPills
-                            initial={{ y: 50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 5.4, duration: 1.2, ease: "easeOut" }}
-                        >
+                        <NavPills {...navPillsConfig}>
                             {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
                             {/* Adjust the first number for 2000px+, second for 1600-1999px */}
-                            <NavPill $variant="projects" onClick={() => scrollToSection('experience', 20, -110)}>
-                                <NavPillBackground $variant="projects" />
+                            <NavPillProjects onClick={() => scrollToSection('experience', 20, -110)}>
+                                <NavPillBackgroundProjects />
                                 <NavPillText>Strictly business</NavPillText>
                                 <NavPillIcon>✈️</NavPillIcon>
-                            </NavPill>
+                            </NavPillProjects>
                             {/* who even are you? (tim robinson type shi) */}
                             {/* Adjust the first number for 2000px+, second for 1600-1999px */}
-                            <NavPill $variant="story" onClick={() => scrollToSection('who-i-am', -25, -35)}>
-                                <NavPillBackground $variant="story" />
+                            <NavPillStory onClick={() => scrollToSection('who-i-am', -25, -35)}>
+                                <NavPillBackgroundStory />
                                 <NavPillText>Who even are you?</NavPillText>
                                 <NavPillIcon>👨‍🚀</NavPillIcon>
-                            </NavPill>
+                            </NavPillStory>
                         </NavPills>
                         
                         {/* constellation arrow */}
-                        <SimpleArrow
-                            initial={{ y: 30, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 6.0, duration: 1.0, ease: "easeOut" }}
-                        >
+                        <SimpleArrow {...arrowConfig}>
                             <ArrowText>Scroll to explore</ArrowText>
                             <ArrowIcon>
                                 <ConstellationArrowDown />
@@ -188,7 +197,11 @@ const Hero = () => {
             
         </HeroContainer>
     )
-}
+});
+
+Hero.displayName = 'Hero';
+
+export default Hero;
 
 /* ========== styled ========== */
 
@@ -199,6 +212,35 @@ const HeroContainer = styled.div`
     overflow: hidden;
     min-height: 100vh;
     position: relative;
+    
+    /* Performance optimizations - isolate Hero from layout shifts below */
+    contain: layout style paint;
+    transform: translateZ(0); /* Force GPU layer */
+    will-change: auto; /* Only set when actively animating */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* Prevent layout shifts from affecting Hero */
+    isolation: isolate; /* Create new stacking context */
+    z-index: 1; /* Ensure Hero stays above other content during loading */
+    
+    /* Prevent scrollbar changes from affecting Hero rendering */
+    :root[data-loading="true"] & {
+        position: relative;
+        /* Maintain fixed height during loading to prevent scrollbar recalculation */
+        height: 100vh;
+        max-height: 100vh;
+        /* Hide Hero content during loading - only show loading screen */
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    /* Show Hero content after loading */
+    :root[data-loading="false"] & {
+        opacity: 1;
+        pointer-events: auto;
+        transition: opacity 0.5s ease-in;
+    }
 
     /* styles */ 
     background: radial-gradient(ellipse at center, 
@@ -206,26 +248,28 @@ const HeroContainer = styled.div`
         rgba(0, 0, 0, 0.9) 30%, 
         rgba(13, 7, 27, 1) 70%);
     
-    /* breathing nebula effect (looks so cool) */
+    /* breathing nebula effect (optimized - reduced gradient complexity) */
     &::after {
         /* layout */
         inset: 0;
         content: '';
         position: absolute;
+        z-index: 0;
 
         /* styles */
         opacity: 0.7;
-        will-change: opacity, transform;
+        /* GPU-accelerated animation */
         animation: breathe 10s ease-in-out infinite;
+        transform: translateZ(0); /* Force GPU acceleration */
+        will-change: opacity, transform; /* Only properties that actually animate */
+        
+        /* Simplified gradients - fewer layers for better performance */
         background: 
             radial-gradient(ellipse at 20% 20%, rgba(120, 50, 200, 0.3) 0%, transparent 50%),
             radial-gradient(ellipse at 80% 80%, rgba(50, 100, 200, 0.2) 0%, transparent 50%),
-            radial-gradient(ellipse at 40% 60%, rgba(200, 50, 150, 0.15) 0%, transparent 50%),
             linear-gradient(135deg, 
                 rgba(0, 0, 0, 0.8) 0%, 
-                rgba(20, 5, 40, 0.6) 25%,
-                rgba(40, 10, 80, 0.4) 50%,
-                rgba(20, 5, 40, 0.6) 75%,
+                rgba(20, 5, 40, 0.6) 50%,
                 rgba(0, 0, 0, 0.8) 100%);
 
         
@@ -233,52 +277,74 @@ const HeroContainer = styled.div`
         -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
                 mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
         pointer-events: none;
+        
+        /* Pause until text animations finish */
+        [data-anim-ready="false"] & {
+            animation-play-state: paused;
+        }
+        
+        /* Respect reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            animation: none;
+            opacity: 0.7;
+        }
     }
     
-    /* keyframes for nebula breathing*/
+    /* keyframes for nebula breathing - optimized */
     @keyframes breathe {
         0%, 100% { 
             opacity: 0.5;
-            transform: scale(1);
+            transform: translateZ(0) scale(1);
         }
         50% { 
             opacity: 0.8;
-            transform: scale(1.05);
+            transform: translateZ(0) scale(1.05);
         }
     }
 `;
 
-// particle field for natural twinkling.
+// particle field for natural twinkling - optimized with CSS background stars
 const ParticleField = styled.div`
     /* layout */
     inset: 0;
     z-index: 1;
     position: absolute;
+    
+    /* Performance optimizations */
+    contain: layout style paint;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    
+    /* CSS-based starfield background - much more performant than individual divs */
+    background-image:
+        /* Static stars - rendered via CSS, no DOM overhead */
+        radial-gradient(circle at 8% 12%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+        radial-gradient(circle at 22% 88%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+        radial-gradient(circle at 38% 28%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
+        radial-gradient(circle at 58% 72%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+        radial-gradient(circle at 78% 18%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+        radial-gradient(circle at 12% 58%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+        radial-gradient(circle at 32% 42%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
+        radial-gradient(circle at 68% 92%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+        radial-gradient(circle at 48% 8%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+        radial-gradient(circle at 82% 52%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+        radial-gradient(circle at 18% 78%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
+        radial-gradient(circle at 42% 92%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+        radial-gradient(circle at 62% 32%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+        radial-gradient(circle at 28% 3%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+        radial-gradient(circle at 72% 85%, rgba(255,255,255,0.5) 0.5px, transparent 1px);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    
+    /* Pause starfield twinkling until text animations finish */
+    [data-anim-ready="false"] & {
+        animation-play-state: paused;
+    }
 `;
 
-// star particles.
-const Star = styled.div`
-    /* layout */
-    position: absolute;
-    top: ${props => props.$top};
-    left: ${props => props.$left};
-
-    /* spacing */
-    width: ${props => props.$size || '1px'};
-    height: ${props => props.$size || '1px'};
-
-    /* styles */
-    background: white;
-    border-radius: 50%;
-    opacity: ${props => props.$opacity};
-    box-shadow: 
-        0 0 3px rgba(255, 255, 255, 0.9),
-        0 0 6px rgba(255, 255, 255, 0.6),
-        0 0 9px rgba(255, 255, 255, 0.3);
-    animation: ${props => props.$animation} ${props => props.$duration}s ease-in-out infinite;
-    
-    /* keyframes, twinkle animations, diff types of twinkling so it doesn't look uniform */
-    @keyframes twinkle1 {
+// Twinkle keyframes - extracted outside component to avoid re-creation
+const twinkle1 = keyframes`
         0%, 92% { opacity: 0.4; }
         93% { opacity: 1; }
         94% { opacity: 0.2; }
@@ -288,9 +354,9 @@ const Star = styled.div`
         98% { opacity: 0.1; }
         99% { opacity: 1; }
         100% { opacity: 0.4; }
-    }
+`;
     
-    @keyframes twinkle2 {
+const twinkle2 = keyframes`
         0%, 89% { opacity: 0.3; }
         90% { opacity: 0.8; }
         91% { opacity: 0.1; }
@@ -301,9 +367,9 @@ const Star = styled.div`
         96% { opacity: 1; }
         97% { opacity: 0.5; }
         100% { opacity: 0.3; }
-    }
+`;
     
-    @keyframes twinkle3 {
+const twinkle3 = keyframes`
         0%, 87% { opacity: 0.5; }
         88% { opacity: 1; }
         89% { opacity: 0.2; }
@@ -315,9 +381,9 @@ const Star = styled.div`
         95% { opacity: 0.1; }
         96% { opacity: 1; }
         100% { opacity: 0.5; }
-    }
+`;
     
-    @keyframes twinkle4 {
+const twinkle4 = keyframes`
         0%, 91% { opacity: 0.2; }
         92% { opacity: 1; }
         93% { opacity: 0.3; }
@@ -328,9 +394,9 @@ const Star = styled.div`
         98% { opacity: 0.9; }
         99% { opacity: 0.2; }
         100% { opacity: 0.2; }
-    }
+`;
     
-    @keyframes twinkle5 {
+const twinkle5 = keyframes`
         0%, 88% { opacity: 0.4; }
         89% { opacity: 0.9; }
         90% { opacity: 0.1; }
@@ -341,9 +407,9 @@ const Star = styled.div`
         95% { opacity: 1; }
         96% { opacity: 0.3; }
         100% { opacity: 0.4; }
-    }
+`;
     
-    @keyframes twinkle6 {
+const twinkle6 = keyframes`
         0%, 90% { opacity: 0.3; }
         91% { opacity: 1; }
         92% { opacity: 0.1; }
@@ -353,10 +419,59 @@ const Star = styled.div`
         96% { opacity: 0.4; }
         97% { opacity: 0.8; }
         100% { opacity: 0.3; }
+`;
+
+// star particles - optimized for performance (using CSS variables instead of props)
+const Star = styled.div`
+    /* layout */
+    position: absolute;
+    top: var(--top, 50%);
+    left: var(--left, 50%);
+
+    /* spacing */
+    width: var(--size, 1px);
+    height: var(--size, 1px);
+
+    /* styles */
+    background: white;
+    border-radius: 50%;
+    opacity: var(--opacity, 0.5);
+    
+    /* Simplified box-shadow - fewer layers for better performance */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    
+    /* GPU-accelerated animation - using CSS classes for animation selection */
+    transform: translateZ(0);
+    will-change: opacity; /* Only animate opacity */
+    
+    /* Animation selection via CSS classes - duration passed via CSS variable */
+    &.twinkle1 {
+        animation: ${twinkle1} calc(var(--duration, 23.7) * 1s) ease-in-out infinite;
+    }
+    &.twinkle2 {
+        animation: ${twinkle2} calc(var(--duration, 31.2) * 1s) ease-in-out infinite;
+    }
+    &.twinkle3 {
+        animation: ${twinkle3} calc(var(--duration, 18.9) * 1s) ease-in-out infinite;
+    }
+    &.twinkle4 {
+        animation: ${twinkle4} calc(var(--duration, 42.1) * 1s) ease-in-out infinite;
+    }
+    &.twinkle5 {
+        animation: ${twinkle5} calc(var(--duration, 27.4) * 1s) ease-in-out infinite;
+    }
+    &.twinkle6 {
+        animation: ${twinkle6} calc(var(--duration, 35.8) * 1s) ease-in-out infinite;
     }
     
-    @keyframes steady {
-        0%, 100% { opacity: 0.4; }
+    /* Pause until text animations finish */
+    [data-anim-ready="false"] & {
+        animation-play-state: paused;
+    }
+    
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        animation: none !important;
     }
 `;
 
@@ -388,6 +503,11 @@ const Moon = styled.div`
         inset -8px -8px 15px rgba(0, 0, 0, 0.15);
     
     
+    /* Pause until text animations finish */
+    [data-anim-ready="false"] & {
+        animation-play-state: paused;
+    }
+    
     /* keyframes, moon float animation */
     @keyframes moonFloat {
         0%, 100% { 
@@ -401,27 +521,27 @@ const Moon = styled.div`
     }
 `;
 
-// flexible crater component for moon.
+// flexible crater component for moon - optimized with CSS variables
 const Crater = styled.div`
     /* layout */
     position: absolute;
-    top: ${props => props.$top};
-    left: ${props => props.$left};
+    top: var(--top, 50%);
+    left: var(--left, 50%);
 
     /* spacing */
-    width: ${props => props.$size};
-    height: ${props => props.$size};
+    width: var(--size, 6px);
+    height: var(--size, 6px);
 
     /* styles */
     border-radius: 50%;
     background: radial-gradient(circle, 
-        rgba(0, 0, 0, ${props => props.$depth}) 0%,
-        rgba(0, 0, 0, ${props => props.$depth * 0.5}) 50%,
+        rgba(0, 0, 0, var(--depth, 0.1)) 0%,
+        rgba(0, 0, 0, var(--depth-half, 0.05)) 50%,
         transparent 100%);
-    box-shadow: 0 0 ${props => parseFloat(props.$size) * 0.3}px rgba(0, 0, 0, ${props => props.$depth * 0.8});
+    box-shadow: 0 0 var(--shadow-size, 1.8px) rgba(0, 0, 0, var(--shadow-opacity, 0.08));
 `;
 
-// astronaut.
+// astronaut - optimized animation
 const Astronaut = styled.div`
     /* layout */
     top: 60%; 
@@ -439,29 +559,42 @@ const Astronaut = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     animation: astronautFloat 35s linear infinite;
-    background-image: url('src/images/1hero/astronaut.png');
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
+    background-image: url(${astronautImg});
     
-    /* keyframes, rotating and floating */
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    
+    /* Simplified filter - drop-shadow is expensive, use box-shadow instead */
+    filter: none;
+    
+    /* keyframes, rotating and floating - simplified for performance */
     @keyframes astronautFloat {
         0% {
-            transform: translateX(0) rotate(0deg);
+            transform: translateZ(0) translateX(0) rotate(0deg);
         }
         50% {
-            transform: translateX(calc(100vw + 120px)) rotate(720deg); /* 2 full rotations */
+            transform: translateZ(0) translateX(calc(100vw + 120px)) rotate(720deg);
         }
         100% {
-            transform: translateX(calc(100vw + 240px)) rotate(1440deg); /* 4 full rotations */
+            transform: translateZ(0) translateX(calc(100vw + 240px)) rotate(1440deg);
         }
     }
     
-    /* pause animation during loading */
-    :root[data-loading="true"] & {
+    /* pause animation during loading and until text animations finish */
+    :root[data-loading="true"] &,
+    [data-anim-ready="false"] & {
         animation-play-state: paused;
+    }
+    
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        transform: translateZ(0) translateX(0);
     }
 `;
 
-// ufo.
+// ufo - optimized animation
 const UFO = styled.div`
     /* layout */
     top: 10%;
@@ -479,30 +612,41 @@ const UFO = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     animation: ufoMove 20s linear infinite;
-    background-image: url('src/images/1hero/ufo.png');
+    background-image: url(${ufoImg});
     
-    /* bobbing up and down animation */
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    
+    /* bobbing up and down animation - GPU optimized */
     @keyframes ufoMove {
         0% {
-            transform: translateX(0) translateY(0);
+            transform: translateZ(0) translateX(0) translateY(0);
         }
         25% {
-            transform: translateX(calc(-25vw - 40px)) translateY(-50px);
+            transform: translateZ(0) translateX(calc(-25vw - 40px)) translateY(-50px);
         }
         50% {
-            transform: translateX(calc(-50vw - 80px)) translateY(0);
+            transform: translateZ(0) translateX(calc(-50vw - 80px)) translateY(0);
         }
         75% {
-            transform: translateX(calc(-75vw - 120px)) translateY(50px);
+            transform: translateZ(0) translateX(calc(-75vw - 120px)) translateY(50px);
         }
         100% {
-            transform: translateX(calc(-100vw - 160px)) translateY(0);
+            transform: translateZ(0) translateX(calc(-100vw - 160px)) translateY(0);
         }
     }
     
-    /* pause animation during loading */
-    :root[data-loading="true"] & {
+    /* pause animation during loading and until text animations finish */
+    :root[data-loading="true"] &,
+    [data-anim-ready="false"] & {
         animation-play-state: paused;
+    }
+    
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        transform: translateZ(0) translateX(0) translateY(0);
     }
 `;
 
@@ -516,7 +660,7 @@ const MsgsWrapper = styled(motion.div)`
 
     /* styles */
     opacity: 0.9;
-    will-change: transform, opacity;
+    /* will-change removed - only use when element is actively animating */
 `;
 
 // my messages container.
@@ -641,11 +785,25 @@ const Name = styled.span`
         rgb(0, 97, 241) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    
+    /* GPU acceleration - background-position is GPU accelerated */
+    will-change: background-position;
+    transform: translateZ(0);
 
     /* keyframes, gradient shift animation */
     @keyframes gradientShift {
         0% { background-position: 0% 50%; }
         100% { background-position: 200% 50%; }
+    }
+    
+    /* Pause gradient animation until text finishes sliding in */
+    [data-anim-ready="false"] & {
+        animation-play-state: paused;
+    }
+    
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
     }
 `;
 
@@ -723,8 +881,8 @@ const NavPills = styled(motion.div)`
     text-align: center;
 `;
 
-// navigation pill.
-const NavPill = styled.button`
+// Base navigation pill styles - shared between variants
+const NavPillBase = styled.button`
     /* layout */
     width: 100%;
     min-width: 0;
@@ -742,63 +900,103 @@ const NavPill = styled.button`
     cursor: pointer;
     font: inherit;
     border-radius: 50px;
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: transparent;
+    /* Only transition transform and opacity for better performance */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* gradient background based on variant */
-
-    /* projects variant, sky style for background of Projects.jsx. */
-    ${props => props.$variant === 'projects' && `
-        background: linear-gradient(to bottom,
-            rgb(150, 200, 246) 0%,
-            rgb(145, 198, 246) 6%,
-            rgb(138, 194, 246) 12%,
-            rgb(130, 190, 246) 18%,
-            rgb(122, 186, 245) 24%,
-            rgb(114, 182, 244) 32%,
-            rgb(106, 178, 243) 40%,
-            rgb(98, 174, 242) 48%,
-            rgb(92, 171, 241) 56%,
-            rgb(86, 168, 240) 64%,
-            rgb(82, 166, 239) 72%,
-            rgb(78, 164, 239) 80%,
-            rgb(75, 162, 238) 88%,
-            rgb(73, 161, 238) 94%,
-            rgb(72, 160, 238) 97%,
-            rgb(71, 160, 238) 100%);
-        box-shadow: 0 0 20px rgba(150, 200, 246, 0.1);
-    `}
-    
-    /* story variant, spacey style for background of Story.jsx. */
-    ${props => props.$variant === 'story' && `
-        background: linear-gradient(to bottom,
-            rgb(13, 7, 27) 0%,
-            rgb(13, 7, 27) 25%,
-            rgb(30, 20, 55) 50%,
-            rgb(45, 30, 80) 65%,
-            rgb(65, 45, 110) 80%,
-            rgb(85, 60, 135) 90%,
-            rgb(100, 70, 150) 100%);
-        box-shadow: 0 0 20px rgba(100, 70, 150, 0.1);
-    `}
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
     
     /* hover effect */
     &:hover {
-        transform: translateY(-3px) scale(1.08);
+        transform: translateY(-3px) scale(1.08) translateZ(0);
         box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         border-color: rgba(255, 255, 255, 0.3);
     }
     
     &:active {
-        transform: translateY(-1px) scale(1.05);
+        transform: translateY(-1px) scale(1.05) translateZ(0);
         transition: all 0.1s ease;
     }
 `;
 
-// background effects for the pills. (clouds for projects, stars for story)
-const NavPillBackground = styled.div`
+// Projects variant - simplified gradient (reduced from 16 to 8 stops)
+const NavPillProjects = styled(NavPillBase)`
+        background: linear-gradient(to bottom,
+            rgb(150, 200, 246) 0%,
+        rgb(138, 194, 246) 20%,
+        rgb(122, 186, 245) 40%,
+        rgb(106, 178, 243) 60%,
+        rgb(92, 171, 241) 80%,
+        rgb(78, 164, 239) 95%,
+            rgb(71, 160, 238) 100%);
+        box-shadow: 0 0 20px rgba(150, 200, 246, 0.1);
+`;
+    
+// Story variant - simplified gradient (reduced from 7 to 5 stops)
+const NavPillStory = styled(NavPillBase)`
+        background: linear-gradient(to bottom,
+            rgb(13, 7, 27) 0%,
+        rgb(30, 20, 55) 40%,
+        rgb(45, 30, 80) 70%,
+        rgb(85, 60, 135) 95%,
+            rgb(100, 70, 150) 100%);
+        box-shadow: 0 0 20px rgba(100, 70, 150, 0.1);
+`;
+
+// Cloud drift keyframe - extracted outside component
+const cloudDrift = keyframes`
+    0%, 100% { 
+        background-position: 15% 20%, 70% 60%;
+        opacity: 0.25;
+    }
+    50% { 
+        background-position: 10% 25%, 65% 65%;
+        opacity: 0.3;
+    }
+`;
+
+// Star twinkle keyframes - extracted outside component
+const starTwinkle = keyframes`
+    0%, 100% { 
+        opacity: 0.6; 
+        transform: scale(1); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2); 
+    }
+`;
+
+const starField = keyframes`
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+`;
+
+// Background effects for projects pill - separate component
+const NavPillBackgroundProjects = styled.div`
+    /* layout */
+    inset: 0;
+    position: absolute;
+
+    /* styles */
+    opacity: 0.25;
+    border-radius: 50px;
+    pointer-events: none;
+        background-repeat: no-repeat;
+        background-image: 
+        url(${cloud1Img}),
+        url(${cloud2Img});
+    animation: ${cloudDrift} 12s ease-in-out infinite;
+    background-position: 15% 20%, 70% 60%;
+    background-size: 25px 15px, 20px 12px;
+`;
+        
+// Background effects for story pill - separate component
+const NavPillBackgroundStory = styled.div`
     /* layout */
     inset: 0;
     position: absolute;
@@ -807,43 +1005,6 @@ const NavPillBackground = styled.div`
     opacity: 0.4;
     border-radius: 50px;
     pointer-events: none;
-    
-    /* cloud effects for projects */
-    ${props => props.$variant === 'projects' && `
-        /* styles */
-        opacity: 0.25;
-        background-repeat: no-repeat;
-        background-image: 
-            url('src/images/clouds/cloud1.png'),
-            url('src/images/clouds/cloud2.png'),
-            url('src/images/clouds/cloud3.png');
-        animation: cloudDrift 12s ease-in-out infinite;
-        background-position: 15% 20%, 70% 60%, 40% 80%;
-        background-size: 25px 15px, 20px 12px, 18px 10px;
-        
-        /* keyframes, small cloud drifting (might get rid of honestly) */
-        @keyframes cloudDrift {
-            0%, 100% { 
-                background-position: 15% 20%, 70% 60%, 40% 80%;
-                opacity: 0.25;
-            }
-            25% { 
-                background-position: 20% 15%, 75% 55%, 45% 75%;
-                opacity: 0.35;
-            }
-            50% { 
-                background-position: 10% 25%, 65% 65%, 35% 85%;
-                opacity: 0.3;
-            }
-            75% { 
-                background-position: 18% 18%, 72% 58%, 42% 78%;
-                opacity: 0.28;
-            }
-        }
-    `}
-    
-    /* star effects for story */
-    ${props => props.$variant === 'story' && `
 
         /* various stars in the background, twinkling and such. */
         &::before,
@@ -852,7 +1013,7 @@ const NavPillBackground = styled.div`
             position: absolute;
             background: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
-            animation: starTwinkle 4s ease-in-out infinite;
+        animation: ${starTwinkle} 4s ease-in-out infinite;
         }
         
         &::before {
@@ -883,33 +1044,7 @@ const NavPillBackground = styled.div`
             radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
             radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
         background-size: 100% 100%, 100% 100%, 100% 100%;
-        animation: starField 8s ease-in-out infinite;
-        
-        /* keyframes, star twinkling animation */
-        @keyframes starTwinkle {
-            0%, 100% { 
-                opacity: 0.6; 
-                transform: scale(1); 
-            }
-            25% { 
-                opacity: 1; 
-                transform: scale(1.3); 
-            }
-            50% { 
-                opacity: 0.8; 
-                transform: scale(0.9); 
-            }
-            75% { 
-                opacity: 1; 
-                transform: scale(1.1); 
-            }
-        }
-        
-        @keyframes starField {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-    `}
+    animation: ${starField} 8s ease-in-out infinite;
 `;
 
 // pill text.
@@ -1029,6 +1164,3 @@ const SimpleArrow = styled(motion.div)`
     /* styles */
     transition: all 0.3s ease;
 `;
-
-// export component.
-export default Hero;

@@ -26,9 +26,9 @@ import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
 // import project images.
-import shelfBanner from '@/images/projects/shelf_vision/shelfvision.png';
-import paperPreview from '@/images/projects/shelf_vision/paperpreview.png';
-import presentationPreview from '@/images/projects/shelf_vision/presentationpreview.png';
+import shelfBanner from '@/images/4projects/shelf_vision/shelfvision.png';
+import paperPreview from '@/images/4projects/shelf_vision/paperpreview.png';
+import presentationPreview from '@/images/4projects/shelf_vision/presentationpreview.png';
 
 // main shelf vision card component.
 const ShelfVisionCard = ({ isFocused = false }) => {

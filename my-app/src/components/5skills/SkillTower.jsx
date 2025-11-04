@@ -6,11 +6,11 @@
 // decided to make it a building skyline style to make it more interesting.
 
 // imports.
-import React, { useId, useMemo } from "react";
+import React, { memo, useId, useMemo } from "react";
 import styled from "styled-components";
 
 // export component.
-export default function SkillTower({
+const SkillTower = memo(function SkillTower({
   name = "React",
   logoSrc = "",
   level = 0.85, 	// 0..1 -> height
@@ -1875,7 +1875,11 @@ export default function SkillTower({
 			</svg>
 		</Wrap>
 	);
-}
+});
+
+SkillTower.displayName = 'SkillTower';
+
+export default SkillTower;
 
 /* ================= styles ================= */
 
@@ -1888,12 +1892,16 @@ const Wrap = styled.div`
     align-items: center;
     z-index: ${({ $z }) => $z};
     
+    /* Performance optimizations */
+    transform: translateZ(0) scale(${({ $scale }) => $scale});
+    will-change: transform;
+    contain: layout style;
+    
     /* spacing */
     height: var(--h);
     margin-left: ${({ $overlap }) => ($overlap ? `${$overlap}px` : "0")};
     
     /* styles */
-    transform: scale(${({ $scale }) => $scale});
     filter: brightness(${({ $brightness }) => $brightness}) saturate(${({ $saturation }) => $saturation}) blur(${({ $blur }) => $blur}px);
     
     /* media queries */

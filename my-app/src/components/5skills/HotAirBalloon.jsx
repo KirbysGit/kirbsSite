@@ -2,7 +2,7 @@
 
 // this took so long, was trying to find a workaround 
 // imports.
-import React, { useId } from "react";
+import React, { memo, useId, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 
 /* ---------- helpers ---------- */
@@ -122,7 +122,7 @@ function BalloonSVG({ w, palette }) {
 }
 
 /* ---------- hot air balloon component ---------- */
-const HotAirBalloon = ({
+const HotAirBalloon = memo(({
   top = "10%",
   left = "10%",
   size = "medium",
@@ -135,8 +135,8 @@ const HotAirBalloon = ({
 }) => {
   const px = sizePx(size);
   
-  // geometry.
-  const geom = {
+  // Memoize geometry calculations
+  const geom = useMemo(() => ({
     envH: Math.round(px * 1.0),
     ringW: Math.round(px * 0.24),
     ringY: Math.round(px * 0.98),
@@ -144,7 +144,7 @@ const HotAirBalloon = ({
     basketTop: Math.round(px * 1.28),
     basketH: Math.round(px * 0.18),
     cx: px / 2
-  };
+  }), [px]);
   
   return (
     <Wrap style={{ top, left, width: px }} $floatMs={floatMs} $delay={delay} title={name}>
@@ -191,7 +191,9 @@ const HotAirBalloon = ({
       	</Basket>
     </Wrap>
   );
-};
+});
+
+HotAirBalloon.displayName = 'HotAirBalloon';
 
 // export component.
 export default HotAirBalloon;

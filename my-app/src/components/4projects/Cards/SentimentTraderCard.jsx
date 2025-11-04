@@ -27,9 +27,9 @@ import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
 // import project assets.
-import sentimentTraderLogo from '@/images/projects/sentiment_trader/sentimenttrader.png';
-import lightningTalkPreview from '@/images/projects/sentiment_trader/lightningtalkpreview.png';
-import paperPreview from '@/images/projects/sentiment_trader/paperpreview.png';
+import sentimentTraderLogo from '@/images/4projects/sentiment_trader/sentimenttrader.png';
+import lightningTalkPreview from '@/images/4projects/sentiment_trader/lightningtalkpreview.png';
+import paperPreview from '@/images/4projects/sentiment_trader/paperpreview.png';
 
 const SentimentTraderCard = ({ isFocused = false }) => {
     // tech, highlights, & theme.

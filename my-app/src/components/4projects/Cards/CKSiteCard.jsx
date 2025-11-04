@@ -14,6 +14,7 @@ import CardBase, {
   ProjectName, 
   ProjectSubtitle, 
   ProjectDate, 
+  ProjectLogoImage,
   ProjectDescription, 
   Divider, 
   CardBody, 
@@ -23,6 +24,9 @@ import WIPRibbon from '../WIPRibbon';
 import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
+
+// import logo
+import fullLogo from '@/images/0navbar/fulllogo.png';
 
 // main cksite card component.
 const CKSiteCard = ({ isFocused = false }) => {
@@ -66,6 +70,7 @@ const CKSiteCard = ({ isFocused = false }) => {
             <ProjectSubtitle>This Portfolio · My Digital Journey</ProjectSubtitle>
             <ProjectDate>2024 – Present</ProjectDate>
           </ProjectInfo>
+          <ProjectLogoImage src={fullLogo} alt="CK's Site Logo" />
         </HeaderTop>
 
         <ProjectDescription>

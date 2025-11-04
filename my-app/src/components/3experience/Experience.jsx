@@ -7,8 +7,9 @@
 // upper atmosphere style, aurora down into clouds.
 
 // imports.
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo, useCallback, memo } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // component imports.
 import Cloud from './Cloud';
@@ -26,46 +27,51 @@ import { getBrandColors } from '@/components/utils/brandColors.js';
 import { EXPERIENCE_CARDS } from '@/data/experienceData.jsx';
 
 // actual experience component.
-const ActualExperience = () => {
+const ActualExperience = memo(() => {
+    // Performance monitoring
+    useComponentPerformance('Experience', process.env.NODE_ENV === 'development');
+    
     // state variables.
     const [index, setIndex] = useState(1);              // current card index.
     const [paused, setPaused] = useState(false);        // whether carousel is paused.
     const drag = useRef({ x: 0, active: false });       // drag state for mobile. (expanded upon in future)
     
     // first slide is the "hire me" card, rest are data-driven.
-    const n = 1 + EXPERIENCE_CARDS.length;
-    const next = () => setIndex((i) => (i + 1) % n);
-    const prev = () => setIndex((i) => (i - 1 + n) % n);
+    const n = useMemo(() => 1 + EXPERIENCE_CARDS.length, []);
+    
+    // Memoized navigation functions
+    const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
+    const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
     
     // handles pointer down event for mobile.
-    const onPointerDown = (e) => {
+    const onPointerDown = useCallback((e) => {
         drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
         setPaused(true);
-    };
+    }, []);
     
     // handles pointer up event for mobile.
-    const onPointerUp = (e) => {
+    const onPointerUp = useCallback((e) => {
         if (!drag.current.active) return;
         const upX = e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0;
         const dx = upX - drag.current.x;
         drag.current.active = false;
         if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
         setPaused(false);
-    };
+    }, [next, prev]);
     
-    // gets card style based on card index.
-    const getCardStyle = (cardIndex) => {
+    // Memoized card style calculation
+    const getCardStyle = useCallback((cardIndex) => {
         const distance = Math.abs(cardIndex - index);
         return {
             position: cardIndex - index,
             isFocused: cardIndex === index,
             distance
         };
-    };
+    }, [index]);
     
     // main return.
     return (
-        <ExperienceContainer id="experience">
+        <ExperienceContainer id="experience" data-section-snap>
             {/* aurora effects at the top */}
             <AuroraWrapper >
                 <Aurora />
@@ -105,8 +111,8 @@ const ActualExperience = () => {
             
             {/* entire content wrapper */}
             <ContentWrapper>
-                {/* main title */}
-                <SectionTitle>Experience</SectionTitle>
+                {/* main title - snap point for centering */}
+                <SectionTitle data-snap-title>Experience</SectionTitle>
                 
                 {/* little sub title */}
                 <SectionSubtitle>Where I've built, learned, and grown</SectionSubtitle>
@@ -309,7 +315,7 @@ const ActualExperience = () => {
             <BottomSeamFade />
         </ExperienceContainer>
     );
-}
+});
 
 // entire container, sky gradient.
 const ExperienceContainer = styled.div`
@@ -349,6 +355,11 @@ const CloudLayer = styled.div`
     inset: 0;
     z-index: 1;
     position: absolute;
+
+    /* GPU acceleration and containment */
+    transform: translateZ(0);
+    contain: layout style paint;
+    will-change: auto;
 
     /* styles */
     overflow: hidden;
@@ -468,37 +479,37 @@ const Stage = styled.div`
     width: 100%;
     display: grid;
     position: relative;
-    overflow: hidden;
+    overflow: visible; /* Allow cards to overflow */
     place-items: center;
+
+    /* GPU acceleration */
+    transform: translateZ(0);
+    contain: layout style; /* Removed paint containment to allow overflow */
 
     /* spacing */
     margin: 0 auto;
-    padding: 40px 0;
+    padding: 40px 0 60px 0; /* Extra bottom padding for card overflow */
     max-width: 1600px;
     min-height: 80vh;
 
     /* media queries */
     @media (min-width: 2000px) {
-        /* layout */
-        overflow: visible;
         /* spacing */
-        padding-bottom: 2rem;
+        padding-bottom: 80px; /* More space for larger cards */
     }
     @media (max-width: 2000px) {
         /* spacing */
         max-width: 1400px;
     }
     @media (max-width: 1600px) {
-        /* layout */
-        overflow: visible;
         /* spacing */
         max-width: 100%;
-        padding: 0;
+        padding: 0 0 60px 0; /* Maintain bottom padding */
         min-height: 64vh;
     }
     @media (max-width: 1200px) {
         /* spacing */
-        padding: 20px 0;
+        padding: 20px 0 60px 0;
         min-height: 60vh;
     }
 `;
@@ -507,14 +518,20 @@ const Stage = styled.div`
 const Track = styled.div`
     /* layout */
     position: relative;
-    overflow: visible;
+    overflow: visible; /* Allow slides to overflow */
     perspective: 1200px;
     width: 90%;
+
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style; /* Keep layout/style containment but allow overflow */
 
     /* spacing */
     margin: 0 auto;
     max-width: 1400px;
     height: clamp(600px, 70vh, 800px);
+    min-height: clamp(600px, 70vh, 800px); /* Ensure minimum height */
 
     /* media queries */
     @media (max-width: 2000px) {
@@ -550,18 +567,24 @@ const Slide = styled.div`
     place-items: center;
     pointer-events: none;
 
-    /* styles */
-    will-change: transform, opacity, filter;
-    transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
-                opacity 220ms ease,
-                filter 220ms ease;
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    contain: layout style; /* Removed paint containment to allow overflow */
     
-    /* focused card (center) */
+    /* styles */
+    transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                opacity 220ms ease;
+    
+    /* focused card (center) - highest z-index and allow overflow */
     ${({ $isFocused }) => $isFocused && `
         transform: translateX(0) translateZ(0) scale(1);
         opacity: 1;
-        z-index: 10;
+        z-index: 100; /* Highest z-index to ensure it's on top */
         pointer-events: auto;
+        will-change: transform;
+        overflow: visible; /* Allow card content to overflow */
+        contain: none; /* Remove containment for focused card to allow overflow */
     `}
     
     /* adjacent card */
@@ -570,6 +593,7 @@ const Slide = styled.div`
         opacity: 0.5;
         z-index: 5;
         filter: blur(1.5px) saturate(0.75);
+        will-change: transform, opacity;
     `}
     /* far cards (distance > 1) - keep off-stage and fully hidden */
     ${({ $distance, $position }) => $distance > 1 && `
@@ -577,6 +601,7 @@ const Slide = styled.div`
         opacity: 0;
         z-index: 1;
         filter: blur(2px) saturate(0.6);
+        will-change: transform, opacity;
     `}
     
     /* media queries */
@@ -610,11 +635,17 @@ const CompanyLogo = styled.img`
     width: 100px;
     height: 100px;
 
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
+
     /* styles */
     cursor: pointer;
     object-fit: cover;
     border-radius: 12px;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     
     /* media queries */
     @media (max-width: 1600px) {
@@ -625,8 +656,8 @@ const CompanyLogo = styled.img`
     }
     
     &:hover {
-        transform: scale(1.15) translateY(-8px) rotate(5deg);
-        filter: drop-shadow(0 8px 24px ${({ $themeColor }) => $themeColor || 'rgba(13, 173, 220, 0.5)'});
+        transform: scale(1.15) translateY(-8px) rotate(5deg) translateZ(0);
+        box-shadow: 0 8px 24px ${({ $themeColor }) => $themeColor || 'rgba(13, 173, 220, 0.5)'};
     }
 `;
 
@@ -639,13 +670,21 @@ const ExperienceCard = styled.div`
     height: fit-content;
     display: flex;
     flex-direction: column;
+    position: relative; /* Ensure proper stacking context */
+    z-index: inherit; /* Inherit from parent Slide */
 
     /* spacing */
     padding: 1.5rem 1.5rem 0.5rem 1.5rem;
 
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style; /* Removed paint containment to allow overflow */
+    overflow: visible; /* Allow card content to overflow */
+
     /* styles */
     --theme-rgb: 13, 173, 220; /* BitGo */
-    transition: all 0.4s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
     background: linear-gradient(135deg,
         rgba(17, 21, 75, 1.0) 0%,
         rgba(44, 49, 81, 0.98) 30%,
@@ -1205,10 +1244,10 @@ const RowViewport = styled.div`
     }
 `;
 
-// animation for scrolling.
+// animation for scrolling - GPU accelerated
 const scroll = keyframes`
-    from { transform: translateX(0); }
-    to   { transform: translateX(-33.333%); } /* one-third of track width = one sequence */
+    from { transform: translateX(0) translateZ(0); }
+    to   { transform: translateX(-33.333%) translateZ(0); } /* one-third of track width = one sequence */
 `;
 
 // the moving track (three identical sequences inside for almost seamless loop)
@@ -1221,11 +1260,20 @@ const RowTrack = styled.div`
     /* spacing */
     gap: 0.4rem;
 
-    /* styles */
+    /* GPU acceleration */
+    transform: translateZ(0);
     will-change: transform;
+    contain: layout style;
+
+    /* styles */
     animation: ${scroll} var(--dur, 20s) linear infinite;
     animation-delay: var(--delay, 0s);
     animation-direction: ${({ $reverse }) => ($reverse ? 'reverse' : 'normal')};
+    
+    /* Pause animations during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
 
     /* media queries */
     @media (max-width: 1600px) {
@@ -1402,7 +1450,14 @@ const ServiceExperienceCard = styled.div`
     display: flex;
     height: fit-content;
     flex-direction: column;
-    transition: all 0.4s ease;
+    
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
+    
+    /* optimized transition */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
 
     /* spacing */
     padding: 2rem 1.5rem 0rem 1.5rem;
@@ -1710,4 +1765,5 @@ const HireReach = styled.div`
 `;
 
 // export component.
+ActualExperience.displayName = 'ActualExperience';
 export default ActualExperience;

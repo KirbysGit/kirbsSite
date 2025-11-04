@@ -26,8 +26,8 @@ import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
 // import project assets.
-import oceanlifeLogo from '@/images/projects/ocean_life/oceanlife.png';
-import oceanlifePreview from '@/images/projects/ocean_life/presentationpreview.png';
+import oceanlifeLogo from '@/images/4projects/ocean_life/oceanlife.png';
+import oceanlifePreview from '@/images/4projects/ocean_life/presentationpreview.png';
 
 // main oceanlife card component.
 const OceanLifeCard = () => {

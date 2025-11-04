@@ -26,8 +26,8 @@ import { themes } from '../shared/themes';
 import WIPRibbon from '../WIPRibbon';
 
 // import project logos and previews.
-import centiBanner from '@/images/projects/centi/centi_banner.png';
-import centiPreview from '@/images/projects/centi/centiPreview.png';
+import centiBanner from '@/images/4projects/centi/centi_banner.png';
+import centiPreview from '@/images/4projects/centi/centiPreview.png';
 
 // main centi card component.
 const CentiCard = ({ isFocused = false }) => {

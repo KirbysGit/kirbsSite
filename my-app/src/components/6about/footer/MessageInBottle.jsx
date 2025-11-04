@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import messageBottle from '../../../images/footer/messagebottle.png';
+import messageBottle from '../../../images/5about/footer/messagebottle.png';
 
 // Interactive Message in Bottle Component with bubble tooltip
 const MessageInBottleWithTooltip = () => {

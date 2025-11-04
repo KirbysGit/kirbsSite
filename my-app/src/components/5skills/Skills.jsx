@@ -4,8 +4,9 @@
 // decided to make it a building skyline style to make it more interesting.
 
 // imports.
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // local imports.
 import SkillTower from './SkillTower';
@@ -37,41 +38,34 @@ const makeLayeredSkyline = () => {
   });
 };
 
-const Skills = () => {
-    // make layered skyline.
-    const skyline = makeLayeredSkyline();
+const Skills = memo(() => {
+    // Performance monitoring
+    useComponentPerformance('Skills', process.env.NODE_ENV === 'development');
+    
+    // Memoize layered skyline calculation
+    const skyline = useMemo(() => makeLayeredSkyline(), []);
 
     return (
-        <SkillsContainer>
+        <SkillsContainer id="skills" data-section-snap>
             {/* atmospheric elements */}
             <AtmosphereLayer>
                 {/* seam softener between projects and skills */}
                 <TopSeamFade />
                 
                 {/* horizontal moving clouds at the top - left to right */}
+                {/* Reduced from 10 to 7 clouds for better performance */}
                 <CloudLayer>
                     {/* far layer clouds */}
                     <Cloud top="8%" delay="0" duration="200" layer="far" type={1} direction="left" />
                     <Cloud top="12%" delay="40" duration="220" layer="far" type={3} direction="left" />
-                    <Cloud top="5%" delay="80" duration="190" layer="far" type={2} direction="left" />
                     
                     {/* mid layer clouds */}
                     <Cloud top="10%" delay="15" duration="160" layer="mid" type={4} direction="left" />
                     <Cloud top="6%" delay="60" duration="175" layer="mid" type={2} direction="left" />
+                    <Cloud top="9%" delay="120" duration="170" layer="mid" type={1} direction="left" />
                     
                     {/* near layer clouds */}
                     <Cloud top="9%" delay="50" duration="140" layer="near" type={5} direction="left" />
-                    
-                    {/* additional clouds that come in later */}
-                    {/* far layer */}
-                    <Cloud top="7%" delay="80" duration="205" layer="far" type={4} direction="left" />
-                    <Cloud top="11%" delay="90" duration="195" layer="far" type={5} direction="left" />
-                    
-                    {/* mid layer */}
-                    <Cloud top="9%" delay="120" duration="170" layer="mid" type={1} direction="left" />
-                    <Cloud top="4%" delay="85" duration="165" layer="mid" type={3} direction="left" />
-                    
-                    {/* near layer */}
                     <Cloud top="8%" delay="110" duration="145" layer="near" type={3} direction="left" />
                 </CloudLayer>
                 
@@ -79,7 +73,7 @@ const Skills = () => {
             
             {/* content wrapper */}
             <ContentWrapper>
-                <SectionTitle>Skills</SectionTitle>
+                <SectionTitle data-snap-title>Skills</SectionTitle>
                 <SectionSubtitle>Technologies I work with</SectionSubtitle>
             </ContentWrapper>
 
@@ -203,7 +197,9 @@ const Skills = () => {
             
         </SkillsContainer>
     );
-};
+});
+
+Skills.displayName = 'Skills';
 
 // export component.
 export default Skills;
@@ -219,34 +215,21 @@ const SkillsContainer = styled.div`
     overflow: hidden;
     overflow-x: hidden;
     
+    /* Performance optimizations */
+    contain: layout style paint;
+    
     /* spacing */
     width: 100%;
     min-height: 100vh;
     padding: 4rem 2rem;
     padding-top: 0;
     
-    /* styles */
+    /* styles - simplified gradient (reduced from 21 to 9 color stops) */
     background: linear-gradient(to bottom,
         rgb(71, 160, 238) 0%,
-        rgb(75, 165, 240) 5%,
-        rgb(80, 170, 242) 10%,
-        rgb(85, 175, 244) 15%,
-        rgb(90, 180, 246) 20%,
-        rgb(95, 185, 248) 25%,
-        rgb(100, 190, 250) 30%,
-        rgb(105, 195, 252) 35%,
-        rgb(110, 200, 254) 40%,
-        rgb(115, 205, 255) 45%,
-        rgb(120, 210, 255) 50%,
-        rgb(125, 215, 255) 55%,
-        rgb(130, 220, 255) 60%,
-        rgb(135, 225, 255) 65%,
-        rgb(140, 230, 255) 70%,
-        rgb(135, 225, 250) 75%,
-        rgb(130, 220, 245) 80%,
-        rgb(125, 215, 240) 85%,
-        rgb(120, 210, 235) 90%,
-        rgb(115, 205, 230) 95%,
+        rgb(90, 180, 246) 25%,
+        rgb(115, 205, 255) 50%,
+        rgb(135, 225, 255) 75%,
         rgb(110, 200, 225) 100%);
     
     /* media queries */
@@ -277,9 +260,19 @@ const CloudLayer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1;
+    z-index: 0; /* Behind buildings (z-index: 1.5+) but above water (z-index: 0.5) */
     pointer-events: none;
     overflow: hidden;
+    
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style;
+    
+    /* Pause animations during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
 `;
 
 // soft gradient at the top to blend the seam from projects into skills.
@@ -458,19 +451,23 @@ const SkylineRow = styled.div`
     position: absolute;
     bottom: 17%;
     left: 0;
-    z-index: 1.5;
+    z-index: 5; /* Above water (0.5), clouds (0.8), and foundation (2) */
+    
+    /* Performance optimizations */
+    contain: layout style;
+    transform: translateZ(0);
     
     /* spacing */
     width: 60%;  /* Match sidewalk width */
-    height: px;  /* Tall enough for scaled-up buildings */
+    height: auto;  /* Tall enough for scaled-up buildings */
     
     /* media queries */
     @media (max-width: 1600px) {
         left: -5%;
         bottom: 18.5%; /* Move down slightly to prevent cutoffs */
-        transform: scale(0.82); /* Scale both width and height proportionally to maintain aspect ratio */
+        transform: scale(0.82) translateZ(0); /* Scale both width and height proportionally to maintain aspect ratio */
         transform-origin: bottom center; /* Scale from bottom center */
-        z-index: 3; /* Higher z-index to ensure buildings stay above foundation and water with transform stacking context */
+        z-index: 5; /* Keep high z-index to ensure buildings stay above everything */
     }
 `;
 
@@ -833,6 +830,10 @@ const HarborWater = styled.div`
     overflow: hidden;
     z-index: 0.5; /* Lower than buildings (z-index: 1.5) and foundation (z-index: 2) */
     
+    /* Performance optimizations */
+    contain: layout style paint;
+    will-change: transform;
+    
     /* spacing */
     width: 150%;
     height: 30rem;
@@ -872,6 +873,11 @@ const HarborWater = styled.div`
         background:
             repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 42px),
             repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 66px);
+        
+        /* Pause animation during loading */
+        [data-loading="true"] & {
+            animation-play-state: paused;
+        }
     }
     
     /* media queries */
@@ -888,6 +894,10 @@ const RippleLayer = styled.div`
     pointer-events: none;
     z-index: 0.5; /* Inherit from parent container context */
     
+    /* Performance optimizations */
+    will-change: opacity;
+    transform: translateZ(0);
+    
     /* styles */
     mix-blend-mode: screen;
     mask-image: linear-gradient(to top, black 60%, transparent 95%); /* fade near horizon */
@@ -896,6 +906,11 @@ const RippleLayer = styled.div`
         radial-gradient(40px 20px at 20% 65%, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.08) 45%, transparent 70%),
         radial-gradient(55px 25px at 48% 50%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.07) 40%, transparent 70%),
         radial-gradient(34px 18px at 70% 60%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.06) 30%, transparent 70%);
+    
+    /* Pause animation during loading */
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
 `;
 
 // compact guardrail with posts, sharing the same slant.
@@ -972,7 +987,7 @@ const FloatingText = styled.p`
     font-size: 1.25rem;
     line-height: 1.7;
     color: rgb(255, 255, 255);
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+    /* Replaced filter: drop-shadow with box-shadow for better performance */
     text-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.6),
         0 4px 8px rgba(0, 0, 0, 0.4);
@@ -1018,7 +1033,7 @@ const PSNote = styled.p`
     font-style: italic;
     line-height: 1.7;
     color: rgb(255, 255, 255);
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+    /* Replaced filter: drop-shadow with text-shadow for better performance */
     text-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.6),
         0 4px 8px rgba(0, 0, 0, 0.4);

@@ -26,8 +26,8 @@ import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
 // import project assets.
-import securescapeLogo from '@/images/projects/secure_scape/securescape.png';
-import securescapePreview from '@/images/projects/secure_scape/securescape_preview.png';
+import securescapeLogo from '@/images/4projects/secure_scape/securescape.png';
+import securescapePreview from '@/images/4projects/secure_scape/securescape_preview.png';
 
 // main secure scape card component.
 const SecureScapeCard = ({ isFocused = false }) => {

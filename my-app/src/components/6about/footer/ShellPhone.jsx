@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import shellphone from '../../../images/footer/shellphone.png';
+import shellphone from '../../../images/5about/footer/shellphone.png';
 
 // Interactive Shell Phone Component with bubble tooltip
 const ShellPhoneWithTooltip = () => {
