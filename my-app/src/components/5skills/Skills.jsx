@@ -217,6 +217,7 @@ const SkillsContainer = styled.div`
     
     /* Performance optimizations */
     contain: layout style paint;
+    transform: translateZ(0);
     
     /* spacing */
     width: 100%;
@@ -260,7 +261,7 @@ const CloudLayer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 0; /* Behind buildings (z-index: 1.5+) but above water (z-index: 0.5) */
+    z-index: 1;
     pointer-events: none;
     overflow: hidden;
     
@@ -273,6 +274,12 @@ const CloudLayer = styled.div`
     [data-loading="true"] & {
         animation-play-state: paused;
     }
+    
+    /* Prevent selection */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 `;
 
 // soft gradient at the top to blend the seam from projects into skills.
@@ -368,7 +375,7 @@ const SectionSubtitle = styled.h2`
     font-weight: 400;
     font-style: italic;
     color: rgba(255, 255, 255, 0.85);
-    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
     
     /* media queries */
     @media (max-width: 1600px) {
@@ -450,8 +457,8 @@ const SkylineRow = styled.div`
     /* layout */
     position: absolute;
     bottom: 17%;
-    left: 0;
-    z-index: 5; /* Above water (0.5), clouds (0.8), and foundation (2) */
+    left: 4%;
+    z-index: 3;
     
     /* Performance optimizations */
     contain: layout style;
@@ -463,11 +470,11 @@ const SkylineRow = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        left: -5%;
+        left: -3.5%;
         bottom: 18.5%; /* Move down slightly to prevent cutoffs */
         transform: scale(0.82) translateZ(0); /* Scale both width and height proportionally to maintain aspect ratio */
         transform-origin: bottom center; /* Scale from bottom center */
-        z-index: 5; /* Keep high z-index to ensure buildings stay above everything */
+        z-index: 3; /* Higher z-index to ensure buildings stay above foundation and water with transform stacking context */
     }
 `;
 

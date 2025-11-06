@@ -581,7 +581,7 @@ const Grid = styled.div`
     align-items: center;
     justify-items: start;
     grid-template-columns: 45% 2.5% 52.5%;
-
+    padding-left: 2rem;
     /* spacing */
     margin: 0 auto;
 

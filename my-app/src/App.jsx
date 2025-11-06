@@ -12,6 +12,7 @@ import { useIdle } from './hooks/useIdle';
 // Eager import - needed immediately (Hero is above the fold)
 import Hero from './components/1hero/Hero';
 import LoadingScreen from './components/7loading/LoadingScreen';
+import Navbar from './components/0navbar/Navbar';
 
 // Lazy imports - code splitting for below-the-fold components
 const WhoIAm = lazy(() => import('./components/2whoiam/WhoIAm'));
@@ -91,6 +92,7 @@ function App() {
   const [showAboveFold, setShowAboveFold] = useState(false);
   const [showBelowFold, setShowBelowFold] = useState(false);
   const [heroSettled, setHeroSettled] = useState(false);
+  const [componentsPreloaded, setComponentsPreloaded] = useState(false);
   
   // Use page progress hook (must be after isLoading is declared)
   usePageProgress(isLoading);
@@ -98,26 +100,83 @@ function App() {
   // Ref to prevent duplicate loading in React StrictMode (development)
   const hasLoadedRef = React.useRef(false);
   
-  // When the hero entrance is fully done (LOADING_SCREEN_DURATION + staggered text timing ~6s total)
+  // When the hero entrance is fully done (arrow animation completes ~9.5s)
+  // Arrow starts at 8.5s (2.5s loading + 6.0s delay) and takes 1.0s to complete
   useEffect(() => {
-    const t = setTimeout(() => setHeroSettled(true), 6400); // 2500ms loading + ~3900ms for last animation
+    const t = setTimeout(() => setHeroSettled(true), 9500); // Wait for arrow animation to complete
     return () => clearTimeout(t);
   }, []);
   
-  // After hero settles, mount above-the-fold during idle time
-  useIdle(() => {
-    if (heroSettled) setShowAboveFold(true);
-  }, 300, [heroSettled]);
-  
-  // Below-the-fold a bit later, also idle
-  useIdle(() => {
-    if (heroSettled) setShowBelowFold(true);
-  }, 1200, [heroSettled]);
+  // Mount components as soon as they're preloaded (during loading screen)
+  // This allows them to render in the background while Hero animations play
+  useEffect(() => {
+    if (componentsPreloaded) {
+      // Mount above-fold components immediately after preload
+      setShowAboveFold(true);
+      // Mount below-fold components with a small delay to stagger initial render
+      // This prevents layout thrashing while still ensuring all sections render
+      const belowFoldTimer = setTimeout(() => {
+        setShowBelowFold(true);
+      }, 100); // Small delay to prevent layout thrashing
+      return () => clearTimeout(belowFoldTimer);
+    }
+  }, [componentsPreloaded]);
 
   useEffect(() => {
     // mark document state so css can pause animations.
     document.documentElement.dataset.loading = isLoading ? "true" : "false";
   }, [isLoading]);
+
+  // Lock scrolling during Hero animations (until ~9.5s when arrow completes)
+  useEffect(() => {
+    // Lock scroll immediately on mount
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    
+    // Prevent scroll on body/html - primary scroll lock method
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    
+    // Store current scroll position to prevent jump when unlocking
+    const scrollY = window.scrollY;
+    
+    // Additional scroll prevention for touch devices and edge cases (backup to overflow:hidden)
+    const preventScroll = (e) => {
+      // Prevent all scroll attempts during lock period
+      e.preventDefault();
+    };
+    
+    // Add event listeners as backup (overflow:hidden is primary method)
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+    
+    // Unlock scroll after Hero animations complete (~9.5s)
+    // Arrow starts at 8.5s (2.5s loading + 6.0s delay) and takes 1.0s to complete
+    const unlockTimer = setTimeout(() => {
+      // Restore original overflow values
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      
+      // Remove event listeners
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+      
+      // Restore scroll position (should be 0, but just in case)
+      window.scrollTo(0, scrollY);
+    }, 9500);
+    
+    return () => {
+      clearTimeout(unlockTimer);
+      
+      // Cleanup: remove event listeners
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+      
+      // Restore original overflow values
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, []); // Run once on mount
 
   // Component preloading - prefetch lazy component chunks and verify they load
   const preloadComponent = async (importFn, componentName) => {
@@ -307,6 +366,10 @@ function App() {
           console.warn('Some components failed to preload, but continuing...');
         }
         setLoadingProgress(60);
+        
+        // Mark components as preloaded and start mounting them immediately
+        // This allows components to render during loading screen/Hero animations
+        setComponentsPreloaded(true);
 
         // Load ALL section-specific images (including lazy ones for About)
         const { getImagesBySection } = await import('./components/utils/imageMap');
@@ -494,12 +557,15 @@ function App() {
                 {/* Hero always mounts - needed immediately for LCP */}
                 <Hero />
                 
+                {/* Navbar - mounts after Hero animations complete */}
+                <Navbar />
+                
                 {/* Staggered mounting for smooth performance */}
-                {/* Use content-visibility to prevent layout shifts during loading */}
+                {/* Components mount during loading screen and render in background */}
                 {showAboveFold && (
                   <Suspense fallback={<ComponentFallback />}>
-                    {/* Mount WhoIAm and Experience shortly after Hero (above fold) */}
-                    <ComponentWrapper $isVisible={showAboveFold}>
+                    {/* Mount WhoIAm and Experience - render during loading/Hero animations */}
+                    <ComponentWrapper $isVisible={showAboveFold} $heroSettled={heroSettled}>
                       <WhoIAm />
                       <AExperience />
                     </ComponentWrapper>
@@ -508,8 +574,8 @@ function App() {
                 
                 {showBelowFold && (
                   <Suspense fallback={<ComponentFallback />}>
-                    {/* Mount Projects, Skills, About after brief delay (below fold) */}
-                    <ComponentWrapper $isVisible={showBelowFold}>
+                    {/* Mount Projects, Skills, About - render during loading/Hero animations */}
+                    <ComponentWrapper $isVisible={showBelowFold} $heroSettled={heroSettled}>
                       <Projects />
                       <Skills />
                       <About />
@@ -537,26 +603,33 @@ const ComponentWrapper = styled.div`
   transform: translateZ(0);
   contain: layout style paint;
   
-  /* Let the browser skip all work until scrolled near */
-  content-visibility: auto;
-  contain-intrinsic-size: 1000px 1px;
+  /* Don't use content-visibility: auto here - it prevents sections from rendering
+     until scrolled into view, which breaks Navbar navigation. React.lazy already
+     handles code splitting, so we don't need this optimization. */
   
-  /* Prevent scrollbar recalculation and layout shifts during loading */
+  /* Hide components during loading AND Hero animations */
+  /* They render in the background and contribute to layout, but are visually hidden */
   :root[data-loading="true"] & {
-    /* Hide components during loading to prevent layout shifts */
     opacity: 0;
     pointer-events: none;
-    /* Reserve space to prevent scrollbar recalculation */
-    min-height: 0;
-    visibility: hidden;
+    /* Keep visibility: visible so layout is calculated for scrollbar */
+    visibility: visible;
   }
   
-  /* Smooth fade-in after loading */
-  :root[data-loading="false"] & {
-    opacity: 1;
-    pointer-events: auto;
+  /* Hide during Hero animations even after loading completes */
+  /* Keep visibility: visible for layout calculation */
+  ${props => !props.$heroSettled ? `
+    opacity: 0;
+    pointer-events: none;
     visibility: visible;
-    transition: opacity 0.3s ease-in, visibility 0.3s ease-in;
+  ` : ''}
+  
+  /* Show components after loading AND Hero animations complete */
+  :root[data-loading="false"] & {
+    opacity: ${props => props.$heroSettled ? '1' : '0'};
+    pointer-events: ${props => props.$heroSettled ? 'auto' : 'none'};
+    visibility: visible;
+    transition: opacity 0.3s ease-in;
   }
 `;
 

@@ -217,6 +217,12 @@ const SkillTower = memo(function SkillTower({
 						<stop offset="40%" stopColor="rgba(250,250,252,1)"/>
 						<stop offset="100%" stopColor="rgba(255,255,255,1)"/>
 					</linearGradient>
+					{/* tooltip gradient - moved here for global access */}
+					<linearGradient id={`${id}-tooltipGrad`} x1="0%" y1="0%" x2="100%" y2="0%">
+						<stop offset="0%" stopColor={palette.base}/>
+						<stop offset="50%" stopColor={palette.accent}/>
+						<stop offset="100%" stopColor={palette.mid}/>
+					</linearGradient>
 				</defs>
 
 				{/* left side face (thin) - shadowed side. */}
@@ -287,7 +293,7 @@ const SkillTower = memo(function SkillTower({
 				clipPath={`url(#${id}-buildingClip)`}
 				/>
 
-				{/* Logo billboard - flat against building. */}
+				{/* Logo billboard - rendered before caps for proper visual layering */}
 				{!!logoSrc && (() => {
 					// billboard geometry.
 					const bbW = 80, bbH = 58;
@@ -295,141 +301,68 @@ const SkillTower = memo(function SkillTower({
 					const bbY = 32;
 
 					return (
-						<g className="logo-container">
-						{/* gradient for tooltip pill. */}
-						<defs>
-							<linearGradient id={`${id}-tooltipGrad`} x1="0%" y1="0%" x2="100%" y2="0%">
-							<stop offset="0%" stopColor={palette.base}/>
-							<stop offset="50%" stopColor={palette.accent}/>
-							<stop offset="100%" stopColor={palette.mid}/>
-							</linearGradient>
-						</defs>
+						<g className="logo-container" data-tower-id={id}>
+							{/* outer frame border. */}
+							<rect 
+								x={bbX - 2} 
+								y={bbY - 2} 
+								width={bbW + 4} 
+								height={bbH + 4} 
+								rx="2" 
+								fill={palette.dark}
+							/>
+							
+							{/* inner background with reactive sunlight. */}
+							<rect 
+								x={bbX} 
+								y={bbY} 
+								width={bbW} 
+								height={bbH} 
+								rx="1" 
+								fill={`url(#${id}-billboardBg)`}
+								className="billboard-bg"
+							/>
+							
+							{/* subtle left edge shadow for depth. */}
+							<rect 
+								x={bbX} 
+								y={bbY} 
+								width="10" 
+								height={bbH}
+								fill="rgba(0,0,0,.03)"
+							/>
+							
+							{/* subtle right edge sun highlight. */}
+							<rect 
+								x={bbX + bbW - 16} 
+								y={bbY} 
+								width="16" 
+								height={bbH}
+								fill="rgba(255,255,255,.4)"
+								style={{ mixBlendMode: 'overlay' }}
+							/>
 
-						{/* outer frame border. */}
-						<rect 
-							x={bbX - 2} 
-							y={bbY - 2} 
-							width={bbW + 4} 
-							height={bbH + 4} 
-							rx="2" 
-							fill={palette.dark}
-						/>
-						
-						{/* inner background with reactive sunlight. */}
-						<rect 
-							x={bbX} 
-							y={bbY} 
-							width={bbW} 
-							height={bbH} 
-							rx="1" 
-							fill={`url(#${id}-billboardBg)`}
-							className="billboard-bg"
-						/>
-						
-						{/* subtle left edge shadow for depth. */}
-						<rect 
-							x={bbX} 
-							y={bbY} 
-							width="10" 
-							height={bbH}
-							fill="rgba(0,0,0,.03)"
-						/>
-						
-						{/* subtle right edge sun highlight. */}
-						<rect 
-							x={bbX + bbW - 16} 
-							y={bbY} 
-							width="16" 
-							height={bbH}
-							fill="rgba(255,255,255,.4)"
-							style={{ mixBlendMode: 'overlay' }}
-						/>
-
-						{/* hover darken overlay - subtle grey. */}
-						<rect 
-							x={bbX} 
-							y={bbY} 
-							width={bbW} 
-							height={bbH} 
-							rx="1"
-							fill="rgba(40,40,40,0)"
-							className="billboard-darken"
-						/>
-						
-						{/* logo image. */}
-						<image 
-							href={logoSrc} 
-							x={bbX + bbW/2 - 32} 
-							y={bbY + 6} 
-							width="64" 
-							height="46" 
-							preserveAspectRatio="xMidYMid meet"
-							style={{ cursor: 'pointer', pointerEvents: 'all' }}
-						/>
-
-						{/* tooltip - larger pill-shaped with themed gradient. */}
-						<g className="billboard-tooltip" opacity="0" style={{ pointerEvents: 'none' }}>
-							{/* tooltip shadow. */}
-							<ellipse
-							cx={faceX + faceW/2}
-							cy={bbY - 20}
-							rx={name.length * 4.2 + 10}
-							ry="12"
-							fill="rgba(0,0,0,.3)"
-							filter="blur(3px)"
+							{/* hover darken overlay - subtle grey. */}
+							<rect 
+								x={bbX} 
+								y={bbY} 
+								width={bbW} 
+								height={bbH} 
+								rx="1"
+								fill="rgba(40,40,40,0)"
+								className="billboard-darken"
 							/>
 							
-							{/* tooltip pill background. */}
-							<rect
-							x={faceX + faceW/2 - (name.length * 4.2 + 8)}
-							y={bbY - 30}
-							width={name.length * 8.4 + 16}
-							height="20"
-							rx="10"
-							fill={`url(#${id}-tooltipGrad)`}
-							opacity="0.95"
+							{/* logo image. */}
+							<image 
+								href={logoSrc} 
+								x={bbX + bbW/2 - 32} 
+								y={bbY + 6} 
+								width="64" 
+								height="46" 
+								preserveAspectRatio="xMidYMid meet"
+								style={{ cursor: 'pointer', pointerEvents: 'all' }}
 							/>
-							
-							{/* tooltip border. */}
-							<rect
-							x={faceX + faceW/2 - (name.length * 4.2 + 8)}
-							y={bbY - 30}
-							width={name.length * 8.4 + 16}
-							height="20"
-							rx="10"
-							fill="none"
-							stroke="rgba(255,255,255,.5)"
-							strokeWidth="0.8"
-							/>
-							
-							{/* subtle highlight on top of pill. */}
-							<rect
-							x={faceX + faceW/2 - (name.length * 4.2 + 6)}
-							y={bbY - 29}
-							width={name.length * 8.4 + 12}
-							height="8"
-							rx="8"
-							fill="rgba(255,255,255,.2)"
-							style={{ mixBlendMode: 'overlay' }}
-							/>
-							
-							{/* tooltip text - larger. */}
-							<text
-							x={faceX + faceW/2}
-							y={bbY - 16}
-							textAnchor="middle"
-							fontSize="12"
-							fontWeight="600"
-							fill="white"
-							fontFamily="system-ui, -apple-system, sans-serif"
-							style={{ 
-								textShadow: '0 1px 2px rgba(0,0,0,.4)',
-								pointerEvents: 'none'
-							}}
-							>
-							{name}
-							</text>
-						</g>
 						</g>
 					);
 				})()}
@@ -1869,6 +1802,87 @@ const SkillTower = memo(function SkillTower({
 					);
 				})()}
 
+				{/* tooltip - rendered after all caps to appear on top, controlled by logo-container hover */}
+				{!!logoSrc && (
+					<g className="billboard-tooltip" data-tower-id={id} opacity="0" style={{ pointerEvents: 'none', transform: 'translateY(0)' }}>
+						{/* Calculate tooltip position to avoid cap overlap - position above tallest cap (55px) */}
+						{(() => {
+							// Position tooltip well above any cap decoration
+							// Tallest cap is radio at 55px, so position at -80 to be safe
+							const tooltipY = -25;
+							const tooltipHeight = 32; // Increased from 20
+							const tooltipPadding = 16; // Increased padding for larger size
+							const charWidth = 6.5; // Increased from 4.2 for better spacing
+							const tooltipWidth = name.length * charWidth * 2 + tooltipPadding * 2;
+							
+							return (
+								<>
+									{/* tooltip shadow - larger and more visible. */}
+									<ellipse
+										cx={faceX + faceW/2}
+										cy={tooltipY + tooltipHeight/2}
+										rx={name.length * charWidth + tooltipPadding + 8}
+										ry="18"
+										fill="rgba(0,0,0,.4)"
+										style={{ filter: 'blur(4px)' }}
+									/>
+									
+									{/* tooltip pill background - larger. */}
+									<rect
+										x={faceX + faceW/2 - tooltipWidth/2}
+										y={tooltipY}
+										width={tooltipWidth}
+										height={tooltipHeight}
+										rx="16"
+										fill={`url(#${id}-tooltipGrad)`}
+										opacity="0.98"
+									/>
+									
+									{/* tooltip border - thicker for visibility. */}
+									<rect
+										x={faceX + faceW/2 - tooltipWidth/2}
+										y={tooltipY}
+										width={tooltipWidth}
+										height={tooltipHeight}
+										rx="16"
+										fill="none"
+										stroke="rgba(255,255,255,.7)"
+										strokeWidth="1.2"
+									/>
+									
+									{/* subtle highlight on top of pill. */}
+									<rect
+										x={faceX + faceW/2 - tooltipWidth/2 + 2}
+										y={tooltipY + 2}
+										width={tooltipWidth - 4}
+										height="12"
+										rx="12"
+										fill="rgba(255,255,255,.25)"
+										style={{ mixBlendMode: 'overlay' }}
+									/>
+									
+									{/* tooltip text - larger font size. */}
+									<text
+										x={faceX + faceW/2}
+										y={tooltipY + tooltipHeight/2 + 5}
+										textAnchor="middle"
+										fontSize="16"
+										fontWeight="700"
+										fill="white"
+										fontFamily="system-ui, -apple-system, sans-serif"
+										style={{ 
+											textShadow: '0 2px 4px rgba(0,0,0,.6), 0 1px 2px rgba(0,0,0,.4)',
+											pointerEvents: 'none'
+										}}
+									>
+										{name}
+									</text>
+								</>
+							);
+						})()}
+					</g>
+				)}
+
 				{/* hairline for crisper edges. */}
 				<rect x={faceX + .25} y=".25" width={faceW - .5} height={H - .5} rx={R-1} ry={R-1}
 					fill="none" stroke="rgba(0,0,0,.12)" strokeWidth=".5" />
@@ -1916,7 +1930,6 @@ const Wrap = styled.div`
         }
         
         .billboard-tooltip {
-            transform: translateY(0);
             will-change: opacity, transform;
             transition: opacity .3s ease, transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -1925,10 +1938,22 @@ const Wrap = styled.div`
             fill: rgba(40,40,40,.12);
         }
         
-        .logo-container:hover .billboard-tooltip {
+        /* Target tooltip by matching data-tower-id when logo-container is hovered */
+        .logo-container:hover ~ .billboard-tooltip[data-tower-id],
+        /* Also support when they're in same SVG context - use attribute selector */
+        svg:has(.logo-container:hover) .billboard-tooltip {
             opacity: 1;
             transform: translateY(-4px);
         }
+    }
+    
+    /* Accessibility: keyboard and touch support */
+    .logo-container:focus-visible ~ .billboard-tooltip[data-tower-id],
+    .logo-container:active ~ .billboard-tooltip[data-tower-id],
+    svg:has(.logo-container:focus-visible) .billboard-tooltip,
+    svg:has(.logo-container:active) .billboard-tooltip {
+        opacity: 1;
+        transform: translateY(-4px);
     }
 `;
 

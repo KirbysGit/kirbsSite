@@ -63,6 +63,17 @@ const BubbleWrap = styled.div`
   
   /* Inherits parent card's transform, so it moves with the card animation */
   /* No additional animation - keeps it static relative to the card */
+  
+  /* Responsive positioning - scale down slightly on smaller screens */
+  @media (max-width: 1600px) {
+    transform: scale(0.9);
+    transform-origin: ${({ $side }) => $side === "right" ? "top right" : "top left"};
+  }
+  
+  @media (max-width: 1200px) {
+    transform: scale(0.8);
+    transform-origin: ${({ $side }) => $side === "right" ? "top right" : "top left"};
+  }
 `;
 
 const MainBubble = styled.div`
@@ -82,12 +93,32 @@ const MainBubble = styled.div`
   place-items: center;
   z-index: 2;
   transform: translateZ(0);
+  
+  /* Responsive sizing */
+  @media (max-width: 1600px) {
+    width: ${({ $size }) => Math.round($size * 0.85)}px;
+    height: ${({ $size }) => Math.round($size * 0.85)}px;
+  }
+  
+  @media (max-width: 1200px) {
+    width: ${({ $size }) => Math.round($size * 0.75)}px;
+    height: ${({ $size }) => Math.round($size * 0.75)}px;
+  }
 `;
 
 const BubbleEmoji = styled.span`
   font-size: 2.25rem;
   line-height: 1;
   filter: drop-shadow(0 1px 1px rgba(0,0,0,.2));
+  
+  /* Responsive emoji sizing */
+  @media (max-width: 1600px) {
+    font-size: clamp(1.7rem, 2vw, 1.9rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(1.5rem, 1.8vw, 1.7rem);
+  }
 `;
 
 const TailCircle1 = styled.div`
@@ -106,6 +137,17 @@ const TailCircle1 = styled.div`
     0 6px 14px rgba(0,0,0,.18),
     0 0 0 1px rgba(255,255,255,.14);
   z-index: 1;
+  
+  /* Responsive sizing */
+  @media (max-width: 1600px) {
+    width: ${({ $size }) => Math.round($size * 0.85)}px;
+    height: ${({ $size }) => Math.round($size * 0.85)}px;
+  }
+  
+  @media (max-width: 1200px) {
+    width: ${({ $size }) => Math.round($size * 0.75)}px;
+    height: ${({ $size }) => Math.round($size * 0.75)}px;
+  }
 `;
 
 const TailCircle2 = styled(TailCircle1)`
@@ -118,5 +160,14 @@ const TailCircle2 = styled(TailCircle1)`
   box-shadow:
     0 4px 10px rgba(0,0,0,.16),
     0 0 0 1px rgba(255,255,255,.12);
+  
+  /* Responsive sizing inherited from TailCircle1, but override height if needed */
+  @media (max-width: 1600px) {
+    height: ${({ $size }) => Math.round($size * 0.85)}px;
+  }
+  
+  @media (max-width: 1200px) {
+    height: ${({ $size }) => Math.round($size * 0.75)}px;
+  }
 `;
 

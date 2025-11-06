@@ -44,12 +44,36 @@ export const GlobalStyle = createGlobalStyle`
         overflow-y: auto;
     }
     
+    /* Prevent image selection/highlighting */
+    img {
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        pointer-events: auto; /* Allow pointer events but prevent selection */
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
+    }
+    
+    /* Prevent selection on background images and decorative elements */
+    [style*="background-image"],
+    [class*="cloud"],
+    [class*="Cloud"] {
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+    
     /* Section snap points - soft lock to section boundaries */
     section[id],
     [data-section-snap] {
         scroll-snap-align: start;
         scroll-snap-stop: always;
-        scroll-margin-top: 0; /* Adjust if you have a fixed header */
+        scroll-margin-top: 80px; /* Account for fixed navbar height */
     }
     
     /* Custom snap points - center on specific elements */
@@ -131,10 +155,16 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     /* Pause animations during loading to prevent jitter */
+    /* Only pause specific animations, not LoadingScreen animations */
     :root[data-loading="true"] .twinkles,
-    :root[data-loading="true"] .nameGradient,
-    :root[data-loading="true"] * {
+    :root[data-loading="true"] .nameGradient {
         animation-play-state: paused !important;
+    }
+    
+    /* Explicitly allow LoadingScreen animations to play */
+    [data-loading-screen],
+    [data-loading-screen] * {
+        animation-play-state: running !important;
     }
     
     /* Pause gradient text until text finishes sliding in */

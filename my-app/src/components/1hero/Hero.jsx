@@ -10,6 +10,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import { useComponentPerformance } from '../../hooks/useComponentPerformance';
+import { scrollToSection } from '../../utils/scrollToSection';
 
 // Image imports
 import astronautImg from '../../images/1hero/astronaut.png';
@@ -33,25 +34,9 @@ const Hero = memo(() => {
         return () => clearTimeout(t);
     }, []);
     
-    // Memoized smooth scroll function with debouncing
-    const scrollToSection = useCallback((sectionId, desktopOffset = 0, mobileOffset = 0) => {
-        const element = document.getElementById(sectionId);
-        if (!element) return;
-        
-        // Cache window width to avoid repeated calls
-                const width = window.innerWidth;
-        const offset = width >= 2000 ? desktopOffset : mobileOffset;
-        
-        // Use requestAnimationFrame for smoother scrolling
-        requestAnimationFrame(() => {
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - offset;
-            
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-        });
+    // Memoized smooth scroll function using shared utility
+    const handleScrollToSection = useCallback((sectionId, desktopOffset = 0, mobileOffset = 0) => {
+        scrollToSection(sectionId, desktopOffset, mobileOffset);
     }, []);
     
     // Memoize animation configs - delayed by 2.5s to start after loading screen
@@ -170,14 +155,14 @@ const Hero = memo(() => {
                         <NavPills {...navPillsConfig}>
                             {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
                             {/* Adjust the first number for 2000px+, second for 1600-1999px */}
-                            <NavPillProjects onClick={() => scrollToSection('experience', 20, -110)}>
+                            <NavPillProjects onClick={() => handleScrollToSection('experience', 20, -110)}>
                                 <NavPillBackgroundProjects />
                                 <NavPillText>Strictly business</NavPillText>
                                 <NavPillIcon>✈️</NavPillIcon>
                             </NavPillProjects>
                             {/* who even are you? (tim robinson type shi) */}
                             {/* Adjust the first number for 2000px+, second for 1600-1999px */}
-                            <NavPillStory onClick={() => scrollToSection('who-i-am', -25, -35)}>
+                            <NavPillStory onClick={() => handleScrollToSection('who-i-am', -25, -35)}>
                                 <NavPillBackgroundStory />
                                 <NavPillText>Who even are you?</NavPillText>
                                 <NavPillIcon>👨‍🚀</NavPillIcon>
@@ -212,6 +197,7 @@ const HeroContainer = styled.div`
     overflow: hidden;
     min-height: 100vh;
     position: relative;
+    padding-top: 1rem;
     
     /* Performance optimizations - isolate Hero from layout shifts below */
     contain: layout style paint;
@@ -597,8 +583,8 @@ const Astronaut = styled.div`
 // ufo - optimized animation
 const UFO = styled.div`
     /* layout */
-    top: 10%;
-    z-index: 0;
+    top: 20%;
+    z-index: 1;
     right: -10%;
     position: absolute;
 
@@ -1075,7 +1061,7 @@ const NavPillIcon = styled.span`
 // arrow text. ("scroll to explore")
 const ArrowText = styled.div`
     /* spacing */
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 
     /* styles */

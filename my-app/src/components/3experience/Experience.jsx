@@ -656,8 +656,8 @@ const CompanyLogo = styled.img`
     }
     
     &:hover {
-        transform: scale(1.15) translateY(-8px) rotate(5deg) translateZ(0);
-        box-shadow: 0 8px 24px ${({ $themeColor }) => $themeColor || 'rgba(13, 173, 220, 0.5)'};
+        transform: scale(1.1) translateY(-6px) rotate(5deg) translateZ(0);
+        filter: drop-shadow(0 8px 24px ${({ $themeColor }) => $themeColor || 'rgba(13, 173, 220, 0.5)'});
     }
 `;
 

@@ -184,9 +184,9 @@ const Background = () => {
                                 />
                                 
                                 <CardTitle>Always Active</CardTitle>
-                                <CardText style={{ padding: '0rem 1.5rem', fontSize: '1.05rem' }}>
+                                <CardTextLarge>
                                     Grew up playing basketball, football, baseball, and lacrosse. Rowed competitively in high school. Started lifting in college to manage stress and stay grounded. Now I rotate between the gym, skateboarding, and golf.
-                                </CardText>
+                                </CardTextLarge>
                                 
                                 <EmojiRow aria-hidden="true">
                                     <Emoji title="Basketball">🏀</Emoji>
@@ -211,9 +211,9 @@ const Background = () => {
                                 />
                                 
                                 <CardTitle>Being Creative</CardTitle>
-                                <CardText style={{ padding: '0rem 1.5rem', fontSize: '1.05rem' }}>
+                                <CardTextLarge>
                                   I grew up drawing. Lately I'm learning music, mostly guitar and piano, with production next. Design is my favorite part of projects, if you couldn't tell by the "unique" theming of this site. Art is as much a part of my life as staying active.
-                                </CardText>
+                                </CardTextLarge>
  
                                 
                                 <EmojiRow aria-hidden="true">
@@ -238,9 +238,9 @@ const Background = () => {
                                 />
                                 
                                 <CardTitle>Goals</CardTitle>
-                                <CardText style={{ padding: '0rem 1.5rem', fontSize: '1.05rem' }}>
+                                <CardTextLarge>
                                   I want to work for myself and blend technical work with creativity. I like fast paced startup environments where I can grow. My sweet spot is collaboration, creativity, and hard technical problems. Most of all I just want to keep improving and enjoy the process.
-                                </CardText>
+                                </CardTextLarge>
 
                                 
                                 <EmojiRow aria-hidden="true">
@@ -299,9 +299,9 @@ const Background = () => {
                                 <CardTitle>What I Listen To</CardTitle>
                                 
                                 <MusicWrapper>
-                                    <CardText>
+                                    <MusicIntroText>
                                         I feel you can tell a lot about a person by their music. Here's my top 10 from the last 6 months:
-                                    </CardText>
+                                    </MusicIntroText>
                                     
                                     <ArtistGrid>
                                         <ArtistName>Kanye</ArtistName>
@@ -727,7 +727,7 @@ const UnderwaterHeader = styled.div`
 `;
 
 const HeaderTitle = styled.h1`
-  font-size: 5rem;
+  font-size: clamp(2.5rem, 5vw, 5rem);
   font-weight: 900;
   margin: 0;
   
@@ -763,13 +763,21 @@ const HeaderTitle = styled.h1`
     animation-play-state: paused;
   }
   
+  @media (max-width: 1800px) {
+    font-size: clamp(2.2rem, 4.5vw, 4.2rem);
+  }
+  
   @media (max-width: 1600px) {
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
   }
 `;
 
 const HeaderSubtitle = styled.h2`
-  font-size: 1.8rem;
+  font-size: clamp(1.1rem, 2vw, 1.8rem);
   font-weight: 400;
   font-style: italic;
   margin: 0;
@@ -799,7 +807,7 @@ const HeaderSubtitle = styled.h2`
   }
   
   @media (max-width: 1600px) {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
   }
 `;
 
@@ -811,21 +819,36 @@ const floatCard = keyframes`
 
 // Profile section - flex container
 const ProfileSection = styled.div`
-  width: 90%;
-  margin: 2rem auto 0;
+  width: clamp(85%, 90vw, 90%);
+  margin: clamp(1.5rem, 2vw, 2rem) auto 0;
   display: flex;
   gap: clamp(1rem, 2vw, 2rem);
   align-items: flex-start;
   z-index: 10;
   
+  @media (max-width: 1800px) {
+    width: clamp(88%, 92vw, 92%);
+  }
+  
+  @media (max-width: 1600px) {
+    width: clamp(90%, 94vw, 94%);
+    gap: clamp(0.8rem, 1.5vw, 1.5rem);
+  }
+  
   @media (max-width: 1400px) {
-    width: 90%;
+    width: 92%;
+    gap: clamp(0.75rem, 1.2vw, 1.2rem);
   }
   
   @media (max-width: 1200px) {
     flex-direction: column;
     align-items: center;
-    margin-top: 2rem;
+    margin-top: clamp(1.5rem, 2vw, 2rem);
+    width: 95%;
+  }
+  
+  @media (max-width: 900px) {
+    width: 98%;
   }
 `;
 
@@ -1191,36 +1214,63 @@ const InfoGrid = styled.div`
 
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: 1fr;     /* Make all rows equal height */
-  gap: 1.5rem;
+  grid-auto-rows: minmax(300px, auto);     /* Allow cards to grow based on content */
+  gap: clamp(1rem, 1.5vw, 1.5rem);
   align-items: stretch;    /* Stretch cards to fill grid cells */
   
+  @media (max-width: 1800px) {
+    gap: clamp(0.9rem, 1.3vw, 1.25rem);
+    grid-auto-rows: minmax(280px, auto);
+  }
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.7rem, 1vw, 0.95rem);
+    grid-auto-rows: minmax(240px, auto);
+  }
+  
   @media (max-width: 1400px) {
-    gap: 1.25rem;
+    gap: clamp(0.65rem, 0.9vw, 0.85rem);
+    grid-auto-rows: minmax(220px, auto);
   }
   
   @media (max-width: 1100px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
+    gap: clamp(1rem, 1.5vw, 1.5rem);
+    grid-auto-rows: minmax(280px, auto);
+  }
+  
+  @media (max-width: 900px) {
+    grid-auto-rows: minmax(260px, auto);
   }
   
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    grid-auto-rows: minmax(240px, auto);
   }
 `;
 
 // Individual glassmorphism card
 const GlassCard = styled.article`
   align-self: stretch;     /* Stretch to fill grid cell height */
-  height: 100%;
+  min-height: 100%;
   position: relative;
-  padding: 1.25rem 1.25rem;
-  border-radius: 20px;
+  padding: clamp(0.9rem, 1.2vw, 1.25rem);
+  border-radius: clamp(16px, 2vw, 20px);
   overflow: visible; /* Allow bubble to overflow */
   min-width: 0; /* Allow flex/grid items to shrink */
   display: flex;
   flex-direction: column;
+  
+  @media (max-width: 1600px) {
+    padding: clamp(0.65rem, 0.85vw, 0.85rem);
+    border-radius: clamp(14px, 1.8vw, 18px);
+  }
+  
+  @media (max-width: 1200px) {
+    padding: clamp(0.6rem, 0.8vw, 0.75rem);
+    border-radius: clamp(12px, 1.6vw, 16px);
+  }
   
   /* Glassmorphism effect */
   background: linear-gradient(
@@ -1294,9 +1344,9 @@ const GlassCard = styled.article`
 
 // Card title
 const CardTitle = styled.h3`
-  font-size: 1.75rem;
+  font-size: clamp(1.2rem, 1.8vw, 1.75rem);
   font-weight: 700;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 clamp(0.3rem, 0.5vw, 0.5rem) 0;
   text-align: center;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -1312,13 +1362,24 @@ const CardTitle = styled.h3`
   
   /* Subtle glow */
   text-shadow: 0 2px 8px rgba(120, 200, 220, 0.3);
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+    margin: 0 0 clamp(0.25rem, 0.4vw, 0.4rem) 0;
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    margin: 0 0 clamp(0.2rem, 0.35vw, 0.35rem) 0;
+  }
 `;
 
-// Card text
+// Card text - for cards with structured content (Education, Mantras, Music)
 const CardText = styled.p`
-  font-size: 0.95rem;
+  font-size: clamp(0.75rem, 0.95vw, 0.9rem);
   line-height: 1.6;
   margin: 0;
+  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
   text-align: justify;
   color: rgba(220, 240, 250, 0.85);
   word-wrap: break-word;
@@ -1329,6 +1390,51 @@ const CardText = styled.p`
   
   /* Subtle text shadow for readability */
   text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+    line-height: 1.45;
+    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+    margin: 0;
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+    line-height: 1.4;
+    padding: 0 clamp(0.4rem, 0.75vw, 0.85rem);
+  }
+`;
+
+// Card text large - for cards with just text content (Always Active, Being Creative, Goals)
+// These cards need larger text to fill the space better
+const CardTextLarge = styled.p`
+  font-size: clamp(0.9rem, 1.15vw, 1.05rem);
+  line-height: 1.65;
+  margin: 0;
+  padding: 0 0.75rem;
+  text-align: justify;
+  color: rgba(220, 240, 250, 0.85);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  
+  /* Subtle text shadow for readability */
+  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.8rem, 1vw, 0.95rem);
+    line-height: 1.55;
+    padding: 0 clamp(0.6rem, 1vw, 1.1rem);
+    margin: 0;
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+    line-height: 1.5;
+    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+  }
 `;
 
 // Emoji row container
@@ -1340,6 +1446,16 @@ const EmojiRow = styled.div`
   justify-content: center;
   opacity: 0.95;
   filter: drop-shadow(0 2px 8px rgba(120, 200, 220, 0.35));
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.35rem, 0.5vw, 0.45rem);
+    padding-top: clamp(0.5rem, 0.7vw, 0.65rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.3rem, 0.45vw, 0.4rem);
+    padding-top: clamp(0.45rem, 0.6vw, 0.6rem);
+  }
 `;
 
 // Individual emoji bubble
@@ -1360,6 +1476,18 @@ const Emoji = styled.span`
     background: rgba(255, 255, 255, 0.14);
     border-color: rgba(255, 255, 255, 0.28);
   }
+  
+  @media (max-width: 1600px) {
+    width: clamp(1.5rem, 1.8vw, 1.7rem);
+    height: clamp(1.5rem, 1.8vw, 1.7rem);
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+  }
+  
+  @media (max-width: 1200px) {
+    width: clamp(1.4rem, 1.7vw, 1.6rem);
+    height: clamp(1.4rem, 1.7vw, 1.6rem);
+    font-size: clamp(0.85rem, 1vw, 0.95rem);
+  }
 `;
 
 // Wrapper for all mantras to center them
@@ -1368,26 +1496,45 @@ const MantrasWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.35rem, 0.45vw, 0.4rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.3rem, 0.4vw, 0.35rem);
+  }
 `;
 
-// Mantra text container with reduced spacing
+// Mantra text container with reduced spacing - uses larger text like CardTextLarge
 const MantraText = styled.div`
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.65;
   text-align: justify;
+  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
   color: rgba(220, 240, 250, 0.85);
   word-wrap: break-word;
   overflow-wrap: break-word;
   text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.8rem, 1vw, 0.9rem);
+    line-height: 1.55;
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+    line-height: 1.5;
+  }
 `;
 
 // Highlighted mantra titles
 const MantraHighlight = styled.div`
   display: block;
   font-weight: 800;
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  margin-bottom: clamp(0.2rem, 0.3vw, 0.25rem);
   text-align: center;
   background: linear-gradient(135deg, 
     rgba(255, 235, 120, 1) 0%,
@@ -1399,6 +1546,14 @@ const MantraHighlight = styled.div`
   background-clip: text;
   letter-spacing: 0.3px;
   text-shadow: 0 2px 8px rgba(255, 200, 100, 0.4);
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.8rem, 0.95vw, 0.9rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+  }
 `;
 
 // Wrapper for music content to center it
@@ -1407,50 +1562,110 @@ const MusicWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
+`;
+
+// Music intro text - matches CardText styling
+const MusicIntroText = styled.p`
+  font-size: clamp(0.75rem, 0.95vw, 0.9rem);
+  line-height: 1.6;
+  margin: 0 0 clamp(0.4rem, 0.6vw, 0.5rem) 0;
+  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
+  text-align: justify;
+  color: rgba(220, 240, 250, 0.85);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   
-  /* Override CardText styling inside wrapper */
-  p {
-    flex: 0;
-    display: block;
+  /* Subtle text shadow for readability */
+  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+    line-height: 1.45;
+    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+    margin: 0 0 clamp(0.3rem, 0.45vw, 0.4rem) 0;
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+    line-height: 1.4;
+    padding: 0 clamp(0.4rem, 0.75vw, 0.85rem);
+    margin: 0 0 clamp(0.25rem, 0.4vw, 0.35rem) 0;
   }
 `;
 
 // Artist grid for music card
 const ArtistGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.4rem, 0.6vw, 0.5rem);
+  margin-top: clamp(0.4rem, 0.6vw, 0.5rem);
+  
+  @media (max-width: 1600px) {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: clamp(0.3rem, 0.45vw, 0.4rem);
+    margin-top: clamp(0.3rem, 0.45vw, 0.4rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.25rem, 0.4vw, 0.35rem);
+    margin-top: clamp(0.25rem, 0.4vw, 0.35rem);
+  }
+  
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 // Individual artist name
 const ArtistName = styled.div`
-  font-size: 0.875rem;
-  padding: 0.1rem 0.5rem;
+  font-size: clamp(0.7rem, 0.9vw, 0.875rem);
+  padding: clamp(0.1rem, 0.2vw, 0.15rem) clamp(0.4rem, 0.6vw, 0.5rem);
   text-align: center;
-  border-radius: 12px;
+  border-radius: clamp(10px, 1.2vw, 12px);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: rgba(200, 230, 245, 0.9);
   transition: all 0.2s ease;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
   
   &:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
+    white-space: normal;
+    overflow: visible;
+  }
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.65rem, 0.8vw, 0.8rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.6rem, 0.75vw, 0.75rem);
   }
 `;
 
 // Date text (slightly muted)
 const CardDate = styled.span`
   display: inline-block;
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 0.9vw, 0.85rem);
   font-style: italic;
   line-height: 1.1;
   color: rgba(180, 220, 240, 0.85);
   margin: 0;
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.65rem, 0.75vw, 0.7rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+  }
 `;
 
 // Detail text (for additional info)
@@ -1471,6 +1686,14 @@ const EducationContent = styled.div`
   margin-top: 0;
   flex: 1;                  /* Take remaining space */
   justify-content: space-between;
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.5rem, 0.7vw, 0.6rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.45rem, 0.6vw, 0.55rem);
+  }
 `;
 
 // Degree section
@@ -1480,10 +1703,20 @@ const DegreeSection = styled.div`
   gap: 0.25rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.15rem, 0.2vw, 0.2rem);
+    padding-bottom: clamp(0.35rem, 0.45vw, 0.4rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.1rem, 0.15vw, 0.15rem);
+    padding-bottom: clamp(0.3rem, 0.4vw, 0.35rem);
+  }
 `;
 
 const DegreeName = styled.h4`
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
   font-weight: 700;
   margin: 0;
   line-height: 1.2;
@@ -1495,14 +1728,30 @@ const DegreeName = styled.h4`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-align: center;
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.85rem, 1vw, 0.95rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.8rem, 0.95vw, 0.9rem);
+  }
 `;
 
 const UniversityName = styled.p`
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 1vw, 1rem);
   margin: 0;
   line-height: 1.2;
   color: rgba(200, 230, 245, 0.85);
   text-align: center;
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+  }
 `;
 
 // Info row with duration and GPA
@@ -1511,6 +1760,14 @@ const InfoRow = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.9rem, 1.1vw, 1rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.8rem, 1vw, 0.9rem);
+  }
 `;
 
 const InfoItem = styled.div`
@@ -1518,14 +1775,30 @@ const InfoItem = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 0.15rem;
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.1rem, 0.12vw, 0.12rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.08rem, 0.1vw, 0.1rem);
+  }
 `;
 
 const InfoLabel = styled.span`
-  font-size: 0.75rem;
+  font-size: clamp(0.65rem, 0.8vw, 0.75rem);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: rgba(150, 200, 220, 0.7);
   font-weight: 600;
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.55rem, 0.65vw, 0.6rem);
+  }
 `;
 
 const InfoDivider = styled.div`
@@ -1539,10 +1812,18 @@ const InfoDivider = styled.div`
 `;
 
 const GPAText = styled.span`
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
   font-weight: 700;
   color: rgba(150, 220, 240, 1);
   text-shadow: 0 2px 8px rgba(120, 200, 220, 0.4);
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.85rem, 1vw, 0.95rem);
+  }
 `;
 
 // Clubs section
@@ -1550,22 +1831,46 @@ const ClubsSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.35rem, 0.45vw, 0.4rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.3rem, 0.4vw, 0.35rem);
+  }
 `;
 
 const ClubsLabel = styled.span`
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 0.85vw, 0.8rem);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: rgba(150, 200, 220, 0.8);
   font-weight: 600;
   text-align: center;
   margin-bottom: 0.125rem;
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.55rem, 0.65vw, 0.6rem);
+  }
 `;
 
 const ClubsList = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.35rem, 0.45vw, 0.4rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.3rem, 0.4vw, 0.35rem);
+  }
 `;
 
 const ClubItem = styled.div`
@@ -1585,6 +1890,18 @@ const ClubItem = styled.div`
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
   }
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.45rem, 0.55vw, 0.5rem);
+    padding: clamp(0.3rem, 0.4vw, 0.35rem) clamp(0.35rem, 0.45vw, 0.4rem);
+    border-radius: clamp(10px, 1.2vw, 11px);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.4rem, 0.5vw, 0.45rem);
+    padding: clamp(0.25rem, 0.35vw, 0.3rem) clamp(0.3rem, 0.4vw, 0.35rem);
+    border-radius: clamp(9px, 1.1vw, 10px);
+  }
 `;
 
 const ClubLogo = styled.img`
@@ -1599,13 +1916,21 @@ const ClubLogo = styled.img`
 `;
 
 const ClubName = styled.span`
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 0.9vw, 0.85rem);
   font-weight: 500;
   color: rgba(200, 230, 245, 0.9);
   letter-spacing: 0.3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.65rem, 0.75vw, 0.7rem);
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+  }
 `;
 
 /* ================= Footer Styles (integrated into About) ================= */

@@ -248,6 +248,10 @@ const CloudLayer = styled.div`
     
     /* styles */
     pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 `;
 
 // the soft gradient at the top to blend the seam better between sections.
@@ -380,7 +384,7 @@ const SectionSubtitle = styled.h2`
     font-weight: 400;
     font-style: italic;
     color: rgba(255, 255, 255, 0.85);
-    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
     
     /* media queries */
     @media (max-width: 1600px) {
