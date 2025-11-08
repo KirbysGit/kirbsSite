@@ -1,34 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import astronautImg from '../../images/1hero/astronaut.png';
 
-// Space-themed loading animations
-
-// Pulse animation for loading text and rocket glow
-const pulse = keyframes`
-  0%, 100% { 
-    opacity: 0.6; 
-    transform: scale(1);
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.05);
-  }
-`;
-
-// Star twinkle animation
-const twinkle = keyframes`
-  0%, 100% { 
-    opacity: 0.3; 
-    transform: scale(1);
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.2);
-  }
-`;
-
-// Fade in animation
+// Simple fade in animation
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -46,32 +20,16 @@ const LoadingContainer = styled.div.attrs({
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  /* Match Hero.jsx background - plain spacey background, no dark center */
   background: radial-gradient(ellipse at center, 
-    rgba(20, 5, 40, 0.95) 0%, 
-    rgba(0, 0, 0, 0.98) 30%, 
-    rgba(13, 7, 27, 1) 70%);
+    rgba(20, 5, 40, 0.8) 0%, 
+    rgba(13, 7, 27, 0.9) 50%, 
+    rgba(13, 7, 27, 1) 100%);
   opacity: ${props => props.$isFading ? 0 : 1};
   transition: opacity 0.8s ease-out;
   pointer-events: ${props => props.$isFading ? 'none' : 'auto'};
   animation: ${fadeIn} 0.3s ease-in;
   overflow: hidden;
-`;
-
-// Background stars
-const StarField = styled.div`
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.4) 1px, transparent 1px),
-    radial-gradient(circle at 60% 70%, rgba(255,255,255,0.3) 1px, transparent 1px),
-    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.5) 1px, transparent 1px),
-    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.4) 1px, transparent 1px),
-    radial-gradient(circle at 10% 50%, rgba(255,255,255,0.3) 1px, transparent 1px),
-    radial-gradient(circle at 90% 60%, rgba(255,255,255,0.4) 1px, transparent 1px);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  animation: ${twinkle} 3s ease-in-out infinite;
-  pointer-events: none;
 `;
 
 const LoadingContent = styled.div`
@@ -88,10 +46,7 @@ const LoadingContent = styled.div`
   }
 `;
 
-// Removed OrbitContainer, RotatingRing, and Particle components
-// Replaced with Lottie rocket animation
-
-// Loading message text with pulse
+// Loading message text - simple, no animations
 const LoadingMessage = styled.div`
   color: rgba(255, 255, 255, 0.95);
   font-family: system-ui, -apple-system, sans-serif;
@@ -99,7 +54,6 @@ const LoadingMessage = styled.div`
   font-weight: 500;
   opacity: ${props => props.$isFading ? 0 : 1};
   transition: opacity 0.5s ease-out;
-  animation: ${pulse} 2s ease-in-out infinite;
   text-shadow: 0 0 20px rgba(150, 200, 255, 0.5);
   letter-spacing: 1px;
   text-align: center;
@@ -109,8 +63,8 @@ const LoadingMessage = styled.div`
   justify-content: center;
 `;
 
-// Rocket animation container
-const RocketContainer = styled.div`
+// Circular progress ring container
+const ProgressRingContainer = styled.div`
   width: 200px;
   height: 200px;
   display: flex;
@@ -120,79 +74,62 @@ const RocketContainer = styled.div`
   opacity: ${props => props.$isFading ? 0 : 1};
   transition: opacity 0.5s ease-out;
   
-  /* Subtle glow effect around rocket */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -20px;
-    background: radial-gradient(circle, 
-      rgba(100, 150, 255, 0.3) 0%,
-      rgba(100, 150, 255, 0.1) 50%,
-      transparent 100%);
-    border-radius: 50%;
-    animation: ${pulse} 3s ease-in-out infinite;
-    pointer-events: none;
-  }
-`;
-
-// Progress bar container - enhanced styling
-const ProgressContainer = styled.div`
-  width: 400px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-  opacity: ${props => props.$isFading ? 0 : 1};
-  transition: opacity 0.5s ease-out;
-  box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(100, 150, 255, 0.2);
-  
-  @media (max-width: 600px) {
-    width: 300px;
-  }
-`;
-
-const ProgressBar = styled.div`
-  height: 100%;
-  background: linear-gradient(90deg, 
-    rgba(100, 150, 255, 0.9) 0%,
-    rgba(150, 200, 255, 1) 30%,
-    rgba(100, 255, 255, 1) 50%,
-    rgba(150, 200, 255, 1) 70%,
-    rgba(100, 150, 255, 0.9) 100%);
-  border-radius: 4px;
-  box-shadow: 
-    0 0 15px rgba(150, 200, 255, 0.8),
-    0 0 30px rgba(100, 150, 255, 0.4),
-    inset 0 0 10px rgba(255, 255, 255, 0.3);
-  width: ${props => props.$progress || 0}%;
-  transition: width 0.3s ease-out;
+  /* GPU acceleration */
   transform: translateZ(0);
-  position: relative;
-  overflow: hidden;
-  
-  /* Animated shine effect */
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%);
-    animation: ${keyframes`
-      0% { left: -100%; }
-      100% { left: 100%; }
-    `} 2s ease-in-out infinite;
-  }
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `;
 
-// Progress percentage text
+// SVG for circular progress ring
+const ProgressRingSVG = styled.svg`
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg) translateZ(0); /* Start from top, GPU acceleration */
+  transform-origin: center;
+  will-change: transform;
+`;
+
+// Background circle (unfilled part)
+const BackgroundCircle = styled.circle`
+  fill: none;
+  stroke: rgba(100, 70, 150, 0.2);
+  stroke-width: 6;
+`;
+
+// Progress circle (filled part) - lavender color like navbar logo
+const ProgressCircle = styled.circle`
+  fill: none;
+  stroke: rgb(100, 70, 150);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: ${props => 2 * Math.PI * props.$radius};
+  stroke-dashoffset: ${props => 2 * Math.PI * props.$radius * (1 - props.$progress / 100)};
+  /* Smoother transition - longer duration for less janky updates */
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 8px rgba(100, 70, 150, 0.6));
+  transform: translateZ(0);
+  will-change: stroke-dashoffset;
+`;
+
+// Astronaut image - rotates based on progress
+const AstronautImage = styled.div`
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-image: url(${astronautImg});
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: rotate(${props => (props.$progress / 100) * 360}deg) translateZ(0);
+  transform-origin: center;
+  /* Smoother rotation - longer duration for less janky updates */
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  filter: drop-shadow(0 0 10px rgba(150, 200, 255, 0.4));
+`;
+
+// Progress percentage text - below the ring
 const ProgressText = styled.div`
   color: rgba(255, 255, 255, 0.7);
   font-family: system-ui, -apple-system, sans-serif;
@@ -205,46 +142,93 @@ const ProgressText = styled.div`
 `;
 
 const LoadingScreen = ({ progress = 0, isFading = false }) => {
-  // Loading messages based on progress
-  const loadingMessage = useMemo(() => {
-    if (progress < 10) return 'Preparing launch...';
-    if (progress < 25) return 'Loading critical assets...';
-    if (progress < 45) return 'Fueling up images...';
-    if (progress < 60) return 'Initializing components...';
-    if (progress < 80) return 'Loading section content...';
-    if (progress < 95) return 'Almost there...';
-    if (progress < 100) return 'Finalizing...';
-    return 'Ready for launch!';
+  // Throttle progress updates to reduce animation lag during heavy loading
+  const [throttledProgress, setThrottledProgress] = useState(0);
+  const rafRef = useRef(null);
+  const lastUpdateRef = useRef(0);
+  
+  useEffect(() => {
+    // Use requestAnimationFrame to throttle updates to ~60fps max
+    // This prevents janky animations when progress updates come in rapid succession
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+    
+    rafRef.current = requestAnimationFrame(() => {
+      const now = performance.now();
+      // Throttle to max 30fps (33ms between updates) for smoother animation
+      if (now - lastUpdateRef.current >= 33) {
+        setThrottledProgress(progress);
+        lastUpdateRef.current = now;
+      } else {
+        // If we're throttling, schedule another update
+        const delay = 33 - (now - lastUpdateRef.current);
+        setTimeout(() => {
+          setThrottledProgress(progress);
+          lastUpdateRef.current = performance.now();
+        }, delay);
+      }
+    });
+    
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, [progress]);
+  
+  // Loading messages based on throttled progress
+  const loadingMessage = useMemo(() => {
+    const currentProgress = throttledProgress;
+    if (currentProgress < 10) return 'Preparing launch...';
+    if (currentProgress < 25) return 'Loading critical assets...';
+    if (currentProgress < 45) return 'Fueling up images...';
+    if (currentProgress < 60) return 'Initializing components...';
+    if (currentProgress < 80) return 'Loading section content...';
+    if (currentProgress < 95) return 'Almost there...';
+    if (currentProgress < 100) return 'Finalizing...';
+    return 'Ready for launch!';
+  }, [throttledProgress]);
+
+  // Calculate circle radius for SVG (accounting for stroke width)
+  const radius = 90; // Inner radius, accounting for 6px stroke
 
   return (
     <LoadingContainer $isFading={isFading}>
-      <StarField />
       <LoadingContent>
-        {/* Rocket Lottie Animation */}
-        <RocketContainer $isFading={isFading}>
-          <DotLottieReact
-            src="https://lottie.host/2320e3a2-2dce-44d0-9466-599303a7d4a0/it1ClYRJBz.lottie"
-            loop
-            autoplay
-            style={{ width: '100%', height: '100%' }}
-          />
-        </RocketContainer>
+        {/* Circular progress ring with rotating astronaut */}
+        <ProgressRingContainer $isFading={isFading}>
+          {/* SVG Progress Ring */}
+          <ProgressRingSVG viewBox="0 0 200 200">
+            {/* Background circle (unfilled) */}
+            <BackgroundCircle
+              cx="100"
+              cy="100"
+              r={radius}
+            />
+            {/* Progress circle (filled) - draws as loading progresses */}
+            <ProgressCircle
+              cx="100"
+              cy="100"
+              r={radius}
+              $radius={radius}
+              $progress={throttledProgress}
+            />
+          </ProgressRingSVG>
+          
+          {/* Rotating astronaut in center */}
+          <AstronautImage $progress={throttledProgress} />
+        </ProgressRingContainer>
         
-        {/* Loading message */}
+        {/* Loading message - below the ring */}
         <LoadingMessage $isFading={isFading}>
           {loadingMessage}
         </LoadingMessage>
         
-        {/* Progress bar */}
-        <ProgressContainer $isFading={isFading}>
-          <ProgressBar $progress={progress} />
-        </ProgressContainer>
-        
-        {/* Progress percentage */}
-        {progress > 0 && (
+        {/* Progress percentage - below the message */}
+        {throttledProgress > 0 && (
           <ProgressText $isFading={isFading}>
-            {Math.round(progress)}%
+            {Math.round(throttledProgress)}%
           </ProgressText>
         )}
       </LoadingContent>

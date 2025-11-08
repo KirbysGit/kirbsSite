@@ -204,47 +204,40 @@ function App() {
     }
   };
   
-  // Performance monitoring utility
-  const measureComponentRender = (componentName, renderFn) => {
-    if (typeof window !== 'undefined' && window.performance) {
-      const startMark = `${componentName}-render-start`;
-      const endMark = `${componentName}-render-end`;
-      const measureName = `${componentName}-render-time`;
-      
-      window.performance.mark(startMark);
-      const result = renderFn();
-      window.performance.mark(endMark);
-      window.performance.measure(measureName, startMark, endMark);
-      
-      const measure = window.performance.getEntriesByName(measureName)[0];
-      if (measure && measure.duration > 16) { // Log if render takes longer than 1 frame
-        console.warn(`⚠ ${componentName} render took ${measure.duration.toFixed(2)}ms (target: <16ms)`);
-      }
-      
-      return result;
-    }
-    return renderFn();
-  };
+  // Removed old performance monitoring - now using organized performance report
 
   // Verify images for a specific section are loaded - ensure ALL images decode
   const verifySectionImages = async (sectionName, images) => {
-    if (!images || images.length === 0) return true;
+    if (!images || images.length === 0) return { success: true, stats: null };
     
     try {
+      const startTime = performance.now();
       // Preload with optimized settings: larger chunks, no delays for faster loading
-      await preloadImagesInChunks(
+      const results = await preloadImagesInChunks(
         images, 
-        5, // Load 5 images in parallel (increased from 3)
+        5, // Load 5 images in parallel
         () => {},
         'auto', // Auto priority for section images
         0 // No delay between chunks
       );
       
-      console.log(`✓ ${sectionName} images verified (${images.length} images)`);
-      return true;
+      const loadTime = performance.now() - startTime;
+      const stats = results.stats || {};
+      
+      return {
+        success: true,
+        stats: {
+          count: images.length,
+          loadTime,
+          totalSize: stats.totalSize || 0,
+          avgSize: stats.totalSize ? (stats.totalSize / images.length) : 0,
+          largestImage: stats.largestImage || null,
+          slowestImage: stats.slowestImage || null
+        }
+      };
     } catch (error) {
       console.warn(`✗ ${sectionName} images failed:`, error);
-      return false;
+      return { success: false, stats: null };
     }
   };
 
@@ -267,7 +260,7 @@ function App() {
         const criticalStart = performance.now();
         
         // Start with critical images (chunk size 2 for faster initial load)
-        await preloadImagesInChunks(
+        const criticalResults = await preloadImagesInChunks(
           criticalImages,
           2, // Load 2 images in parallel
           (loaded, total) => {
@@ -279,6 +272,7 @@ function App() {
           0 // No delay for critical images
         );
         timings.criticalImages = performance.now() - criticalStart;
+        timings.criticalImageStats = criticalResults.stats || {};
 
         // Load important images (25-45%) - Optimized: larger chunks, high priority, no delays
         // Start component loading in parallel to avoid network competition
@@ -286,7 +280,7 @@ function App() {
         const importantImages = getImportantImages();
         const importantImagesPromise = preloadImagesInChunks(
           importantImages,
-          6, // Load 6 images in parallel (increased from 3 for faster loading)
+          6, // Load 6 images in parallel
           (loaded, total) => {
             // Update progress: 25-45% for important images
             const progress = 25 + Math.min(20, Math.floor((loaded / total) * 20));
@@ -294,7 +288,10 @@ function App() {
           },
           'high', // High priority for important images
           0 // No delay between chunks for important images
-        );
+        ).then(results => {
+          timings.importantImageStats = results.stats || {};
+          return results;
+        });
         
         // Start component loading in parallel with important images
         // JavaScript chunks and images don't compete for the same connection slots
@@ -322,11 +319,13 @@ function App() {
         timings.importantImages = performance.now() - importantStart;
         timings.components = performance.now() - componentStart;
         
-        // Log individual component load times and bundle sizes for performance analysis
+        // Track component bundle sizes
+        timings.componentBundles = [];
         componentResults.forEach((result, idx) => {
           if (result.status === 'fulfilled' && result.value?.loadTime) {
             const componentName = componentNames[idx];
             const loadTime = result.value.loadTime;
+            let bundleSize = 0;
             
             // Get bundle size info if available
             if (result.value.component && typeof window !== 'undefined' && window.performance) {
@@ -337,33 +336,22 @@ function App() {
               );
               
               if (componentResources.length > 0) {
-                const totalSize = componentResources.reduce((sum, r) => sum + (r.transferSize || 0), 0);
-                const sizeKB = (totalSize / 1024).toFixed(1);
-                
-                if (loadTime > 300) {
-                  console.warn(
-                    `⚠ ${componentName}: ${loadTime.toFixed(0)}ms load, ~${sizeKB}KB bundle ` +
-                    `(target: <300ms, consider code splitting or lazy loading sub-components)`
-                  );
-                } else {
-                  console.log(`✓ ${componentName}: ${loadTime.toFixed(0)}ms load, ~${sizeKB}KB bundle`);
-                }
-              } else if (loadTime > 300) {
-                console.warn(
-                  `⚠ ${componentName} took ${loadTime.toFixed(0)}ms to load ` +
-                  `(consider code splitting or lazy loading sub-components)`
-                );
+                bundleSize = componentResources.reduce((sum, r) => sum + (r.transferSize || 0), 0);
               }
-            } else if (loadTime > 300) {
-              console.warn(`⚠ ${componentName} took ${loadTime.toFixed(0)}ms to load (consider optimizing)`);
             }
+            
+            timings.componentBundles.push({
+              name: componentName,
+              loadTime,
+              bundleSize
+            });
           }
         });
         
         // Verify all components loaded successfully
         const allComponentsLoaded = componentResults.every(result => result.status === 'fulfilled');
         if (!allComponentsLoaded) {
-          console.warn('Some components failed to preload, but continuing...');
+          console.warn('⚠ Some components failed to preload, but continuing...');
         }
         setLoadingProgress(60);
         
@@ -377,16 +365,32 @@ function App() {
         
         const sectionImagesStart = performance.now();
         // Preload ALL images for each section (including lazy images)
-        // About gets special treatment - preload ALL its images (including footer lazy images)
-        await Promise.allSettled([
+        const sectionResults = await Promise.allSettled([
           verifySectionImages('WhoIAm', getImagesBySection('whoIAm', 'all')),
           verifySectionImages('Experience', getImagesBySection('experience', 'all')),
           verifySectionImages('Projects', getImagesBySection('projects', 'all')),
           verifySectionImages('Skills', getImagesBySection('skills', 'all')),
-          // About: preload ALL images including lazy footer images for smooth animations
           verifySectionImages('About', getImagesBySection('about', 'all')),
         ]);
         timings.sectionImages = performance.now() - sectionImagesStart;
+        timings.sectionImageStats = sectionResults.map((result, idx) => {
+          const sectionNames = ['WhoIAm', 'Experience', 'Projects', 'Skills', 'About'];
+          if (result.status === 'fulfilled' && result.value?.stats) {
+            return {
+              section: sectionNames[idx],
+              ...result.value.stats
+            };
+          }
+          return { 
+            section: sectionNames[idx], 
+            count: 0,
+            loadTime: 0,
+            totalSize: 0,
+            avgSize: 0,
+            largestImage: null,
+            slowestImage: null
+          };
+        });
         setLoadingProgress(80);
 
         // Fonts are now preloaded via <link rel="preload"> in index.html
@@ -424,19 +428,36 @@ function App() {
         // Calculate actual load time (without minimum wait)
         const actualLoadTime = totalTime - (timings.minimumWait || 0);
         
-        // Log detailed breakdown
-        console.log(`\n📊 Load Time Breakdown:`);
-        console.log(`  Critical Images: ${timings.criticalImages?.toFixed(0) || 0}ms`);
-        console.log(`  Important Images: ${timings.importantImages?.toFixed(0) || 0}ms`);
-        console.log(`  Components: ${timings.components?.toFixed(0) || 0}ms`);
-        console.log(`  Section Images: ${timings.sectionImages?.toFixed(0) || 0}ms`);
-        console.log(`  Fonts: ${timings.fonts?.toFixed(0) || 0}ms`);
+        // ========== ORGANIZED PERFORMANCE REPORT ==========
+        console.log('\n' + '='.repeat(60));
+        console.log('🚀 PERFORMANCE ANALYSIS REPORT');
+        console.log('='.repeat(60));
+        
+        // 1. TIMING BREAKDOWN
+        console.log('\n⏱️  TIMING BREAKDOWN:');
+        console.log('─'.repeat(60));
+        const timingEntries = [
+          { label: 'Critical Images', time: timings.criticalImages || 0, threshold: 500 },
+          { label: 'Important Images', time: timings.importantImages || 0, threshold: 800 },
+          { label: 'Components (JS)', time: timings.components || 0, threshold: 500 },
+          { label: 'Section Images', time: timings.sectionImages || 0, threshold: 1000 },
+          { label: 'Fonts', time: timings.fonts || 0, threshold: 200 },
+        ];
+        
+        timingEntries.forEach(({ label, time, threshold }) => {
+          const emoji = time > threshold ? '⚠️' : time > threshold * 0.7 ? '⚡' : '✓';
+          const percentage = actualLoadTime > 0 ? ((time / actualLoadTime) * 100).toFixed(1) : '0.0';
+          const labelPadded = label + ' '.repeat(Math.max(0, 20 - label.length));
+          const timePadded = ' '.repeat(Math.max(0, 6 - time.toFixed(0).length)) + time.toFixed(0);
+          console.log(`  ${emoji} ${labelPadded} ${timePadded}ms (${percentage}%)`);
+        });
+        
+        console.log('─'.repeat(60));
+        console.log(`  ⚡ Actual Load Time: ${actualLoadTime.toFixed(0)}ms`);
+        console.log(`  ✓ Total Time: ${totalTime.toFixed(0)}ms`);
         if (timings.minimumWait > 0) {
-          console.log(`  Minimum Wait: ${timings.minimumWait?.toFixed(0) || 0}ms (artificial)`);
+          console.log(`  ⏸️  Artificial Wait: ${timings.minimumWait.toFixed(0)}ms`);
         }
-        console.log(`  ─────────────────────`);
-        console.log(`  ⚡ Actual Load: ${actualLoadTime.toFixed(0)}ms`);
-        console.log(`  ✓ Total: ${totalTime.toFixed(0)}ms`);
         
         // Performance rating
         let rating = '';
@@ -454,59 +475,150 @@ function App() {
           rating = 'NEEDS IMPROVEMENT';
           emoji = '⚠️';
         }
-        console.log(`  ${emoji} Rating: ${rating} (Industry avg: ~2500ms)\n`);
+        console.log(`  ${emoji} Rating: ${rating} (Industry avg: ~2500ms)`);
         
-        // Component performance breakdown
-        if (typeof window !== 'undefined' && window.performance && window.performance.getEntriesByType) {
-          try {
-            const measures = window.performance.getEntriesByType('measure');
-            // Filter for component performance measures (load-time, render-time, mount)
-            const componentMeasures = measures.filter(m => 
-              m.name.includes('-load-time') || 
-              m.name.includes('-render-time') || 
-              m.name.includes('-mount')
-            );
-            
-            if (componentMeasures.length > 0) {
-              console.log(`📊 Component Performance Breakdown:`);
-              
-              // Group measures by component name (taking first render for each component)
-              const componentMap = new Map();
-              componentMeasures.forEach(measure => {
-                // Extract component name (handle different naming patterns like "Hero-render-1-render-time")
-                let componentName = measure.name
-                  .replace('-load-time', '')
-                  .replace(/-render-\d+-render-time/, '')
-                  .replace(/-render-\d+/, '')
-                  .replace('-render-time', '')
-                  .replace('-mount', '');
-                
-                // Only keep the longest duration for each component (usually the first render)
-                if (!componentMap.has(componentName) || componentMap.get(componentName).duration < measure.duration) {
-                  componentMap.set(componentName, measure);
-                }
-              });
-              
-              // Sort by duration and log
-              Array.from(componentMap.values())
-                .sort((a, b) => b.duration - a.duration)
-                .forEach(measure => {
-                  const componentName = measure.name
-                    .replace('-load-time', '')
-                    .replace(/-render-\d+-render-time/, '')
-                    .replace(/-render-\d+/, '')
-                    .replace('-render-time', '')
-                    .replace('-mount', '');
-                  const emoji = measure.duration > 500 ? '🐌' : measure.duration > 200 ? '⚠️' : measure.duration > 100 ? '⚡' : '✓';
-                  const type = measure.name.includes('-load-time') ? '[LOAD]' : measure.name.includes('-mount') ? '[MOUNT]' : '[RENDER]';
-                  console.log(`  ${emoji} ${componentName}${type}: ${measure.duration.toFixed(0)}ms`);
-                });
-              console.log('');
+        // 2. IMAGE ANALYSIS
+        console.log('\n🖼️  IMAGE ANALYSIS:');
+        console.log('─'.repeat(60));
+        
+        // Critical images
+        if (timings.criticalImageStats?.totalSize) {
+          const stats = timings.criticalImageStats;
+          const totalKB = (stats.totalSize / 1024).toFixed(1);
+          const avgKB = stats.totalSize && criticalImages.length ? (stats.totalSize / criticalImages.length / 1024).toFixed(1) : '0';
+          console.log(`  Critical Images: ${criticalImages.length} images, ${totalKB}KB total, ${avgKB}KB avg`);
+          if (stats.largestImage?.size) {
+            const largestKB = (stats.largestImage.size / 1024).toFixed(1);
+            const largestName = stats.largestImage.url.split('/').pop() || 'unknown';
+            console.log(`    ⚠️  Largest: ${largestName} (${largestKB}KB)`);
+            if (stats.largestImage.size > 500 * 1024) {
+              console.log(`       💡 Consider compressing this image (target: <500KB)`);
             }
-          } catch (e) {
-            // Performance API might not be fully supported
           }
         }
+        
+        // Important images
+        if (timings.importantImageStats?.totalSize) {
+          const stats = timings.importantImageStats;
+          const totalKB = (stats.totalSize / 1024).toFixed(1);
+          const avgKB = stats.totalSize && importantImages.length ? (stats.totalSize / importantImages.length / 1024).toFixed(1) : '0';
+          console.log(`  Important Images: ${importantImages.length} images, ${totalKB}KB total, ${avgKB}KB avg`);
+        }
+        
+        // Section images
+        if (timings.sectionImageStats) {
+          let totalSectionSize = 0;
+          let totalSectionCount = 0;
+          timings.sectionImageStats.forEach(section => {
+            if (section.totalSize !== undefined) {
+              totalSectionSize += section.totalSize || 0;
+              totalSectionCount += section.count || 0;
+              const sectionKB = ((section.totalSize || 0) / 1024).toFixed(1);
+              const sectionAvgKB = section.avgSize ? (section.avgSize / 1024).toFixed(1) : '0';
+              const emoji = (section.totalSize || 0) > 1000 * 1024 ? '⚠️' : '✓';
+              const sectionNamePadded = section.section + ' '.repeat(Math.max(0, 12 - section.section.length));
+              console.log(`  ${emoji} ${sectionNamePadded} ${section.count || 0} images, ${sectionKB}KB total, ${sectionAvgKB}KB avg`);
+              
+              if (section.largestImage?.size) {
+                const largestKB = (section.largestImage.size / 1024).toFixed(1);
+                if (section.largestImage.size > 500 * 1024) {
+                  const largestName = section.largestImage.url.split('/').pop() || 'unknown';
+                  console.log(`       ⚠️  Largest: ${largestName} (${largestKB}KB) - consider compression`);
+                }
+              }
+            }
+          });
+          const totalSectionKB = (totalSectionSize / 1024).toFixed(1);
+          console.log(`  Total Section Images: ${totalSectionCount} images, ${totalSectionKB}KB total`);
+        }
+        
+        // Total image size
+        const totalImageSize = 
+          (timings.criticalImageStats?.totalSize || 0) +
+          (timings.importantImageStats?.totalSize || 0) +
+          (timings.sectionImageStats?.reduce((sum, s) => sum + (s.totalSize || 0), 0) || 0);
+        const totalImageKB = (totalImageSize / 1024).toFixed(1);
+        const totalImageMB = (totalImageSize / (1024 * 1024)).toFixed(2);
+        console.log(`\n  📦 Total Images: ${totalImageKB}KB (${totalImageMB}MB)`);
+        if (totalImageSize > 5 * 1024 * 1024) {
+          console.log(`  ⚠️  Total image size is large (>5MB). Consider:`);
+          console.log(`     • Compressing images (WebP, AVIF, or optimized PNG/JPG)`);
+          console.log(`     • Using responsive images (srcset)`);
+          console.log(`     • Lazy loading non-critical images`);
+        }
+        
+        // 3. COMPONENT BUNDLE ANALYSIS
+        console.log('\n📦 COMPONENT BUNDLE ANALYSIS:');
+        console.log('─'.repeat(60));
+        if (timings.componentBundles && timings.componentBundles.length > 0) {
+          let totalBundleSize = 0;
+          timings.componentBundles.forEach(comp => {
+            const sizeKB = (comp.bundleSize / 1024).toFixed(1);
+            totalBundleSize += comp.bundleSize;
+            const emoji = comp.loadTime > 300 ? '⚠️' : comp.bundleSize > 200 * 1024 ? '⚡' : '✓';
+            const namePadded = comp.name + ' '.repeat(Math.max(0, 12 - comp.name.length));
+            const loadTimePadded = ' '.repeat(Math.max(0, 4 - comp.loadTime.toFixed(0).length)) + comp.loadTime.toFixed(0);
+            const sizePadded = ' '.repeat(Math.max(0, 6 - sizeKB.length)) + sizeKB;
+            console.log(`  ${emoji} ${namePadded} ${loadTimePadded}ms load, ${sizePadded}KB bundle`);
+            if (comp.bundleSize > 200 * 1024) {
+              console.log(`       💡 Consider code splitting for ${comp.name}`);
+            }
+          });
+          const totalBundleKB = (totalBundleSize / 1024).toFixed(1);
+          console.log(`  Total Bundle Size: ${totalBundleKB}KB`);
+        }
+        
+
+        // 5. BOTTLENECK IDENTIFICATION
+        console.log('\n🔍 BOTTLENECK IDENTIFICATION:');
+        console.log('─'.repeat(60));
+        const bottlenecks = [];
+        
+        // Find slowest operations
+        const slowest = timingEntries
+          .filter(e => e.time > 0)
+          .sort((a, b) => b.time - a.time)[0];
+        if (slowest && slowest.time > slowest.threshold * 0.7) {
+          bottlenecks.push({
+            type: 'Timing',
+            issue: `${slowest.label} is taking ${slowest.time.toFixed(0)}ms`,
+            recommendation: slowest.label.includes('Image') 
+              ? 'Consider compressing images or reducing image count'
+              : slowest.label.includes('Component')
+              ? 'Consider code splitting or lazy loading'
+              : 'Review and optimize this step'
+          });
+        }
+        
+        // Check for large images
+        if (totalImageSize > 5 * 1024 * 1024) {
+          bottlenecks.push({
+            type: 'Images',
+            issue: `Total image size is ${totalImageMB}MB`,
+            recommendation: 'Compress images (WebP/AVIF), use responsive images, lazy load non-critical'
+          });
+        }
+        
+        // Check for large bundles
+        const largeBundles = timings.componentBundles?.filter(c => c.bundleSize > 200 * 1024) || [];
+        if (largeBundles.length > 0) {
+          bottlenecks.push({
+            type: 'Bundles',
+            issue: `${largeBundles.length} component(s) >200KB`,
+            recommendation: 'Implement code splitting or lazy load heavy components'
+          });
+        }
+        
+        if (bottlenecks.length === 0) {
+          console.log('  ✓ No major bottlenecks detected!');
+        } else {
+          bottlenecks.forEach((b, idx) => {
+            console.log(`  ${idx + 1}. [${b.type}] ${b.issue}`);
+            console.log(`     💡 ${b.recommendation}`);
+          });
+        }
+        
+        console.log('\n' + '='.repeat(60) + '\n');
         
         // Fade out loading screen
         setIsFading(true);

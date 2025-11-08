@@ -5,7 +5,6 @@ import meImage from '../../images/5about/me.jpg';
 import shpeLogo from '../../images/5about/shpe.png';
 import knightHacksLogo from '../../images/5about/knightshacks.png';
 import aiUcfLogo from '../../images/5about/aiucf.png';
-import ieeeLogo from '../../images/5about/ieee.png';
 import acmLogo from '../../images/5about/acm.png';
 import ReactionBubble from './ReactionBubble';
 

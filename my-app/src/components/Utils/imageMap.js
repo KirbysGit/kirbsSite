@@ -18,7 +18,6 @@ import meImage from '@/images/5about/me.jpg';
 import shpeLogo from '@/images/5about/shpe.png';
 import knightHacksLogo from '@/images/5about/knightshacks.png';
 import aiUcfLogo from '@/images/5about/aiucf.png';
-import ieeeLogo from '@/images/5about/ieee.png';
 import acmLogo from '@/images/5about/acm.png';
 
 // Footer decorative images (lazy load)
@@ -76,19 +75,15 @@ import hawkersLogo from '@/images/3experience/hawkersSmall.png';
 import spaceStation from '@/images/2story/spacestation.png';
 import satellite1 from '@/images/2story/satellite1.png';
 import satellite2 from '@/images/2story/satellite2.png';
-import ucf4 from '@/images/2story/ucf4.jpg';
 import lilG from '@/images/2story/lilG.jpg';
 import mySetUp from '@/images/2story/mySetUp.jpg';
 import secondHome from '@/images/2story/secondHome.jpg';
-import campingTrip from '@/images/2story/campingTrip.jpg';
-import alwaysChillin from '@/images/2story/alwaysChillin.jpg';
 import naturalAthlete from '@/images/2story/naturalAthlete.jpg';
 import engineeringGuy from '@/images/2story/engineeringGuy.jpg';
-import sanduskySunset from '@/images/2story/sanduskySunset.jpg';
-import asteroid1 from '@/images/2story/asteroid1.png';
-import asteroid2 from '@/images/2story/asteroid2.png';
-import asteroid3 from '@/images/2story/asteroid3.png';
-import asteroid4 from '@/images/2story/asteroid4.png';
+import coding from '@/images/2story/coding.jpg';
+import sdGroup from '@/images/2story/sdGroup.jpg';
+import gradDog from '@/images/2story/gradDog.jpg';
+import legos from '@/images/2story/legos.jpg';
 
 // ========== SKILLS SECTION ==========
 import gitLogo from '@/images/logos/git.png';
@@ -112,7 +107,7 @@ export const imageMap = {
     all: [astronautImg, ufoImg, cloud1Img, cloud2Img, cloud3Img, cloud4Img, cloud5Img],
   },
   about: {
-    important: [meImage, shpeLogo, knightHacksLogo, aiUcfLogo, ieeeLogo, acmLogo],
+    important: [meImage, shpeLogo, knightHacksLogo, aiUcfLogo, acmLogo],
     lazy: [
       rockpileImage,
       bluecoral,
@@ -135,7 +130,6 @@ export const imageMap = {
       shpeLogo,
       knightHacksLogo,
       aiUcfLogo,
-      ieeeLogo,
       acmLogo,
       rockpileImage,
       bluecoral,
@@ -200,37 +194,29 @@ export const imageMap = {
   whoIAm: {
     important: [spaceStation, satellite1, satellite2],
     lazy: [
-      ucf4,
       lilG,
       mySetUp,
       secondHome,
-      campingTrip,
-      alwaysChillin,
       naturalAthlete,
       engineeringGuy,
-      sanduskySunset,
-      asteroid1,
-      asteroid2,
-      asteroid3,
-      asteroid4,
+      coding,
+      sdGroup,
+      gradDog,
+      legos,
     ],
     all: [
       spaceStation,
       satellite1,
       satellite2,
-      ucf4,
       lilG,
       mySetUp,
       secondHome,
-      campingTrip,
-      alwaysChillin,
       naturalAthlete,
       engineeringGuy,
-      sanduskySunset,
-      asteroid1,
-      asteroid2,
-      asteroid3,
-      asteroid4,
+      coding,
+      sdGroup,
+      gradDog,
+      legos,
     ],
   },
   skills: {
@@ -323,7 +309,6 @@ export {
   shpeLogo,
   knightHacksLogo,
   aiUcfLogo,
-  ieeeLogo,
   acmLogo,
   rockpileImage,
   bluecoral,
@@ -365,19 +350,15 @@ export {
   spaceStation,
   satellite1,
   satellite2,
-  ucf4,
   lilG,
   mySetUp,
   secondHome,
-  campingTrip,
-  alwaysChillin,
   naturalAthlete,
   engineeringGuy,
-  sanduskySunset,
-  asteroid1,
-  asteroid2,
-  asteroid3,
-  asteroid4,
+  coding,
+  sdGroup,
+  gradDog,
+  legos,
   // Skills
   gitLogo,
   canvaLogo,

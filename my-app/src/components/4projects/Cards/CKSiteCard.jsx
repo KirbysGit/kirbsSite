@@ -52,14 +52,14 @@ const CKSiteCard = ({ isFocused = false }) => {
       
       {/* star field */}
       <StarField>
-        <Star top="15%" left="10%" size="2px" delay="0s" />
-        <Star top="25%" left="80%" size="1.5px" delay="1s" />
-        <Star top="45%" left="20%" size="1px" delay="2s" />
-        <Star top="60%" left="90%" size="2px" delay="0.5s" />
-        <Star top="75%" left="15%" size="1.5px" delay="1.5s" />
-        <Star top="35%" left="60%" size="1px" delay="0.8s" />
-        <Star top="80%" left="70%" size="2px" delay="1.2s" />
-        <Star top="20%" left="45%" size="1.5px" delay="2.5s" />
+        <Star $top="15%" $left="10%" $size="2px" $delay="0s" />
+        <Star $top="25%" $left="80%" $size="1.5px" $delay="1s" />
+        <Star $top="45%" $left="20%" $size="1px" $delay="2s" />
+        <Star $top="60%" $left="90%" $size="2px" $delay="0.5s" />
+        <Star $top="75%" $left="15%" $size="1.5px" $delay="1.5s" />
+        <Star $top="35%" $left="60%" $size="1px" $delay="0.8s" />
+        <Star $top="80%" $left="70%" $size="2px" $delay="1.2s" />
+        <Star $top="20%" $left="45%" $size="1.5px" $delay="2.5s" />
       </StarField>
 
       {/* card header */}
@@ -120,19 +120,19 @@ const StarField = styled.div`
 const Star = styled.div`
     /* layout */
     position: absolute;
-    top: ${props => props.top};
-    left: ${props => props.left};
+    top: ${props => props.$top};
+    left: ${props => props.$left};
     
     /* spacing */
-    width: ${props => props.size};
-    height: ${props => props.size};
+    width: ${props => props.$size};
+    height: ${props => props.$size};
     
     /* styles */
     border-radius: 50%;
     background: white;
     box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
     animation: ${twinkle} 3s ease-in-out infinite;
-    animation-delay: ${props => props.delay};
+    animation-delay: ${props => props.$delay};
 `;
 
 // export component.

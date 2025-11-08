@@ -694,7 +694,8 @@ const ImgShellStaticVert = styled(ImgShellBase)`
 `;
 
 // Wrapper component that selects the right variant - eliminates prop interpolation
-const ImgShell = ({ $imgPosition, $isSlidingOut, $imgSlideDirection, $isNewCardSet, ...props }) => {
+// Memoized to prevent unnecessary re-renders when props haven't changed
+const ImgShell = memo(({ $imgPosition, $isSlidingOut, $imgSlideDirection, $isNewCardSet, ...props }) => {
     const isMiddleRight = $imgPosition === 'middle-right';
     const isRight = $imgSlideDirection === 'right';
     
@@ -725,7 +726,16 @@ const ImgShell = ({ $imgPosition, $isSlidingOut, $imgSlideDirection, $isNewCardS
     return isMiddleRight 
         ? <ImgShellStaticVert {...props} />
         : <ImgShellStatic {...props} />;
-};
+}, (prevProps, nextProps) => {
+    // Custom comparison function for memo - only re-render if relevant props change
+    return (
+        prevProps.$imgPosition === nextProps.$imgPosition &&
+        prevProps.$isSlidingOut === nextProps.$isSlidingOut &&
+        prevProps.$imgSlideDirection === nextProps.$imgSlideDirection &&
+        prevProps.$isNewCardSet === nextProps.$isNewCardSet &&
+        prevProps.$isImageLoaded === nextProps.$isImageLoaded
+    );
+});
 
 // styled image.
 const StyledImage = styled.img`
@@ -1080,7 +1090,8 @@ const RoleTextDefault = styled(RoleTextBase)`
 `;
 
 // Gradient text for the role - wrapper that selects the right variant
-const RoleText = ({ $roleIndex: roleIndex, ...props }) => {
+// Memoized to prevent unnecessary re-renders when roleIndex hasn't changed
+const RoleText = memo(({ $roleIndex: roleIndex, ...props }) => {
     switch(roleIndex) {
         case 0:
             return <RoleTextSoftwareEngineer {...props} />;
@@ -1091,7 +1102,10 @@ const RoleText = ({ $roleIndex: roleIndex, ...props }) => {
         default:
             return <RoleTextDefault {...props} />;
     }
-};
+}, (prevProps, nextProps) => {
+    // Only re-render if roleIndex changes
+    return prevProps.$roleIndex === nextProps.$roleIndex;
+});
 
 // one-liner section.
 const OneLiner = styled.div`

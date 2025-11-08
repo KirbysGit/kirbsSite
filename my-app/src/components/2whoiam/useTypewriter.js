@@ -3,7 +3,7 @@
 // custom hook for typewriter effect with precise control.
 
 // imports.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 // useTypewriter hook.
 export function useTypewriter(
@@ -25,30 +25,62 @@ export function useTypewriter(
     const tRef = useRef(null);              // timer reference.
     const phaseRef = useRef(phase);         // prevent stale timers.
     const textRef = useRef(text);           // text reference.
+    const outRef = useRef('');              // current output ref to avoid frequent state updates.
+    const updateTimerRef = useRef(null);    // timer for throttled state updates.
 
     // remember the target text.
     useEffect(() => {
         textRef.current = text;
     }, [text]);
 
+    // Throttled state update function - only updates state every 100ms to reduce re-renders
+    // Wrapped in useCallback to keep it stable across renders
+    const throttledSetOut = useCallback((newOut) => {
+        outRef.current = newOut;
+        
+        // Clear any pending update
+        if (updateTimerRef.current) {
+            clearTimeout(updateTimerRef.current);
+        }
+        
+        // Schedule state update (throttled to ~100ms)
+        updateTimerRef.current = setTimeout(() => {
+            setOut(outRef.current);
+            updateTimerRef.current = null;
+        }, 100);
+    }, []); // Empty deps - only uses refs which are stable
+
     // update phaseRef and initialize when entering a phase.
     useEffect(() => {
         phaseRef.current = phase;
 
+        // Clear any pending updates when phase changes
+        if (updateTimerRef.current) {
+            clearTimeout(updateTimerRef.current);
+            updateTimerRef.current = null;
+        }
+
         // if the phase is type, initialize the current char index to 0.
         if (phase === 'type') {
             iRef.current = 0;
-            setOut('');
+            outRef.current = '';
+            setOut(''); // Immediate update for phase change
             // if the phase is delete, initialize the current char index to the length of the text.
         } else if (phase === 'delete') {
-            iRef.current = out.length || textRef.current.length;
+            iRef.current = outRef.current.length || textRef.current.length;
             // if the output length is 0, set the output to the text.
-            if (out.length === 0) setOut(textRef.current);
+            if (outRef.current.length === 0) {
+                outRef.current = textRef.current;
+                setOut(textRef.current); // Immediate update for phase change
+            }
         }
     }, [phase]); // intentionally not including `out` to avoid double-executions.
 
     // clear timers on unmount.
-    useEffect(() => () => { if (tRef.current) clearTimeout(tRef.current); }, []);
+    useEffect(() => () => { 
+        if (tRef.current) clearTimeout(tRef.current);
+        if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
+    }, []);
 
     useEffect(() => {
         // check for reduced motion preference.
@@ -73,16 +105,25 @@ export function useTypewriter(
                 if (iRef.current < target.length) {
                     if (prefersReducedMotion) {
                         // show all at once for reduced motion.
-                        setOut(target);
+                        outRef.current = target;
                         iRef.current = target.length;
+                        setOut(target); // Immediate update for reduced motion
                         onDone?.('type');
                     } else {
                         const next = target.slice(0, iRef.current + 1);
                         iRef.current += 1;
-                        setOut(next);
+                        outRef.current = next;
+                        // Use throttled update to reduce re-renders
+                        throttledSetOut(next);
                         tRef.current = window.setTimeout(step, typeMs);
                     }
                 } else {
+                    // Ensure final state is set immediately when done
+                    if (updateTimerRef.current) {
+                        clearTimeout(updateTimerRef.current);
+                        updateTimerRef.current = null;
+                    }
+                    setOut(outRef.current);
                     onDone?.('type');
                 }
             }
@@ -91,16 +132,25 @@ export function useTypewriter(
                 if (iRef.current > 0) {
                     if (prefersReducedMotion) {
                         // clear instantly for reduced motion.
-                        setOut('');
+                        outRef.current = '';
                         iRef.current = 0;
+                        setOut(''); // Immediate update for reduced motion
                         onDone?.('delete');
                     } else {
-                        const next = out.slice(0, iRef.current - 1);
+                        const next = outRef.current.slice(0, iRef.current - 1);
                         iRef.current -= 1;
-                        setOut(next);
+                        outRef.current = next;
+                        // Use throttled update to reduce re-renders
+                        throttledSetOut(next);
                         tRef.current = window.setTimeout(step, deleteMs);
                     }
                 } else {
+                    // Ensure final state is set immediately when done
+                    if (updateTimerRef.current) {
+                        clearTimeout(updateTimerRef.current);
+                        updateTimerRef.current = null;
+                    }
+                    setOut(outRef.current);
                     onDone?.('delete');
                 }
             }
@@ -111,12 +161,24 @@ export function useTypewriter(
         tRef.current = window.setTimeout(step, phase === 'type' ? typeMs : deleteMs);
 
         // also clear if deps change.
-        return () => { if (tRef.current) clearTimeout(tRef.current); };
-    }, [start, phase, typeMs, deleteMs, onDone, out]);
+        return () => { 
+            if (tRef.current) clearTimeout(tRef.current);
+            if (updateTimerRef.current) {
+                clearTimeout(updateTimerRef.current);
+                updateTimerRef.current = null;
+            }
+        };
+    }, [start, phase, typeMs, deleteMs, onDone]); // Removed 'out' from dependencies to prevent cascading updates
 
     // reset to function.
     const resetTo = (s) => {
         iRef.current = s.length;
+        outRef.current = s;
+        // Clear any pending updates and set immediately
+        if (updateTimerRef.current) {
+            clearTimeout(updateTimerRef.current);
+            updateTimerRef.current = null;
+        }
         setOut(s);
     };
 
