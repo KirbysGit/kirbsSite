@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { scrollToSection } from '../../utils/scrollToSection';
 import { navItems } from './NavbarConfig';
-import fullLogo from '@/images/0navbar/navlogo.png';
+import fullLogo from '@/images/0navbar/navLogo.png';
 import cloud1Img from '@/images/3experience/clouds/cloud1.png';
 import cloud2Img from '@/images/3experience/clouds/cloud2.png';
 import cloud3Img from '@/images/3experience/clouds/cloud3.png';
