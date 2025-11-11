@@ -80,7 +80,7 @@ const popIn = keyframes`
     }
 `;
 
-// Twinkle animation for bullet points
+// Twinkle animation for bullet points aaeda
 const twinkle = keyframes`
     0%, 100% { 
         opacity: 0.6; 
