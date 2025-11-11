@@ -423,7 +423,7 @@ const WhoIAm = memo(() => {
                         {/* map over the image set */}
                         {showImages && imageSet.map((img, i) => (
                             <ImageItem
-                                key={`${img.image}-${index}-${i}`}
+                                    key={`${img.image}-${index}-${i}`}
                                 img={img}
                                 index={i}
                                 card={card}
@@ -612,7 +612,7 @@ const ImageStack = styled.div`
     position: relative;
     align-items: center;
     justify-content: center;
-    
+
     /* CSS containment for performance */
     contain: layout style;
 `;
@@ -635,12 +635,12 @@ const ImgShellBase = styled.div`
         --width: 320px;
         --height: 320px;
     }
-    
+  
     /* GPU acceleration - only set will-change when actually animating */
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    
+        
     /* Pause animations during loading */
     [data-loading="true"] & {
         animation-play-state: paused;
@@ -649,8 +649,8 @@ const ImgShellBase = styled.div`
     /* Only set will-change when animating to reduce initial render cost */
     &[data-animating="true"] {
         will-change: transform, opacity;
-    }
-    
+        }
+        
     &[data-animating="false"] {
         will-change: auto;
     }
@@ -660,12 +660,12 @@ const ImgShellBase = styled.div`
 const ImgShellSlideOutLeft = styled(ImgShellBase)`
     transform: translateZ(0);
     animation: ${slideOutLeft} 400ms ease-out forwards;
-`;
+                `;
 
 const ImgShellSlideOutLeftVert = styled(ImgShellBase)`
     transform: translateY(-50%) translateZ(0);
     animation: ${slideOutLeftVert} 400ms ease-out forwards;
-`;
+                `;
 
 const ImgShellSlideOutRight = styled(ImgShellBase)`
     transform: translateZ(0);
@@ -675,12 +675,12 @@ const ImgShellSlideOutRight = styled(ImgShellBase)`
 const ImgShellSlideOutRightVert = styled(ImgShellBase)`
     transform: translateY(-50%) translateZ(0);
     animation: ${slideOutRightVert} 400ms ease-out forwards;
-`;
+                `;
 
 const ImgShellSlideInLeft = styled(ImgShellBase)`
     transform: translateZ(0);
     animation: ${slideInLeft} 400ms ease-out forwards;
-`;
+                `;
 
 const ImgShellSlideInLeftVert = styled(ImgShellBase)`
     transform: translateY(-50%) translateZ(0);
@@ -1070,33 +1070,33 @@ const RoleTextBase = styled.span`
 // Variant components for different role gradients (simplified from 3 color stops to 2)
 // Each variant includes both gradient AND clip properties together
 const RoleTextSoftwareEngineer = styled(RoleTextBase)`
-    background: linear-gradient(135deg, 
-        rgba(180, 140, 255, 0.95), 
+                    background: linear-gradient(135deg, 
+                        rgba(180, 140, 255, 0.95), 
         rgba(100, 70, 175, 0.9));
     -webkit-background-clip: text;
     background-clip: text;
-`;
+                `;
 
 const RoleTextUCFGrad = styled(RoleTextBase)`
-    background: linear-gradient(135deg, 
-        rgba(255, 220, 150, 0.95), 
-        rgba(255, 160, 80, 0.9));
+                    background: linear-gradient(135deg, 
+                        rgba(255, 220, 150, 0.95), 
+                        rgba(255, 160, 80, 0.9));
     -webkit-background-clip: text;
     background-clip: text;
-`;
+                `;
 
 const RoleTextProfessionalBeginner = styled(RoleTextBase)`
-    background: linear-gradient(135deg, 
-        rgba(150, 255, 200, 0.95), 
-        rgba(100, 180, 140, 0.9));
+                    background: linear-gradient(135deg, 
+                        rgba(150, 255, 200, 0.95), 
+                        rgba(100, 180, 140, 0.9));
     -webkit-background-clip: text;
     background-clip: text;
-`;
+                `;
 
 const RoleTextDefault = styled(RoleTextBase)`
-    background: linear-gradient(135deg, 
-        rgba(255,255,255,.95), 
-        rgba(200,180,255,.9));
+                    background: linear-gradient(135deg, 
+                        rgba(255,255,255,.95), 
+                        rgba(200,180,255,.9));
     -webkit-background-clip: text;
     background-clip: text;
 `;
@@ -1229,7 +1229,7 @@ const BulletItem = styled.div`
         animation-delay: ${props => props.$delay || 0}s;
         will-change: opacity;
     }
-    
+
     /* Pause animations during loading */
     [data-loading="true"] &::before {
         animation-play-state: paused;

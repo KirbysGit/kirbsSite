@@ -49,7 +49,7 @@ const Projects = memo(() => {
 	// Memoized navigation functions
 	const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
 	const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
-	
+
 	// Memoized pause handlers
 	const handleMouseEnter = useCallback(() => setPaused(true), []);
 	const handleMouseLeave = useCallback(() => setPaused(false), []);

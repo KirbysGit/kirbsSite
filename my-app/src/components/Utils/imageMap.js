@@ -20,22 +20,8 @@ import knightHacksLogo from '@/images/5about/knightshacks.png';
 import aiUcfLogo from '@/images/5about/aiucf.png';
 import acmLogo from '@/images/5about/acm.png';
 
-// Footer decorative images (lazy load)
-import rockpileImage from '@/images/5about/footer/rockpile.png';
-import bluecoral from '@/images/5about/footer/bluecoral.png';
-import flatrock from '@/images/5about/footer/flatrock.png';
-import orangecoral from '@/images/5about/footer/orangecoral.png';
-import pinkcoral from '@/images/5about/footer/pinkcoral.png';
-import rockwithseaweed from '@/images/5about/footer/rockwithseaweed.png';
-import seaweed from '@/images/5about/footer/seaweed.png';
-import seaweed2 from '@/images/5about/footer/seaweed2.png';
-import seaweed3 from '@/images/5about/footer/seaweed3.png';
-import tallrock from '@/images/5about/footer/tallrock.png';
-import yellowcoral from '@/images/5about/footer/yellowcoral.png';
-import purplecoral from '@/images/5about/footer/purplecoral.png';
-import rocket from '@/images/5about/footer/rocket.png';
-import shellphone from '@/images/5about/footer/shellphone.png';
-import messageBottle from '@/images/5about/footer/messagebottle.png';
+import shellphone from '@/images/5about/shellphone.png';
+import messageBottle from '@/images/5about/messagebottle.png';
 
 // ========== PROJECTS SECTION ==========
 // Sentiment Trader
@@ -108,42 +94,13 @@ export const imageMap = {
   },
   about: {
     important: [meImage, shpeLogo, knightHacksLogo, aiUcfLogo, acmLogo],
-    lazy: [
-      rockpileImage,
-      bluecoral,
-      flatrock,
-      orangecoral,
-      pinkcoral,
-      rockwithseaweed,
-      seaweed,
-      seaweed2,
-      seaweed3,
-      tallrock,
-      yellowcoral,
-      purplecoral,
-      rocket,
-      shellphone,
-      messageBottle,
-    ],
+    lazy: [shellphone, messageBottle],
     all: [
       meImage,
       shpeLogo,
       knightHacksLogo,
       aiUcfLogo,
       acmLogo,
-      rockpileImage,
-      bluecoral,
-      flatrock,
-      orangecoral,
-      pinkcoral,
-      rockwithseaweed,
-      seaweed,
-      seaweed2,
-      seaweed3,
-      tallrock,
-      yellowcoral,
-      purplecoral,
-      rocket,
       shellphone,
       messageBottle,
     ],
@@ -310,21 +267,6 @@ export {
   knightHacksLogo,
   aiUcfLogo,
   acmLogo,
-  rockpileImage,
-  bluecoral,
-  flatrock,
-  orangecoral,
-  pinkcoral,
-  rockwithseaweed,
-  seaweed,
-  seaweed2,
-  seaweed3,
-  tallrock,
-  yellowcoral,
-  purplecoral,
-  rocket,
-  shellphone,
-  messageBottle,
   // Projects
   sentimentTraderLogo,
   sentimentTraderLightningTalk,
@@ -364,5 +306,7 @@ export {
   canvaLogo,
   figmaLogo,
   msofficeLogo,
+  shellphone,
+  messageBottle,
 };
 

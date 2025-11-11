@@ -776,31 +776,31 @@ function App() {
                 <Suspense fallback={<ComponentFallback />}>
                   {showWhoIAm && (
                     <ComponentWrapper $isVisible={showWhoIAm} $heroSettled={heroSettled}>
-                      <WhoIAm />
+                <WhoIAm />
                     </ComponentWrapper>
                   )}
                   
                   {showExperience && (
                     <ComponentWrapper $isVisible={showExperience} $heroSettled={heroSettled}>
-                      <AExperience />
+                <AExperience />
                     </ComponentWrapper>
                   )}
                   
                   {showProjects && (
                     <ComponentWrapper $isVisible={showProjects} $heroSettled={heroSettled}>
-                      <Projects />
+                <Projects />
                     </ComponentWrapper>
                   )}
                   
                   {showSkills && (
                     <ComponentWrapper $isVisible={showSkills} $heroSettled={heroSettled}>
-                      <Skills />
+                <Skills />
                     </ComponentWrapper>
                   )}
                   
                   {showAbout && (
                     <ComponentWrapper $isVisible={showAbout} $heroSettled={heroSettled}>
-                      <About />
+                <About />
                     </ComponentWrapper>
                   )}
                 </Suspense>

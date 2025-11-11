@@ -43,7 +43,7 @@ const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
             return () => clearTimeout(t);
         }
     }, [isLoading, loadingComplete]);
-    
+            
     // Memoized smooth scroll function using shared utility
     const handleScrollToSection = useCallback((sectionId, desktopOffset = 0, mobileOffset = 0) => {
         scrollToSection(sectionId, desktopOffset, mobileOffset);
