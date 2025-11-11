@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import astronautImg from '../../images/1hero/astronaut.png';
+import astronautImg from '@/images/1hero/astronaut.png';
 
 // Simple fade in animation
 const fadeIn = keyframes`

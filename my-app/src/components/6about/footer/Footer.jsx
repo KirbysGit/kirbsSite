@@ -2,19 +2,19 @@ import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 
 // Footer images
-import rockpileImage from '../../../images/footer/rockpile.png';
-import bluecoral from '../../../images/footer/bluecoral.png';
-import flatrock from '../../../images/footer/flatrock.png';
-import orangecoral from '../../../images/footer/orangecoral.png';
-import pinkcoral from '../../../images/footer/pinkcoral.png';
-import rockwithseaweed from '../../../images/footer/rockwithseaweed.png';
-import seaweed from '../../../images/footer/seaweed.png';
-import seaweed2 from '../../../images/footer/seaweed2.png';
-import seaweed3 from '../../../images/footer/seaweed3.png';
-import tallrock from '../../../images/footer/tallrock.png';
-import yellowcoral from '../../../images/footer/yellowcoral.png';
-import purplecoral from '../../../images/footer/purplecoral.png';
-import rocket from '../../../images/footer/rocket.png';
+import rockpileImage from '@/images/5about/footer/rockpile.png';
+import bluecoral from '@/images/5about/footer/bluecoral.png';
+import flatrock from '@/images/5about/footer/flatrock.png';
+import orangecoral from '@/images/5about/footer/orangecoral.png';
+import pinkcoral from '@/images/5about/footer/pinkcoral.png';
+import rockwithseaweed from '@/images/5about/footer/rockwithseaweed.png';
+import seaweed from '@/images/5about/footer/seaweed.png';
+import seaweed2 from '@/images/5about/footer/seaweed2.png';
+import seaweed3 from '@/images/5about/footer/seaweed3.png';
+import tallrock from '@/images/5about/footer/tallrock.png';
+import yellowcoral from '@/images/5about/footer/yellowcoral.png';
+import purplecoral from '@/images/5about/footer/purplecoral.png';
+import rocket from '@/images/5about/footer/rocket.png';
 
 // Interactive components
 import ShellPhoneWithTooltip from './ShellPhone';

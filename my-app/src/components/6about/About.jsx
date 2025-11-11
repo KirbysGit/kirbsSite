@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useComponentPerformance } from '../../hooks/useComponentPerformance';
-import meImage from '../../images/5about/me.jpg';
-import shpeLogo from '../../images/5about/shpe.png';
-import knightHacksLogo from '../../images/5about/knightshacks.png';
-import aiUcfLogo from '../../images/5about/aiucf.png';
-import acmLogo from '../../images/5about/acm.png';
+import meImage from '@/images/5about/me.jpg';
+import shpeLogo from '@/images/5about/shpe.png';
+import knightHacksLogo from '@/images/5about/knightshacks.png';
+import aiUcfLogo from '@/images/5about/aiucf.png';
+import acmLogo from '@/images/5about/acm.png';
 import ReactionBubble from './ReactionBubble';
 
 // Footer images removed for performance

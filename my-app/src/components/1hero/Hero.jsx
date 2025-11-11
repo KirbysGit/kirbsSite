@@ -13,11 +13,11 @@ import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 import { scrollToSection } from '../../utils/scrollToSection';
 
 // Image imports
-import astronautImg from '../../images/1hero/astronaut.png';
-import ufoImg from '../../images/1hero/ufo.png';
-import cloud1Img from '../../images/3experience/clouds/cloud1.png';
-import cloud2Img from '../../images/3experience/clouds/cloud2.png';
-import cloud3Img from '../../images/3experience/clouds/cloud3.png';
+import astronautImg from '@/images/1hero/astronaut.png';
+import ufoImg from '@/images/1hero/ufo.png';
+import cloud1Img from '@/images/3experience/clouds/cloud1.png';
+import cloud2Img from '@/images/3experience/clouds/cloud2.png';
+import cloud3Img from '@/images/3experience/clouds/cloud3.png';
 
 // hero component.
 const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
