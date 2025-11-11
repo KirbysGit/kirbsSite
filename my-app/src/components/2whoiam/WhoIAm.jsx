@@ -210,6 +210,7 @@ const ImageItem = memo(({ img, index, card, cardIndex, isSlidingOut, slideDirect
             $imgSlideDirection={imgSlideDirection}
             $isNewCardSet={isNewCardSet}
             $isImageLoaded={isImageLoaded}
+            data-animating={isSlidingOut || isNewCardSet ? "true" : "false"}
             style={{
                 ...positioning,
                 zIndex: img.z,
@@ -635,12 +636,23 @@ const ImgShellBase = styled.div`
         --height: 320px;
     }
     
-    /* GPU acceleration */
-    will-change: transform, opacity;
+    /* GPU acceleration - only set will-change when actually animating */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     
     /* Pause animations during loading */
     [data-loading="true"] & {
         animation-play-state: paused;
+    }
+    
+    /* Only set will-change when animating to reduce initial render cost */
+    &[data-animating="true"] {
+        will-change: transform, opacity;
+    }
+    
+    &[data-animating="false"] {
+        will-change: auto;
     }
 `;
 

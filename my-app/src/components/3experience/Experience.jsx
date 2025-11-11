@@ -78,34 +78,24 @@ const ActualExperience = memo(() => {
             </AuroraWrapper>
             
             {/* parallax cloud layers - far, mid, near */}
-            {/* coming from both sides */}
+            {/* Optimized: Reduced from 20 to 12 clouds for better performance */}
             <CloudLayer>
-                {/* far layer - 6 clouds */}
+                {/* far layer - 4 clouds (reduced from 6) */}
+                <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" />
                 <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" />
                 <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" />
                 <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" />
-                {/** removed lowest far-layer cloud to avoid boundary cutoff */}
-                {/* added extra far-layer coverage within safe range */}
-                <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" />
-                <Cloud top="78%" delay="26" duration="192" layer="far" type={1} direction="right" />
                 
-                {/* mid layer - 7 clouds */}
+                {/* mid layer - 4 clouds (reduced from 7) */}
+                <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" />
                 <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" />
                 <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" />
-                <Cloud top="77%" delay="23" duration="150" layer="mid" type={5} direction="left" />
-                <Cloud top="87%" delay="43" duration="142" layer="mid" type={3} direction="left" />
                 <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" />
-                {/** removed lowest mid-layer cloud to avoid boundary cutoff */}
-                {/* added extra mid-layer coverage within safe range */}
-                <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" />
-                <Cloud top="79%" delay="19" duration="152" layer="mid" type={3} direction="left" />
                 
-                {/* near layer - 7 clouds */}
+                {/* near layer - 4 clouds (reduced from 7) */}
+                <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" />
                 <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" />
                 <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" />
-                {/** removed lowest near-layer clouds to avoid boundary cutoff */}
-                {/* added extra near-layer coverage within safe range */}
-                <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" />
                 <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" />
             </CloudLayer>
             
@@ -134,7 +124,12 @@ const ActualExperience = memo(() => {
                             const cardStyle = getCardStyle(0); // get card style for "hire me" card.
                             if (!cardStyle) return null; // if card style is null, return null.
                             return (
-                                <Slide $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
+                                <Slide 
+                                    $position={cardStyle.position} 
+                                    $isFocused={cardStyle.isFocused} 
+                                    $distance={cardStyle.distance}
+                                    data-transitioning={cardStyle.distance > 0 ? "true" : "false"}
+                                >
                                     <HireCard>
                                         {/* overall hire me card */}
                                         <HireHeader>
@@ -251,7 +246,13 @@ const ActualExperience = memo(() => {
 
                             // if card type is service, return service experience card.
                             return (
-                                <Slide key={card.id} $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
+                                <Slide 
+                                    key={card.id} 
+                                    $position={cardStyle.position} 
+                                    $isFocused={cardStyle.isFocused} 
+                                    $distance={cardStyle.distance}
+                                    data-transitioning={cardStyle.distance > 0 ? "true" : "false"}
+                                >
                                     <ServiceExperienceCard $theme={card.theme}>
                                         {/* overall service experience card */}
                                         <CardHeader>

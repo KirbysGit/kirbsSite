@@ -26,7 +26,7 @@ import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
 // import logo
-import fullLogo from '@/images/0navbar/fulllogo.png';
+import fullLogo from '@/images/0navbar/navLogo.png';
 
 // main cksite card component.
 const CKSiteCard = ({ isFocused = false }) => {
@@ -70,7 +70,7 @@ const CKSiteCard = ({ isFocused = false }) => {
             <ProjectSubtitle>This Portfolio · My Digital Journey</ProjectSubtitle>
             <ProjectDate>2024 – Present</ProjectDate>
           </ProjectInfo>
-          <ProjectLogoImage src={fullLogo} alt="CK's Site Logo" />
+          <LargerProjectLogo src={fullLogo} alt="CK's Site Logo" />
         </HeaderTop>
 
         <ProjectDescription>
@@ -133,6 +133,20 @@ const Star = styled.div`
     box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
     animation: ${twinkle} 3s ease-in-out infinite;
     animation-delay: ${props => props.$delay};
+`;
+
+const LargerProjectLogo = styled(ProjectLogoImage)`
+    /* spacing */
+    width: 150px;
+    
+    /* media queries */
+    @media (max-width: 2000px) {
+        width: 140px;
+    }
+
+    @media (max-width: 1600px) {
+        width: 130px;
+    }
 `;
 
 // export component.

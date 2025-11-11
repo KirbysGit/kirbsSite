@@ -20,87 +20,94 @@ import cloud2Img from '../../images/3experience/clouds/cloud2.png';
 import cloud3Img from '../../images/3experience/clouds/cloud3.png';
 
 // hero component.
-const Hero = memo(() => {
+const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
     // Performance monitoring
     useComponentPerformance('Hero', process.env.NODE_ENV === 'development');
     
-    // Pause background animations until text finishes sliding in
-    const LOADING_SCREEN_DURATION = 2500; // 2.5 seconds to match loading screen
+    // Track when loading is complete and animations can start
+    const [loadingComplete, setLoadingComplete] = React.useState(false);
     const [animReady, setAnimReady] = React.useState(false);
     
+    // When loading screen finishes, allow animations to start
     React.useEffect(() => {
-        // When last text animation begins (~2s after loading screen), enable background animations
-        const t = setTimeout(() => setAnimReady(true), LOADING_SCREEN_DURATION + 2000);
-        return () => clearTimeout(t);
-    }, []);
+        if (!isLoading && !loadingComplete) {
+            setLoadingComplete(true);
+            const now = performance.now();
+            console.log(`[Hero] Loading screen finished, animations starting at ${now.toFixed(2)}ms`);
+            
+            // When last text animation begins (~2s after loading screen), enable background animations
+            const t = setTimeout(() => {
+                setAnimReady(true);
+                console.log(`[Hero] Background animations enabled at ${performance.now().toFixed(2)}ms`);
+            }, 2000);
+            return () => clearTimeout(t);
+        }
+    }, [isLoading, loadingComplete]);
     
     // Memoized smooth scroll function using shared utility
     const handleScrollToSection = useCallback((sectionId, desktopOffset = 0, mobileOffset = 0) => {
         scrollToSection(sectionId, desktopOffset, mobileOffset);
     }, []);
     
-    // Memoize animation configs - delayed by 2.5s to start after loading screen
+    // Memoize animation configs - only animate after loading completes
+    // Use false to prevent animation until loadingComplete is true
     const msgWrapperConfig = useMemo(() => ({
         initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 0.5, duration: 0.8, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { opacity: 1 } : false,
+        transition: { delay: 0.5, duration: 0.8, ease: "easeOut" }
+    }), [loadingComplete]);
     
     const supMsgConfig = useMemo(() => ({
         initial: { x: -500, opacity: 0 },
-        animate: { x: 0, opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 0.8, duration: 1.2, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { x: 0, opacity: 1 } : false,
+        transition: { delay: 0.8, duration: 1.2, ease: "easeOut" }
+    }), [loadingComplete]);
     
     const introNameConfig = useMemo(() => ({
         initial: { x: -500, opacity: 0 },
-        animate: { x: 0, opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 1.8, duration: 1.2, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { x: 0, opacity: 1 } : false,
+        transition: { delay: 1.8, duration: 1.2, ease: "easeOut" }
+    }), [loadingComplete]);
     
     const nameRowConfig = useMemo(() => ({
         initial: { x: -500, opacity: 0 },
-        animate: { x: 0, opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 2.8, duration: 1.2, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { x: 0, opacity: 1 } : false,
+        transition: { delay: 2.8, duration: 1.2, ease: "easeOut" }
+    }), [loadingComplete]);
     
     const subNameConfig = useMemo(() => ({
         initial: { y: -50, opacity: 0 },
-        animate: { y: 0, opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 3.8, duration: 1.2, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
+        transition: { delay: 3.8, duration: 1.2, ease: "easeOut" }
+    }), [loadingComplete]);
     
     const scrollInviteConfig = useMemo(() => ({
         initial: { y: 50, opacity: 0 },
-        animate: { y: 0, opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 4.8, duration: 1.2, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
+        transition: { delay: 4.8, duration: 1.2, ease: "easeOut" }
+    }), [loadingComplete]);
     
     const navPillsConfig = useMemo(() => ({
         initial: { y: 50, opacity: 0 },
-        animate: { y: 0, opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 5.4, duration: 1.2, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
+        transition: { delay: 5.4, duration: 1.2, ease: "easeOut" }
+    }), [loadingComplete]);
     
     const arrowConfig = useMemo(() => ({
         initial: { y: 30, opacity: 0 },
-        animate: { y: 0, opacity: 1 },
-        transition: { delay: (LOADING_SCREEN_DURATION / 1000) + 6.0, duration: 1.0, ease: "easeOut" }
-    }), []);
+        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
+        transition: { delay: 6.0, duration: 1.0, ease: "easeOut" }
+    }), [loadingComplete]);
 
     return (
-        <HeroContainer id="hero" data-section-snap data-anim-ready={animReady}>
+        <HeroContainer id="hero" data-section-snap data-anim-ready={animReady} $isLoading={isLoading}>
             
             {/* Optimized starfield - CSS background approach for better performance */}
             <ParticleField className="twinkles" data-anim-ready={animReady}>
-                {/* Reduced to fewer individual stars for performance - most rendered via CSS gradients */}
-                {/* Only animate the most visible/important stars */}
+                {/* Reduced to 3 most visible stars for better render performance (target: <16ms) */}
                 <Star style={{ '--top': '15%', '--left': '25%', '--size': '2px', '--opacity': '0.6', '--duration': '23.7' }} className="twinkle1" />
                 <Star style={{ '--top': '45%', '--left': '65%', '--size': '1px', '--opacity': '0.7', '--duration': '31.2' }} className="twinkle2" />
                 <Star style={{ '--top': '75%', '--left': '35%', '--size': '2px', '--opacity': '0.8', '--duration': '18.9' }} className="twinkle3" />
-                <Star style={{ '--top': '25%', '--left': '75%', '--size': '1px', '--opacity': '0.5', '--duration': '42.1' }} className="twinkle4" />
-                <Star style={{ '--top': '55%', '--left': '15%', '--size': '2px', '--opacity': '0.9', '--duration': '27.4' }} className="twinkle5" />
-                <Star style={{ '--top': '85%', '--left': '85%', '--size': '1px', '--opacity': '0.6', '--duration': '35.8' }} className="twinkle6" />
                 
                 {/* moon (thinking bout adding some more to it, like a guy waving on it */}
                 <Moon>

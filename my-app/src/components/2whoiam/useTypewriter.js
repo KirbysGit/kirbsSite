@@ -35,20 +35,34 @@ export function useTypewriter(
 
     // Throttled state update function - only updates state every 100ms to reduce re-renders
     // Wrapped in useCallback to keep it stable across renders
-    const throttledSetOut = useCallback((newOut) => {
+    const throttledSetOut = useCallback((newOut, immediate = false) => {
         outRef.current = newOut;
+        
+        // If immediate flag is set, update state right away (for phase changes, final states, etc.)
+        if (immediate) {
+            if (updateTimerRef.current) {
+                clearTimeout(updateTimerRef.current);
+                updateTimerRef.current = null;
+            }
+            setOut(newOut);
+            return;
+        }
+        
+        // If typing speed is very fast (< 50ms), update more frequently to avoid lag
+        // Otherwise throttle to 100ms for performance
+        const throttleMs = typeMs < 50 ? Math.max(50, typeMs * 2) : 100;
         
         // Clear any pending update
         if (updateTimerRef.current) {
             clearTimeout(updateTimerRef.current);
         }
         
-        // Schedule state update (throttled to ~100ms)
+        // Schedule state update (throttled)
         updateTimerRef.current = setTimeout(() => {
             setOut(outRef.current);
             updateTimerRef.current = null;
-        }, 100);
-    }, []); // Empty deps - only uses refs which are stable
+        }, throttleMs);
+    }, [typeMs]); // Include typeMs to recalculate throttle when speed changes
 
     // update phaseRef and initialize when entering a phase.
     useEffect(() => {
@@ -113,17 +127,14 @@ export function useTypewriter(
                         const next = target.slice(0, iRef.current + 1);
                         iRef.current += 1;
                         outRef.current = next;
-                        // Use throttled update to reduce re-renders
-                        throttledSetOut(next);
+                        // First character should be immediate, then throttle subsequent updates
+                        const isFirstChar = iRef.current === 1;
+                        throttledSetOut(next, isFirstChar);
                         tRef.current = window.setTimeout(step, typeMs);
                     }
                 } else {
                     // Ensure final state is set immediately when done
-                    if (updateTimerRef.current) {
-                        clearTimeout(updateTimerRef.current);
-                        updateTimerRef.current = null;
-                    }
-                    setOut(outRef.current);
+                    throttledSetOut(outRef.current, true);
                     onDone?.('type');
                 }
             }
@@ -146,11 +157,7 @@ export function useTypewriter(
                     }
                 } else {
                     // Ensure final state is set immediately when done
-                    if (updateTimerRef.current) {
-                        clearTimeout(updateTimerRef.current);
-                        updateTimerRef.current = null;
-                    }
-                    setOut(outRef.current);
+                    throttledSetOut(outRef.current, true);
                     onDone?.('delete');
                 }
             }
@@ -168,7 +175,7 @@ export function useTypewriter(
                 updateTimerRef.current = null;
             }
         };
-    }, [start, phase, typeMs, deleteMs, onDone]); // Removed 'out' from dependencies to prevent cascading updates
+    }, [start, phase, typeMs, deleteMs, onDone, throttledSetOut]); // Include throttledSetOut to ensure it's captured
 
     // reset to function.
     const resetTo = (s) => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useComponentPerformance } from '../../hooks/useComponentPerformance';
+import { useLazyImage } from '../../hooks/useLazyImage';
 import meImage from '../../images/5about/me.jpg';
 import shpeLogo from '../../images/5about/shpe.png';
 import knightHacksLogo from '../../images/5about/knightshacks.png';
@@ -26,6 +27,22 @@ import rocket from '../../images/5about/footer/rocket.png';
 // Interactive footer components
 import ShellPhoneWithTooltip from './footer/ShellPhone';
 import MessageInBottleWithTooltip from './footer/MessageInBottle';
+
+// LazyImage component using Intersection Observer
+const LazyImage = ({ src, alt, style, ...props }) => {
+    const { src: lazySrc, imgRef } = useLazyImage(src, { rootMargin: '200px' });
+    
+    return (
+        <img 
+            ref={imgRef}
+            src={lazySrc} 
+            alt={alt} 
+            style={style}
+            loading="lazy"
+            {...props}
+        />
+    );
+};
 
 const Background = () => {
     // Performance monitoring
@@ -67,7 +84,7 @@ const Background = () => {
                                 href="https://www.linkedin.com/in/colinwkirby/" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                delay={0}
+                                $delay={0}
                                 aria-label="LinkedIn Profile"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -79,7 +96,7 @@ const Background = () => {
                                 href="https://github.com/KirbysGit" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                delay={0.5}
+                                $delay={0.5}
                                 aria-label="GitHub Profile"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -91,7 +108,7 @@ const Background = () => {
                                 href="https://www.instagram.com/colin.kirby03/" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                delay={1}
+                                $delay={1}
                                 aria-label="Instagram Profile"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -103,7 +120,7 @@ const Background = () => {
                                 href="/resume.pdf" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                delay={1.5}
+                                $delay={1.5}
                                 aria-label="Download Resume"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -369,47 +386,47 @@ const Background = () => {
                 </SandTextLayer>
 
                 <UnderwaterObject style={{ bottom: '57%', left: '1%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={rockwithseaweed} alt="Rock with Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '245px', height: '245px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '43%', left: '5%' }}>
-                    <img style={{ width: '210px', height: '210px' }} src={tallrock} alt="Tall Rock" loading="lazy" />
+                    <LazyImage style={{ width: '210px', height: '210px' }} src={tallrock} alt="Tall Rock" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', left: '-8%' }}>
-                    <img style={{ width: '360px', height: '360px', transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" loading="lazy" />
+                    <LazyImage style={{ width: '360px', height: '360px', transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '25%', left: '-2%' }}>
-                    <img style={{ width: '220px', height: '220px' }} src={seaweed} alt="Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '220px', height: '220px' }} src={seaweed} alt="Seaweed" />
                 </UnderwaterObject>
-                
+
                 <UnderwaterObject style={{ bottom: '31%', left: '3%' }}>
-                    <img style={{ width: '200px', height: '200px' }} src={seaweed2} alt="Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '200px', height: '200px' }} src={seaweed2} alt="Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '34%', left: '7%' }}>
-                    <img style={{ width: '220px', height: '220px' }} src={seaweed3} alt="Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '220px', height: '220px' }} src={seaweed3} alt="Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', left: '16%' }}>
-                    <img style={{ width: '225px', height: '225px' }} src={yellowcoral} alt="Yellow Coral" loading="lazy" />
+                    <LazyImage style={{ width: '225px', height: '225px' }} src={yellowcoral} alt="Yellow Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', left: '12%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={pinkcoral} alt="Pink Coral" loading="lazy" />
+                    <LazyImage style={{ width: '245px', height: '245px' }} src={pinkcoral} alt="Pink Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', left: '20%' }}>
-                    <img style={{ width: '230px', height: '230px' }} src={purplecoral} alt="Purple Coral" loading="lazy" />
+                    <LazyImage style={{ width: '230px', height: '230px' }} src={purplecoral} alt="Purple Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', left: '14%' }}>
-                    <img style={{ width: '235px', height: '235px' }} src={orangecoral} alt="Orange Coral" loading="lazy" />
+                    <LazyImage style={{ width: '235px', height: '235px' }} src={orangecoral} alt="Orange Coral" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', left: '17%' }}>
-                    <img style={{ width: '260px', height: '260px' }} src={bluecoral} alt="Blue Coral" loading="lazy" />
+                    <LazyImage style={{ width: '260px', height: '260px' }} src={bluecoral} alt="Blue Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
@@ -418,7 +435,7 @@ const Background = () => {
                 
                 {/* Rocket - CENTERED at 50% */}
                 <RocketContainer style={{ bottom: '45%', left: '49.75%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
-                    <RocketImage style={{ width: '250px', height: '250px' }} src={rocket} alt="Rocket - Back to top" />
+                    <LazyImage style={{ width: '250px', height: '250px' }} src={rocket} alt="Rocket - Back to top" />
                 </RocketContainer>
                 
                 {/* Interactive Shell Phone with phone tooltip - RIGHT of center (centered at 65%) */}
@@ -427,47 +444,47 @@ const Background = () => {
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', right: '16%' }}>
-                    <img style={{ width: '235px', height: '235px' }} src={bluecoral} alt="Blue Coral" loading="lazy" />
+                    <LazyImage style={{ width: '235px', height: '235px' }} src={bluecoral} alt="Blue Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', right: '12%' }}>
-                    <img style={{ width: '240px', height: '240px' }} src={yellowcoral} alt="Yellow Coral" loading="lazy" />
+                    <LazyImage style={{ width: '240px', height: '240px' }} src={yellowcoral} alt="Yellow Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', right: '20%' }}>
-                    <img style={{ width: '230px', height: '230px' }} src={orangecoral} alt="Orange Coral" loading="lazy" />
+                    <LazyImage style={{ width: '230px', height: '230px' }} src={orangecoral} alt="Orange Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', right: '14%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={purplecoral} alt="Purple Coral" loading="lazy" />
+                    <LazyImage style={{ width: '245px', height: '245px' }} src={purplecoral} alt="Purple Coral" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', right: '17%' }}>
-                    <img style={{ width: '265px', height: '265px' }} src={pinkcoral} alt="Pink Coral" loading="lazy" />
+                    <LazyImage style={{ width: '265px', height: '265px' }} src={pinkcoral} alt="Pink Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '57%', right: '1%' }}>
-                    <img style={{ width: '240px', height: '240px' }} src={rockwithseaweed} alt="Rock with Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '240px', height: '240px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '44%', right: '5%' }}>
-                    <img style={{ width: '210px', height: '210px' }} src={flatrock} alt="Flat Rock" loading="lazy" />
+                    <LazyImage style={{ width: '210px', height: '210px' }} src={flatrock} alt="Flat Rock" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', right: '-8%' }}>
-                    <img style={{ width: '360px', height: '360px' }} src={rockpileImage} alt="Rockpile" loading="lazy" />
+                    <LazyImage style={{ width: '360px', height: '360px' }} src={rockpileImage} alt="Rockpile" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '25%', right: '-2%' }}>
-                    <img style={{ width: '215px', height: '215px' }} src={seaweed} alt="Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '215px', height: '215px' }} src={seaweed} alt="Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '31%', right: '3%' }}>
-                    <img style={{ width: '195px', height: '195px' }} src={seaweed2} alt="Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '195px', height: '195px' }} src={seaweed2} alt="Seaweed" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '34%', right: '7%' }}>
-                    <img style={{ width: '220px', height: '220px', transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" loading="lazy" />
+                    <LazyImage style={{ width: '220px', height: '220px', transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" />
                 </UnderwaterObject>
             </SandPlane>
 
@@ -1049,7 +1066,7 @@ const SocialBubble = styled.a`
     width: 70px;
     height: 70px;
     animation: ${floatBubble} 7s ease-in-out infinite;
-    animation-delay: ${props => props.delay}s;
+    animation-delay: ${props => props.$delay}s;
   }
   
   /* Second bubble (GitHub) */
@@ -1059,7 +1076,7 @@ const SocialBubble = styled.a`
     width: 80px;
     height: 80px;
     animation: ${floatBubble} 7.5s ease-in-out infinite;
-    animation-delay: ${props => props.delay}s;
+    animation-delay: ${props => props.$delay}s;
   }
   
   /* Third bubble (Instagram) */
@@ -1069,7 +1086,7 @@ const SocialBubble = styled.a`
     width: 88px;
     height: 88px;
     animation: ${floatBubble} 7.2s ease-in-out infinite;
-    animation-delay: ${props => props.delay}s;
+    animation-delay: ${props => props.$delay}s;
   }
   
   /* Largest bubble at top (Resume) */
@@ -1079,7 +1096,7 @@ const SocialBubble = styled.a`
     width: 96px;
     height: 96px;
     animation: ${floatBubble} 8s ease-in-out infinite;
-    animation-delay: ${props => props.delay}s;
+    animation-delay: ${props => props.$delay}s;
   }
   
   /* Pause animations during loading */

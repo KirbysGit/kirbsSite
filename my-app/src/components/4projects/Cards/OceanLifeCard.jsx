@@ -27,7 +27,7 @@ import Highlights from '../shared/Highlights';
 
 // import project assets.
 import oceanlifeLogo from '@/images/4projects/ocean_life/oceanlife.png';
-import oceanlifePreview from '@/images/4projects/ocean_life/presentationpreview.png';
+import oceanlifePreview from '@/images/4projects/ocean_life/OLpreview.png';
 
 // main oceanlife card component.
 const OceanLifeCard = () => {

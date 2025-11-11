@@ -88,11 +88,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   
-  // States for staggered component mounting
-  const [showAboveFold, setShowAboveFold] = useState(false);
-  const [showBelowFold, setShowBelowFold] = useState(false);
+  // States for staggered component mounting - incremental rendering
+  const [showWhoIAm, setShowWhoIAm] = useState(false);
+  const [showExperience, setShowExperience] = useState(false);
+  const [showProjects, setShowProjects] = useState(false);
+  const [showSkills, setShowSkills] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [heroSettled, setHeroSettled] = useState(false);
   const [componentsPreloaded, setComponentsPreloaded] = useState(false);
+  
+  // Track when loading actually completes (for dynamic timing)
+  const loadingCompleteTimeRef = React.useRef(null);
   
   // Use page progress hook (must be after isLoading is declared)
   usePageProgress(isLoading);
@@ -100,26 +106,73 @@ function App() {
   // Ref to prevent duplicate loading in React StrictMode (development)
   const hasLoadedRef = React.useRef(false);
   
-  // When the hero entrance is fully done (arrow animation completes ~9.5s)
-  // Arrow starts at 8.5s (2.5s loading + 6.0s delay) and takes 1.0s to complete
-  useEffect(() => {
-    const t = setTimeout(() => setHeroSettled(true), 9500); // Wait for arrow animation to complete
-    return () => clearTimeout(t);
-  }, []);
+  // Track loading completion time in state so we can use it in effects
+  const [loadingCompleteTime, setLoadingCompleteTime] = useState(null);
   
-  // Mount components as soon as they're preloaded (during loading screen)
-  // This allows them to render in the background while Hero animations play
+  // When the hero entrance is fully done - timing is relative to loading completion
+  // Arrow animation: 6.0s delay after loading + 1.0s duration = 7.0s total
   useEffect(() => {
-    if (componentsPreloaded) {
-      // Mount above-fold components immediately after preload
-      setShowAboveFold(true);
-      // Mount below-fold components with a small delay to stagger initial render
-      // This prevents layout thrashing while still ensuring all sections render
-      const belowFoldTimer = setTimeout(() => {
-        setShowBelowFold(true);
-      }, 100); // Small delay to prevent layout thrashing
-      return () => clearTimeout(belowFoldTimer);
-    }
+    if (!loadingCompleteTime) return; // Wait for loading to complete
+    
+    const heroAnimationDuration = 7000; // 6s delay + 1s arrow animation
+    const heroSettleTime = loadingCompleteTime + heroAnimationDuration;
+    const now = performance.now();
+    const delay = Math.max(0, heroSettleTime - now);
+    
+    console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms`);
+    console.log(`[App] Hero will settle at ${heroSettleTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
+    
+    const t = setTimeout(() => {
+      setHeroSettled(true);
+      console.log(`[App] Hero settled at ${performance.now().toFixed(2)}ms`);
+    }, delay);
+    
+    return () => clearTimeout(t);
+  }, [loadingCompleteTime]);
+  
+  // Incremental rendering - mount components one at a time during loading
+  // This spreads render work across frames, allowing loading animation to run smoothly
+  useEffect(() => {
+    if (!componentsPreloaded) return;
+    
+    console.log(`[App] Starting incremental component rendering...`);
+    
+    // Render components incrementally, spaced out to allow animation frames between renders
+    // Each component gets ~200-300ms spacing to allow loading animation to run smoothly
+    const renderDelays = {
+      whoIAm: 0,        // Start immediately
+      experience: 300,  // 300ms after WhoIAm
+      projects: 600,    // 600ms after WhoIAm
+      skills: 900,      // 900ms after WhoIAm
+      about: 1200,      // 1200ms after WhoIAm (most complex, render last)
+    };
+    
+    // Use requestAnimationFrame to ensure we're not blocking the main thread
+    const scheduleRender = (setter, delay, name) => {
+      if (delay === 0) {
+        // Immediate render for first component
+        requestAnimationFrame(() => {
+          setter(true);
+          console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
+        });
+      } else {
+        // Delayed renders - use setTimeout with requestAnimationFrame for smooth spacing
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            setter(true);
+            console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
+          });
+        }, delay);
+      }
+    };
+    
+    scheduleRender(setShowWhoIAm, renderDelays.whoIAm, 'WhoIAm');
+    scheduleRender(setShowExperience, renderDelays.experience, 'Experience');
+    scheduleRender(setShowProjects, renderDelays.projects, 'Projects');
+    scheduleRender(setShowSkills, renderDelays.skills, 'Skills');
+    scheduleRender(setShowAbout, renderDelays.about, 'About');
+    
+    // All components should be rendered within 1.2s, well before navbar appears (7s after loading)
   }, [componentsPreloaded]);
 
   useEffect(() => {
@@ -127,8 +180,15 @@ function App() {
     document.documentElement.dataset.loading = isLoading ? "true" : "false";
   }, [isLoading]);
 
-  // Lock scrolling during Hero animations (until ~9.5s when arrow completes)
   useEffect(() => {
+    // Mark when Hero animations are complete so CSS can show scrollbar
+    document.documentElement.dataset.heroSettled = heroSettled ? "true" : "false";
+  }, [heroSettled]);
+
+  // Lock scrolling during Hero animations - timing relative to loading completion
+  useEffect(() => {
+    if (!loadingCompleteTime) return; // Wait for loading to complete
+    
     // Lock scroll immediately on mount
     const originalBodyOverflow = document.body.style.overflow;
     const originalHtmlOverflow = document.documentElement.style.overflow;
@@ -150,8 +210,15 @@ function App() {
     window.addEventListener('wheel', preventScroll, { passive: false });
     window.addEventListener('touchmove', preventScroll, { passive: false });
     
-    // Unlock scroll after Hero animations complete (~9.5s)
-    // Arrow starts at 8.5s (2.5s loading + 6.0s delay) and takes 1.0s to complete
+    // Unlock scroll after Hero animations complete - timing relative to loading completion
+    // Hero animations: 6.0s delay + 1.0s arrow animation = 7.0s total after loading
+    const heroAnimationDuration = 7000; // 6s delay + 1s arrow animation
+    const unlockTime = loadingCompleteTime + heroAnimationDuration;
+    const now = performance.now();
+    const delay = Math.max(0, unlockTime - now);
+    
+    console.log(`[App] Scroll will unlock at ${unlockTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
+    
     const unlockTimer = setTimeout(() => {
       // Restore original overflow values
       document.body.style.overflow = originalBodyOverflow;
@@ -163,7 +230,9 @@ function App() {
       
       // Restore scroll position (should be 0, but just in case)
       window.scrollTo(0, scrollY);
-    }, 9500);
+      
+      console.log(`[App] Scroll unlocked at ${performance.now().toFixed(2)}ms`);
+    }, delay);
     
     return () => {
       clearTimeout(unlockTimer);
@@ -248,7 +317,7 @@ function App() {
     hasLoadedRef.current = true;
     
     const startTime = performance.now();
-    const MIN_LOADING_TIME = 2500; // Minimum 2.5 seconds for loading screen with animations
+    const MIN_LOADING_TIME = 2000; // Minimum 2 seconds for smooth loading screen
     
     // Preload critical images first, then important images, then components, then fonts
     const loadAssets = async () => {
@@ -359,18 +428,18 @@ function App() {
         // This allows components to render during loading screen/Hero animations
         setComponentsPreloaded(true);
 
-        // Load ALL section-specific images (including lazy ones for About)
+        // Load important section-specific images (lazy images will load on-demand via Intersection Observer)
         const { getImagesBySection } = await import('./components/utils/imageMap');
         setLoadingProgress(65);
         
         const sectionImagesStart = performance.now();
-        // Preload ALL images for each section (including lazy images)
+        // Preload only important images for each section (lazy images load on-demand)
         const sectionResults = await Promise.allSettled([
-          verifySectionImages('WhoIAm', getImagesBySection('whoIAm', 'all')),
-          verifySectionImages('Experience', getImagesBySection('experience', 'all')),
-          verifySectionImages('Projects', getImagesBySection('projects', 'all')),
-          verifySectionImages('Skills', getImagesBySection('skills', 'all')),
-          verifySectionImages('About', getImagesBySection('about', 'all')),
+          verifySectionImages('WhoIAm', getImagesBySection('whoIAm', 'important')),
+          verifySectionImages('Experience', getImagesBySection('experience', 'important')),
+          verifySectionImages('Projects', getImagesBySection('projects', 'important')),
+          verifySectionImages('Skills', getImagesBySection('skills', 'important')),
+          verifySectionImages('About', getImagesBySection('about', 'important')),
         ]);
         timings.sectionImages = performance.now() - sectionImagesStart;
         timings.sectionImageStats = sectionResults.map((result, idx) => {
@@ -407,18 +476,41 @@ function App() {
         // Finalize (92-100%)
         setLoadingProgress(95);
         
-        // Ensure minimum loading time (2.5 seconds for smooth loading screen)
+        // Ensure minimum loading time (2 seconds for smooth loading screen)
         const elapsedTime = performance.now() - startTime;
         const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
         timings.minimumWait = remainingTime;
         
         if (remainingTime > 0) {
-          // Update progress during wait to keep animation smooth
-          const waitSteps = 10;
+          // Use remaining time to pre-render components in background for smooth first scroll
+          // This prevents lag when user scrolls down for the first time
+          const preRenderStart = performance.now();
+          
+          // Force a layout calculation to ensure components are ready
+          // This triggers React to complete initial renders
+          requestAnimationFrame(() => {
+            // Force layout calculation by reading layout properties
+            const sections = ['who-i-am', 'experience', 'projects', 'skills', 'about'];
+            sections.forEach(sectionId => {
+              const element = document.getElementById(sectionId);
+              if (element) {
+                // Trigger layout calculation (forces browser to calculate positions)
+                void element.offsetHeight;
+              }
+            });
+          });
+          
+          // Update progress smoothly during wait
+          const waitSteps = 20; // More steps for smoother animation
           const stepDuration = remainingTime / waitSteps;
+          const preRenderTime = performance.now() - preRenderStart;
+          
+          // Distribute remaining time across progress updates
           for (let i = 0; i < waitSteps; i++) {
             await new Promise(resolve => setTimeout(resolve, stepDuration));
-            setLoadingProgress(Math.min(98, 92 + (i + 1) * (8 / waitSteps)));
+            // Smooth progress from 92% to 98%
+            const progress = 92 + (i + 1) * (6 / waitSteps);
+            setLoadingProgress(Math.min(98, progress));
           }
         }
         
@@ -623,10 +715,17 @@ function App() {
         // Fade out loading screen
         setIsFading(true);
         
+        // Store the actual loading completion time for dynamic timing
+        const loadingCompleteTime = performance.now();
+        loadingCompleteTimeRef.current = loadingCompleteTime;
+        setLoadingCompleteTime(loadingCompleteTime); // Also set in state for effects
+        console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms (total: ${(loadingCompleteTime - startTime).toFixed(2)}ms)`);
+        
         // Hide loading screen FIRST to prevent scrollbar recalculation affecting Hero
         // Component mounting is now handled by useIdle hooks above (mounts after hero settles)
         setTimeout(() => {
           setIsLoading(false); // Hide loading screen first
+          console.log(`[App] Loading screen hidden at ${performance.now().toFixed(2)}ms`);
         }, 800);
       } catch (error) {
         console.error('Error during asset loading:', error);
@@ -640,12 +739,12 @@ function App() {
           await new Promise(resolve => setTimeout(resolve, remainingTime));
         }
         
-        setIsFading(true);
+            setIsFading(true);
         
         // Mount components even on error (fallback - useIdle handles normal case)
-        setTimeout(() => {
+            setTimeout(() => {
           setHeroSettled(true); // Allow mounting even on error
-          setIsLoading(false);
+              setIsLoading(false);
         }, 800);
       }
     };
@@ -667,33 +766,44 @@ function App() {
             element={
               <>
                 {/* Hero always mounts - needed immediately for LCP */}
-                <Hero />
+                <Hero isLoading={isLoading} loadingCompleteTime={loadingCompleteTime} />
                 
                 {/* Navbar - mounts after Hero animations complete */}
-                <Navbar />
+                <Navbar loadingCompleteTime={loadingCompleteTime} />
                 
-                {/* Staggered mounting for smooth performance */}
-                {/* Components mount during loading screen and render in background */}
-                {showAboveFold && (
-                  <Suspense fallback={<ComponentFallback />}>
-                    {/* Mount WhoIAm and Experience - render during loading/Hero animations */}
-                    <ComponentWrapper $isVisible={showAboveFold} $heroSettled={heroSettled}>
+                {/* Incremental rendering - components mount one at a time during loading */}
+                {/* This spreads render work across frames, allowing loading animation to run smoothly */}
+                <Suspense fallback={<ComponentFallback />}>
+                  {showWhoIAm && (
+                    <ComponentWrapper $isVisible={showWhoIAm} $heroSettled={heroSettled}>
                       <WhoIAm />
+                    </ComponentWrapper>
+                  )}
+                  
+                  {showExperience && (
+                    <ComponentWrapper $isVisible={showExperience} $heroSettled={heroSettled}>
                       <AExperience />
                     </ComponentWrapper>
-                  </Suspense>
-                )}
-                
-                {showBelowFold && (
-                  <Suspense fallback={<ComponentFallback />}>
-                    {/* Mount Projects, Skills, About - render during loading/Hero animations */}
-                    <ComponentWrapper $isVisible={showBelowFold} $heroSettled={heroSettled}>
+                  )}
+                  
+                  {showProjects && (
+                    <ComponentWrapper $isVisible={showProjects} $heroSettled={heroSettled}>
                       <Projects />
+                    </ComponentWrapper>
+                  )}
+                  
+                  {showSkills && (
+                    <ComponentWrapper $isVisible={showSkills} $heroSettled={heroSettled}>
                       <Skills />
+                    </ComponentWrapper>
+                  )}
+                  
+                  {showAbout && (
+                    <ComponentWrapper $isVisible={showAbout} $heroSettled={heroSettled}>
                       <About />
                     </ComponentWrapper>
-                  </Suspense>
-                )}
+                  )}
+                </Suspense>
               </>
             }
           />

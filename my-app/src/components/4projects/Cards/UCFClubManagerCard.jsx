@@ -26,7 +26,7 @@ import Highlights from '../shared/Highlights';
 
 // import project assets.
 import ucfLogo from '@/images/4projects/ucf_manager/ucflogo.png';
-import presentationPreview from '@/images/4projects/ucf_manager/presentationpreview.png';
+import presentationPreview from '@/images/4projects/ucf_manager/ucf_preview.png';
 import figmaPreview from '@/images/4projects/ucf_manager/figmapreview.png';
 
 // main ucf club manager card component.

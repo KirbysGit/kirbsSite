@@ -27,22 +27,22 @@ const Projects = memo(() => {
 	// Performance monitoring
 	useComponentPerformance('Projects', process.env.NODE_ENV === 'development');
 
-	// memo for cards.
-	const cards = useMemo(
+	// memo for card configurations (lazy instantiation - only create JSX when visible)
+	const cardConfigs = useMemo(
 		() => [
-		{ id: 'ck', node: <CKSiteCard />, theme: 'cosmic' },
-		{ id: 'centi', node: <CentiCard />, theme: 'centi' },
-		{ id: 'sent', node: <SentimentTraderCard />, theme: 'sentiment' },
-		{ id: 'sec', node: <SecureScapeCard />, theme: 'secure' },
-		{ id: 'shelf', node: <ShelfVisionCard />, theme: 'shelf' },
-		{ id: 'ucf', node: <UCFClubManagerCard />, theme: 'ucf' },
-		{ id: 'ocean', node: <OceanLifeCard />, theme: 'ocean' },
+		{ id: 'ck', Component: CKSiteCard, theme: 'cosmic' },
+		{ id: 'centi', Component: CentiCard, theme: 'centi' },
+		{ id: 'sent', Component: SentimentTraderCard, theme: 'sentiment' },
+		{ id: 'sec', Component: SecureScapeCard, theme: 'secure' },
+		{ id: 'shelf', Component: ShelfVisionCard, theme: 'shelf' },
+		{ id: 'ucf', Component: UCFClubManagerCard, theme: 'ucf' },
+		{ id: 'ocean', Component: OceanLifeCard, theme: 'ocean' },
 		],
 		[]
 	);
 
 	// state variables.
-	const n = useMemo(() => cards.length, [cards.length]);
+	const n = useMemo(() => cardConfigs.length, [cardConfigs.length]);
 	const [index, setIndex] = useState(0);
 	const [paused, setPaused] = useState(false);
 
@@ -146,18 +146,21 @@ const Projects = memo(() => {
 				>
 					{/* track - the container for the cards. */}
 					<Track>
-						{cards.map((c, i) => {
+						{cardConfigs.map((config, i) => {
 						const cardStyle = getCardStyle(i);
 						if (!cardStyle) return null;
 						
+						// Lazy instantiation: only create card JSX when visible
+						const { Component } = config;
+						
 						return (
 							<Slide 
-								key={c.id} 
+								key={config.id} 
 								$position={cardStyle.position}
 								$isFocused={cardStyle.isFocused}
 								$distance={cardStyle.distance}
 							>
-								{React.cloneElement(c.node, { isFocused: cardStyle.isFocused })}
+								<Component isFocused={cardStyle.isFocused} />
 							</Slide>
 						);
 						})}

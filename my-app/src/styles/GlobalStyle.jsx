@@ -35,12 +35,15 @@ export const GlobalStyle = createGlobalStyle`
     }
     
     /* Prevent layout shifts during initial load - reserve space for components */
-    :root[data-loading="true"] {
-        /* Prevent scrollbar recalculation during loading */
+    /* Keep scrollbar hidden during loading AND Hero animations */
+    :root[data-loading="true"],
+    :root[data-hero-settled="false"] {
+        /* Prevent scrollbar recalculation during loading and Hero animations */
         overflow-y: hidden;
     }
     
-    :root[data-loading="false"] {
+    /* Only show scrollbar after loading AND Hero animations complete */
+    :root[data-loading="false"][data-hero-settled="true"] {
         overflow-y: auto;
     }
     

@@ -135,7 +135,7 @@ const sunGlow = keyframes`
   }
 `;
 
-const Navbar = () => {
+const Navbar = ({ loadingCompleteTime = null }) => {
   const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isTopNavbarVisible, setIsTopNavbarVisible] = useState(true);
@@ -143,14 +143,26 @@ const Navbar = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false);
 
-  // Mount navbar after Hero animations complete (arrow animation finishes ~9.5s)
-  // Arrow starts at 8.5s (2.5s loading + 6.0s delay) and takes 1.0s to complete
+  // Mount navbar after Hero animations complete - timing relative to loading completion
+  // Hero animations: 6.0s delay + 1.0s arrow animation = 7.0s total after loading
   useEffect(() => {
+    if (!loadingCompleteTime) return; // Wait for loading to complete
+    
+    const heroAnimationDuration = 7000; // 6s delay + 1s arrow animation
+    const mountTime = loadingCompleteTime + heroAnimationDuration;
+    const now = performance.now();
+    const delay = Math.max(0, mountTime - now);
+    
+    console.log(`[Navbar] Loading completed at ${loadingCompleteTime.toFixed(2)}ms`);
+    console.log(`[Navbar] Will mount at ${mountTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
+    
     const timer = setTimeout(() => {
       setIsMounted(true);
-    }, 9500); // Wait for arrow animation to complete (8.5s + 1.0s)
+      console.log(`[Navbar] Mounted at ${performance.now().toFixed(2)}ms`);
+    }, delay);
+    
     return () => clearTimeout(timer);
-  }, []);
+  }, [loadingCompleteTime]);
 
   // Detect scroll direction and Hero visibility
   useEffect(() => {

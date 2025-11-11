@@ -28,8 +28,8 @@ import Highlights from '../shared/Highlights';
 
 // import project assets.
 import sentimentTraderLogo from '@/images/4projects/sentiment_trader/sentimenttrader.png';
-import lightningTalkPreview from '@/images/4projects/sentiment_trader/lightningtalkpreview.png';
-import paperPreview from '@/images/4projects/sentiment_trader/paperpreview.png';
+import lightningTalkPreview from '@/images/4projects/sentiment_trader/LT_preview.png';
+import paperPreview from '@/images/4projects/sentiment_trader/ST_preview.png';
 
 const SentimentTraderCard = ({ isFocused = false }) => {
     // tech, highlights, & theme.

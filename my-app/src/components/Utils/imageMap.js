@@ -40,26 +40,26 @@ import messageBottle from '@/images/5about/footer/messagebottle.png';
 // ========== PROJECTS SECTION ==========
 // Sentiment Trader
 import sentimentTraderLogo from '@/images/4projects/sentiment_trader/sentimenttrader.png';
-import sentimentTraderLightningTalk from '@/images/4projects/sentiment_trader/lightningtalkpreview.png';
-import sentimentTraderPaper from '@/images/4projects/sentiment_trader/paperpreview.png';
+import sentimentTraderLightningTalk from '@/images/4projects/sentiment_trader/LT_preview.png';
+import sentimentTraderPaper from '@/images/4projects/sentiment_trader/ST_preview.png';
 
 // Shelf Vision
 import shelfVisionLogo from '@/images/4projects/shelf_vision/shelfvision.png';
-import shelfVisionPaper from '@/images/4projects/shelf_vision/paperpreview.png';
-import shelfVisionPresentation from '@/images/4projects/shelf_vision/presentationpreview.png';
+import shelfVisionPaper from '@/images/4projects/shelf_vision/SV_paper.png';
+import shelfVisionPresentation from '@/images/4projects/shelf_vision/SV_pres.png';
 
 // UCF Club Manager
 import ucfClubManagerLogo from '@/images/4projects/ucf_manager/ucflogo.png';
-import ucfClubManagerPresentation from '@/images/4projects/ucf_manager/presentationpreview.png';
+import ucfClubManagerPresentation from '@/images/4projects/ucf_manager/ucf_preview.png';
 import ucfClubManagerFigma from '@/images/4projects/ucf_manager/figmapreview.png';
 
 // SecureScape
 import secureScapeLogo from '@/images/4projects/secure_scape/securescape.png';
-import secureScapePreview from '@/images/4projects/secure_scape/securescape_preview.png';
+import secureScapePreview from '@/images/4projects/secure_scape/ss_preview.png';
 
 // Ocean Life
 import oceanLifeLogo from '@/images/4projects/ocean_life/oceanlife.png';
-import oceanLifePreview from '@/images/4projects/ocean_life/presentationpreview.png';
+import oceanLifePreview from '@/images/4projects/ocean_life/OLpreview.png';
 
 // Centi
 import centiBanner from '@/images/4projects/centi/centi_banner.png';

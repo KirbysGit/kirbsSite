@@ -105,8 +105,8 @@ const ProgressCircle = styled.circle`
   stroke-linecap: round;
   stroke-dasharray: ${props => 2 * Math.PI * props.$radius};
   stroke-dashoffset: ${props => 2 * Math.PI * props.$radius * (1 - props.$progress / 100)};
-  /* Smoother transition - longer duration for less janky updates */
-  transition: stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Smooth transition - matches animation speed */
+  transition: stroke-dashoffset 0.1s linear;
   filter: drop-shadow(0 0 8px rgba(100, 70, 150, 0.6));
   transform: translateZ(0);
   will-change: stroke-dashoffset;
@@ -123,8 +123,8 @@ const AstronautImage = styled.div`
   background-repeat: no-repeat;
   transform: rotate(${props => (props.$progress / 100) * 360}deg) translateZ(0);
   transform-origin: center;
-  /* Smoother rotation - longer duration for less janky updates */
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Smooth rotation - matches animation speed */
+  transition: transform 0.1s linear;
   will-change: transform;
   filter: drop-shadow(0 0 10px rgba(150, 200, 255, 0.4));
 `;
@@ -142,44 +142,155 @@ const ProgressText = styled.div`
 `;
 
 const LoadingScreen = ({ progress = 0, isFading = false }) => {
-  // Throttle progress updates to reduce animation lag during heavy loading
-  const [throttledProgress, setThrottledProgress] = useState(0);
-  const rafRef = useRef(null);
-  const lastUpdateRef = useRef(0);
+  // Smooth animated progress - fills smoothly based on estimated time
+  const [animatedProgress, setAnimatedProgress] = useState(0);
+  const animationRef = useRef(null);
+  const lastFrameTimeRef = useRef(null);
   
+  // Estimate load time based on early progress
+  const mountTimeRef = useRef(performance.now());
+  const estimatedDurationRef = useRef(null);
+  const actualProgressRef = useRef(0);
+  const progressHistoryRef = useRef([]);
+  
+  // Update actual progress and estimate duration
   useEffect(() => {
-    // Use requestAnimationFrame to throttle updates to ~60fps max
-    // This prevents janky animations when progress updates come in rapid succession
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-    }
+    const now = performance.now();
+    const elapsed = now - mountTimeRef.current;
     
-    rafRef.current = requestAnimationFrame(() => {
-      const now = performance.now();
-      // Throttle to max 30fps (33ms between updates) for smoother animation
-      if (now - lastUpdateRef.current >= 33) {
-        setThrottledProgress(progress);
-        lastUpdateRef.current = now;
-      } else {
-        // If we're throttling, schedule another update
-        const delay = 33 - (now - lastUpdateRef.current);
-        setTimeout(() => {
-          setThrottledProgress(progress);
-          lastUpdateRef.current = performance.now();
-        }, delay);
-      }
+    actualProgressRef.current = progress;
+    
+    // Track progress updates for debugging
+    progressHistoryRef.current.push({
+      time: elapsed,
+      progress: progress,
+      timestamp: now
     });
     
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
+    // Estimate total duration based on early progress
+    // After we hit 50% or 2 seconds, estimate total time
+    if (!estimatedDurationRef.current && (progress >= 50 || elapsed > 2000)) {
+      if (progress > 0) {
+        // Estimate: if we're at X% in Y ms, total will be approximately Y * (100/X)
+        const estimated = elapsed * (100 / progress);
+        // Add buffer and cap between 3-10 seconds for smooth animation
+        estimatedDurationRef.current = Math.max(3000, Math.min(10000, estimated * 1.2));
+        console.log(`[LoadingScreen] Estimated load time: ${estimatedDurationRef.current.toFixed(0)}ms (based on ${progress.toFixed(1)}% at ${elapsed.toFixed(0)}ms)`);
+      } else {
+        // Fallback: use default estimate
+        estimatedDurationRef.current = 6000; // 6 seconds default
+        console.log(`[LoadingScreen] Using default estimated load time: ${estimatedDurationRef.current.toFixed(0)}ms`);
       }
-    };
+    }
   }, [progress]);
   
-  // Loading messages based on throttled progress
+  // Debug: Log when component mounts/unmounts
+  useEffect(() => {
+    const mountTime = performance.now();
+    mountTimeRef.current = mountTime;
+    console.log(`[LoadingScreen] Mounted at ${mountTime.toFixed(2)}ms`);
+    
+    return () => {
+      const totalTime = performance.now() - mountTime;
+      console.log(`[LoadingScreen] Unmounted after ${totalTime.toFixed(2)}ms`);
+      console.log(`[LoadingScreen] Progress history:`, progressHistoryRef.current);
+    };
+  }, []);
+  
+  // Debug: Log when fading starts
+  useEffect(() => {
+    if (isFading) {
+      const elapsed = performance.now() - mountTimeRef.current;
+      console.log(`[LoadingScreen] Started fading at ${elapsed.toFixed(2)}ms (progress: ${progress.toFixed(1)}%)`);
+    }
+  }, [isFading, progress]);
+  
+  // Smooth fill animation - fills to 95% based on estimated time, then waits for actual completion
+  useEffect(() => {
+    const animate = (currentTime) => {
+      if (lastFrameTimeRef.current === null) {
+        lastFrameTimeRef.current = currentTime;
+      }
+      
+      const deltaTime = Math.min(currentTime - lastFrameTimeRef.current, 33); // Cap at 33ms for stability
+      const elapsed = currentTime - mountTimeRef.current;
+      const actualProgress = actualProgressRef.current;
+      
+      setAnimatedProgress(prev => {
+        let targetProgress;
+        
+        // If we have an estimated duration, fill smoothly to 95%
+        if (estimatedDurationRef.current) {
+          // Calculate smooth fill progress (0-95% over estimated duration)
+          const fillProgress = Math.min(95, (elapsed / estimatedDurationRef.current) * 95);
+          
+          // If actual loading is complete (100%), smoothly animate from current to 100%
+          if (actualProgress >= 100) {
+            // Smoothly interpolate from current progress to 100%
+            const difference = 100 - prev;
+            if (Math.abs(difference) < 0.1) {
+              return 100;
+            }
+            const speed = 0.15; // Slower for final 5% for smooth finish
+            const increment = difference * speed * (deltaTime / 16);
+            return Math.min(100, prev + increment);
+          } else {
+            // Use the smooth fill progress (capped at 95%)
+            targetProgress = fillProgress;
+          }
+        } else {
+          // Before we have an estimate, use actual progress (but smooth it)
+          // This handles the initial period before estimation kicks in
+          const difference = actualProgress - prev;
+          if (Math.abs(difference) < 0.1) {
+            return Math.min(95, actualProgress); // Cap at 95% until estimate
+          }
+          // Smooth interpolation for initial period
+          const speed = 0.3;
+          const increment = difference * speed * (deltaTime / 16);
+          return Math.max(0, Math.min(95, prev + increment)); // Cap at 95% until estimate
+        }
+        
+        // Smooth interpolation to target (only if target is higher than current)
+        if (targetProgress !== undefined) {
+          // Only animate upward, never downward (prevents going below 95% when waiting)
+          if (targetProgress > prev) {
+            const difference = targetProgress - prev;
+            if (Math.abs(difference) < 0.1) {
+              return targetProgress;
+            }
+            // Smooth interpolation
+            const speed = 0.2;
+            const increment = difference * speed * (deltaTime / 16);
+            return Math.max(prev, Math.min(95, prev + increment)); // Never go down, cap at 95%
+          } else {
+            // If target is lower (shouldn't happen), maintain current progress
+            return prev;
+          }
+        }
+        
+        return prev;
+      });
+      
+      lastFrameTimeRef.current = currentTime;
+      animationRef.current = requestAnimationFrame(animate);
+    };
+    
+    // Start continuous animation loop
+    lastFrameTimeRef.current = null;
+    animationRef.current = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    };
+  }, []); // Run once on mount - loop continues until unmount
+  
+  // Loading messages based on animated progress
   const loadingMessage = useMemo(() => {
-    const currentProgress = throttledProgress;
+    const currentProgress = animatedProgress;
     if (currentProgress < 10) return 'Preparing launch...';
     if (currentProgress < 25) return 'Loading critical assets...';
     if (currentProgress < 45) return 'Fueling up images...';
@@ -188,7 +299,7 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
     if (currentProgress < 95) return 'Almost there...';
     if (currentProgress < 100) return 'Finalizing...';
     return 'Ready for launch!';
-  }, [throttledProgress]);
+  }, [animatedProgress]);
 
   // Calculate circle radius for SVG (accounting for stroke width)
   const radius = 90; // Inner radius, accounting for 6px stroke
@@ -212,12 +323,12 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
               cy="100"
               r={radius}
               $radius={radius}
-              $progress={throttledProgress}
+              $progress={animatedProgress}
             />
           </ProgressRingSVG>
           
           {/* Rotating astronaut in center */}
-          <AstronautImage $progress={throttledProgress} />
+          <AstronautImage $progress={animatedProgress} />
         </ProgressRingContainer>
         
         {/* Loading message - below the ring */}
@@ -226,9 +337,9 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
         </LoadingMessage>
         
         {/* Progress percentage - below the message */}
-        {throttledProgress > 0 && (
+        {animatedProgress > 0 && (
           <ProgressText $isFading={isFading}>
-            {Math.round(throttledProgress)}%
+            {Math.round(animatedProgress)}%
           </ProgressText>
         )}
       </LoadingContent>

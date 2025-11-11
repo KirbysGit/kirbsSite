@@ -27,8 +27,8 @@ import Highlights from '../shared/Highlights';
 
 // import project images.
 import shelfBanner from '@/images/4projects/shelf_vision/shelfvision.png';
-import paperPreview from '@/images/4projects/shelf_vision/paperpreview.png';
-import presentationPreview from '@/images/4projects/shelf_vision/presentationpreview.png';
+import paperPreview from '@/images/4projects/shelf_vision/SV_paper.png';
+import presentationPreview from '@/images/4projects/shelf_vision/SV_pres.png';
 
 // main shelf vision card component.
 const ShelfVisionCard = ({ isFocused = false }) => {
