@@ -8,6 +8,6 @@ node_modules
 
 eslint.config.js
 jsconfig.json
-vite.config.js
-package-lock.json
+# vite.config.js - REMOVED: needed for build configuration
+# package-lock.json - REMOVED: needed for consistent dependency versions
 
