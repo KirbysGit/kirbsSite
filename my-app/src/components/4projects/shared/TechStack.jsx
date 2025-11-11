@@ -5,7 +5,7 @@
 // imports.
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { getLogo } from '@/components/utils/logoMap';
+import { getLogo } from '@/components/utils/logoMap.js';
 
 // main techstack component.
 const TechStack = ({ techs, themeColors }) => {
