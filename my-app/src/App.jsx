@@ -7,7 +7,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import {BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import { useIdle } from './hooks/useIdle';
 
 // Eager import - needed immediately (Hero is above the fold)
 import Hero from './components/1hero/Hero';
@@ -24,8 +23,8 @@ const About = lazy(() => import('./components/6about/About.jsx'));
 import GlobalStyle from './styles/GlobalStyle';
 
 // Image preloader utility
-import { preloadImagesInChunks } from './components/utils/imagePreloader';
-import { getCriticalImages, getImportantImages } from './components/utils/imageMap';
+import { preloadImagesInChunks } from './components/utils/imagePreloader.js';
+import { getCriticalImages, getImportantImages } from './components/utils/imageMap.js';
 
 
 // Progress UI
@@ -429,7 +428,7 @@ function App() {
         setComponentsPreloaded(true);
 
         // Load important section-specific images (lazy images will load on-demand via Intersection Observer)
-        const { getImagesBySection } = await import('./components/utils/imageMap');
+        const { getImagesBySection } = await import('./components/utils/imageMap.js');
         setLoadingProgress(65);
         
         const sectionImagesStart = performance.now();

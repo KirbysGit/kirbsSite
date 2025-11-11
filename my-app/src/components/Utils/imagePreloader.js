@@ -187,5 +187,5 @@ export {
   getAllImages,
   getImagesBySection,
   getImagesByPriority,
-} from './imageMap';
+} from './imageMap.js';
 
