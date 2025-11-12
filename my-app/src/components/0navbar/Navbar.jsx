@@ -93,36 +93,6 @@ function generatePillWavePath(width = 200, height = 30, amplitude = 8, frequency
   return d + ' Z';
 }
 
-// Aurora wave drift animation
-const auroraWaveDrift = keyframes`
-  0%, 100% { 
-    transform: translateX(0);
-  }
-  50% { 
-    transform: translateX(-10px);
-  }
-`;
-
-// Aurora wave morph animation - creates gentle wave movement
-const auroraWaveMorph = keyframes`
-  0%, 100% { 
-    opacity: 0.85;
-    transform: translateX(0) scaleY(1);
-  }
-  25% { 
-    opacity: 0.9;
-    transform: translateX(-5px) scaleY(1.05);
-  }
-  50% { 
-    opacity: 0.88;
-    transform: translateX(0) scaleY(1);
-  }
-  75% { 
-    opacity: 0.9;
-    transform: translateX(5px) scaleY(1.05);
-  }
-`;
-
 // Sun glow animation for Projects
 const sunGlow = keyframes`
   0%, 100% { 

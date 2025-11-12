@@ -43,7 +43,7 @@ const Footer = () => {
             <SandTextLayer>
                 
                 <SandText
-                    style={{ left: '50%', transform: 'translateX(-50%)', top: '65%', fontSize: '2.5rem', fontWeight: 700 }}
+                    style={{ left: '94.25%', bottom: '-87%', fontSize: '2.25rem', fontWeight: 700 }}
                     data-text="Contact Me!"
                 >
                     Contact Me!
@@ -52,22 +52,22 @@ const Footer = () => {
 
                 
                 <SandText
-                    style={{ left: '50%', transform: 'translateX(-50%)', top: '42.5%', fontSize: '1.8rem', fontWeight: 600 }}
+                    style={{ left: '96%', bottom: '-47.5%', fontSize: '1.3rem', fontWeight: 500 }}
                     data-text="To The Moon!"
                 >
-                    To The Moon!
+                    Back To Top!
                 </SandText>
 
                 
-                <SandIconWrap style={{ left: '37.5%', top: '57.5%' }}>
-                    <SandIcon width="45" height="45" viewBox="0 0 24 24" aria-hidden="true">
+                <SandIconWrap style={{ left: '42%', bottom: '-10%' }}>
+                    <SandIcon width="40" height="40" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M3 6h18v12H3zM3 6l9 6 9-6" />
                     </SandIcon>
                 </SandIconWrap>
 
                 
-                <SandIconWrap style={{ left: '62.5%', top: '57.5%' }}>
-                    <SandIcon width="45" height="45" viewBox="0 0 24 24" aria-hidden="true">
+                <SandIconWrap style={{ left: '58%', bottom: '-10%' }}>
+                    <SandIcon width="40" height="40" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M6.6 10.8c1.5 2.9 3.8 5.1 6.7 6.6l2.2-2.2c.3-.3.7-.4 1.1-.2a13 13 0 003.6.6c.6 0 1 .5 1 1V20a1 1 0 01-1 1c-9.4 0-17-7.6-17-17a1 1 0 011-1H7a1 1 0 011 1c0 1.2.2 2.4.6 3.6.1.3 0 .7-.3 1l-1.7 1.7z"/>
                     </SandIcon>
                 </SandIconWrap>
@@ -119,17 +119,17 @@ const Footer = () => {
 
             
 
-            <UnderwaterObject style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
+            <UnderwaterObject style={{ bottom: '10%', left: '37.5%', transform: 'translateX(-50%)'}}>
                 <MessageInBottleWithTooltip />
             </UnderwaterObject>
             
             {/* Rocket - CENTERED at 50% */}
-            <RocketContainer style={{ bottom: '45%', left: '50%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
+            <RocketContainer style={{ bottom: '20%', left: '50%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
                 <RocketImage style={{ width: '250px', height: '250px' }} src={rocket} alt="Rocket - Back to top" />
             </RocketContainer>
             
             {/* Interactive Shell Phone with phone tooltip - RIGHT of center (centered at 65%) */}
-            <UnderwaterObject style={{ bottom: '35%', left: '62.5%', transform: 'translateX(-50%)'}}>
+            <UnderwaterObject style={{ bottom: '10%', left: '62.5%', transform: 'translateX(-50%)'}}>
                 <ShellPhoneWithTooltip />
             </UnderwaterObject>
 
@@ -366,10 +366,9 @@ const UnderwaterObject = styled.div`
 /* Layer that sits *in the same plane* as the sand */
 const SandTextLayer = styled.div`
   position: absolute;
-  bottom: 0;
-  left: 0;
+  inset: 0;
+  top: 10vh; /* same as SandPlane top so they align */
   width: 100%;
-  height: 30vh;                /* Match SandPlane height */
   pointer-events: none;
   z-index: 12; /* above sand, below rocks (your rocks use z=20) */
 
@@ -381,6 +380,7 @@ const SandTextLayer = styled.div`
 /* Reusable engraved sand text */
 const SandText = styled.div`
   position: absolute;
+  transform: translateX(-50%);   /* we'll position by left:% + this center shift */
   white-space: nowrap;
   letter-spacing: 0.04em;
 
@@ -389,11 +389,16 @@ const SandText = styled.div`
   /* "etched" effect: bright ridge (top-left) + darker groove (bottom-right) - same as icons */
   text-shadow:
     -1px -1px 0 rgba(255, 255, 255, 0.2);
+
+  /* subtle grain inside the letters */
+  position: relative;
+  
 `;
 
 /* "Drawn in sand" icons = strokes + same highlight/groove trick */
 const SandIconWrap = styled.div`
   position: absolute;
+  transform: translateX(-50%);
   pointer-events: none;
 `;
 
