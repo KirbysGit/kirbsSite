@@ -93,6 +93,7 @@ function generatePillWavePath(width = 200, height = 30, amplitude = 8, frequency
   return d + ' Z';
 }
 
+
 // Sun glow animation for Projects
 const sunGlow = keyframes`
   0%, 100% { 

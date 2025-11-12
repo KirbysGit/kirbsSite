@@ -20,16 +20,94 @@ const LoadingContainer = styled.div.attrs({
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  /* Match Hero.jsx background - plain spacey background, no dark center */
+  
+  /* Match Hero.jsx background exactly for seamless transition */
   background: radial-gradient(ellipse at center, 
     rgba(20, 5, 40, 0.8) 0%, 
-    rgba(13, 7, 27, 0.9) 50%, 
-    rgba(13, 7, 27, 1) 100%);
+    rgba(0, 0, 0, 0.9) 30%, 
+    rgba(13, 7, 27, 1) 70%);
+  
   opacity: ${props => props.$isFading ? 0 : 1};
   transition: opacity 0.8s ease-out;
   pointer-events: ${props => props.$isFading ? 'none' : 'auto'};
   animation: ${fadeIn} 0.3s ease-in;
   overflow: hidden;
+  
+  /* Breathing nebula effect - matching Hero.jsx */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.7;
+    animation: breathe 10s ease-in-out infinite;
+    transform: translateZ(0);
+    will-change: opacity, transform;
+    
+    /* Simplified gradients - matching Hero */
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(120, 50, 200, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(50, 100, 200, 0.2) 0%, transparent 50%),
+      linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.8) 0%, 
+        rgba(20, 5, 40, 0.6) 50%,
+        rgba(0, 0, 0, 0.8) 100%);
+    
+    /* Fade out near bottom */
+    -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+    pointer-events: none;
+    
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      opacity: 0.7;
+    }
+  }
+  
+  /* Keyframes for nebula breathing - matching Hero */
+  @keyframes breathe {
+    0%, 100% { 
+      opacity: 0.5;
+      transform: translateZ(0) scale(1);
+    }
+    50% { 
+      opacity: 0.8;
+      transform: translateZ(0) scale(1.05);
+    }
+  }
+`;
+
+// Starfield background - matching Hero.jsx
+const StarfieldBackground = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  
+  /* CSS-based starfield background - matching Hero */
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+    radial-gradient(circle at 22% 88%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+    radial-gradient(circle at 38% 28%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
+    radial-gradient(circle at 58% 72%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+    radial-gradient(circle at 78% 18%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+    radial-gradient(circle at 12% 58%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+    radial-gradient(circle at 32% 42%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
+    radial-gradient(circle at 68% 92%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+    radial-gradient(circle at 48% 8%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+    radial-gradient(circle at 82% 52%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+    radial-gradient(circle at 18% 78%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
+    radial-gradient(circle at 42% 92%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+    radial-gradient(circle at 62% 32%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
+    radial-gradient(circle at 28% 3%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
+    radial-gradient(circle at 72% 85%, rgba(255,255,255,0.5) 0.5px, transparent 1px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  
+  /* Performance optimizations */
+  contain: layout style paint;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 `;
 
 const LoadingContent = styled.div`
@@ -39,7 +117,7 @@ const LoadingContent = styled.div`
   justify-content: center;
   gap: 1.5rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   
   @media (max-width: 600px) {
     gap: 1.25rem;
@@ -288,17 +366,12 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
     };
   }, []); // Run once on mount - loop continues until unmount
   
-  // Loading messages based on animated progress
+  // Loading messages based on animated progress - 3 friendly messages
   const loadingMessage = useMemo(() => {
     const currentProgress = animatedProgress;
-    if (currentProgress < 10) return 'Preparing launch...';
-    if (currentProgress < 25) return 'Loading critical assets...';
-    if (currentProgress < 45) return 'Fueling up images...';
-    if (currentProgress < 60) return 'Initializing components...';
-    if (currentProgress < 80) return 'Loading section content...';
+    if (currentProgress < 50) return 'Getting ready...';
     if (currentProgress < 95) return 'Almost there...';
-    if (currentProgress < 100) return 'Finalizing...';
-    return 'Ready for launch!';
+    return 'All set!';
   }, [animatedProgress]);
 
   // Calculate circle radius for SVG (accounting for stroke width)
@@ -306,6 +379,9 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
 
   return (
     <LoadingContainer $isFading={isFading}>
+      {/* Starfield background - matching Hero */}
+      <StarfieldBackground />
+      
       <LoadingContent>
         {/* Circular progress ring with rotating astronaut */}
         <ProgressRingContainer $isFading={isFading}>

@@ -47,6 +47,45 @@ export const GlobalStyle = createGlobalStyle`
         overflow-y: auto;
     }
     
+    /* Scroll blur overlay - motion blur effect on scrolling content */
+    /* Only blurs the content area, keeps navbar and fixed elements clear */
+    .scroll-blur-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9998; /* Below navbar (z-index 100) but above content */
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.1s ease-out;
+        /* Exclude navbar areas from blur */
+        clip-path: polygon(
+            0% 0%,
+            100% 0%,
+            100% 100%,
+            0% 100%
+        );
+        /* Motion blur effect using backdrop-filter - very subtle */
+        backdrop-filter: blur(1px);
+        -webkit-backdrop-filter: blur(1px);
+        /* Subtle darkening to enhance motion blur effect */
+        background: rgba(0, 0, 0, 0.05);
+        /* GPU acceleration */
+        transform: translateZ(0);
+        will-change: opacity;
+    }
+    
+    .scroll-blur-overlay.active {
+        opacity: 1;
+    }
+    
+    /* Ensure navbar stays above blur overlay and remains clear */
+    nav,
+    [class*="Navbar"],
+    [class*="navbar"] {
+        position: relative;
+        z-index: 9999; /* Above blur overlay */
+        filter: none !important; /* Never blur navbar */
+    }
+    
     /* Prevent image selection/highlighting */
     img {
         user-select: none;
