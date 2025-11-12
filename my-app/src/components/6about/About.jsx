@@ -236,9 +236,12 @@ const Background = () => {
                                 />
                                 
                                 <CardTitle>Goals</CardTitle>
-                                <CardTextLarge>
-                                  I want to work for myself and blend technical work with creativity. I like fast paced startup environments where I can grow. My sweet spot is collaboration, creativity, and hard technical problems. Most of all I just want to keep improving and enjoy the process.
-                                </CardTextLarge>
+                                <GoalsList>
+                                    <GoalItem>Protect time for music and visuals so work stays creative, not just technical</GoalItem>
+                                    <GoalItem>Keep leveling up with better routines, balance, and intentional work choices</GoalItem>
+                                    <GoalItem>Stay near design and logic: animation systems, design systems, and data viz</GoalItem>
+                                    <GoalItem>Use my service background and love of talking with people to guide work that genuinely helps others.</GoalItem>
+                                </GoalsList>
 
                                 
                                 <EmojiRow aria-hidden="true">
@@ -302,13 +305,13 @@ const Background = () => {
                                     </MusicIntroText>
                                     
                                     <ArtistGrid>
-                                        <ArtistName>Kanye</ArtistName>
+                                        <ArtistName>Frank Ocean</ArtistName>
                                         <ArtistName>The Backseat Lovers</ArtistName>
                                         <ArtistName>Malcom Todd</ArtistName>
                                         <ArtistName>Daniel Caesar</ArtistName>
                                         <ArtistName>Rex Orange County</ArtistName>
                                         <ArtistName>Bad Bunny</ArtistName>
-                                        <ArtistName>Bruno Mars</ArtistName>
+                                        <ArtistName>Dom Dolla</ArtistName>
                                         <ArtistName>$uicideboy$</ArtistName>
                                         <ArtistName>Olivia Rodrigo</ArtistName>
                                         <ArtistName>Zach Bryan</ArtistName>
@@ -331,6 +334,18 @@ const Background = () => {
             
             {/* Footer - ocean floor with underwater objects - natural content flow component */}
             <SandPlane>
+                {/* Top wave - adds ruggedness to the transition from ocean to sand */}
+                <TopWave viewBox="0 0 1440 120" preserveAspectRatio="none">
+                    <path d="M0,85 C120,65 240,95 360,75 C480,55 600,85 720,65 C840,45 960,75 1080,55 C1200,35 1320,65 1440,85 L1440,120 L0,120 Z" fill="url(#sandWaveGradient)" />
+                    <defs>
+                        <linearGradient id="sandWaveGradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stopColor="#7b654d" />
+                            <stop offset="50%" stopColor="#8a7157" />
+                            <stop offset="100%" stopColor="#7b654d" />
+                        </linearGradient>
+                    </defs>
+                </TopWave>
+                
                 {/* Made with Love - positioned within SandPlane */}
                 <MadeWithLoveContainer>
                     Made with<HeartEmoji>❤️</HeartEmoji>by me (CK)
@@ -1435,6 +1450,110 @@ const CardTextLarge = styled.p`
   }
 `;
 
+// Goals list - bulleted list for Goals card
+const GoalsList = styled.ul`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
+  list-style: none;
+  
+  @media (max-width: 1600px) {
+    gap: clamp(0.6rem, 0.8vw, 0.7rem);
+    padding: 0 clamp(0.6rem, 1vw, 1.1rem);
+  }
+  
+  @media (max-width: 1200px) {
+    gap: clamp(0.5rem, 0.7vw, 0.65rem);
+    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+  }
+`;
+
+// Individual goal item with custom bullet - matching Experience.jsx style
+const GoalItem = styled.li`
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  line-height: 1.65;
+  color: rgba(220, 240, 250, 0.85);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+  text-align: justify;
+  position: relative;
+  padding-left: 1.75rem;
+  
+  /* Custom bullet matching Experience.jsx AchievementIcon style */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1em;  /* Align with first line of text - adjusted for better centering */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, 
+      rgba(100, 200, 230, 1) 0%,
+      rgba(100, 200, 230, 0.85) 50%,
+      rgba(100, 200, 230, 0.7) 100%
+    );
+    transform: translateY(-50%);
+    box-shadow: 
+      0 0 10px rgba(100, 200, 230, 0.5),
+      inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
+  }
+  
+  /* Inner highlight like Experience.jsx - centered within bullet */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 6px;  /* Center of 12px bullet */
+    top: 1em;  /* Match bullet position */
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  
+  @media (max-width: 1600px) {
+    font-size: clamp(0.7rem, 0.9vw, 0.8rem);
+    line-height: 1.55;
+    padding-left: clamp(1.5rem, 1.7vw, 1.6rem);
+    
+    &::before {
+      width: 10px;
+      height: 10px;
+    }
+    
+    &::after {
+      width: 4px;
+      height: 4px;
+      left: 5px;  /* Center of 10px bullet */
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: clamp(0.65rem, 0.85vw, 0.75rem);
+    line-height: 1.5;
+    padding-left: clamp(1.4rem, 1.6vw, 1.5rem);
+    
+    &::before {
+      width: 9px;
+      height: 9px;
+    }
+    
+    &::after {
+      width: 3.5px;
+      height: 3.5px;
+      left: 4.5px;  /* Center of 9px bullet */
+    }
+  }
+`;
+
 // Emoji row container
 const EmojiRow = styled.div`
   display: flex;
@@ -1933,12 +2052,41 @@ const ClubName = styled.span`
 
 /* ================= Footer Styles (integrated into About) ================= */
 
+// Top wave - smooth wave pattern at the top of SandPlane for rugged transition
+const TopWave = styled.svg`
+    position: absolute;
+    top: -10.5vh;               /* Extend above SandPlane to show full wave */
+    left: 0;
+    width: 100%;
+    height: 120px;             /* Wave height */
+    z-index: 2;                /* Above SandPlane background, below content */
+    pointer-events: none;
+    overflow: visible;
+    display: block;
+    
+    /* Smooth fade into sand - more gradual transparent blend */
+    mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    opacity: 0.95;             /* Slight transparency for smoother blend */
+    
+    @media (max-width: 1200px) {
+        height: 100px;
+        top: -100px;
+    }
+    
+    @media (max-width: 900px) {
+        height: 80px;
+        top: -80px;
+    }
+`;
+
 // Sand plane - natural content flow component (like a paragraph block)
 const SandPlane = styled.div`
     height: 30vh;             /* Simple flat height */
     width: 100%;
     position: relative;        /* Natural flow - sits below UnderwaterSection like normal content */
     z-index: 2;               /* Above UnderwaterSection (z-index: 1) */
+    overflow: visible;         /* Allow TopWave to extend above */
 
     background: linear-gradient(
         to bottom,
@@ -2182,4 +2330,5 @@ const CopyrightContainer = styled.div`
         font-size: 1rem;
     }
 `;
+
 

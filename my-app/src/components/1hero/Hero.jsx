@@ -26,7 +26,6 @@ const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
     
     // Track when loading is complete and animations can start
     const [loadingComplete, setLoadingComplete] = React.useState(false);
-    const [animReady, setAnimReady] = React.useState(false);
     
     // When loading screen finishes, allow animations to start
     React.useEffect(() => {
@@ -34,13 +33,6 @@ const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
             setLoadingComplete(true);
             const now = performance.now();
             console.log(`[Hero] Loading screen finished, animations starting at ${now.toFixed(2)}ms`);
-            
-            // When last text animation begins (~2s after loading screen), enable background animations
-            const t = setTimeout(() => {
-                setAnimReady(true);
-                console.log(`[Hero] Background animations enabled at ${performance.now().toFixed(2)}ms`);
-            }, 2000);
-            return () => clearTimeout(t);
         }
     }, [isLoading, loadingComplete]);
             
@@ -100,10 +92,10 @@ const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
     }), [loadingComplete]);
 
     return (
-        <HeroContainer id="hero" data-section-snap data-anim-ready={animReady} $isLoading={isLoading}>
+        <HeroContainer id="hero" data-section-snap $isLoading={isLoading}>
             
             {/* Optimized starfield - CSS background approach for better performance */}
-            <ParticleField className="twinkles" data-anim-ready={animReady}>
+            <ParticleField className="twinkles">
                 {/* Reduced to 3 most visible stars for better render performance (target: <16ms) */}
                 <Star style={{ '--top': '15%', '--left': '25%', '--size': '2px', '--opacity': '0.6', '--duration': '23.7' }} className="twinkle1" />
                 <Star style={{ '--top': '45%', '--left': '65%', '--size': '1px', '--opacity': '0.7', '--duration': '31.2' }} className="twinkle2" />
@@ -123,10 +115,10 @@ const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
             </ParticleField>
 
             {/* floating confused astronaut */}
-            <Astronaut data-anim-ready={animReady} />
+            <Astronaut />
             
             {/* floating UFO */}
-            <UFO data-anim-ready={animReady} />
+            <UFO />
 
             {/* original messages upon load - delayed slide in */}
             <MsgsWrapper {...msgWrapperConfig}>
@@ -271,10 +263,6 @@ const HeroContainer = styled.div`
                 mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
         pointer-events: none;
         
-        /* Pause until text animations finish */
-        [data-anim-ready="false"] & {
-            animation-play-state: paused;
-        }
         
         /* Respect reduced motion preference */
         @media (prefers-reduced-motion: reduce) {
@@ -330,10 +318,6 @@ const ParticleField = styled.div`
     background-repeat: no-repeat;
     pointer-events: none;
     
-    /* Pause starfield twinkling until text animations finish */
-    [data-anim-ready="false"] & {
-        animation-play-state: paused;
-    }
 `;
 
 // Twinkle keyframes - extracted outside component to avoid re-creation
@@ -458,9 +442,6 @@ const Star = styled.div`
     }
     
     /* Pause until text animations finish */
-    [data-anim-ready="false"] & {
-        animation-play-state: paused;
-    }
     
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
@@ -497,9 +478,6 @@ const Moon = styled.div`
     
     
     /* Pause until text animations finish */
-    [data-anim-ready="false"] & {
-        animation-play-state: paused;
-    }
     
     /* keyframes, moon float animation */
     @keyframes moonFloat {
@@ -551,7 +529,7 @@ const Astronaut = styled.div`
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    animation: astronautFloat 35s linear infinite;
+    animation: astronautFloat 30s linear infinite;
     background-image: url(${astronautImg});
     
     /* GPU acceleration */
@@ -575,10 +553,10 @@ const Astronaut = styled.div`
     }
     
     /* pause animation during loading and until text animations finish */
-    :root[data-loading="true"] &,
-    [data-anim-ready="false"] & {
+    :root[data-loading="true"] & {
         animation-play-state: paused;
     }
+    
     
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
@@ -631,10 +609,10 @@ const UFO = styled.div`
     }
     
     /* pause animation during loading and until text animations finish */
-    :root[data-loading="true"] &,
-    [data-anim-ready="false"] & {
+    :root[data-loading="true"] & {
         animation-play-state: paused;
     }
+    
     
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
@@ -790,9 +768,6 @@ const Name = styled.span`
     }
     
     /* Pause gradient animation until text finishes sliding in */
-    [data-anim-ready="false"] & {
-        animation-play-state: paused;
-    }
     
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {

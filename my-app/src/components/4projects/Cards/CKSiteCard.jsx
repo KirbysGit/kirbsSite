@@ -37,8 +37,8 @@ const CKSiteCard = ({ isFocused = false }) => {
   // the highlights for the cksite card.
   const highlights = [
     'Real projects I\'ve built including full-stack web applications and machine learning experiments',
-    'Complete education journey at UCF and all the technical skills I\'ve picked up along the way',
-    'Work experience from internships to leadership roles showing what I learned and shipped to production'
+    'Work experience from internships to leadership roles showing what I learned and shipped to production',
+    'Some details about me and some of the skills I\'ve picked up along the way'
   ];
 
   // the theme for the cksite card.

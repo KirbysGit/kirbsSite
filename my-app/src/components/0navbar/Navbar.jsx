@@ -350,15 +350,16 @@ const Navbar = ({ loadingCompleteTime = null }) => {
             {navItems.map((item) => {
               const SideNavButtonVariant = getSideNavButtonVariant(item.id);
               return (
-                <SideNavButtonVariant
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id, item.desktopOffset, item.mobileOffset)}
-                  $isActive={activeSection === item.id}
-                  title={item.label}
-                >
-                  <SideNavIcon>{item.icon}</SideNavIcon>
-                  {activeSection === item.id && <ActiveIndicator />}
-                </SideNavButtonVariant>
+                <SideNavButtonWrapper key={item.id}>
+                  <SideNavButtonVariant
+                    onClick={() => handleNavClick(item.id, item.desktopOffset, item.mobileOffset)}
+                    $isActive={activeSection === item.id}
+                  >
+                    <SideNavIcon>{item.icon}</SideNavIcon>
+                    {activeSection === item.id && <ActiveIndicator />}
+                  </SideNavButtonVariant>
+                  <TooltipVariant sectionId={item.id} className="tooltip">{item.label}</TooltipVariant>
+                </SideNavButtonWrapper>
               );
             })}
           </SideNavContent>
@@ -574,7 +575,7 @@ const NavButtonBase = styled.button`
   
   /* GPU acceleration */
   transform: translateZ(0);
-  will-change: border-color, box-shadow;
+  will-change: border-color, box-shadow, transform;
   
   /* Subtle base glow */
   box-shadow: none;
@@ -612,8 +613,10 @@ const NavButtonWhoIAm = styled(NavButtonBase)`
     rgb(100, 70, 150) 100%);
   
   &:hover {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    border-color: rgba(100, 70, 150, 0.9);
+    box-shadow: 0 0 20px rgba(100, 70, 150, 0.5),
+                0 0 40px rgba(85, 60, 135, 0.3);
+    transform: translateZ(0) scale(1.05);
   }
 `;
 
@@ -628,8 +631,10 @@ const NavButtonExperience = styled(NavButtonBase)`
     rgb(148, 180, 243) 100%);
   
   &:hover {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    border-color: rgba(148, 180, 243, 0.9);
+    box-shadow: 0 0 20px rgba(148, 180, 243, 0.5),
+                0 0 40px rgba(132, 127, 210, 0.3);
+    transform: translateZ(0) scale(1.05);
   }
 `;
 
@@ -643,8 +648,10 @@ const NavButtonProjects = styled(NavButtonBase)`
     rgb(71, 160, 238) 100%);
   
   &:hover {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    border-color: rgba(120, 165, 234, 0.9);
+    box-shadow: 0 0 20px rgba(120, 165, 234, 0.5),
+                0 0 40px rgba(95, 157, 236, 0.3);
+    transform: translateZ(0) scale(1.05);
   }
 `;
 
@@ -658,8 +665,10 @@ const NavButtonSkills = styled(NavButtonBase)`
     rgb(135, 225, 255) 100%);
   
   &:hover {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    border-color: rgba(135, 225, 255, 0.9);
+    box-shadow: 0 0 20px rgba(135, 225, 255, 0.5),
+                0 0 40px rgba(115, 205, 255, 0.3);
+    transform: translateZ(0) scale(1.05);
   }
 `;
 
@@ -675,8 +684,10 @@ const NavButtonAbout = styled(NavButtonBase)`
     rgb(60, 154, 180) 100%);
   
   &:hover {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    border-color: rgba(60, 154, 180, 0.9);
+    box-shadow: 0 0 20px rgba(60, 154, 180, 0.5),
+                0 0 40px rgba(44, 130, 162, 0.3);
+    transform: translateZ(0) scale(1.05);
   }
 `;
 
@@ -1063,7 +1074,7 @@ const SideNavbarMotionContainer = styled(motion.div)`
 // Side Pill Navbar Container - floating pill disconnected from edge
 const SideNavbarContainer = styled.nav`
   position: relative;
-  z-index: 1;
+  z-index: 10;
   
   /* Enhanced glass morphism effect - matching toggle button exactly */
   background: linear-gradient(
@@ -1075,6 +1086,9 @@ const SideNavbarContainer = styled.nav`
   backdrop-filter: blur(30px) saturate(200%);
   -webkit-backdrop-filter: blur(30px) saturate(200%);
   
+  /* Very light white shadow for visibility on dark backgrounds */
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.04),
+              0 0 40px rgba(255, 255, 255, 0.02);
   
   /* Full pill shape - fully rounded, disconnected from edge */
   border-radius: 50px;
@@ -1100,6 +1114,190 @@ const SideNavContent = styled.div`
   pointer-events: ${props => props.$isCollapsed ? 'none' : 'auto'};
   transition: opacity 0.3s ease;
 `;
+
+// Side Nav Button Wrapper - for tooltip positioning
+const SideNavButtonWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  
+  /* Show tooltip on hover */
+  &:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+`;
+
+// Base Tooltip - shared styles
+const TooltipBase = styled.div`
+  position: absolute;
+  left: calc(100% + 1rem);
+  white-space: nowrap;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  pointer-events: none;
+  z-index: 10000;
+  
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 20px rgba(100, 150, 255, 0.3);
+  
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  
+  /* Initial state - hidden */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateZ(0) translateX(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
+`;
+
+// Who I Am Tooltip - Space/Star theme
+const TooltipWhoIAm = styled(TooltipBase)`
+  background: linear-gradient(135deg,
+    rgb(13, 7, 27) 0%,
+    rgb(30, 20, 55) 40%,
+    rgb(45, 30, 80) 70%,
+    rgb(85, 60, 135) 95%,
+    rgb(100, 70, 150) 100%);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 8px 6px 0;
+    border-color: transparent rgb(30, 20, 55) transparent transparent;
+  }
+`;
+
+// Experience Tooltip - Purple to Blue gradient
+const TooltipExperience = styled(TooltipBase)`
+  background: linear-gradient(135deg,
+    rgb(78, 58, 128) 0%,
+    rgb(78, 58, 128) 10%,
+    rgb(92, 74, 155) 32%,
+    rgb(112, 95, 182) 54%,
+    rgb(132, 127, 210) 78%,
+    rgb(148, 180, 243) 100%);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 8px 6px 0;
+    border-color: transparent rgb(92, 74, 155) transparent transparent;
+  }
+`;
+
+// Projects Tooltip - Light Blue Sky gradient
+const TooltipProjects = styled(TooltipBase)`
+  background: linear-gradient(135deg,
+    rgb(120, 165, 234) 0%,
+    rgb(106, 158, 232) 25%,
+    rgb(95, 157, 236) 50%,
+    rgb(83, 158, 237) 75%,
+    rgb(71, 160, 238) 100%);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 8px 6px 0;
+    border-color: transparent rgb(95, 157, 236) transparent transparent;
+  }
+`;
+
+// Skills Tooltip - Bright Blue Sky gradient
+const TooltipSkills = styled(TooltipBase)`
+  background: linear-gradient(135deg,
+    rgb(71, 160, 238) 0%,
+    rgb(80, 170, 242) 25%,
+    rgb(90, 180, 246) 50%,
+    rgb(115, 205, 255) 75%,
+    rgb(135, 225, 255) 100%);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 8px 6px 0;
+    border-color: transparent rgb(90, 180, 246) transparent transparent;
+  }
+`;
+
+// About Tooltip - Darker underwater theme
+const TooltipAbout = styled(TooltipBase)`
+  background: linear-gradient(135deg,
+    rgb(18, 66, 114) 0%,
+    rgb(23, 82, 126) 20%,
+    rgb(29, 98, 138) 40%,
+    rgb(36, 114, 150) 60%,
+    rgb(44, 130, 162) 75%,
+    rgb(54, 146, 174) 90%,
+    rgb(60, 154, 180) 100%);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 8px 6px 0;
+    border-color: transparent rgb(29, 98, 138) transparent transparent;
+  }
+`;
+
+// Helper function to get the right tooltip variant
+const getTooltipVariant = (sectionId) => {
+  switch(sectionId) {
+    case 'who-i-am': return TooltipWhoIAm;
+    case 'experience': return TooltipExperience;
+    case 'projects': return TooltipProjects;
+    case 'skills': return TooltipSkills;
+    case 'about': return TooltipAbout;
+    default: return TooltipBase;
+  }
+};
+
+// Tooltip component that uses the correct variant
+const TooltipVariant = ({ sectionId, className, children }) => {
+  const TooltipComponent = getTooltipVariant(sectionId);
+  return <TooltipComponent className={className}>{children}</TooltipComponent>;
+};
 
 // Base Side Nav Button - shared styles
 const SideNavButtonBase = styled.button`
@@ -1229,7 +1427,7 @@ const ToggleButton = styled.button`
   transform: translateY(-50%);
   width: 55px;
   height: 50px;
-  z-index: 3;
+  z-index: 5;
   
   /* Exact same glass morphism as SideNavbarContainer - seamless connection */
   background: linear-gradient(
@@ -1249,9 +1447,10 @@ const ToggleButton = styled.button`
   clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
   border-radius: 50%;
   
-  /* Match exact box-shadow from container */
-  box-shadow: 
-    inset -2px 0 8px rgba(255, 255, 255, 0.1);
+  /* Inset shadow for depth + drop-shadow that respects clip-path */
+  box-shadow: inset -2px 0 8px rgba(255, 255, 255, 0.1);
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.04))
+          drop-shadow(0 0 40px rgba(255, 255, 255, 0.02));
   
   cursor: pointer;
   display: flex;

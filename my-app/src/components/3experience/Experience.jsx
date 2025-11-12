@@ -7,8 +7,8 @@
 // upper atmosphere style, aurora down into clouds.
 
 // imports.
-import React, { useState, useRef, useMemo, useCallback, memo } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // component imports.
@@ -34,6 +34,7 @@ const ActualExperience = memo(() => {
     // state variables.
     const [index, setIndex] = useState(1);              // current card index.
     const [paused, setPaused] = useState(false);        // whether carousel is paused.
+    const [copied, setCopied] = useState(false);        // copy button feedback state.
     const drag = useRef({ x: 0, active: false });       // drag state for mobile. (expanded upon in future)
     
     // first slide is the "hire me" card, rest are data-driven.
@@ -43,21 +44,46 @@ const ActualExperience = memo(() => {
     const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
     const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
     
+    // Copy email to clipboard
+    const copyEmail = useCallback(async () => {
+        const email = 'kirbycolin26@gmail.com';
+        try {
+            await navigator.clipboard.writeText(email);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy email:', err);
+        }
+    }, []);
+    
+    // Check if mobile on mount and resize
+    const [isMobile, setIsMobile] = useState(false);
+    
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 900);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+    
     // handles pointer down event for mobile.
     const onPointerDown = useCallback((e) => {
+        if (!isMobile) return; // Disable swipe on desktop
         drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
         setPaused(true);
-    }, []);
+    }, [isMobile]);
     
     // handles pointer up event for mobile.
     const onPointerUp = useCallback((e) => {
-        if (!drag.current.active) return;
+        if (!isMobile || !drag.current.active) return; // Disable swipe on desktop
         const upX = e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0;
         const dx = upX - drag.current.x;
         drag.current.active = false;
         if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
         setPaused(false);
-    }, [next, prev]);
+    }, [next, prev, isMobile]);
     
     // Memoized card style calculation
     const getCardStyle = useCallback((cardIndex) => {
@@ -111,10 +137,12 @@ const ActualExperience = memo(() => {
                 <Stage
                     onMouseEnter={() => setPaused(true)}
                     onMouseLeave={() => setPaused(false)}
-                    onPointerDown={onPointerDown}
-                    onPointerUp={onPointerUp}
-                    onTouchStart={onPointerDown}
-                    onTouchEnd={onPointerUp}
+                    {...(isMobile ? {
+                        onPointerDown,
+                        onPointerUp,
+                        onTouchStart: onPointerDown,
+                        onTouchEnd: onPointerUp
+                    } : {})}
                     role="region"
                     aria-label="Experience carousel"
                 >
@@ -143,9 +171,21 @@ const ActualExperience = memo(() => {
                                             <HireActions>
                                                 <Divider $themeColor="rgb(200, 180, 255)" />
                                                 <HireReach>Reach out to me at:</HireReach>
-                                                <HireButton as="div" role="button" aria-label="Email">
-                                                    kirbycolin26@gmail.com
-                                                </HireButton>
+                                                <EmailRow>
+                                                    <HireButton as="div" role="button" aria-label="Email">
+                                                        kirbycolin26@gmail.com
+                                                    </HireButton>
+                                                    <CopyButton 
+                                                        onClick={copyEmail}
+                                                        $copied={copied}
+                                                        aria-label="Copy email"
+                                                        title={copied ? "Copied!" : "Copy email"}
+                                                    >
+                                                        <CopyIconWrapper $copied={copied}>
+                                                            {copied ? '✓' : '📋'}
+                                                        </CopyIconWrapper>
+                                                    </CopyButton>
+                                                </EmailRow>
                                             </HireActions>
                                         </HireBody>
                                     </HireCard>
@@ -469,6 +509,23 @@ const SectionSubtitle = styled.div`
         /* spacing */
         margin-top: 0.5rem;
         margin-bottom: 1.25rem;
+    }
+`;
+
+/* ========== animations ========== */
+
+// Icon scale-in animation (for copy button checkmark)
+const iconScaleIn = keyframes`
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
     }
 `;
 
@@ -1763,6 +1820,69 @@ const HireReach = styled.div`
     letter-spacing: 0.3px;
     color: rgba(230, 220, 255, 0.9);
     font-size: 0.85rem;
+`;
+
+// Email row container for email button and copy button
+const EmailRow = styled.div`
+    /* layout */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+`;
+
+// Copy button
+const CopyButton = styled.button`
+    /* spacing */
+    padding: 0.65rem 0.85rem;
+    
+    /* styles */
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    transition: all 200ms ease;
+    background: linear-gradient(135deg, rgba(200,180,255,0.38), rgba(150,120,255,0.25));
+    border: 1.5px solid rgba(200, 180, 255, 0.65);
+    color: rgba(255,255,255,0.98);
+    box-shadow: 0 6px 16px rgba(180, 160, 255, 0.3);
+    
+    /* Copy feedback state */
+    ${({ $copied }) => $copied && `
+        background: linear-gradient(135deg, rgba(150,255,150,0.5), rgba(100,255,100,0.4));
+        border-color: rgba(150, 255, 150, 0.8);
+        box-shadow: 0 6px 16px rgba(150, 255, 150, 0.4);
+    `}
+    
+    &:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(135deg, rgba(210,190,255,0.5), rgba(160,130,255,0.35));
+        border-color: rgba(200, 180, 255, 0.9);
+        box-shadow: 0 10px 24px rgba(180, 160, 255, 0.4);
+    }
+    
+    &:active {
+        transform: translateY(0) scale(0.95);
+    }
+    
+    /* Ensure emoji/checkmark is centered */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+`;
+
+// Icon wrapper for checkmark animation
+const CopyIconWrapper = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ${({ $copied }) => $copied && css`
+        animation: ${iconScaleIn} 0.3s ease-out;
+    `}
 `;
 
 // export component.

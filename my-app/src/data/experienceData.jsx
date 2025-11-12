@@ -58,9 +58,9 @@ export const EXPERIENCE_CARDS = [
       'Clear communication with customers, kitchen, and delivery teams',
       'Direct impact on business revenue - managing ~35% of store sales'
     ],
-    techConnectionTitle: 'Why This Helps With Tech',
+    techConnectionTitle: 'Service → Tech Connection',
     techConnectionText:
-      "I don't think explaining a missed Q1 target tops telling a family with a reservation that their table still isn't ready."
+      "Production deploys feel tense, but they are nothing compared to telling a family their reservation still is not ready."
   }
 ];
 

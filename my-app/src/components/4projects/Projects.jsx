@@ -64,20 +64,33 @@ const Projects = memo(() => {
 		return () => window.removeEventListener('keydown', onKey);
 	}, [next, prev]);
 
-	// simple drag / swipe.
+	// simple drag / swipe - only enabled on mobile
+	const [isMobile, setIsMobile] = useState(false);
 	const drag = useRef({ x: 0, active: false });
+	
+	// Check if mobile on mount and resize
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth < 900);
+		};
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
+	}, []);
+	
 	const onPointerDown = useCallback((e) => {
+		if (!isMobile) return; // Disable swipe on desktop
 		drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
 		setPaused(true);
-	}, []);
+	}, [isMobile]);
 	const onPointerUp = useCallback((e) => {
-		if (!drag.current.active) return;
+		if (!isMobile || !drag.current.active) return; // Disable swipe on desktop
 		const upX = e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0;
 		const dx = upX - drag.current.x;
 		drag.current.active = false;
 		if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
 		setPaused(false);
-	}, [next, prev]);
+	}, [next, prev, isMobile]);
 
 	// Memoized card style calculation
 	const getCardStyle = useCallback((cardIndex) => {
@@ -137,10 +150,12 @@ const Projects = memo(() => {
 				<Stage
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
-					onPointerDown={onPointerDown}
-					onPointerUp={onPointerUp}
-					onTouchStart={onPointerDown}
-					onTouchEnd={onPointerUp}
+					{...(isMobile ? {
+						onPointerDown,
+						onPointerUp,
+						onTouchStart: onPointerDown,
+						onTouchEnd: onPointerUp
+					} : {})}
 					role="region"
 					aria-label="Projects carousel"
 				>
@@ -364,7 +379,7 @@ const SectionTitle = styled.div`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 4px 20px rgba(255, 220, 100, 0.3);
+    text-shadow: 0 4px 20px rgba(255, 220, 100, 0.45);
     
     /* media queries */
     @media (max-width: 1600px) {

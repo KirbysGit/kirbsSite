@@ -143,14 +143,18 @@ const LoadingMessage = styled.div`
 
 // Circular progress ring container
 const ProgressRingContainer = styled.div`
-  width: 200px;
-  height: 200px;
+  /* Increase size slightly to accommodate drop-shadow (8px shadow + 2px buffer on each side) */
+  width: 320px;
+  height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   opacity: ${props => props.$isFading ? 0 : 1};
   transition: opacity 0.5s ease-out;
+  
+  /* Ensure shadow is visible - no clipping */
+  overflow: visible;
   
   /* GPU acceleration */
   transform: translateZ(0);
@@ -161,8 +165,9 @@ const ProgressRingContainer = styled.div`
 
 // SVG for circular progress ring
 const ProgressRingSVG = styled.svg`
-  width: 100%;
-  height: 100%;
+  /* Keep SVG at 300px to maintain circle size, centered in 320px container */
+  width: 300px;
+  height: 300px;
   transform: rotate(-90deg) translateZ(0); /* Start from top, GPU acceleration */
   transform-origin: center;
   will-change: transform;
