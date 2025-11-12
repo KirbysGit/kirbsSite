@@ -8,18 +8,28 @@ import aiUcfLogo from '@/images/5about/aiucf.png';
 import acmLogo from '@/images/5about/acm.png';
 import ReactionBubble from './ReactionBubble';
 
-// Footer images removed for performance
+import MessageInBottle from './footer/MessageInBottle';
+import ShellPhone from './footer/ShellPhone';
 
-// Interactive footer components
-import ShellPhoneWithTooltip from './footer/ShellPhone';
-import MessageInBottleWithTooltip from './footer/MessageInBottle';
-
-// LazyImage component removed - no longer needed for footer
+// Footer images
+import rockpileImage from '@/images/5about/footer/rockpile.png';
+import bluecoral from '@/images/5about/footer/bluecoral.png';
+import flatrock from '@/images/5about/footer/flatrock.png';
+import orangecoral from '@/images/5about/footer/orangecoral.png';
+import pinkcoral from '@/images/5about/footer/pinkcoral.png';
+import rockwithseaweed from '@/images/5about/footer/rockwithseaweed.png';
+import seaweed from '@/images/5about/footer/seaweed.png';
+import seaweed2 from '@/images/5about/footer/seaweed2.png';
+import seaweed3 from '@/images/5about/footer/seaweed3.png';
+import tallrock from '@/images/5about/footer/tallrock.png';
+import yellowcoral from '@/images/5about/footer/yellowcoral.png';
+import purplecoral from '@/images/5about/footer/purplecoral.png';
+import rocket from '@/images/5about/footer/rocket.png';
 
 const Background = () => {
     // Performance monitoring
     useComponentPerformance('About', process.env.NODE_ENV === 'development');
-    
+
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -319,57 +329,146 @@ const Background = () => {
                 </ProfileSection>
             </UnderwaterSection>
             
-            {/* Footer - simplified design without decorative images */}
-            <FooterContainer>
-                {/* Top section - Contact info and interactive elements */}
-                <FooterTopSection>
-                    <FooterText
-                        style={{ fontSize: '2.5rem', fontWeight: 700 }}
+            {/* Footer - ocean floor with underwater objects - natural content flow component */}
+            <SandPlane>
+                {/* Made with Love - positioned within SandPlane */}
+                <MadeWithLoveContainer>
+                    Made with<HeartEmoji>❤️</HeartEmoji>by me (CK)
+                </MadeWithLoveContainer>
+
+                {/* Copyright - positioned within SandPlane */}
+                <CopyrightContainer>© 2025 Colin Kirby. All rights reserved.</CopyrightContainer>
+                
+                <SandTextLayer>
+                    <SandText
+                        style={{ left: '50%', transform: 'translateX(-50%)', top: '65%', fontSize: '2.5rem', fontWeight: 700 }}
+                        data-text="Contact Me!"
                     >
                         Contact Me!
-                    </FooterText>
+                    </SandText>
 
-                    <FooterText
-                        style={{ fontSize: '1.8rem', fontWeight: 600, marginTop: '1rem' }}
+                    <SandText
+                        style={{ left: '50%', transform: 'translateX(-50%)', top: '42.5%', fontSize: '1.8rem', fontWeight: 600 }}
+                        data-text="To The Moon!"
                     >
                         To The Moon!
-                    </FooterText>
+                    </SandText>
 
-                    {/* Interactive elements */}
-                    <InteractiveElementsContainer>
-                        <MessageInBottleWithTooltip />
-                        <RocketButton onClick={scrollToTop} aria-label="Back to top">
-                            <RocketIcon viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5" />
-                            </RocketIcon>
-                        </RocketButton>
-                        <ShellPhoneWithTooltip />
-                    </InteractiveElementsContainer>
+                    <SandIconWrap style={{ left: '37.5%', top: '57.5%' }}>
+                        <SandIcon width="45" height="45" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 6h18v12H3zM3 6l9 6 9-6" />
+                        </SandIcon>
+                    </SandIconWrap>
 
-                    {/* Contact icons */}
-                    <ContactIconsContainer>
-                        <ContactIcon href="mailto:colinwkirby@gmail.com" aria-label="Email">
-                            <ContactIconSVG viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M3 6h18v12H3zM3 6l9 6 9-6" />
-                            </ContactIconSVG>
-                        </ContactIcon>
-                        <ContactIcon href="tel:+1234567890" aria-label="Phone">
-                            <ContactIconSVG viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M6.6 10.8c1.5 2.9 3.8 5.1 6.7 6.6l2.2-2.2c.3-.3.7-.4 1.1-.2a13 13 0 003.6.6c.6 0 1 .5 1 1V20a1 1 0 01-1 1c-9.4 0-17-7.6-17-17a1 1 0 011-1H7a1 1 0 011 1c0 1.2.2 2.4.6 3.6.1.3 0 .7-.3 1l-1.7 1.7z"/>
-                            </ContactIconSVG>
-                        </ContactIcon>
-                    </ContactIconsContainer>
-                </FooterTopSection>
+                    <SandIconWrap style={{ left: '62.5%', top: '57.5%' }}>
+                        <SandIcon width="45" height="45" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6.6 10.8c1.5 2.9 3.8 5.1 6.7 6.6l2.2-2.2c.3-.3.7-.4 1.1-.2a13 13 0 003.6.6c.6 0 1 .5 1 1V20a1 1 0 01-1 1c-9.4 0-17-7.6-17-17a1 1 0 011-1H7a1 1 0 011 1c0 1.2.2 2.4.6 3.6.1.3 0 .7-.3 1l-1.7 1.7z"/>
+                        </SandIcon>
+                    </SandIconWrap>
+                </SandTextLayer>
 
-                {/* Bottom section - Made with Love and Copyright */}
-                <FooterBottomSection>
-                    <MadeWithLoveContainer>
-                        Made with<HeartEmoji>❤️</HeartEmoji>by me (CK)
-                    </MadeWithLoveContainer>
-                    <CopyrightContainer>© 2025 Colin Kirby. All rights reserved.</CopyrightContainer>
-                </FooterBottomSection>
-            </FooterContainer>
+                <UnderwaterObject style={{ bottom: '57%', left: '1%' }}>
+                    <img style={{ width: '245px', height: '245px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '43%', left: '5%' }}>
+                    <img style={{ width: '210px', height: '210px' }} src={tallrock} alt="Tall Rock" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '29%', left: '-8%' }}>
+                    <img style={{ width: '360px', height: '360px', transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" />
+                </UnderwaterObject>
+                
+                <UnderwaterObject style={{ bottom: '25%', left: '-2%' }}>
+                    <img style={{ width: '220px', height: '220px' }} src={seaweed} alt="Seaweed" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '31%', left: '3%' }}>
+                    <img style={{ width: '200px', height: '200px' }} src={seaweed2} alt="Seaweed" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '34%', left: '7%' }}>
+                    <img style={{ width: '220px', height: '220px' }} src={seaweed3} alt="Seaweed" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '42%', left: '16%' }}>
+                    <img style={{ width: '225px', height: '225px' }} src={yellowcoral} alt="Yellow Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '30%', left: '12%' }}>
+                    <img style={{ width: '245px', height: '245px' }} src={pinkcoral} alt="Pink Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '33%', left: '20%' }}>
+                    <img style={{ width: '230px', height: '230px' }} src={purplecoral} alt="Purple Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '19%', left: '14%' }}>
+                    <img style={{ width: '235px', height: '235px' }} src={orangecoral} alt="Orange Coral" />
+                </UnderwaterObject>
+                
+                <UnderwaterObject style={{ bottom: '13%', left: '17%' }}>
+                    <img style={{ width: '260px', height: '260px' }} src={bluecoral} alt="Blue Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
+                    <MessageInBottle />
+                </UnderwaterObject>
+                
+                {/* Rocket - CENTERED at 50% */}
+                <RocketContainer style={{ bottom: '45%', left: '49.75%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
+                    <img style={{ width: '250px', height: '250px' }} src={rocket} alt="Rocket - Back to top" />
+                </RocketContainer>
+                
+                {/* Interactive Shell Phone with phone tooltip - RIGHT of center (centered at 65%) */}
+                <UnderwaterObject style={{ bottom: '35%', left: '62.5%', transform: 'translateX(-50%)'}}>
+                    <ShellPhone />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '42%', right: '16%' }}>
+                    <img style={{ width: '235px', height: '235px' }} src={bluecoral} alt="Blue Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '30%', right: '12%' }}>
+                    <img style={{ width: '240px', height: '240px' }} src={yellowcoral} alt="Yellow Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '33%', right: '20%' }}>
+                    <img style={{ width: '230px', height: '230px' }} src={orangecoral} alt="Orange Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '19%', right: '14%' }}>
+                    <img style={{ width: '245px', height: '245px' }} src={purplecoral} alt="Purple Coral" />
+                </UnderwaterObject>
+                
+                <UnderwaterObject style={{ bottom: '13%', right: '17%' }}>
+                    <img style={{ width: '265px', height: '265px' }} src={pinkcoral} alt="Pink Coral" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '57%', right: '1%' }}>
+                    <img style={{ width: '240px', height: '240px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '44%', right: '5%' }}>
+                    <img style={{ width: '210px', height: '210px' }} src={flatrock} alt="Flat Rock" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '29%', right: '-8%' }}>
+                    <img style={{ width: '360px', height: '360px' }} src={rockpileImage} alt="Rockpile" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '25%', right: '-2%' }}>
+                    <img style={{ width: '215px', height: '215px' }} src={seaweed} alt="Seaweed" />
+                </UnderwaterObject>
+
+                <UnderwaterObject style={{ bottom: '31%', right: '3%' }}>
+                    <img style={{ width: '195px', height: '195px' }} src={seaweed2} alt="Seaweed" />
+                </UnderwaterObject>
+                
+                <UnderwaterObject style={{ bottom: '34%', right: '7%' }}>
+                    <img style={{ width: '220px', height: '220px', transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" />
+                </UnderwaterObject>
+            </SandPlane>
 
         </BackgroundContainer>
     );
@@ -1825,213 +1924,234 @@ const ClubName = styled.span`
   
   @media (max-width: 1600px) {
     font-size: clamp(0.65rem, 0.75vw, 0.7rem);
-  }
-  
-  @media (max-width: 1200px) {
+    }
+    
+    @media (max-width: 1200px) {
     font-size: clamp(0.6rem, 0.7vw, 0.65rem);
-  }
+    }
 `;
 
-/* ================= Footer Styles (simplified) ================= */
+/* ================= Footer Styles (integrated into About) ================= */
 
-// Footer container - simplified design
-const FooterContainer = styled.div`
-    position: relative;
+// Sand plane - natural content flow component (like a paragraph block)
+const SandPlane = styled.div`
+    height: 30vh;             /* Simple flat height */
     width: 100%;
-    min-height: 25vh;
-    padding: 4rem 2rem 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 2;
-    
-    /* Underwater gradient background - matches About section */
-    background: linear-gradient(to bottom,
-        rgba(6, 24, 54, 1) 0%,
-        rgba(8, 28, 60, 1) 50%,
-        rgba(10, 32, 68, 1) 100%
+    position: relative;        /* Natural flow - sits below UnderwaterSection like normal content */
+    z-index: 2;               /* Above UnderwaterSection (z-index: 1) */
+
+    background: linear-gradient(
+        to bottom,
+        #7b654d 0%,
+        #8a7157 20%,
+        #9a7f61 40%,
+        #b39873 70%,
+        #c2a680 100%
     );
-    
-    @media (max-width: 1200px) {
-        padding: 3rem 1.5rem 1.5rem;
-        min-height: 20vh;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        /* DRAMATIC hills and valleys - MAXIMUM contrast for 3D terrain */
+        background:
+            /* Depth gradient - darker toward bottom (farther away) */
+            linear-gradient(
+                to bottom,
+                rgba(0,0,0,0) 0%,
+                rgba(0,0,0,0.06) 35%,
+                rgba(0,0,0,0.14) 65%,
+                rgba(0,0,0,0.22) 100%
+            ),
+            
+            /* Large raised mounds (BRIGHT highlights) - MAXIMUM contrast */
+            radial-gradient(ellipse 450px 200px at 18% 22%, 
+                rgba(255,255,255,0.7) 0%, 
+                rgba(255,255,255,0.4) 32%, 
+                rgba(255,255,255,0.15) 52%, 
+                transparent 68%),
+            radial-gradient(ellipse 380px 180px at 78% 28%, 
+                rgba(255,255,255,0.66) 0%, 
+                rgba(255,255,255,0.38) 30%, 
+                rgba(255,255,255,0.12) 50%, 
+                transparent 65%),
+            radial-gradient(ellipse 500px 220px at 42% 55%, 
+                rgba(255,255,255,0.68) 0%, 
+                rgba(255,255,255,0.42) 34%, 
+                rgba(255,255,255,0.16) 54%, 
+                transparent 70%),
+            radial-gradient(ellipse 320px 160px at 12% 78%, 
+                rgba(255,255,255,0.64) 0%, 
+                rgba(255,255,255,0.36) 28%, 
+                rgba(255,255,255,0.1) 48%, 
+                transparent 62%),
+            radial-gradient(ellipse 420px 190px at 85% 70%, 
+                rgba(255,255,255,0.65) 0%, 
+                rgba(255,255,255,0.39) 32%, 
+                rgba(255,255,255,0.13) 52%, 
+                transparent 66%),
+            
+            /* Deep valleys (DARK shadows) - DRAMATIC depth */
+            radial-gradient(ellipse 360px 170px at 35% 38%, 
+                rgba(0,0,0,0.55) 0%, 
+                rgba(0,0,0,0.32) 36%, 
+                rgba(0,0,0,0.12) 54%, 
+                transparent 66%),
+            radial-gradient(ellipse 310px 150px at 68% 50%, 
+                rgba(0,0,0,0.52) 0%, 
+                rgba(0,0,0,0.3) 34%, 
+                rgba(0,0,0,0.1) 52%, 
+                transparent 64%),
+            radial-gradient(ellipse 380px 180px at 8% 58%, 
+                rgba(0,0,0,0.58) 0%, 
+                rgba(0,0,0,0.35) 38%, 
+                rgba(0,0,0,0.14) 56%, 
+                transparent 68%),
+            radial-gradient(ellipse 330px 160px at 90% 42%, 
+                rgba(0,0,0,0.5) 0%, 
+                rgba(0,0,0,0.28) 32%, 
+                rgba(0,0,0,0.09) 50%, 
+                transparent 62%),
+            radial-gradient(ellipse 400px 185px at 52% 85%, 
+                rgba(0,0,0,0.54) 0%, 
+                rgba(0,0,0,0.31) 36%, 
+                rgba(0,0,0,0.11) 54%, 
+                transparent 66%),
+            
+            /* Medium ridges for more detail */
+            radial-gradient(ellipse 250px 120px at 28% 45%, 
+                rgba(255,255,255,0.45) 0%, 
+                rgba(255,255,255,0.15) 48%, 
+                transparent 70%),
+            radial-gradient(ellipse 220px 110px at 72% 68%, 
+                rgba(0,0,0,0.42) 0%, 
+                rgba(0,0,0,0.14) 46%, 
+                transparent 66%),
+            radial-gradient(ellipse 270px 130px at 48% 32%, 
+                rgba(255,255,255,0.4) 0%, 
+                rgba(255,255,255,0.12) 46%, 
+                transparent 68%);
+        
+        filter: blur(9px);
+        mix-blend-mode: overlay;
+        pointer-events: none;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        /* Subtle sandy grain texture */
+        background-image:
+            radial-gradient(circle, rgba(255, 255, 255, 0.08) 25%, transparent 60%),
+            radial-gradient(circle, rgba(0, 0, 0, 0.06) 25%, transparent 60%);
+        background-size: 2px 2px, 2.5px 2.5px;
+        background-position: 0 0, 1px 1px;
+        opacity: 0.35;
+        filter: blur(0.3px);
+        mix-blend-mode: soft-light;
+        pointer-events: none;
     }
 `;
 
-// Top section of footer
-const FooterTopSection = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
+// Rock pile component - positioned relative to SandPlane
+const UnderwaterObject = styled.div`
+    position: absolute;
+    bottom: 0;                /* Base positioning from bottom of SandPlane */
+    z-index: 25;               /* Above sand plane and all other content */
+    overflow: visible;         /* ensure no clipping of large images */
+    pointer-events: none;      /* allow clicks to pass through */
+    
+    /* Subtle underwater glow effect */
+    filter: drop-shadow(0 4px 12px rgba(0, 40, 80, 0.3));
+    
+    /* Allow images inside to receive pointer events */
+    img {
+        pointer-events: auto;
+        display: block;
+    }
+`;
+
+// Sand Text/Icon Overlay - positioned relative to SandPlane
+const SandTextLayer = styled.div`
+    position: absolute;
+    bottom: 0;                 /* Base from bottom of SandPlane */
+    left: 0;
     width: 100%;
-    max-width: 1200px;
+    pointer-events: none;
+    height: 30vh;
+    z-index: 15;               /* above sand, below rocks */
+`;
+
+/* Reusable engraved sand text */
+const SandText = styled.div`
+    position: absolute;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    color: var(--sand-dark);
+    text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.2);
+`;
+
+/* "Drawn in sand" icons */
+const SandIconWrap = styled.div`
+    position: absolute;
+    transform: translateX(-50%);
+    pointer-events: none;
+`;
+
+const SandIcon = styled.svg`
+    display: block;
+    fill: none;
+    stroke: var(--sand-dark);
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter:
+        drop-shadow(-1px -1px 0 var(--sand-light))
+        drop-shadow( 1px  1px 0 rgba(0,0,0,0.28));
     
-    @media (max-width: 1200px) {
-        gap: 1.5rem;
+    @media (max-width: 700px) {
+        stroke-width: 2.6;
     }
 `;
 
-// Footer text styling
-const FooterText = styled.div`
-    text-align: center;
-    color: rgba(200, 230, 245, 0.9);
-    text-shadow: 0 2px 8px rgba(120, 200, 220, 0.5);
-    letter-spacing: 0.05em;
-    
-    @media (max-width: 1200px) {
-        font-size: 1.5rem !important;
-    }
-    
-    @media (max-width: 600px) {
-        font-size: 1.2rem !important;
-    }
-`;
-
-// Interactive elements container
-const InteractiveElementsContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3rem;
-    margin: 1rem 0;
-    
-    @media (max-width: 1200px) {
-        gap: 2rem;
-    }
-    
-    @media (max-width: 600px) {
-        gap: 1.5rem;
-    }
-`;
-
-// Rocket button (back to top) - simplified icon button
-const RocketButton = styled.button`
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    color: rgba(200, 230, 245, 0.9);
+// Rocket container (back to top button) - positioned relative to SandPlane
+const RocketContainer = styled.div`
+    position: absolute;
+    bottom: 0;                 /* Base from bottom of SandPlane */
+    z-index: 25;               /* Same as UnderwaterObject */
+    overflow: visible;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
+    pointer-events: auto;
+    transform: translateX(-50%);  /* Center horizontally */
+    transition: transform 0.3s ease;
     
     &:hover {
-        transform: translateY(-5px);
-        border-color: rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 8px 24px rgba(100, 200, 220, 0.3);
-    }
-    
-    @media (max-width: 600px) {
-        width: 50px;
-        height: 50px;
+        transform: translateX(-50%) translateY(-15px);  /* Maintain centering on hover */
     }
 `;
 
-const RocketIcon = styled.svg`
-    width: 30px;
-    height: 30px;
-    
-    @media (max-width: 600px) {
-        width: 24px;
-        height: 24px;
-    }
-`;
-
-// Contact icons container
-const ContactIconsContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 1rem;
-    
-    @media (max-width: 600px) {
-        gap: 1.5rem;
-    }
-`;
-
-const ContactIcon = styled.a`
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    color: rgba(200, 230, 245, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    
-    &:hover {
-        transform: translateY(-3px);
-        border-color: rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 6px 20px rgba(100, 200, 220, 0.3);
-    }
-    
-    @media (max-width: 600px) {
-        width: 44px;
-        height: 44px;
-    }
-`;
-
-const ContactIconSVG = styled.svg`
-    width: 24px;
-    height: 24px;
-    
-    @media (max-width: 600px) {
-        width: 20px;
-        height: 20px;
-    }
-`;
-
-// Bottom section of footer
-const FooterBottomSection = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    
-    @media (max-width: 900px) {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-`;
-
-// Made with Love container
+// Made with Love container - positioned relative to SandPlane
 const MadeWithLoveContainer = styled.div`
+    position: absolute;
+    bottom: 1rem;                /* Position from bottom of SandPlane */
+    left: 2.5%;
     display: flex;
     align-items: center;
     gap: 0.3rem;
+    z-index: 30;                /* Above everything */
+    pointer-events: none;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 1.5rem;
+    font-size: 2rem;
     
     @media (max-width: 1200px) {
-        font-size: 1.2rem;
-    }
-    
-    @media (max-width: 600px) {
-        font-size: 1rem;
+        font-size: 1.5rem;
     }
 `;
 
-// Heart emoji
+// Heart emoji - stands up straight without sand effect
 const HeartEmoji = styled.span`
-    font-size: 1.5rem;
+    font-size: 2rem;
     display: inline-block;
     animation: heartbeat 2s ease-in-out infinite;
     
@@ -2041,24 +2161,25 @@ const HeartEmoji = styled.span`
     }
     
     @media (max-width: 1200px) {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
     }
+`;
+
+// Copyright container - positioned relative to SandPlane
+const CopyrightContainer = styled.div`
+    position: absolute;
+    bottom: 1rem;                /* Position from bottom of SandPlane */
+    right: 2.5%;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    z-index: 30;                /* Above everything */
+    pointer-events: none;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
     
-    @media (max-width: 600px) {
+    @media (max-width: 1200px) {
         font-size: 1rem;
     }
 `;
 
-// Copyright container
-const CopyrightContainer = styled.div`
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.7);
-    
-    @media (max-width: 1200px) {
-        font-size: 0.9rem;
-    }
-    
-    @media (max-width: 600px) {
-        font-size: 0.85rem;
-    }
-`;

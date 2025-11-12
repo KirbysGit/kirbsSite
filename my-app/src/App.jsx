@@ -118,13 +118,13 @@ function App() {
     const now = performance.now();
     const delay = Math.max(0, heroSettleTime - now);
     
-    console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms`);
-    console.log(`[App] Hero will settle at ${heroSettleTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
-    
-    const t = setTimeout(() => {
-      setHeroSettled(true);
-      console.log(`[App] Hero settled at ${performance.now().toFixed(2)}ms`);
-    }, delay);
+        // console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms`);
+        // console.log(`[App] Hero will settle at ${heroSettleTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
+        
+        const t = setTimeout(() => {
+          setHeroSettled(true);
+          // console.log(`[App] Hero settled at ${performance.now().toFixed(2)}ms`);
+        }, delay);
     
     return () => clearTimeout(t);
   }, [loadingCompleteTime]);
@@ -134,7 +134,7 @@ function App() {
   useEffect(() => {
     if (!componentsPreloaded) return;
     
-    console.log(`[App] Starting incremental component rendering...`);
+    // console.log(`[App] Starting incremental component rendering...`);
     
     // Render components incrementally, spaced out to allow animation frames between renders
     // Each component gets ~200-300ms spacing to allow loading animation to run smoothly
@@ -152,14 +152,14 @@ function App() {
         // Immediate render for first component
         requestAnimationFrame(() => {
           setter(true);
-          console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
+          // console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
         });
       } else {
         // Delayed renders - use setTimeout with requestAnimationFrame for smooth spacing
         setTimeout(() => {
           requestAnimationFrame(() => {
             setter(true);
-            console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
+            // console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
           });
         }, delay);
       }
@@ -216,22 +216,22 @@ function App() {
     const now = performance.now();
     const delay = Math.max(0, unlockTime - now);
     
-    console.log(`[App] Scroll will unlock at ${unlockTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
-    
-    const unlockTimer = setTimeout(() => {
-      // Restore original overflow values
-      document.body.style.overflow = originalBodyOverflow;
-      document.documentElement.style.overflow = originalHtmlOverflow;
-      
-      // Remove event listeners
-      window.removeEventListener('wheel', preventScroll);
-      window.removeEventListener('touchmove', preventScroll);
-      
-      // Restore scroll position (should be 0, but just in case)
-      window.scrollTo(0, scrollY);
-      
-      console.log(`[App] Scroll unlocked at ${performance.now().toFixed(2)}ms`);
-    }, delay);
+        // console.log(`[App] Scroll will unlock at ${unlockTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
+        
+        const unlockTimer = setTimeout(() => {
+          // Restore original overflow values
+          document.body.style.overflow = originalBodyOverflow;
+          document.documentElement.style.overflow = originalHtmlOverflow;
+          
+          // Remove event listeners
+          window.removeEventListener('wheel', preventScroll);
+          window.removeEventListener('touchmove', preventScroll);
+          
+          // Restore scroll position (should be 0, but just in case)
+          window.scrollTo(0, scrollY);
+          
+          // console.log(`[App] Scroll unlocked at ${performance.now().toFixed(2)}ms`);
+        }, delay);
     
     return () => {
       clearTimeout(unlockTimer);
@@ -264,7 +264,7 @@ function App() {
         }
       }
       
-      console.log(`✓ ${componentName} loaded in ${loadTime.toFixed(0)}ms`);
+      // console.log(`✓ ${componentName} loaded in ${loadTime.toFixed(0)}ms`);
       return { success: true, loadTime, component };
     } catch (error) {
       console.warn(`✗ ${componentName} preload error:`, error);
@@ -718,13 +718,13 @@ function App() {
         const loadingCompleteTime = performance.now();
         loadingCompleteTimeRef.current = loadingCompleteTime;
         setLoadingCompleteTime(loadingCompleteTime); // Also set in state for effects
-        console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms (total: ${(loadingCompleteTime - startTime).toFixed(2)}ms)`);
+        // console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms (total: ${(loadingCompleteTime - startTime).toFixed(2)}ms)`);
         
         // Hide loading screen FIRST to prevent scrollbar recalculation affecting Hero
         // Component mounting is now handled by useIdle hooks above (mounts after hero settles)
         setTimeout(() => {
           setIsLoading(false); // Hide loading screen first
-          console.log(`[App] Loading screen hidden at ${performance.now().toFixed(2)}ms`);
+          // console.log(`[App] Loading screen hidden at ${performance.now().toFixed(2)}ms`);
         }, 800);
       } catch (error) {
         console.error('Error during asset loading:', error);

@@ -450,12 +450,13 @@ const WhoIAm = memo(() => {
                             {/* static "A" should not move*/}
                             <StaticA>A&nbsp;</StaticA>  
                          {/* typed box for the role */}
-                             <TypedBox style={{ minWidth: `${LONGEST_ROLE_CH}ch` }}>
+                            <TypedBox style={{ minWidth: `${LONGEST_ROLE_CH}ch` }}>
                                  <LiveRegion aria-live="polite">
                                      <RoleText $roleIndex={index}>{frozen ? card.role : out}</RoleText>
                                      <Caret aria-hidden $paused={isSlidingOut || phase === 'delete'}>_</Caret>
                                  </LiveRegion>
                              </TypedBox>
+
                         </H2>
 
                         {/* content wrapper */}
@@ -1070,40 +1071,39 @@ const RoleTextBase = styled.span`
 // Variant components for different role gradients (simplified from 3 color stops to 2)
 // Each variant includes both gradient AND clip properties together
 const RoleTextSoftwareEngineer = styled(RoleTextBase)`
-                    background: linear-gradient(135deg, 
-                        rgba(180, 140, 255, 0.95), 
+    background: linear-gradient(135deg, 
+        rgba(180, 140, 255, 0.95), 
         rgba(100, 70, 175, 0.9));
     -webkit-background-clip: text;
     background-clip: text;
-                `;
+`;
 
 const RoleTextUCFGrad = styled(RoleTextBase)`
-                    background: linear-gradient(135deg, 
-                        rgba(255, 220, 150, 0.95), 
-                        rgba(255, 160, 80, 0.9));
+    background: linear-gradient(135deg, 
+        rgba(255, 220, 150, 0.95), 
+        rgba(255, 160, 80, 0.9));
     -webkit-background-clip: text;
     background-clip: text;
-                `;
+`;
 
 const RoleTextProfessionalBeginner = styled(RoleTextBase)`
-                    background: linear-gradient(135deg, 
-                        rgba(150, 255, 200, 0.95), 
-                        rgba(100, 180, 140, 0.9));
+    background: linear-gradient(135deg, 
+        rgba(150, 255, 200, 0.95), 
+        rgba(100, 180, 140, 0.9));
     -webkit-background-clip: text;
     background-clip: text;
-                `;
+`;
 
 const RoleTextDefault = styled(RoleTextBase)`
-                    background: linear-gradient(135deg, 
-                        rgba(255,255,255,.95), 
-                        rgba(200,180,255,.9));
+    background: linear-gradient(135deg, 
+        rgba(255,255,255,.95), 
+        rgba(200,180,255,.9));
     -webkit-background-clip: text;
     background-clip: text;
 `;
 
 // Gradient text for the role - wrapper that selects the right variant
-// Memoized to prevent unnecessary re-renders when roleIndex hasn't changed
-const RoleText = memo(({ $roleIndex: roleIndex, ...props }) => {
+const RoleText = ({ $roleIndex: roleIndex, ...props }) => {
     switch(roleIndex) {
         case 0:
             return <RoleTextSoftwareEngineer {...props} />;
@@ -1114,10 +1114,7 @@ const RoleText = memo(({ $roleIndex: roleIndex, ...props }) => {
         default:
             return <RoleTextDefault {...props} />;
     }
-}, (prevProps, nextProps) => {
-    // Only re-render if roleIndex changes
-    return prevProps.$roleIndex === nextProps.$roleIndex;
-});
+};
 
 // one-liner section.
 const OneLiner = styled.div`
