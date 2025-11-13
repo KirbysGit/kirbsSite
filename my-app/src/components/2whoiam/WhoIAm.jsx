@@ -320,30 +320,48 @@ const WhoIAm = memo(() => {
         // store the next index.
         nextIdxRef.current = nextIndex;
         
-        // determine & set slide direction.
-        const direction = nextIndex > index ? 'right' : 'left';
-        setSlideDirection(direction);
+        // check if mobile - skip slide animations on mobile
+        const isMobile = window.innerWidth <= 768;
         
-        // store previous index for animation tracking.
-        setPreviousIndex(index);
-        
-        // first slide out existing content.
-        setIsSlidingOut(true);
-        
-        // use requestAnimationFrame to sync with animation end.
-        const onEnd = () => {
-            setShowImages(false);   // hide images during text transition.
-            setShowContent(false);  // hide content during text transition.
-            setIsSlidingOut(false); // stop sliding out.
-            setFrozen(false);       // unfreeze the text.
-            setPhase('delete');     // set the phase to delete.
-        };
-        
-        // use setTimemout to sync with the end of our animation.
-        setTimeout(() => {
-            requestAnimationFrame(onEnd);
-        }, IMG_MS + BUFFER_MS);
-    }, [phase, index]);
+        if (isMobile) {
+            // On mobile: skip slide-out animation, just swap directly
+            setShowImages(false);
+            setShowContent(false);
+            setFrozen(false);
+            setPhase('delete');
+            // Update index immediately after delete completes
+            setTimeout(() => {
+                setIndex(nextIndex);
+                resetTo('');
+                setPhase('type');
+            }, 100);
+        } else {
+            // Desktop: use slide-out animation
+            // determine & set slide direction.
+            const direction = nextIndex > index ? 'right' : 'left';
+            setSlideDirection(direction);
+            
+            // store previous index for animation tracking.
+            setPreviousIndex(index);
+            
+            // first slide out existing content.
+            setIsSlidingOut(true);
+            
+            // use requestAnimationFrame to sync with animation end.
+            const onEnd = () => {
+                setShowImages(false);   // hide images during text transition.
+                setShowContent(false);  // hide content during text transition.
+                setIsSlidingOut(false); // stop sliding out.
+                setFrozen(false);       // unfreeze the text.
+                setPhase('delete');     // set the phase to delete.
+            };
+            
+            // use setTimemout to sync with the end of our animation.
+            setTimeout(() => {
+                requestAnimationFrame(onEnd);
+            }, IMG_MS + BUFFER_MS);
+        }
+    }, [phase, index, resetTo, setPhase]);
 
     // next function - memoized
     const next = useCallback(() => goTo((index + 1) % CARDS.length), [goTo, index]);
@@ -518,6 +536,12 @@ const SectionWrap = styled.section`
     @media (max-width: 1600px) {
         padding: 3rem 4rem 4rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 2rem 1.5rem 4rem;
+        min-height: auto;
+    }
 
     /* styles - gradient fallback */
     background: linear-gradient(
@@ -563,6 +587,11 @@ const PageTitle = styled.div`
     @media (max-width: 1600px) {
         margin: 0 0 1.5rem;
     }
+    
+    @media (max-width: 768px) {
+        margin: 0 0 1.5rem;
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
 
     /* styles */
     opacity: 0.9;
@@ -591,6 +620,14 @@ const Grid = styled.div`
     @media (max-width: 1600px) {
         grid-template-columns: 42% 2% 56%;
     }
+    
+    /* mobile - stack vertically */
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        padding-left: 0;
+        gap: 2rem;
+    }
 `;
 
 /* ========== left column ========== */
@@ -601,6 +638,12 @@ const LeftCol = styled.div`
     width: 100%;
     height: 100%;
     justify-content: center;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        order: 2;
+        height: auto;
+    }
 `;
 
 // image stack set up.
@@ -616,6 +659,16 @@ const ImageStack = styled.div`
 
     /* CSS containment for performance */
     contain: layout style;
+    
+    /* mobile - stack images vertically */
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: auto;
+        height: auto;
+    }
 `;
 
 // Base image shell component
@@ -635,6 +688,18 @@ const ImgShellBase = styled.div`
     @media (max-width: 1600px) {
         --width: 320px;
         --height: 320px;
+    }
+    
+    /* mobile - smaller images, static positioning */
+    @media (max-width: 768px) {
+        --width: 280px;
+        --height: 280px;
+        position: relative !important;
+        transform: none !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
     }
   
     /* GPU acceleration - only set will-change when actually animating */
@@ -661,41 +726,73 @@ const ImgShellBase = styled.div`
 const ImgShellSlideOutLeft = styled(ImgShellBase)`
     transform: translateZ(0);
     animation: ${slideOutLeft} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
                 `;
 
 const ImgShellSlideOutLeftVert = styled(ImgShellBase)`
     transform: translateY(-50%) translateZ(0);
     animation: ${slideOutLeftVert} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
                 `;
 
 const ImgShellSlideOutRight = styled(ImgShellBase)`
     transform: translateZ(0);
     animation: ${slideOutRight} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
 `;
 
 const ImgShellSlideOutRightVert = styled(ImgShellBase)`
     transform: translateY(-50%) translateZ(0);
     animation: ${slideOutRightVert} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
                 `;
 
 const ImgShellSlideInLeft = styled(ImgShellBase)`
     transform: translateZ(0);
     animation: ${slideInLeft} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
                 `;
 
 const ImgShellSlideInLeftVert = styled(ImgShellBase)`
     transform: translateY(-50%) translateZ(0);
     animation: ${slideInLeftVert} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
 `;
 
 const ImgShellSlideInRight = styled(ImgShellBase)`
     transform: translateZ(0);
     animation: ${slideInRight} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
 `;
 
 const ImgShellSlideInRightVert = styled(ImgShellBase)`
     transform: translateY(-50%) translateZ(0);
     animation: ${slideInRightVert} 400ms ease-out forwards;
+    
+    @media (max-width: 768px) {
+        animation: none;
+    }
 `;
 
 const ImgShellStatic = styled(ImgShellBase)`
@@ -909,6 +1006,11 @@ const RightCol = styled.div`
     width: 100%;
     min-width: 0;
     max-width: 100%;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        order: 1;
+    }
 `;
 
 // sub-container for content.
@@ -922,6 +1024,11 @@ const ContentBox = styled.div`
 
     /* spacing */
     gap: 1rem;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        gap: 1.5rem;
+    }
 `;
 
 // content wrapper for the animations.
@@ -1016,6 +1123,13 @@ const H2 = styled.div`
     /* styles */
     font-weight: 800;    
     font-size: clamp(1.8rem, 3.6vw, 2.3rem);
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(1.5rem, 5vw, 2rem);
+        gap: 0.4rem;
+        margin-bottom: 0.5rem;
+    }
 `;
 
 // static "A" that doesn't move.
@@ -1028,6 +1142,11 @@ const StaticA = styled.span`
     font-weight: 800;
     font-size: clamp(2.2rem, 4.4vw, 2.7rem);
     color: rgba(255,255,255,.9);
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(1.8rem, 6vw, 2.2rem);
+    }
 `;
 
 // container for typed text.
@@ -1134,6 +1253,13 @@ const OneLiner = styled.div`
         font-size: clamp(0.85rem, 1.4vw, 1.1rem);
         line-height: 1.7;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.95rem, 3vw, 1.1rem);
+        line-height: 1.75;
+        margin-bottom: 0.5rem;
+    }
 
     /* strong text */
     strong {
@@ -1156,6 +1282,12 @@ const SectionTitle = styled.div`
     @media (max-width: 1600px) {
         font-size: clamp(1.3rem, 1.8vw, 2rem);
         margin: 0.8rem 0;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(1.2rem, 4vw, 1.6rem);
+        margin: 1rem 0 0.75rem;
     }
 `;
 
@@ -1199,6 +1331,18 @@ const BulletItem = styled.div`
         /* smaller bullet at 1600px */
         &::before {
             font-size: 1.3rem;
+        }
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(1rem, 3vw, 1.15rem);
+        line-height: 1.7;
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
+        
+        &::before {
+            font-size: 1.2rem;
         }
     }
 
@@ -1252,6 +1396,13 @@ const Closer = styled.div`
         line-height: 1.7;
     }
     
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(1rem, 3vw, 1.15rem);
+        line-height: 1.75;
+        margin-top: 0.5rem;
+    }
+    
     /* strong text */
     strong {
         font-weight: 600;
@@ -1270,7 +1421,14 @@ const NavRow = styled.div`
     /* spacing */
     gap: 1.5rem;
     padding: 1rem;
-    margin-bottom: 1rem;  
+    margin-bottom: 1rem;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        gap: 1rem;
+        padding: 0.75rem;
+        margin-top: 1rem;
+    }
 `;
 
 // page indicator. (current page / total pages)
@@ -1383,6 +1541,14 @@ const SpaceStation = styled.div`
         height: 200px;
         opacity: 0.6;
     }
+    
+    @media (max-width: 768px) {
+        width: 120px;
+        height: 120px;
+        top: 2%;
+        right: 3%;
+        opacity: 0.5;
+    }
 `;
 
 // satellite 1 - floating across the top of the screen
@@ -1423,6 +1589,10 @@ const Satellite1 = styled.div`
         height: 108px;
         opacity: 0.5;
     }
+    
+    @media (max-width: 768px) {
+        display: none; /* Hide satellites on mobile */
+    }
 `;
 
 // satellite 2 - floating across slightly lower
@@ -1462,6 +1632,10 @@ const Satellite2 = styled.div`
         width: 60px;
         height: 108px;
         opacity: 0.4;
+    }
+    
+    @media (max-width: 768px) {
+        display: none; /* Hide satellites on mobile */
     }
 `;
 

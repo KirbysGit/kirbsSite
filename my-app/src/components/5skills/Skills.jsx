@@ -77,40 +77,29 @@ const Skills = memo(() => {
                 <SectionSubtitle>Technologies I work with</SectionSubtitle>
             </ContentWrapper>
 
-            {/* skyline row */}
-            <SkylineRow>
-                {skyline.map((b) => (
-                    <SkillTower
-                        key={b.name}
-                        name={b.name}
-                        logoSrc={b.logoSrc}
-                        level={b.level}
-                        palette={b.palette}
-                        w={b.w}
-                        depth={b.depth}
-                        cap={b.cap}
-                        leftPos={b.leftPos}
-                    />
-                ))}
-            </SkylineRow>
-
-            {/* building foundation base */}
-            <BuildingFoundation />
-
-            {/* upper sidewalk (above road) */}
-            <UpperSidewalk />
+            {/* floating text section - right below title on mobile */}
+            <FloatingTextContainer>
+                <FloatingText>
+                    Across most portfolio sites I've seen, I never saw a skills section that wasn't 
+                    basically just a list of random technologies, so I decided to make mine a bit more 
+                    <em> confusing</em> because why not? 
+                </FloatingText>
+                <FloatingText>
+                    In reality, I feel like listing most of these skills doesn't really tell a story, you're 
+                    gonna get that from my projects. But I wanted to show some of my experiences thus far 
+                    in my career.
+                </FloatingText>
+            </FloatingTextContainer>
             
-            {/* road leading to buildings */}
-            <Road />
+            <PSNote>
+                P.S. — All the objects here are custom SVGs that took <em>way</em> too long to build/optimize. 
+                Don't recommend it to others.
+            </PSNote>
             
-            {/* harbor water - behind the bridge rail */}
-            <HarborWater>
-                <RippleLayer />
-            </HarborWater>
-            
-            {/* hot air balloons above the water - distant, over the harbor */}
-            {/* git - orange and white */}
-            <HotAirBalloon
+            {/* hot air balloons - shrunk below text on mobile */}
+            <BalloonsWrapper>
+                {/* git - orange and white */}
+                <HotAirBalloon
                 top="12%"
                 left="81%"
                 size={95}
@@ -159,26 +148,39 @@ const Skills = memo(() => {
                 logo={msofficeLogo}
                 name="Microsoft Office"
                 tooltipColor="#0078D4"
-            />
+                />
+            </BalloonsWrapper>
             
-            {/* floating text section */}
-            <FloatingTextContainer>
-                <FloatingText>
-                    Across most portfolio sites I've seen, I never saw a skills section that wasn't 
-                    basically just a list of random technologies, so I decided to make mine a bit more 
-                    <em> confusing</em> because why not? 
-                </FloatingText>
-                <FloatingText>
-                    In reality, I feel like listing most of these skills doesn't really tell a story, you're 
-                    gonna get that from my projects. But I wanted to show some of my experiences thus far 
-                    in my career.
-                </FloatingText>
-            </FloatingTextContainer>
+            {/* harbor water - behind buildings on mobile */}
+            <HarborWater>
+                <RippleLayer />
+            </HarborWater>
             
-            <PSNote>
-                P.S. — All the objects here are custom SVGs that took <em>way</em> too long to build/optimize. 
-                Don't recommend it to others.
-            </PSNote>
+            {/* skyline row - below balloons on mobile */}
+            <SkylineRow>
+                {skyline.map((b) => (
+                    <SkillTower
+                        key={b.name}
+                        name={b.name}
+                        logoSrc={b.logoSrc}
+                        level={b.level}
+                        palette={b.palette}
+                        w={b.w}
+                        depth={b.depth}
+                        cap={b.cap}
+                        leftPos={b.leftPos}
+                    />
+                ))}
+            </SkylineRow>
+
+            {/* building foundation base */}
+            <BuildingFoundation />
+
+            {/* upper sidewalk (above road) */}
+            <UpperSidewalk />
+            
+            {/* road leading to buildings */}
+            <Road />
             
             <BridgeRail />
             {/* right-side bridge group (unified) */}
@@ -237,6 +239,16 @@ const SkillsContainer = styled.div`
     @media (max-width: 1600px) {
         padding-top: 4rem; /* More top padding to prevent title/subtitle cutoffs */
         min-height: 95vh; /* Slightly reduce height */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 2rem 1rem 0rem 1rem;
+        padding-top: 2rem;
+        min-height: auto;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
     }
 `;
 
@@ -336,6 +348,12 @@ const ContentWrapper = styled.div`
     @media (max-width: 1200px) {
         padding: 1rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 1rem 0.5rem;
+        margin-top: 0;
+    }
 `;
 
 // section title.
@@ -360,6 +378,11 @@ const SectionTitle = styled.h1`
     @media (max-width: 1600px) {
         font-size: 4rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
+    }
 `;
 
 // section subtitle.
@@ -381,6 +404,13 @@ const SectionSubtitle = styled.h2`
     @media (max-width: 1600px) {
         font-size: 1.5rem;
         margin-bottom: 2.5rem;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.95rem, 3vw, 1.15rem);
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
     }
 `;
 
@@ -450,6 +480,19 @@ const Road = styled.div`
         bottom: 12.5%; /* Move down to maintain spacing */
         height: 2.5rem; /* Slightly smaller */
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        transform: none;
+        width: 200%;
+        left: -50%;
+        height: 1.5rem;
+        margin: -0.1rem 0 0 0; /* No gaps - directly connected */
+        z-index: 2;
+    }
 `;
 
 // skyline row.
@@ -475,6 +518,20 @@ const SkylineRow = styled.div`
         transform: scale(0.82) translateZ(0); /* Scale both width and height proportionally to maintain aspect ratio */
         transform-origin: bottom center; /* Scale from bottom center */
         z-index: 3; /* Higher z-index to ensure buildings stay above foundation and water with transform stacking context */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        width: 200%; /* Double width to account for 0.5 scale - visually appears as 100% */
+        max-width: 200%;
+        left: 50%;
+        transform: translateX(-50%) scale(0.5) translateZ(0);
+        transform-origin: center top;
+        margin: 20rem 0 0 0;
+        z-index: 3;
+        contain: none;
+        height: auto;
     }
 `;
 
@@ -544,6 +601,18 @@ const BuildingFoundation = styled.div`
     @media (max-width: 1600px) {
         bottom: 17.5%; /* Move down proportionally with skyline */
         width: 40%; /* Slightly narrower */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        left: -50%;
+        bottom: auto;
+        transform: none;
+        width: 200%;
+        height: 1rem;
+        margin: -0.5rem 0 0 0; /* No gaps - directly under buildings */
+        z-index: 2;
     }
 `;
 
@@ -678,6 +747,18 @@ const GrassyBase = styled.div`
         bottom: 8%; /* Move down proportionally */
         height: 1.75rem; /* Slightly smaller */
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        bottom: auto;
+        left: -50%;
+        transform: none;
+        width: 200%;
+        height: 1rem;
+        margin: -0.05rem 0 0 0; /* No gaps - directly connected */
+        z-index: 2;
+    }
 `;
 
 // upper sidewalk. (above road)
@@ -745,6 +826,18 @@ const UpperSidewalk = styled.div`
         bottom: 16.5%; /* Move down proportionally */
         height: 1.1rem; /* Slightly smaller */
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        bottom: auto;
+        left: -50%;
+        transform: none;
+        width: 200%;
+        height: 0.75rem;
+        margin: -0.5rem 0 0 0; /* No gaps - directly connected */
+        z-index: 2;
+    }
 `;
 
 // lower sidewalk. (below road)
@@ -811,6 +904,18 @@ const LowerSidewalk = styled.div`
     @media (max-width: 1600px) {
         bottom: 11%; /* Move down proportionally */
         height: 1.1rem; /* Slightly smaller */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        bottom: auto;
+        transform: none;
+        width: 200%;
+        left: -50%;
+        height: 0.75rem;
+        margin: -0.25rem 0 0 0; /* Negative top margin to overlap */
+        z-index: 2;
     }
 `;
 
@@ -891,6 +996,21 @@ const HarborWater = styled.div`
     @media (max-width: 1600px) {
         height: 26rem; /* Slightly smaller */
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: absolute;
+        right: 0;
+        bottom: 3rem; /* Align bottom with top of OceanWall (which is 3rem tall) */
+        left: 0;
+        transform: none;
+        width: 100%;
+        height: auto;
+        min-height: 200px;
+        max-height: 300px;
+        z-index: 1; /* Behind buildings (z-index: 3) but above background */
+        transform-origin: bottom;
+    }
 `;
 
 // ripple layer. (sits inside the rotated plane)
@@ -963,6 +1083,11 @@ const BridgeRail = styled.div`
         bottom: 18.5%; /* Move down proportionally */
         width: 59%;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        display: none; /* Hide bridge rail on mobile */
+    }
 `;
 
 // floating text container.
@@ -981,6 +1106,18 @@ const FloatingTextContainer = styled.div`
     @media (max-width: 1600px) {
         top: 34%; /* Move up slightly to prevent overlap */
         width: 36%; /* Slightly narrower */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
     }
 `;
 
@@ -1018,6 +1155,14 @@ const FloatingText = styled.p`
         font-size: 1.1rem; /* Reduced font size */
         line-height: 1.6; /* Tighter line height */
         margin: 0 0 14px 0; /* Reduced spacing */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        text-align: left;
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        line-height: 1.5;
+        margin: 0 0 12px 0;
     }
 `;
 
@@ -1062,6 +1207,54 @@ const PSNote = styled.p`
         font-size: 0.9rem; /* Reduced font size */
         line-height: 1.6; /* Tighter line height */
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        max-width: 100%;
+        text-align: left;
+        padding: 0 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        line-height: 1.5;
+    }
+`;
+
+// balloons wrapper for mobile scaling
+const BalloonsWrapper = styled.div`
+    /* desktop - no wrapper needed, balloons positioned absolutely */
+    @media (min-width: 769px) {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 4;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        width: 100%;
+        height: max-content;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+        pointer-events: none;
+        z-index: 4;
+        
+        /* Scale down balloons on mobile */
+        & > * {
+            transform: scale(0.4) !important;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+        }
+    }
 `;
 
 // ocean rail at bottom of grassy area.
@@ -1105,6 +1298,17 @@ const OceanRail = styled.div`
     @media (max-width: 1600px) {
         bottom: 8%; /* Move down proportionally */
         height: 1.3rem; /* Slightly smaller */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        bottom: auto;
+        left: -50%;
+        width: 200%;
+        height: 1rem;
+        margin: -1rem 0 0 0; /* No gaps - directly connected */
+        z-index: 4;
     }
 `;
 
@@ -1181,5 +1385,16 @@ const OceanWall = styled.div`
     /* media queries */
     @media (max-width: 1600px) {
         height: 9%; /* Slightly smaller */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        position: relative;
+        bottom: auto;
+        left: -50%;
+        width: 200%;
+        height: 3rem;
+        margin: 0rem 0 0 0; /* No gaps - directly connected */
+        z-index: 2;
     }
 `;

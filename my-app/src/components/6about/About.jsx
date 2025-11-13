@@ -354,10 +354,43 @@ const Background = () => {
                 {/* Copyright - positioned within SandPlane */}
                 <CopyrightContainer>© 2025 Colin Kirby. All rights reserved.</CopyrightContainer>
                 
+                {/* Simple Mobile Footer */}
+                <MobileFooterContainer>
+                    <MobileScrollButton onClick={scrollToTop}>
+                        <MobileScrollIcon>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M18 15l-6-6-6 6" />
+                            </svg>
+                        </MobileScrollIcon>
+                        <MobileScrollText>Back to Top</MobileScrollText>
+                    </MobileScrollButton>
+                    
+                    <MobileContactRow>
+                        <MobileContactItem>
+                            <MobileContactIcon>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M3 6h18v12H3zM3 6l9 6 9-6" />
+                                </svg>
+                            </MobileContactIcon>
+                            <MobileContactText href="mailto:kirbycolin26@gmail.com">kirbycolin26@gmail.com</MobileContactText>
+                        </MobileContactItem>
+                        
+                        <MobileContactItem>
+                            <MobileContactIcon>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M6.6 10.8c1.5 2.9 3.8 5.1 6.7 6.6l2.2-2.2c.3-.3.7-.4 1.1-.2a13 13 0 003.6.6c.6 0 1 .5 1 1V20a1 1 0 01-1 1c-9.4 0-17-7.6-17-17a1 1 0 011-1H7a1 1 0 011 1c0 1.2.2 2.4.6 3.6.1.3 0 .7-.3 1l-1.7 1.7z"/>
+                                </svg>
+                            </MobileContactIcon>
+                            <MobileContactText href="tel:407-876-8172">407-876-8172</MobileContactText>
+                        </MobileContactItem>
+                    </MobileContactRow>
+                </MobileFooterContainer>
+                
                 <SandTextLayer>
                     <SandText
                         style={{ left: '50%', transform: 'translateX(-50%)', top: '65%', fontSize: '2.5rem', fontWeight: 700 }}
                         data-text="Contact Me!"
+                        className="contact-text"
                     >
                         Contact Me!
                     </SandText>
@@ -365,6 +398,7 @@ const Background = () => {
                     <SandText
                         style={{ left: '50%', transform: 'translateX(-50%)', top: '42.5%', fontSize: '1.8rem', fontWeight: 600 }}
                         data-text="To The Moon!"
+                        className="moon-text"
                     >
                         To The Moon!
                     </SandText>
@@ -383,105 +417,105 @@ const Background = () => {
                 </SandTextLayer>
 
                 <UnderwaterObject style={{ bottom: '57%', left: '1%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
+                    <img src={rockwithseaweed} alt="Rock with Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '43%', left: '5%' }}>
-                    <img style={{ width: '210px', height: '210px' }} src={tallrock} alt="Tall Rock" />
+                    <img src={tallrock} alt="Tall Rock" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', left: '-8%' }}>
-                    <img style={{ width: '360px', height: '360px', transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" />
+                    <img className="rockpile-image" style={{ transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '25%', left: '-2%' }}>
-                    <img style={{ width: '220px', height: '220px' }} src={seaweed} alt="Seaweed" />
+                    <img src={seaweed} alt="Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '31%', left: '3%' }}>
-                    <img style={{ width: '200px', height: '200px' }} src={seaweed2} alt="Seaweed" />
+                    <img src={seaweed2} alt="Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '34%', left: '7%' }}>
-                    <img style={{ width: '220px', height: '220px' }} src={seaweed3} alt="Seaweed" />
+                    <img src={seaweed3} alt="Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', left: '16%' }}>
-                    <img style={{ width: '225px', height: '225px' }} src={yellowcoral} alt="Yellow Coral" />
+                    <img src={yellowcoral} alt="Yellow Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', left: '12%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={pinkcoral} alt="Pink Coral" />
+                    <img src={pinkcoral} alt="Pink Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', left: '20%' }}>
-                    <img style={{ width: '230px', height: '230px' }} src={purplecoral} alt="Purple Coral" />
+                    <img src={purplecoral} alt="Purple Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', left: '14%' }}>
-                    <img style={{ width: '235px', height: '235px' }} src={orangecoral} alt="Orange Coral" />
+                    <img src={orangecoral} alt="Orange Coral" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', left: '17%' }}>
-                    <img style={{ width: '260px', height: '260px' }} src={bluecoral} alt="Blue Coral" />
+                    <img src={bluecoral} alt="Blue Coral" />
                 </UnderwaterObject>
 
-                <UnderwaterObject style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
+                <UnderwaterObject className="keep-on-mobile message-bottle" style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
                     <MessageInBottle />
                 </UnderwaterObject>
                 
                 {/* Rocket - CENTERED at 50% */}
-                <RocketContainer style={{ bottom: '45%', left: '49.75%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
-                    <img style={{ width: '250px', height: '250px' }} src={rocket} alt="Rocket - Back to top" />
+                <RocketContainer className="keep-on-mobile rocket-mobile" style={{ bottom: '45%', left: '49.75%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
+                    <img src={rocket} alt="Rocket - Back to top" />
                 </RocketContainer>
                 
                 {/* Interactive Shell Phone with phone tooltip - RIGHT of center (centered at 65%) */}
-                <UnderwaterObject style={{ bottom: '35%', left: '62.5%', transform: 'translateX(-50%)'}}>
+                <UnderwaterObject className="keep-on-mobile shell-phone" style={{ bottom: '35%', left: '62.5%', transform: 'translateX(-50%)'}}>
                     <ShellPhone />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', right: '16%' }}>
-                    <img style={{ width: '235px', height: '235px' }} src={bluecoral} alt="Blue Coral" />
+                    <img src={bluecoral} alt="Blue Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', right: '12%' }}>
-                    <img style={{ width: '240px', height: '240px' }} src={yellowcoral} alt="Yellow Coral" />
+                    <img src={yellowcoral} alt="Yellow Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', right: '20%' }}>
-                    <img style={{ width: '230px', height: '230px' }} src={orangecoral} alt="Orange Coral" />
+                    <img src={orangecoral} alt="Orange Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', right: '14%' }}>
-                    <img style={{ width: '245px', height: '245px' }} src={purplecoral} alt="Purple Coral" />
+                    <img src={purplecoral} alt="Purple Coral" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', right: '17%' }}>
-                    <img style={{ width: '265px', height: '265px' }} src={pinkcoral} alt="Pink Coral" />
+                    <img src={pinkcoral} alt="Pink Coral" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '57%', right: '1%' }}>
-                    <img style={{ width: '240px', height: '240px' }} src={rockwithseaweed} alt="Rock with Seaweed" />
+                    <img src={rockwithseaweed} alt="Rock with Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '44%', right: '5%' }}>
-                    <img style={{ width: '210px', height: '210px' }} src={flatrock} alt="Flat Rock" />
+                    <img src={flatrock} alt="Flat Rock" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', right: '-8%' }}>
-                    <img style={{ width: '360px', height: '360px' }} src={rockpileImage} alt="Rockpile" />
+                    <img className="rockpile-image" src={rockpileImage} alt="Rockpile" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '25%', right: '-2%' }}>
-                    <img style={{ width: '215px', height: '215px' }} src={seaweed} alt="Seaweed" />
+                    <img src={seaweed} alt="Seaweed" />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '31%', right: '3%' }}>
-                    <img style={{ width: '195px', height: '195px' }} src={seaweed2} alt="Seaweed" />
+                    <img src={seaweed2} alt="Seaweed" />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '34%', right: '7%' }}>
-                    <img style={{ width: '220px', height: '220px', transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" />
+                    <img style={{ transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" />
                 </UnderwaterObject>
             </SandPlane>
 
@@ -723,6 +757,12 @@ const UnderwaterSection = styled.div`
   [data-loading="true"] &::after {
     animation-play-state: paused;
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem 3rem 1rem;
+    margin-top: var(--surface-h);
+  }
 `;
 
 
@@ -737,6 +777,11 @@ const UnderwaterHeader = styled.div`
   
   /* Subtle glow effect */
   filter: drop-shadow(0 4px 12px rgba(120, 200, 220, 0.3));
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    margin-top: 1.5rem;
+  }
 `;
 
 const HeaderTitle = styled.h1`
@@ -787,6 +832,12 @@ const HeaderTitle = styled.h1`
   @media (max-width: 1200px) {
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(2rem, 8vw, 2.5rem);
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const HeaderSubtitle = styled.h2`
@@ -821,6 +872,12 @@ const HeaderSubtitle = styled.h2`
   
   @media (max-width: 1600px) {
     font-size: clamp(1rem, 1.8vw, 1.3rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    margin-top: 0.25rem;
   }
 `;
 
@@ -863,6 +920,14 @@ const ProfileSection = styled.div`
   @media (max-width: 900px) {
     width: 98%;
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 1rem;
+    gap: 1rem;
+    padding: 0 0.5rem;
+  }
 `;
 
 // Left section - 1/3 width for image and bubbles
@@ -880,6 +945,12 @@ const ImageSection = styled.div`
     flex: 0 0 auto;
     width: 100%;
     max-width: 400px;
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+    max-width: 100%;
   }
 `;
 
@@ -934,6 +1005,13 @@ const ProfileImageFrame = styled.div`
     width: 65%;
     max-width: 250px;
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    width: 70%;
+    max-width: 220px;
+    padding: 6px;
+  }
 `;
 
 const ProfileImage = styled.img`
@@ -964,6 +1042,13 @@ const SocialBubblesContainer = styled.div`
   @media (max-width: 600px) {
     min-height: 280px;
     margin-top: 1rem;
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    min-height: 200px;
+    margin-top: 0.75rem;
+    padding-bottom: 1rem;
   }
 `;
 
@@ -1209,6 +1294,42 @@ const SocialBubble = styled.a`
       height: 20px;
     }
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    &:nth-child(1) {
+      width: 48px;
+      height: 48px;
+      left: 45%;
+      bottom: 8%;
+    }
+    
+    &:nth-child(2) {
+      width: 54px;
+      height: 54px;
+      left: 55%;
+      bottom: 30%;
+    }
+    
+    &:nth-child(3) {
+      width: 60px;
+      height: 60px;
+      left: 40%;
+      bottom: 54%;
+    }
+    
+    &:nth-child(4) {
+      width: 66px;
+      height: 66px;
+      left: 48%;
+      bottom: 80%;
+    }
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `;
 
 const InfoGridSection = styled.div`
@@ -1219,6 +1340,11 @@ const InfoGridSection = styled.div`
   @media (max-width: 1200px) {
     flex: 0 0 auto;
     width: 100%;
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    padding-bottom: 1rem;
   }
 `;
 
@@ -1261,6 +1387,12 @@ const InfoGrid = styled.div`
     gap: 1.5rem;
     grid-auto-rows: minmax(240px, auto);
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    gap: 1.25rem;
+    grid-auto-rows: minmax(220px, auto);
+  }
 `;
 
 // Individual glassmorphism card
@@ -1283,6 +1415,12 @@ const GlassCard = styled.article`
   @media (max-width: 1200px) {
     padding: clamp(0.6rem, 0.8vw, 0.75rem);
     border-radius: clamp(12px, 1.6vw, 16px);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    padding: 0.9rem;
+    border-radius: 14px;
   }
   
   /* Glassmorphism effect */
@@ -1385,6 +1523,12 @@ const CardTitle = styled.h3`
     font-size: clamp(0.9rem, 1.2vw, 1.1rem);
     margin: 0 0 clamp(0.2rem, 0.35vw, 0.35rem) 0;
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    margin-bottom: 0.4rem;
+  }
 `;
 
 // Card text - for cards with structured content (Education, Mantras, Music)
@@ -1415,6 +1559,13 @@ const CardText = styled.p`
     font-size: clamp(0.6rem, 0.75vw, 0.7rem);
     line-height: 1.4;
     padding: 0 clamp(0.4rem, 0.75vw, 0.85rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+    line-height: 1.5;
+    padding: 0 0.5rem;
   }
 `;
 
@@ -1448,6 +1599,13 @@ const CardTextLarge = styled.p`
     line-height: 1.5;
     padding: 0 clamp(0.5rem, 0.85vw, 1rem);
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.8rem, 2.8vw, 0.95rem);
+    line-height: 1.55;
+    padding: 0 0.5rem;
+  }
 `;
 
 // Goals list - bulleted list for Goals card
@@ -1469,6 +1627,12 @@ const GoalsList = styled.ul`
   @media (max-width: 1200px) {
     gap: clamp(0.5rem, 0.7vw, 0.65rem);
     padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+    padding: 0 0.5rem;
   }
 `;
 
@@ -1552,8 +1716,25 @@ const GoalItem = styled.li`
       left: 4.5px;  /* Center of 9px bullet */
     }
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    line-height: 1.5;
+    padding-left: 1.5rem;
+    
+    &::before {
+      width: 10px;
+      height: 10px;
+    }
+    
+    &::after {
+      width: 4px;
+      height: 4px;
+      left: 5px;
+    }
+  }
 `;
-
 // Emoji row container
 const EmojiRow = styled.div`
   display: flex;
@@ -1572,6 +1753,12 @@ const EmojiRow = styled.div`
   @media (max-width: 1200px) {
     gap: clamp(0.3rem, 0.45vw, 0.4rem);
     padding-top: clamp(0.45rem, 0.6vw, 0.6rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    gap: 0.35rem;
+    padding-top: 0.5rem;
   }
 `;
 
@@ -1605,8 +1792,14 @@ const Emoji = styled.span`
     height: clamp(1.4rem, 1.7vw, 1.6rem);
     font-size: clamp(0.85rem, 1vw, 0.95rem);
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.9rem;
+  }
 `;
-
 // Wrapper for all mantras to center them
 const MantrasWrapper = styled.div`
   flex: 1;
@@ -1621,6 +1814,11 @@ const MantrasWrapper = styled.div`
   
   @media (max-width: 1200px) {
     gap: clamp(0.3rem, 0.4vw, 0.35rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    gap: 0.25rem;
   }
 `;
 
@@ -1643,6 +1841,13 @@ const MantraText = styled.div`
   @media (max-width: 1200px) {
     font-size: clamp(0.75rem, 0.9vw, 0.85rem);
     line-height: 1.5;
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    line-height: 1.5;
+    padding: 0 0.5rem;
   }
 `;
 
@@ -1670,6 +1875,11 @@ const MantraHighlight = styled.div`
   
   @media (max-width: 1200px) {
     font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.65rem, 2.2vw, 0.75rem);
   }
 `;
 
@@ -1708,8 +1918,15 @@ const MusicIntroText = styled.p`
     padding: 0 clamp(0.4rem, 0.75vw, 0.85rem);
     margin: 0 0 clamp(0.25rem, 0.4vw, 0.35rem) 0;
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.65rem, 2.2vw, 0.75rem);
+    line-height: 1.45;
+    padding: 0 0.5rem;
+    margin-bottom: 0.4rem;
+  }
 `;
-
 // Artist grid for music card
 const ArtistGrid = styled.div`
   display: grid;
@@ -1730,6 +1947,13 @@ const ArtistGrid = styled.div`
   
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-top: 0.4rem;
   }
 `;
 
@@ -1765,6 +1989,12 @@ const ArtistName = styled.div`
   @media (max-width: 1200px) {
     font-size: clamp(0.6rem, 0.75vw, 0.75rem);
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.6rem, 2vw, 0.7rem);
+    padding: 0.1rem 0.4rem;
+  }
 `;
 
 // Date text (slightly muted)
@@ -1782,6 +2012,11 @@ const CardDate = styled.span`
   
   @media (max-width: 1200px) {
     font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.55rem, 1.8vw, 0.65rem);
   }
 `;
 
@@ -1869,6 +2104,11 @@ const UniversityName = styled.p`
   @media (max-width: 1200px) {
     font-size: clamp(0.65rem, 0.8vw, 0.75rem);
   }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.6rem, 2vw, 0.7rem);
+  }
 `;
 
 // Info row with duration and GPA
@@ -1940,6 +2180,11 @@ const GPAText = styled.span`
   
   @media (max-width: 1200px) {
     font-size: clamp(0.85rem, 1vw, 0.95rem);
+  }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
   }
 `;
 
@@ -2048,8 +2293,12 @@ const ClubName = styled.span`
     @media (max-width: 1200px) {
     font-size: clamp(0.6rem, 0.7vw, 0.65rem);
     }
+  
+  /* mobile */
+  @media (max-width: 768px) {
+    font-size: clamp(0.55rem, 1.8vw, 0.65rem);
+  }
 `;
-
 /* ================= Footer Styles (integrated into About) ================= */
 
 // Top wave - smooth wave pattern at the top of SandPlane for rugged transition
@@ -2078,6 +2327,12 @@ const TopWave = styled.svg`
         height: 80px;
         top: -80px;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        height: 50px;
+        top: -40px;
+    }
 `;
 
 // Sand plane - natural content flow component (like a paragraph block)
@@ -2090,11 +2345,11 @@ const SandPlane = styled.div`
 
     background: linear-gradient(
         to bottom,
-        #7b654d 0%,
-        #8a7157 20%,
-        #9a7f61 40%,
-        #b39873 70%,
-        #c2a680 100%
+        #5d4a3a 0%,
+        #6a5644 20%,
+        #74604d 40%,
+        #8a7358 70%,
+        #958066 100%
     );
 
     &::before {
@@ -2200,6 +2455,12 @@ const SandPlane = styled.div`
         mix-blend-mode: soft-light;
         pointer-events: none;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        height: 10vh;
+        min-height: 100px;
+    }
 `;
 
 // Rock pile component - positioned relative to SandPlane
@@ -2217,6 +2478,32 @@ const UnderwaterObject = styled.div`
     img {
         pointer-events: auto;
         display: block;
+        width: auto;
+        height: auto;
+    }
+    
+    /* Desktop default sizes */
+    @media (min-width: 769px) {
+        img {
+            width: clamp(180px, 12vw, 360px);
+            height: clamp(180px, 12vw, 360px);
+            max-width: 360px;
+            max-height: 360px;
+        }
+        
+        /* Rockpile images - larger size */
+        img.rockpile-image {
+            width: clamp(280px, 18vw, 360px);
+            height: clamp(280px, 18vw, 360px);
+            max-width: 360px;
+            max-height: 360px;
+        }
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        /* Hide all underwater objects on mobile */
+        display: none;
     }
 `;
 
@@ -2229,6 +2516,12 @@ const SandTextLayer = styled.div`
     pointer-events: none;
     height: 30vh;
     z-index: 15;               /* above sand, below rocks */
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        /* Hide decorative text on mobile */
+        display: none;
+    }
 `;
 
 /* Reusable engraved sand text */
@@ -2238,6 +2531,19 @@ const SandText = styled.div`
     letter-spacing: 0.04em;
     color: var(--sand-dark);
     text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.2);
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        &.contact-text {
+            font-size: clamp(1.2rem, 5.5vw, 1.6rem) !important;
+            top: 70% !important; /* Move down a bit */
+        }
+        
+        &.moon-text {
+            font-size: clamp(0.9rem, 4vw, 1.2rem) !important;
+            top: 45% !important; /* Move down a bit */
+        }
+    }
 `;
 
 /* "Drawn in sand" icons */
@@ -2245,6 +2551,25 @@ const SandIconWrap = styled.div`
     position: absolute;
     transform: translateX(-50%);
     pointer-events: none;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        svg {
+            width: clamp(24px, 6vw, 30px) !important;
+            height: clamp(24px, 6vw, 30px) !important;
+        }
+        
+        /* Space out the icons from the text */
+        &:nth-of-type(1) {
+            left: 20% !important; /* Left icon - move left */
+            top: 75% !important; /* Move down */
+        }
+        
+        &:nth-of-type(2) {
+            left: 80% !important; /* Right icon - move right */
+            top: 75% !important; /* Move down */
+        }
+    }
 `;
 
 const SandIcon = styled.svg`
@@ -2274,8 +2599,20 @@ const RocketContainer = styled.div`
     transform: translateX(-50%);  /* Center horizontally */
     transition: transform 0.3s ease;
     
+    img {
+        display: block;
+        width: 250px;
+        height: 250px;
+    }
+    
     &:hover {
         transform: translateX(-50%) translateY(-15px);  /* Maintain centering on hover */
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        /* Hide rocket on mobile */
+        display: none;
     }
 `;
 
@@ -2295,6 +2632,14 @@ const MadeWithLoveContainer = styled.div`
     @media (max-width: 1200px) {
         font-size: 1.5rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+        bottom: 0.5rem;
+        left: 1rem;
+        right: auto;
+    }
 `;
 
 // Heart emoji - stands up straight without sand effect
@@ -2310,6 +2655,11 @@ const HeartEmoji = styled.span`
     
     @media (max-width: 1200px) {
         font-size: 1.5rem;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
     }
 `;
 
@@ -2329,6 +2679,169 @@ const CopyrightContainer = styled.div`
     @media (max-width: 1200px) {
         font-size: 1rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.65rem, 2.2vw, 0.8rem);
+        bottom: 0.5rem;
+        right: 1rem;
+        left: auto;
+    }
 `;
 
+// Mobile Footer Container - Simple contact info and scroll button
+const MobileFooterContainer = styled.div`
+    display: none; /* Hidden on desktop */
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 320px;
+        z-index: 40;
+        pointer-events: auto;
+        margin-bottom: 1.25rem;
+    }
+`;
 
+// Mobile Contact Row - Email and Phone side by side
+const MobileContactRow = styled.div`
+    display: none; /* Hidden on desktop */
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        width: 100%;
+    }
+`;
+
+// Mobile Contact Item - Email and Phone
+const MobileContactItem = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    min-width: 0; /* Allow flex items to shrink below content size */
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+`;
+
+// Mobile Contact Icon
+const MobileContactIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.98);
+    flex-shrink: 0;
+    
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+`;
+
+// Mobile Contact Text (link)
+const MobileContactText = styled.a`
+    color: rgba(255, 255, 255, 0.98);
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.15px;
+    flex: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    &:hover {
+        color: rgba(255, 255, 255, 1);
+        text-decoration: none;
+    }
+    
+    &:active {
+        opacity: 0.8;
+    }
+`;
+
+// Mobile Scroll Button
+const MobileScrollButton = styled.button`
+    font: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: auto;
+    min-width: 120px;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.98);
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.25rem;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+`;
+
+// Mobile Scroll Icon
+const MobileScrollIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.98);
+    
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+`;
+
+// Mobile Scroll Text
+const MobileScrollText = styled.span`
+    color: rgba(255, 255, 255, 0.98);
+    font-weight: 700;
+`;

@@ -198,6 +198,15 @@ const HeroContainer = styled.div`
     position: relative;
     padding-top: 1rem;
     
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        padding-top: 0.5rem;
+    }
+    
+    @media (max-width: 480px) {
+        padding-top: 0.25rem;
+    }
+    
     /* Performance optimizations - isolate Hero from layout shifts below */
     contain: layout style paint;
     transform: translateZ(0); /* Force GPU layer */
@@ -460,6 +469,21 @@ const Moon = styled.div`
     /* spacing */
     width: 80px;
     height: 80px;
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        width: 60px;
+        height: 60px;
+        top: 12%;
+        right: 15%;
+    }
+    
+    @media (max-width: 480px) {
+        width: 45px;
+        height: 45px;
+        top: 10%;
+        right: 10%;
+    }
 
     /* styles */
     border-radius: 50%;
@@ -523,6 +547,17 @@ const Astronaut = styled.div`
     /* spacing */
     width: 90px;
     height: 90px;
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        width: 70px;
+        height: 70px;
+    }
+    
+    @media (max-width: 480px) {
+        width: 55px;
+        height: 55px;
+    }
 
     /* styles */
     animation-delay: 6s;
@@ -576,6 +611,17 @@ const UFO = styled.div`
     /* spacing */
     width: 70px;
     height: 70px;
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        width: 55px;
+        height: 55px;
+    }
+    
+    @media (max-width: 480px) {
+        width: 45px;
+        height: 45px;
+    }
 
     /* styles */
     animation-delay: 8s;
@@ -645,6 +691,15 @@ const Msgs = styled.div`
     /* spacing */
     gap: 0;
     padding: 6rem 4rem;
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        padding: 5rem 2rem 4rem 2rem;
+    }
+    
+    @media (max-width: 480px) {
+        padding: 4.5rem 1.5rem 3rem 1.5rem;
+    }
 `;
 
 // my first message floating in "What's up!"
@@ -667,6 +722,14 @@ const SupMsg = styled(motion.div)`
 
     @media (max-width: 1600px) { 
         font-size: 3rem; 
+    }
+    
+    @media (max-width: 768px) {
+        font-size: 2.5rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 2rem;
     }
 `;
 
@@ -711,6 +774,14 @@ const IntroNameMsg = styled(motion.div)`
     @media (max-width: 1600px) { 
         font-size: 2rem; 
     }
+    
+    @media (max-width: 768px) {
+        font-size: 1.5rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 1.25rem;
+    }
 `;
 
 // my name!
@@ -734,6 +805,20 @@ const NameRow = styled(motion.div)`
     }
     @media (max-width: 1599px) { 
         font-size: 16rem; 
+    }
+    
+    @media (max-width: 768px) {
+        font-size: 10rem;
+        left: 0;
+        margin-top: -1rem;
+        margin-bottom: -0.5rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 7rem;
+        left: 0;
+        margin-top: -0.5rem;
+        margin-bottom: 0;
     }
 `;
 
@@ -796,6 +881,16 @@ const SubNameMsg = styled(motion.div)`
     @media (max-width: 1600px) { 
         font-size: 2.25rem; 
     }
+    
+    @media (max-width: 768px) {
+        font-size: 1.5rem;
+        margin-top: -1rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 1.1rem;
+        margin-top: -0.5rem;
+    }
 `;
 
 // scroll invitation message.
@@ -833,6 +928,14 @@ const ScrollText = styled.div`
     @media (max-width: 1600px) { 
         font-size: 1.5rem; 
     }
+    
+    @media (max-width: 768px) {
+        font-size: 1.1rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 0.95rem;
+    }
 `;
 
 // navigation pills container.
@@ -847,6 +950,21 @@ const NavPills = styled(motion.div)`
     margin: 1rem auto 0;
     width: min(80vw, 680px);
     text-align: center;
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        gap: 1rem;
+        width: min(90vw, 500px);
+        margin: 0.75rem auto 0;
+    }
+    
+    @media (max-width: 480px) {
+        /* Stack pills vertically on mobile */
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        width: 85vw;
+        margin: 0.5rem auto 0;
+    }
 `;
 
 // Base navigation pill styles - shared between variants
@@ -863,6 +981,17 @@ const NavPillBase = styled.button`
     /* spacing */
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        padding: 0.65rem 1.25rem;
+        gap: 0.4rem;
+    }
+    
+    @media (max-width: 480px) {
+        padding: 0.6rem 1rem;
+        gap: 0.35rem;
+    }
 
     /* styles */
     cursor: pointer;
@@ -1027,6 +1156,15 @@ const NavPillText = styled.span`
     font-family: inherit;
     font-weight: 500;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        font-size: 0.9rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 0.8rem;
+    }
 `;
 
 // pill icon.
@@ -1038,6 +1176,15 @@ const NavPillIcon = styled.span`
     /* styles */
     font-size: 1.2rem;
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        font-size: 1.1rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 1rem;
+    }
 `;
 
 // arrow text. ("scroll to explore")
@@ -1052,6 +1199,19 @@ const ArrowText = styled.div`
     font-style: italic;
     transition: opacity 0.3s ease;
     color: rgba(255, 255, 255, 0.6);
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        font-size: 0.8rem;
+        margin-top: 0.4rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    @media (max-width: 480px) {
+        font-size: 0.75rem;
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
+    }
 `;
 
 // arrow container.
@@ -1060,6 +1220,17 @@ const ArrowIcon = styled.div`
     position: relative;
     width: 40px;
     height: 60px;
+    
+    /* mobile media queries */
+    @media (max-width: 768px) {
+        width: 35px;
+        height: 50px;
+    }
+    
+    @media (max-width: 480px) {
+        width: 30px;
+        height: 45px;
+    }
 `;
 
 // svg for arrow, constellation style.

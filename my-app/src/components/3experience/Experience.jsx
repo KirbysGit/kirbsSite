@@ -370,6 +370,13 @@ const ExperienceContainer = styled.div`
 
     /* spacing */
     padding: 4rem 2rem;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 2rem 1rem;
+        min-height: auto;
+        overflow: visible; /* Ensure card isn't clipped by container */
+    }
 
     /* styles */
     background: linear-gradient(
@@ -453,6 +460,12 @@ const ContentWrapper = styled.div`
         padding: 1.5rem;
         max-width: 1200px;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 0.5rem 0.5rem;
+        max-width: 100%;
+    }
 `;
 
 // section title w/ the gradient text.
@@ -478,6 +491,13 @@ const SectionTitle = styled.h1`
         /* styles */
         font-size: 3.6rem;
         /* spacing */
+        margin-bottom: 0.25rem;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
+        margin-top: 0.5rem;
         margin-bottom: 0.25rem;
     }
 `;
@@ -509,6 +529,13 @@ const SectionSubtitle = styled.div`
         /* spacing */
         margin-top: 0.5rem;
         margin-bottom: 1.25rem;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.95rem, 3vw, 1.15rem);
+        margin-top: 0.25rem;
+        margin-bottom: 0.75rem;
     }
 `;
 
@@ -570,6 +597,17 @@ const Stage = styled.div`
         padding: 20px 0 60px 0;
         min-height: 60vh;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 0.5rem 0 1rem 0;
+        min-height: auto;
+        height: auto;
+        max-width: 100%;
+        overflow: visible !important;
+        contain: none;
+        display: block;
+    }
 `;
 
 // track - holds the slides.
@@ -610,6 +648,19 @@ const Track = styled.div`
         width: 75vw;
         /* spacing */
         height: clamp(500px, 60vh, 700px);
+    }
+    
+    /* mobile - size to biggest card, all cards at same position */
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        min-height: auto;
+        overflow: visible !important;
+        contain: none;
+        display: block;
+        position: relative;
+        perspective: none;
     }
 `;
 
@@ -680,6 +731,45 @@ const Slide = styled.div`
     @media (max-width: 1200px) {
         ${({ $distance, $position }) => $distance === 1 && `
             transform: translateX(${$position > 0 ? '30%' : '-30%'}) scale(0.8) translateZ(-30px);
+        `}
+    }
+    
+    /* mobile - all cards at same position, only focused visible */
+    @media (max-width: 768px) {
+        /* Reset all positioning and sizing */
+        height: auto !important;
+        min-height: auto !important;
+        width: 100%;
+        overflow: visible;
+        
+        /* Reset all transforms and filters */
+        scale: 1 !important;
+        filter: none !important;
+        
+        ${({ $isFocused }) => !$isFocused && `
+            opacity: 0 !important;
+            visibility: hidden;
+            pointer-events: none;
+            position: absolute !important;
+            left: 50% !important;
+            top: 0 !important;
+            transform: translateX(-50%) !important;
+        `}
+        
+        ${({ $isFocused }) => $isFocused && `
+            opacity: 1 !important;
+            visibility: visible;
+            z-index: 100;
+            pointer-events: auto;
+            contain: none;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            transform: none !important;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 0 auto;
         `}
     }
 `;
@@ -776,6 +866,14 @@ const ExperienceCard = styled.div`
         width: 100%;
         max-width: 400px;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        width: 90%;
+        max-width: 340px;
+        padding: 1.25rem 1.25rem 0.5rem 1.25rem;
+        margin: 0 auto;
+    }
 `;
 
 // card sections - header, body, and footer.
@@ -836,6 +934,11 @@ const CompanyName = styled.h3`
         /* styles */
         font-size: 2.2rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+    }
 `;
 
 // date range - how long i worked there.
@@ -851,6 +954,11 @@ const DateRange = styled.span`
     @media (max-width: 1600px) {
         /* styles */
         font-size: 0.9rem;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.75rem, 2.5vw, 0.85rem);
     }
 `;
 
@@ -961,6 +1069,11 @@ const JobTitle = styled.div`
     @media (max-width: 1600px) {
         font-size: 1.1rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.95rem, 3vw, 1.1rem);
+    }
 `;
 
 // project description - the description of the project.
@@ -975,6 +1088,12 @@ const ProjectDescription = styled.p`
     @media (max-width: 1600px) {
     font-size: 0.9rem;
         line-height: 1.45;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        line-height: 1.5;
     }
 `;
 
@@ -1096,6 +1215,12 @@ const AchievementText = styled.p`
         /* styles */
         font-size: 0.85rem;
         line-height: 1.45;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.8rem, 2.5vw, 0.85rem);
+        line-height: 1.5;
     }
 `;
 
@@ -1226,6 +1351,12 @@ const TechConnectionText = styled.p`
         font-size: 0.85rem;
         line-height: 1.45;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.8rem, 2.5vw, 0.85rem);
+        line-height: 1.5;
+    }
 `;
 
 /* ========== skills carousel ========== */
@@ -1278,6 +1409,13 @@ const RowLabel = styled.div`
         letter-spacing: 0.4px;
         /* spacing */
         min-width: 62px;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.65rem, 2vw, 0.7rem);
+        min-width: 55px;
+        letter-spacing: 0.3px;
     }
 `;
 
@@ -1452,6 +1590,13 @@ const SkillPill = styled.div`
         padding: 0.35rem 0.7rem;
         font-size: 0.75rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 0.3rem 0.6rem;
+        font-size: clamp(0.7rem, 2vw, 0.75rem);
+        gap: 0.4rem;
+    }
 `;
 
 const SkillPillIcon = styled.img`
@@ -1470,6 +1615,12 @@ const SkillPillIcon = styled.img`
     @media (max-width: 1600px) {
         width: 0.95rem;
         height: 0.95rem;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        width: clamp(0.85rem, 2vw, 0.95rem);
+        height: clamp(0.85rem, 2vw, 0.95rem);
     }
 
     ${SkillPill}:hover & {
@@ -1491,6 +1642,12 @@ const SkillPillName = styled.span`
         /* styles */
         font-size: 0.75rem;
         letter-spacing: 0.25px;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.7rem, 2vw, 0.75rem);
+        letter-spacing: 0.2px;
     }
 `;
 
@@ -1566,6 +1723,14 @@ const ServiceExperienceCard = styled.div`
         /* spacing */
         max-width: 400px;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        width: 90%;
+        max-width: 340px;
+        padding: 1.5rem 1.25rem 0.5rem 1.25rem;
+        margin: 0 auto;
+    }
 `;
 
 /* ========== nav arrows ========== */
@@ -1628,11 +1793,24 @@ const ArrowBase = styled.button`
         /* styles */
         transform: translateY(-50%) scale(0.95);
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
+        border-radius: 12px;
+    }
 `;
 
 const ArrowLeft = styled(ArrowBase)`
     /* layout */
     left: max(12px, 4vw);
+    
+    /* mobile - position relative to centered card */
+    @media (max-width: 768px) {
+        left: calc(50% - 170px - 60px); /* Center minus half card width (340px/2) minus arrow width and gap */
+    }
 
     /* styles */
     animation: ${leftBounce} 2s ease-in-out infinite;
@@ -1642,6 +1820,12 @@ const ArrowLeft = styled(ArrowBase)`
 const ArrowRight = styled(ArrowBase)`
     /* layout */
     right: max(12px, 4vw);
+    
+    /* mobile - position relative to centered card */
+    @media (max-width: 768px) {
+        right: auto;
+        left: calc(50% + 170px + 12px); /* Center plus half card width (340px/2) plus gap */
+    }
 
     /* styles */
     animation: ${rightBounce} 2s ease-in-out infinite;
@@ -1707,6 +1891,14 @@ const HireCard = styled.div`
         /* spacing */
         padding: 1rem 1rem 0.9rem 1rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        width: 90%;
+        max-width: 320px;
+        padding: 1rem 0.9rem 0.8rem 0.9rem;
+        margin: 0 auto;
+    }
 `;
 
 const HireHeader = styled.div`
@@ -1739,12 +1931,22 @@ const HireTitle = styled.h3`
         /* styles */
         font-size: 1.5rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(1.3rem, 5vw, 1.5rem);
+    }
 `;
 
 const HireSubtitle = styled.div`
     /* styles */
     font-size: 0.95rem;
     color: rgba(255,255,255,0.78);
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
 `;
 
 const HireBody = styled.div`
@@ -1765,6 +1967,12 @@ const HireBlurb = styled.p`
     color: rgba(255,255,255,0.9);
     font-size: 0.9rem;
     line-height: 1.6;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        line-height: 1.5;
+    }
 `;
 
 const HireActions = styled.div`
@@ -1813,6 +2021,12 @@ const HireButton = styled.button`
         border-color: rgba(200, 180, 255, 0.9);
         box-shadow: 0 10px 24px rgba(180, 160, 255, 0.4);
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 0.55rem 0.85rem;
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
 `;
 
 const HireReach = styled.div`
@@ -1820,6 +2034,11 @@ const HireReach = styled.div`
     letter-spacing: 0.3px;
     color: rgba(230, 220, 255, 0.9);
     font-size: 0.85rem;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+    }
 `;
 
 // Email row container for email button and copy button
@@ -1830,6 +2049,12 @@ const EmailRow = styled.div`
     gap: 0.5rem;
     width: 100%;
     justify-content: center;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
 `;
 
 // Copy button
@@ -1872,6 +2097,14 @@ const CopyButton = styled.button`
     justify-content: center;
     min-width: 44px;
     height: 44px;
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        min-width: 40px;
+        height: 40px;
+        padding: 0.55rem 0.75rem;
+        font-size: 1rem;
+    }
 `;
 
 // Icon wrapper for checkmark animation

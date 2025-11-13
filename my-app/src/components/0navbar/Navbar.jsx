@@ -435,6 +435,12 @@ const TopNavbarContent = styled.div`
   @media (max-width: 1600px) {
     padding: 0.875rem 1.5rem;
   }
+  
+  @media (max-width: 900px) {
+    padding: 0.875rem 1rem;
+    /* On mobile, hide logo and center nav buttons */
+    justify-content: center;
+  }
 `;
 
 // Logo Container
@@ -449,6 +455,10 @@ const LogoContainer = styled.div`
   @media (max-width: 1600px) {
     left: 1.5rem;
     height: 40px;
+  }
+  
+  @media (max-width: 900px) {
+    display: none; /* Hide logo on mobile */
   }
 `;
 
@@ -553,6 +563,10 @@ const NavButtonsContainer = styled.div`
 
   @media (max-width: 900px) {
     gap: 0.5rem;
+    /* Center on mobile since logo is hidden */
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
   }
 `;
 
@@ -590,9 +604,14 @@ const NavButtonBase = styled.button`
   }
 
   @media (max-width: 900px) {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    gap: 0.375rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+    gap: 0.3rem;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    justify-content: center;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -710,7 +729,7 @@ const NavButtonIcon = styled.span`
   position: relative;
   
   @media (max-width: 900px) {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 `;
 
@@ -1049,6 +1068,11 @@ const SideNavbarWrapper = styled.div`
   /* When collapsed, slide mostly off-screen but leave a portion visible (empty pill appearance) */
   /* Leave about 30% of the pill visible (the right side) */
   transform: translateY(-50%) translateX(${props => props.$isCollapsed ? 'calc(-70% - 1.5rem)' : '0'});
+  
+  /* Hide side navbar on mobile (below 1000px) */
+  @media (max-width: 1000px) {
+    display: none;
+  }
   
   @media (max-width: 900px) {
     left: 1rem;

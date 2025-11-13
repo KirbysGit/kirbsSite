@@ -232,6 +232,13 @@ const ProjectsContainer = styled.div`
             #6eb0f2 100%  /* darker blue matching Skills start rgb(71, 160, 238) */
         );
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 2rem 1rem;
+        min-height: auto;
+        overflow: visible;
+    }
 `;
 
 // atmosphere layer for the visual elements. (sun & clouds)
@@ -359,6 +366,12 @@ const ContentWrapper = styled.div`
     @media (max-width: 1200px) {
         padding: 1rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 0.5rem 0.5rem;
+        max-width: 100%;
+    }
 `;
 
 // section title w/ the gradient text.
@@ -384,6 +397,11 @@ const SectionTitle = styled.div`
     /* media queries */
     @media (max-width: 1600px) {
         font-size: 3.6rem;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
     }
 `;
 
@@ -419,6 +437,13 @@ const SectionSubtitle = styled.h2`
         font-size: 1.1rem;
         margin-bottom: 3.5rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        font-size: clamp(0.95rem, 3vw, 1.15rem);
+        margin-top: 0.25rem;
+        margin-bottom: 0.75rem;
+    }
 `;
 
 // stage for the cards to be displayed.
@@ -452,6 +477,17 @@ const Stage = styled.div`
     @media (max-width: 1200px) {
         min-height: 56vh;
         padding: 20px 0;
+    }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        padding: 0.5rem 0 1rem 0;
+        min-height: auto;
+        height: auto;
+        max-width: 100%;
+        overflow: visible !important;
+        contain: none;
+        display: block;
     }
 `;
 
@@ -489,6 +525,19 @@ const Track = styled.div`
     @media (max-width: 900px) {
         width: 85vw;
         height: clamp(400px, 50vh, 580px);
+    }
+    
+    /* mobile - size to biggest card, all cards at same position */
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        min-height: auto;
+        overflow: visible !important;
+        contain: none;
+        display: block;
+        position: relative;
+        perspective: none;
     }
 `;
 
@@ -557,6 +606,45 @@ const Slide = styled.div`
     @media (max-width: 820px) {
         ${({ $distance, $position }) => $distance === 1 && `
             transform: translateX(${$position > 0 ? '25%' : '-25%'}) scale(0.85) translateZ(-30px);
+        `}
+    }
+    
+    /* mobile - all cards at same position, only focused visible */
+    @media (max-width: 768px) {
+        /* Reset all positioning and sizing */
+        height: auto !important;
+        min-height: auto !important;
+        width: 100%;
+        overflow: visible;
+        
+        /* Reset all transforms and filters */
+        scale: 1 !important;
+        filter: none !important;
+        
+        ${({ $isFocused }) => !$isFocused && `
+            opacity: 0 !important;
+            visibility: hidden;
+            pointer-events: none;
+            position: absolute !important;
+            left: 50% !important;
+            top: 0 !important;
+            transform: translateX(-50%) !important;
+        `}
+        
+        ${({ $isFocused }) => $isFocused && `
+            opacity: 1 !important;
+            visibility: visible;
+            z-index: 100;
+            pointer-events: auto;
+            contain: none;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            transform: none !important;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 0 auto;
         `}
     }
 `;
@@ -647,6 +735,15 @@ const ArrowLeft = styled(ArrowBase)`
     /* layout */
     left: max(12px, 4vw);
     
+    /* mobile - position relative to centered card */
+    @media (max-width: 768px) {
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
+        border-radius: 12px;
+        left: calc(50% - 170px - 60px); /* Center minus half card width (340px/2) minus arrow width and gap */
+    }
+    
     /* styles */
     animation: ${leftBounce} 2s ease-in-out infinite;
     animation-delay: 0.5s;
@@ -656,6 +753,16 @@ const ArrowLeft = styled(ArrowBase)`
 const ArrowRight = styled(ArrowBase)`
     /* layout */
     right: max(12px, 4vw);
+    
+    /* mobile - position relative to centered card */
+    @media (max-width: 768px) {
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
+        border-radius: 12px;
+        right: auto;
+        left: calc(50% + 170px + 12px); /* Center plus half card width (340px/2) plus gap */
+    }
     
     /* styles */
     animation: ${rightBounce} 2s ease-in-out infinite;

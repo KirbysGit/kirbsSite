@@ -99,6 +99,15 @@ const ProjectCard = styled.div`
         min-height: 450px;
         padding: 1.4rem 1rem;
     }
+    
+    /* mobile */
+    @media (max-width: 768px) {
+        width: 90%;
+        max-width: 340px;
+        min-height: auto;
+        padding: 1.25rem 1.25rem 0.5rem 1.25rem;
+        margin: 0 auto;
+    }
 `;
 
 /* ================= header area ================= */
