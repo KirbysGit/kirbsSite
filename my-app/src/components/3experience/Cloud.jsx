@@ -4,7 +4,7 @@
 
 // imports.
 import React, { memo } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 // import cloud images.
 import cloud1 from '@/images/3experience/clouds/cloud1.png';
@@ -23,7 +23,7 @@ const cloudImages = {
 };
 
 // main cloud component with parallax layers.
-const Cloud = memo(({ top, delay, duration, layer = 'mid', type = 1, direction = 'left' }) => {
+const Cloud = memo(({ top, delay, duration, layer = 'mid', type = 1, direction = 'left', isInViewport = true, isSlowDevice = false }) => {
     return (
         <CloudContainer 
             $top={top} 
@@ -31,12 +31,18 @@ const Cloud = memo(({ top, delay, duration, layer = 'mid', type = 1, direction =
             $duration={duration}
             $layer={layer}
             $direction={direction}
+            $isInViewport={isInViewport}
+            $isSlowDevice={isSlowDevice}
         >
             <CloudImage 
                 src={cloudImages[type]} 
                 alt="cloud"
                 $layer={layer}
                 $delay={delay}
+                $isInViewport={isInViewport}
+                $isSlowDevice={isSlowDevice}
+                loading="lazy"
+                decoding="async"
             />
         </CloudContainer>
     );
@@ -126,9 +132,17 @@ const CloudContainer = styled.div`
     }};
     
     /* main horizontal drift animation - depends on direction */
-    animation: 
-        ${props => props.$direction === 'left' ? horizontalDriftLeft : horizontalDriftRight} ${props => props.$duration}s linear ${props => props.$delay}s infinite,
-        ${fadeInOut} ${props => props.$duration}s linear ${props => props.$delay}s infinite;
+    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    ${props => props.$isInViewport 
+      ? css`
+          animation: 
+            ${props.$direction === 'left' ? horizontalDriftLeft : horizontalDriftRight} ${props.$duration * (props.$isSlowDevice ? 1.3 : 1)}s linear ${props.$delay}s infinite,
+            ${fadeInOut} ${props.$duration * (props.$isSlowDevice ? 1.3 : 1)}s linear ${props.$delay}s infinite;
+        `
+      : css`animation: none;`}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
+    transform: translateZ(0);
 `;
 
 // cloud image - handles our vertical float, scale breathing, and opacity drift.
@@ -158,42 +172,64 @@ const CloudImage = styled.img`
     -o-user-drag: none;
     user-drag: none;
     
-    /* add subtle blur for more realism */
+    /* add subtle blur for more realism - reduced on slow devices */
     filter: blur(${props => {
-        switch(props.$layer) {
-            case 'far': return '1.5px';
-            case 'mid': return '0.8px';
-            case 'near': return '0.5px';
-            default: return '0.8px';
-        }
+        const baseBlur = {
+            'far': props.$isSlowDevice ? '1px' : '1.5px',
+            'mid': props.$isSlowDevice ? '0.5px' : '0.8px',
+            'near': props.$isSlowDevice ? '0.3px' : '0.5px',
+            'default': props.$isSlowDevice ? '0.5px' : '0.8px'
+        };
+        return baseBlur[props.$layer] || baseBlur.default;
     }});
     
-    /* apply all secondary animations. */
-    animation: 
-        ${verticalFloat} ${props => {
-            switch(props.$layer) {
-                case 'far': return '8s';
-                case 'mid': return '7s';
-                case 'near': return '6s';
-                default: return '7s';
-            }
-        }} ease-in-out ${props => props.$delay * 0.3}s infinite,
-        ${scaleBreathing} ${props => {
-            switch(props.$layer) {
-                case 'far': return '12s';
-                case 'mid': return '10s';
-                case 'near': return '9s';
-                default: return '10s';
-            }
-        }} ease-in-out ${props => props.$delay * 0.5}s infinite,
-        ${opacityDrift} ${props => {
-            switch(props.$layer) {
-                case 'far': return '25s';
-                case 'mid': return '22s';
-                case 'near': return '20s';
-                default: return '22s';
-            }
-        }} ease-in-out ${props => props.$delay * 0.7}s infinite;
+    /* GPU acceleration */
+    transform: translateZ(0);
+    
+    /* apply secondary animations - reduced complexity on slow devices */
+    ${props => {
+        if (!props.$isInViewport) {
+            return css`animation: none;`;
+        }
+        
+        const floatDuration = {
+            'far': props.$isSlowDevice ? '10s' : '8s',
+            'mid': props.$isSlowDevice ? '9s' : '7s',
+            'near': props.$isSlowDevice ? '8s' : '6s',
+            'default': props.$isSlowDevice ? '9s' : '7s'
+        };
+        const duration = floatDuration[props.$layer] || floatDuration.default;
+        
+        // On slow devices, only use vertical float (remove scale breathing and opacity drift)
+        if (props.$isSlowDevice) {
+            return css`
+                animation: ${verticalFloat} ${duration} ease-in-out ${props.$delay * 0.3}s infinite;
+            `;
+        }
+        
+        // Fast devices: all animations
+        const scaleDuration = {
+            'far': '12s',
+            'mid': '10s',
+            'near': '9s',
+            'default': '10s'
+        };
+        const opacityDuration = {
+            'far': '25s',
+            'mid': '22s',
+            'near': '20s',
+            'default': '22s'
+        };
+        
+        return css`
+            animation: 
+                ${verticalFloat} ${duration} ease-in-out ${props.$delay * 0.3}s infinite,
+                ${scaleBreathing} ${scaleDuration[props.$layer] || scaleDuration.default} ease-in-out ${props.$delay * 0.5}s infinite,
+                ${opacityDrift} ${opacityDuration[props.$layer] || opacityDuration.default} ease-in-out ${props.$delay * 0.7}s infinite;
+        `;
+    }}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
 `;
 
 // export component.

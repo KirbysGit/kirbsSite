@@ -1,5 +1,5 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useState, useEffect, useRef } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 import meImage from '@/images/5about/me.jpg';
 import shpeLogo from '@/images/5about/shpe.png';
@@ -30,6 +30,46 @@ const Background = () => {
     // Performance monitoring
     useComponentPerformance('About', process.env.NODE_ENV === 'development');
 
+    // Animation throttling state
+    const [isInViewport, setIsInViewport] = useState(false);
+    const [isSlowDevice, setIsSlowDevice] = useState(false);
+    const sectionRef = useRef(null);
+
+    // Detect slower devices
+    useEffect(() => {
+        // Check hardware concurrency (CPU cores)
+        const cores = navigator.hardwareConcurrency || 4;
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // Consider devices with < 4 cores or reduced motion as slower
+        setIsSlowDevice(cores < 4 || prefersReducedMotion);
+    }, []);
+
+    // IntersectionObserver to detect when section is in viewport
+    useEffect(() => {
+        const section = sectionRef.current;
+        if (!section) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    // Section is in viewport if at least 10% is visible
+                    setIsInViewport(entry.isIntersecting && entry.intersectionRatio > 0.1);
+                });
+            },
+            {
+                threshold: [0, 0.1, 0.5, 1],
+                rootMargin: '100px' // Start loading animations slightly before entering viewport
+            }
+        );
+
+        observer.observe(section);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, []);
+
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -38,18 +78,35 @@ const Background = () => {
     };
 
     return (
-        <BackgroundContainer id="about" data-section-snap>
+        <BackgroundContainer 
+            id="about" 
+            data-section-snap
+            ref={sectionRef}
+            $isInViewport={isInViewport}
+            $isSlowDevice={isSlowDevice}
+        >
             {/* Surface water layer - connects to Skills ocean wall */}
-            <SurfaceWater>
+            <SurfaceWater $isInViewport={isInViewport} $isSlowDevice={isSlowDevice}>
                 <SurfaceRippleLayer />
             </SurfaceWater>
             
             {/* Unified underwater section - continuous gradient from shallow to deep */}
-            <UnderwaterSection>
+            <UnderwaterSection $isInViewport={isInViewport} $isSlowDevice={isSlowDevice}>
                 {/* Underwater header */}
                 <UnderwaterHeader>
-                    <HeaderTitle data-snap-title>About Me</HeaderTitle>
-                    <HeaderSubtitle>Dive into my background</HeaderSubtitle>
+                    <HeaderTitle 
+                        data-snap-title
+                        $isInViewport={isInViewport}
+                        $isSlowDevice={isSlowDevice}
+                    >
+                        About Me
+                    </HeaderTitle>
+                    <HeaderSubtitle 
+                        $isInViewport={isInViewport}
+                        $isSlowDevice={isSlowDevice}
+                    >
+                        Dive into my background
+                    </HeaderSubtitle>
                 </UnderwaterHeader>
                 
                 {/* Profile section with image and info cards */}
@@ -67,6 +124,8 @@ const Background = () => {
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 $delay={0}
+                                $isInViewport={isInViewport}
+                                $isSlowDevice={isSlowDevice}
                                 aria-label="LinkedIn Profile"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -79,6 +138,8 @@ const Background = () => {
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 $delay={0.5}
+                                $isInViewport={isInViewport}
+                                $isSlowDevice={isSlowDevice}
                                 aria-label="GitHub Profile"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -91,6 +152,8 @@ const Background = () => {
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 $delay={1}
+                                $isInViewport={isInViewport}
+                                $isSlowDevice={isSlowDevice}
                                 aria-label="Instagram Profile"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -99,10 +162,12 @@ const Background = () => {
                             </SocialBubble>
                             
                             <SocialBubble 
-                                href="/resume.pdf" 
+                                href="/my_resume.pdf" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 $delay={1.5}
+                                $isInViewport={isInViewport}
+                                $isSlowDevice={isSlowDevice}
                                 aria-label="Download Resume"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -417,47 +482,115 @@ const Background = () => {
                 </SandTextLayer>
 
                 <UnderwaterObject style={{ bottom: '57%', left: '1%' }}>
-                    <img src={rockwithseaweed} alt="Rock with Seaweed" />
+                    <img 
+                        src={rockwithseaweed} 
+                        alt="Rock with Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '43%', left: '5%' }}>
-                    <img src={tallrock} alt="Tall Rock" />
+                    <img 
+                        src={tallrock} 
+                        alt="Tall Rock" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', left: '-8%' }}>
-                    <img className="rockpile-image" style={{ transform: 'scaleX(-1)' }} src={rockpileImage} alt="Rockpile" />
+                    <img 
+                        className="rockpile-image" 
+                        style={{ transform: 'scaleX(-1)' }} 
+                        src={rockpileImage} 
+                        alt="Rockpile" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(280px, 18vw, 360px)"
+                    />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '25%', left: '-2%' }}>
-                    <img src={seaweed} alt="Seaweed" />
+                    <img 
+                        src={seaweed} 
+                        alt="Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '31%', left: '3%' }}>
-                    <img src={seaweed2} alt="Seaweed" />
+                    <img 
+                        src={seaweed2} 
+                        alt="Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '34%', left: '7%' }}>
-                    <img src={seaweed3} alt="Seaweed" />
+                    <img 
+                        src={seaweed3} 
+                        alt="Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', left: '16%' }}>
-                    <img src={yellowcoral} alt="Yellow Coral" />
+                    <img 
+                        src={yellowcoral} 
+                        alt="Yellow Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', left: '12%' }}>
-                    <img src={pinkcoral} alt="Pink Coral" />
+                    <img 
+                        src={pinkcoral} 
+                        alt="Pink Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', left: '20%' }}>
-                    <img src={purplecoral} alt="Purple Coral" />
+                    <img 
+                        src={purplecoral} 
+                        alt="Purple Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', left: '14%' }}>
-                    <img src={orangecoral} alt="Orange Coral" />
+                    <img 
+                        src={orangecoral} 
+                        alt="Orange Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', left: '17%' }}>
-                    <img src={bluecoral} alt="Blue Coral" />
+                    <img 
+                        src={bluecoral} 
+                        alt="Blue Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject className="keep-on-mobile message-bottle" style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
@@ -466,7 +599,13 @@ const Background = () => {
                 
                 {/* Rocket - CENTERED at 50% */}
                 <RocketContainer className="keep-on-mobile rocket-mobile" style={{ bottom: '45%', left: '49.75%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
-                    <img src={rocket} alt="Rocket - Back to top" />
+                    <img 
+                        src={rocket} 
+                        alt="Rocket - Back to top" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, 250px"
+                    />
                 </RocketContainer>
                 
                 {/* Interactive Shell Phone with phone tooltip - RIGHT of center (centered at 65%) */}
@@ -475,47 +614,115 @@ const Background = () => {
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '42%', right: '16%' }}>
-                    <img src={bluecoral} alt="Blue Coral" />
+                    <img 
+                        src={bluecoral} 
+                        alt="Blue Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '30%', right: '12%' }}>
-                    <img src={yellowcoral} alt="Yellow Coral" />
+                    <img 
+                        src={yellowcoral} 
+                        alt="Yellow Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '33%', right: '20%' }}>
-                    <img src={orangecoral} alt="Orange Coral" />
+                    <img 
+                        src={orangecoral} 
+                        alt="Orange Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '19%', right: '14%' }}>
-                    <img src={purplecoral} alt="Purple Coral" />
+                    <img 
+                        src={purplecoral} 
+                        alt="Purple Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '13%', right: '17%' }}>
-                    <img src={pinkcoral} alt="Pink Coral" />
+                    <img 
+                        src={pinkcoral} 
+                        alt="Pink Coral" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '57%', right: '1%' }}>
-                    <img src={rockwithseaweed} alt="Rock with Seaweed" />
+                    <img 
+                        src={rockwithseaweed} 
+                        alt="Rock with Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '44%', right: '5%' }}>
-                    <img src={flatrock} alt="Flat Rock" />
+                    <img 
+                        src={flatrock} 
+                        alt="Flat Rock" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '29%', right: '-8%' }}>
-                    <img className="rockpile-image" src={rockpileImage} alt="Rockpile" />
+                    <img 
+                        className="rockpile-image" 
+                        src={rockpileImage} 
+                        alt="Rockpile" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(280px, 18vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '25%', right: '-2%' }}>
-                    <img src={seaweed} alt="Seaweed" />
+                    <img 
+                        src={seaweed} 
+                        alt="Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
 
                 <UnderwaterObject style={{ bottom: '31%', right: '3%' }}>
-                    <img src={seaweed2} alt="Seaweed" />
+                    <img 
+                        src={seaweed2} 
+                        alt="Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
                 
                 <UnderwaterObject style={{ bottom: '34%', right: '7%' }}>
-                    <img style={{ transform: 'scaleX(-1)' }} src={seaweed3} alt="Seaweed" />
+                    <img 
+                        style={{ transform: 'scaleX(-1)' }} 
+                        src={seaweed3} 
+                        alt="Seaweed" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 0px, clamp(180px, 12vw, 360px)"
+                    />
                 </UnderwaterObject>
             </SandPlane>
 
@@ -536,11 +743,6 @@ const waterFlow = keyframes`
 const waveScroll = keyframes`
   0%   { background-position: 0 0, 0 0; }
   100% { background-position: -140px 0, -80px 0; }
-`;
-
-const ripplePulse = keyframes`
-  0%   { opacity: 0.30; }
-  100% { opacity: 0.55; }
 `;
 
 const floatParticles = keyframes`
@@ -605,8 +807,12 @@ const SurfaceWater = styled.div`
       repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 66px);
     mix-blend-mode: screen;
     opacity: 0.35;
-    animation: ${waveScroll} 12s linear infinite;
-    will-change: background-position;
+    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    ${props => props.$isInViewport 
+      ? css`animation: ${waveScroll} ${props.$isSlowDevice ? '18s' : '12s'} linear infinite;`
+      : css`animation: none;`}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    will-change: ${props => props.$isInViewport ? 'background-position' : 'auto'};
   }
 `;
 
@@ -624,7 +830,7 @@ const SurfaceRippleLayer = styled.div`
     radial-gradient(38px 19px at 85% 65%, rgba(255, 255, 255, 0.13) 0, rgba(255, 255, 255, 0.06) 40%, transparent 70%);
   mix-blend-mode: screen;
   mask-image: linear-gradient(to bottom, black 40%, transparent 95%);
-  animation: ${ripplePulse} 5s ease-in-out infinite alternate;
+  /* Static ripples - no animation for better performance */
 `;
 
 // Unified underwater section - spans from waterline to deep ocean with continuous gradient
@@ -651,52 +857,24 @@ const UnderwaterSection = styled.div`
     inset 0 8px 16px rgba(100, 180, 200, 0.15),
     inset 0 -4px 12px rgba(0, 40, 80, 0.2);
   
-  /* Continuous gradient - bright cyan at surface gradually darkening to deep ocean */
+  /* Simplified gradient - bright cyan at surface gradually darkening to deep ocean */
+  /* Reduced from 70 stops to 12 stops for better performance */
   background: linear-gradient(to bottom,
     /* Shallow water - bright cyan */
     rgba(85, 185, 205, 1) 0%,
-    rgba(78, 178, 198, 1) 3%,
-    rgba(72, 170, 192, 1) 6%,
-    rgba(66, 162, 186, 1) 9%,
-    rgba(60, 154, 180, 1) 12%,
-    rgba(54, 146, 174, 1) 15%,
-    rgba(49, 138, 168, 1) 18%,
-    rgba(44, 130, 162, 1) 21%,
-    rgba(40, 122, 156, 1) 24%,
-    rgba(36, 114, 150, 1) 28%,
-    rgba(32, 106, 144, 1) 32%,
-    rgba(29, 98, 138, 1) 36%,
-    rgba(26, 90, 132, 1) 40%,
+    rgba(72, 170, 192, 1) 8%,
+    rgba(60, 154, 180, 1) 15%,
+    rgba(49, 138, 168, 1) 22%,
+    rgba(40, 122, 156, 1) 30%,
+    rgba(32, 106, 144, 1) 38%,
     /* Transition to deeper water */
-    rgba(23, 82, 126, 1) 44%,
-    rgba(20, 74, 120, 1) 48%,
-    rgba(18, 66, 114, 1) 52%,
-    rgba(16, 58, 108, 1) 56%,
-    rgba(14, 50, 102, 1) 60%,
-    rgba(12, 42, 96, 1) 64%,
-    rgba(11, 40, 92, 1) 68%,
-    rgba(10, 38, 88, 1) 72%,
-    /* Deep ocean - sunlit blues (kept brighter) */
-    rgba(10, 36, 84, 1) 75%,
-    rgba(10, 35, 82, 1) 78%,
-    rgba(9, 34, 80, 1) 81%,
-    rgba(9, 33, 78, 1) 84%,
-    rgba(9, 32, 76, 1) 86%,
-    rgba(8, 31, 74, 1) 88%,
+    rgba(23, 82, 126, 1) 48%,
+    rgba(18, 66, 114, 1) 58%,
+    rgba(14, 50, 102, 1) 68%,
+    /* Deep ocean - sunlit blues */
+    rgba(10, 36, 84, 1) 78%,
     rgba(8, 30, 72, 1) 90%,
-    rgba(8, 29, 70, 1) 92%,
-    rgba(8, 28, 68, 1) 93%,
-    rgba(7, 28, 66, 1) 94%,
-    rgba(7, 27, 64, 1) 95%,
-    rgba(7, 26, 62, 1) 96%,
-    rgba(7, 26, 60, 1) 97%,
-    rgba(6, 25, 58, 1) 98%,
-    rgba(6, 24, 56, 1) 98.5%,
-    rgba(6, 24, 54, 1) 99%,
-    rgba(6, 23, 52, 1) 99.3%,
-    rgba(6, 22, 50, 1) 99.6%,
-    rgba(5, 22, 48, 1) 99.8%,
-    rgba(5, 21, 46, 1) 100%
+    rgba(6, 24, 56, 1) 100%
   );
   
   /* Caustic light rays from surface - now extends smoothly down the entire section */
@@ -721,10 +899,14 @@ const UnderwaterSection = styled.div`
         rgba(255, 255, 255, 0.02) 10%,
         transparent 20%
       );
-    animation: ${waterFlow} 15s linear infinite reverse;
+    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    ${props => props.$isInViewport 
+      ? css`animation: ${waterFlow} ${props.$isSlowDevice ? '22s' : '15s'} linear infinite reverse;`
+      : css`animation: none;`}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
   }
   
-  /* Underwater particles/bubbles - distributed across full depth */
+  /* Underwater particles/bubbles - reduced from 15 to 8 for better performance */
   &::after {
     content: '';
     position: absolute;
@@ -735,22 +917,19 @@ const UnderwaterSection = styled.div`
       radial-gradient(circle at 38% 15%, rgba(255,255,255,0.15) 0%, transparent 2.5px),
       radial-gradient(circle at 65% 12%, rgba(255,255,255,0.18) 0%, transparent 2px),
       radial-gradient(circle at 85% 20%, rgba(255,255,255,0.12) 0%, transparent 1.5px),
-      radial-gradient(circle at 22% 25%, rgba(255,255,255,0.16) 0%, transparent 2px),
       /* Mid zone particles */
       radial-gradient(circle at 55% 35%, rgba(255,255,255,0.14) 0%, transparent 1.8px),
       radial-gradient(circle at 78% 40%, rgba(255,255,255,0.13) 0%, transparent 2.2px),
-      radial-gradient(circle at 42% 48%, rgba(255,255,255,0.17) 0%, transparent 2px),
-      radial-gradient(circle at 8% 52%, rgba(255,255,255,0.11) 0%, transparent 1.5px),
-      radial-gradient(circle at 68% 58%, rgba(255,255,255,0.13) 0%, transparent 2px),
-      /* Lower zone particles (fewer and dimmer) */
+      /* Lower zone particles */
       radial-gradient(circle at 30% 65%, rgba(255,255,255,0.10) 0%, transparent 2.5px),
-      radial-gradient(circle at 90% 72%, rgba(255,255,255,0.08) 0%, transparent 2px),
-      radial-gradient(circle at 15% 80%, rgba(255,255,255,0.07) 0%, transparent 1.8px),
-      radial-gradient(circle at 75% 85%, rgba(255,255,255,0.06) 0%, transparent 1.5px),
-      radial-gradient(circle at 45% 92%, rgba(255,255,255,0.05) 0%, transparent 1.5px);
-    animation: ${floatParticles} 15s ease-in-out infinite;
+      radial-gradient(circle at 75% 85%, rgba(255,255,255,0.06) 0%, transparent 1.5px);
+    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    ${props => props.$isInViewport 
+      ? css`animation: ${floatParticles} ${props.$isSlowDevice ? '22s' : '15s'} ease-in-out infinite;`
+      : css`animation: none;`}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
     transform: translateZ(0);
-    will-change: transform, opacity;
+    will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
   }
   
   /* Pause animations during loading */
@@ -806,10 +985,14 @@ const HeaderTitle = styled.h1`
     0 0 40px rgba(100, 180, 210, 0.4),
     0 4px 8px rgba(0, 60, 100, 0.3);
   
-  /* Subtle floating animation - GPU accelerated */
-  animation: floatTitle 4s ease-in-out infinite;
+  /* Subtle floating animation - GPU accelerated (transform only) */
+  /* Animation throttling: pause when not in viewport, slower on slow devices */
+  ${props => props.$isInViewport 
+    ? css`animation: floatTitle ${props.$isSlowDevice ? '6s' : '4s'} ease-in-out infinite;`
+    : css`animation: none;`}
+  animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
   transform: translateZ(0);
-  will-change: transform;
+  will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
   
   @keyframes floatTitle {
     0%, 100% { transform: translateY(0px) translateZ(0); }
@@ -854,11 +1037,15 @@ const HeaderSubtitle = styled.h2`
     0 2px 8px rgba(120, 200, 220, 0.5),
     0 4px 16px rgba(80, 160, 190, 0.3);
   
-  /* Slightly offset floating animation - GPU accelerated */
-  animation: floatSubtitle 4s ease-in-out infinite;
+  /* Slightly offset floating animation - GPU accelerated (transform/opacity only) */
+  /* Animation throttling: pause when not in viewport, slower on slow devices */
+  ${props => props.$isInViewport 
+    ? css`animation: floatSubtitle ${props.$isSlowDevice ? '6s' : '4s'} ease-in-out infinite;`
+    : css`animation: none;`}
   animation-delay: 0.5s;
+  animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
   transform: translateZ(0);
-  will-change: transform, opacity;
+  will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
   
   @keyframes floatSubtitle {
     0%, 100% { transform: translateY(0px) translateZ(0); opacity: 0.9; }
@@ -879,12 +1066,6 @@ const HeaderSubtitle = styled.h2`
     font-size: clamp(0.9rem, 3vw, 1.1rem);
     margin-top: 0.25rem;
   }
-`;
-
-// Float animation for cards - GPU accelerated
-const floatCard = keyframes`
-  0%, 100% { transform: translateY(0px) translateZ(0); }
-  50% { transform: translateY(-5px) translateZ(0); }
 `;
 
 // Profile section - flex container
@@ -954,6 +1135,20 @@ const ImageSection = styled.div`
   }
 `;
 
+// Floating bubble animation - smooth rising motion, GPU accelerated
+const floatBubble = keyframes`
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px) scale(1) translateZ(0);
+  }
+  33% { 
+    transform: translateY(-10px) translateX(3px) scale(1.01) translateZ(0);
+  }
+  66% { 
+    transform: translateY(-12px) translateX(-2px) scale(1.02) translateZ(0);
+  }
+`;
+
+
 const ProfileImageFrame = styled.div`
   position: relative;
   width: 90%;
@@ -994,7 +1189,7 @@ const ProfileImageFrame = styled.div`
   }
   
   /* Floating animation */
-  animation: ${floatCard} 6s ease-in-out infinite;
+  animation: ${floatBubble} 6s ease-in-out infinite;
   
   @media (max-width: 1200px) {
     width: 80%;
@@ -1051,20 +1246,6 @@ const SocialBubblesContainer = styled.div`
     padding-bottom: 1rem;
   }
 `;
-
-// Floating bubble animation - smooth rising motion, GPU accelerated
-const floatBubble = keyframes`
-  0%, 100% { 
-    transform: translateY(0px) translateX(0px) scale(1) translateZ(0);
-  }
-  33% { 
-    transform: translateY(-10px) translateX(3px) scale(1.01) translateZ(0);
-  }
-  66% { 
-    transform: translateY(-12px) translateX(-2px) scale(1.02) translateZ(0);
-  }
-`;
-
 // Individual social bubble - glossy underwater bubble effect
 const SocialBubble = styled.a`
   position: absolute;
@@ -1136,9 +1317,9 @@ const SocialBubble = styled.a`
     pointer-events: none;
   }
   
-  /* GPU acceleration - applied to all bubbles */
+  /* GPU acceleration - applied to all bubbles (transform only) */
   transform: translateZ(0);
-  will-change: transform;
+  will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
   
   /* Vertical positioning - bubbles rising from bottom to top */
   /* Smallest bubble at bottom (LinkedIn) */
@@ -1147,8 +1328,12 @@ const SocialBubble = styled.a`
     bottom: 5%;
     width: 70px;
     height: 70px;
-    animation: ${floatBubble} 7s ease-in-out infinite;
+    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    ${props => props.$isInViewport 
+      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '10s' : '7s'} ease-in-out infinite;`
+      : css`animation: none;`}
     animation-delay: ${props => props.$delay}s;
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
   }
   
   /* Second bubble (GitHub) */
@@ -1157,8 +1342,11 @@ const SocialBubble = styled.a`
     bottom: 28%;
     width: 80px;
     height: 80px;
-    animation: ${floatBubble} 7.5s ease-in-out infinite;
+    ${props => props.$isInViewport 
+      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '11s' : '7.5s'} ease-in-out infinite;`
+      : css`animation: none;`}
     animation-delay: ${props => props.$delay}s;
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
   }
   
   /* Third bubble (Instagram) */
@@ -1167,8 +1355,11 @@ const SocialBubble = styled.a`
     bottom: 52%;
     width: 88px;
     height: 88px;
-    animation: ${floatBubble} 7.2s ease-in-out infinite;
+    ${props => props.$isInViewport 
+      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '10.5s' : '7.2s'} ease-in-out infinite;`
+      : css`animation: none;`}
     animation-delay: ${props => props.$delay}s;
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
   }
   
   /* Largest bubble at top (Resume) */
@@ -1177,8 +1368,11 @@ const SocialBubble = styled.a`
     bottom: 78%;
     width: 96px;
     height: 96px;
-    animation: ${floatBubble} 8s ease-in-out infinite;
+    ${props => props.$isInViewport 
+      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '12s' : '8s'} ease-in-out infinite;`
+      : css`animation: none;`}
     animation-delay: ${props => props.$delay}s;
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
   }
   
   /* Pause animations during loading */
@@ -1435,9 +1629,8 @@ const GlassCard = styled.article`
     0 8px 32px rgba(31, 38, 135, 0.37),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   
-  /* GPU acceleration for smooth animations */
+  /* GPU acceleration for hover effects */
   transform: translateZ(0);
-  will-change: transform;
   
   /* Subtle glow on hover */
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
@@ -1453,43 +1646,6 @@ const GlassCard = styled.article`
       rgba(255, 255, 255, 0.15) 0%,
       rgba(255, 255, 255, 0.08) 100%
     );
-  }
-  
-  /* Staggered floating animation - GPU accelerated */
-  &:nth-child(1) { 
-    animation: ${floatCard} 6s ease-in-out infinite;
-    transform: translateZ(0);
-    will-change: transform;
-  }
-  &:nth-child(2) { 
-    animation: ${floatCard} 6s ease-in-out 0.5s infinite;
-    transform: translateZ(0);
-    will-change: transform;
-  }
-  &:nth-child(3) { 
-    animation: ${floatCard} 6s ease-in-out 1s infinite;
-    transform: translateZ(0);
-    will-change: transform;
-  }
-  &:nth-child(4) { 
-    animation: ${floatCard} 6s ease-in-out 1.5s infinite;
-    transform: translateZ(0);
-    will-change: transform;
-  }
-  &:nth-child(5) { 
-    animation: ${floatCard} 6s ease-in-out 2s infinite;
-    transform: translateZ(0);
-    will-change: transform;
-  }
-  &:nth-child(6) { 
-    animation: ${floatCard} 6s ease-in-out 2.5s infinite;
-    transform: translateZ(0);
-    will-change: transform;
-  }
-  
-  /* Pause animations during loading */
-  [data-loading="true"] & {
-    animation-play-state: paused;
   }
 `;
 

@@ -27,12 +27,6 @@ export const endMeasure = (componentName, threshold = 16) => {
       );
       
       const measure = window.performance.getEntriesByName(`${componentName}-render-time`)[0];
-      if (measure && measure.duration > threshold) {
-        console.warn(
-          `⚠️ ${componentName} render took ${measure.duration.toFixed(2)}ms ` +
-          `(target: <${threshold}ms for 60fps)`
-        );
-      }
     } catch (e) {
       // Performance API might not be fully supported
     }
@@ -67,18 +61,8 @@ export const getPerformanceReport = () => {
  * Log a performance report to console
  */
 export const logPerformanceReport = () => {
-  const report = getPerformanceReport();
-  if (report.length === 0) {
-    console.log('📊 No performance data available');
-    return;
-  }
-  
-  console.log('📊 Performance Report (sorted by slowest):');
-  report.forEach((item, idx) => {
-    const emoji = item.duration > 500 ? '🐌' : item.duration > 200 ? '⚠️' : item.duration > 100 ? '⚡' : '✓';
-    const type = item.type === 'load' ? '[LOAD]' : '[RENDER]';
-    console.log(`  ${emoji} ${item.name} ${type}: ${item.duration.toFixed(0)}ms`);
-  });
+  // Performance reporting disabled - no console output
+  return;
 };
 
 /**
@@ -112,10 +96,6 @@ export const measureFunction = (label, fn) => {
     const result = fn();
     const end = window.performance.now();
     const duration = end - start;
-    
-    if (duration > 16) {
-      console.warn(`⚠️ ${label} took ${duration.toFixed(2)}ms (target: <16ms)`);
-    }
     
     return result;
   }

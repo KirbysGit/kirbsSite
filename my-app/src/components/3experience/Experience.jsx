@@ -31,6 +31,39 @@ const ActualExperience = memo(() => {
     // Performance monitoring
     useComponentPerformance('Experience', process.env.NODE_ENV === 'development');
     
+    // Animation throttling state
+    const [isInViewport, setIsInViewport] = useState(false);
+    const [isSlowDevice, setIsSlowDevice] = useState(false);
+    const sectionRef = useRef(null);
+    
+    // Detect slower devices
+    useEffect(() => {
+        const cores = navigator.hardwareConcurrency || 4;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        setIsSlowDevice(cores < 4 || prefersReducedMotion);
+    }, []);
+    
+    // IntersectionObserver to detect when section is in viewport
+    useEffect(() => {
+        const section = sectionRef.current;
+        if (!section) return;
+        
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    setIsInViewport(entry.isIntersecting && entry.intersectionRatio > 0.1);
+                });
+            },
+            {
+                threshold: [0, 0.1, 0.5, 1],
+                rootMargin: '200px' // Start animations before entering viewport
+            }
+        );
+        
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
+    
     // state variables.
     const [index, setIndex] = useState(1);              // current card index.
     const [paused, setPaused] = useState(false);        // whether carousel is paused.
@@ -48,12 +81,12 @@ const ActualExperience = memo(() => {
     const copyEmail = useCallback(async () => {
         const email = 'kirbycolin26@gmail.com';
         try {
-            await navigator.clipboard.writeText(email);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error('Failed to copy email:', err);
-        }
+        await navigator.clipboard.writeText(email);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        // Silently fail - user can manually copy if needed
+      }
     }, []);
     
     // Check if mobile on mount and resize
@@ -97,7 +130,7 @@ const ActualExperience = memo(() => {
     
     // main return.
     return (
-        <ExperienceContainer id="experience" data-section-snap>
+        <ExperienceContainer id="experience" data-section-snap ref={sectionRef}>
             {/* aurora effects at the top */}
             <AuroraWrapper >
                 <Aurora />
@@ -107,22 +140,22 @@ const ActualExperience = memo(() => {
             {/* Optimized: Reduced from 20 to 12 clouds for better performance */}
             <CloudLayer>
                 {/* far layer - 4 clouds (reduced from 6) */}
-                <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" />
-                <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" />
-                <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" />
-                <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" />
+                <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
                 
                 {/* mid layer - 4 clouds (reduced from 7) */}
-                <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" />
-                <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" />
-                <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" />
-                <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" />
+                <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
                 
                 {/* near layer - 4 clouds (reduced from 7) */}
-                <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" />
-                <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" />
-                <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" />
-                <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" />
+                <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
             </CloudLayer>
             
             {/* entire content wrapper */}

@@ -32,7 +32,6 @@ const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
         if (!isLoading && !loadingComplete) {
             setLoadingComplete(true);
             const now = performance.now();
-            console.log(`[Hero] Loading screen finished, animations starting at ${now.toFixed(2)}ms`);
         }
     }, [isLoading, loadingComplete]);
             

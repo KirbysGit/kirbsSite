@@ -227,6 +227,7 @@ const ProgressText = styled.div`
 const LoadingScreen = ({ progress = 0, isFading = false }) => {
   // Smooth animated progress - fills smoothly based on estimated time
   const [animatedProgress, setAnimatedProgress] = useState(0);
+  const [hasCompleted, setHasCompleted] = useState(false);
   const animationRef = useRef(null);
   const lastFrameTimeRef = useRef(null);
   
@@ -235,6 +236,7 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
   const estimatedDurationRef = useRef(null);
   const actualProgressRef = useRef(0);
   const progressHistoryRef = useRef([]);
+  const completionTimeRef = useRef(null);
   
   // Update actual progress and estimate duration
   useEffect(() => {
@@ -258,35 +260,18 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
         const estimated = elapsed * (100 / progress);
         // Add buffer and cap between 3-10 seconds for smooth animation
         estimatedDurationRef.current = Math.max(3000, Math.min(10000, estimated * 1.2));
-        console.log(`[LoadingScreen] Estimated load time: ${estimatedDurationRef.current.toFixed(0)}ms (based on ${progress.toFixed(1)}% at ${elapsed.toFixed(0)}ms)`);
       } else {
         // Fallback: use default estimate
         estimatedDurationRef.current = 6000; // 6 seconds default
-        console.log(`[LoadingScreen] Using default estimated load time: ${estimatedDurationRef.current.toFixed(0)}ms`);
       }
     }
   }, [progress]);
   
-  // Debug: Log when component mounts/unmounts
+  // Track mount time for progress estimation
   useEffect(() => {
     const mountTime = performance.now();
     mountTimeRef.current = mountTime;
-    console.log(`[LoadingScreen] Mounted at ${mountTime.toFixed(2)}ms`);
-    
-    return () => {
-      const totalTime = performance.now() - mountTime;
-      console.log(`[LoadingScreen] Unmounted after ${totalTime.toFixed(2)}ms`);
-      console.log(`[LoadingScreen] Progress history:`, progressHistoryRef.current);
-    };
   }, []);
-  
-  // Debug: Log when fading starts
-  useEffect(() => {
-    if (isFading) {
-      const elapsed = performance.now() - mountTimeRef.current;
-      console.log(`[LoadingScreen] Started fading at ${elapsed.toFixed(2)}ms (progress: ${progress.toFixed(1)}%)`);
-    }
-  }, [isFading, progress]);
   
   // Smooth fill animation - fills to 95% based on estimated time, then waits for actual completion
   useEffect(() => {
@@ -312,9 +297,15 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
             // Smoothly interpolate from current progress to 100%
             const difference = 100 - prev;
             if (Math.abs(difference) < 0.1) {
+              // Mark as completed when we reach 100%
+              if (!completionTimeRef.current) {
+                completionTimeRef.current = currentTime;
+                setHasCompleted(true);
+              }
               return 100;
             }
-            const speed = 0.15; // Slower for final 5% for smooth finish
+            // Slower for final 5% to make completion more visible
+            const speed = 0.12; // Slightly slower for better visibility
             const increment = difference * speed * (deltaTime / 16);
             return Math.min(100, prev + increment);
           } else {
@@ -376,20 +367,37 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
     const currentProgress = animatedProgress;
     if (currentProgress < 50) return 'Getting ready...';
     if (currentProgress < 95) return 'Almost there...';
-    return 'All set!';
+    if (currentProgress >= 100) return 'All set!';
+    return 'Finishing up...';
   }, [animatedProgress]);
+
+  // Internal fade state - only fade after progress completes and brief delay
+  const [internalFading, setInternalFading] = useState(false);
+  
+  // Delay fade until progress completes and shows completion briefly
+  useEffect(() => {
+    if (hasCompleted && isFading) {
+      // Wait 400ms after completion before starting fade (shows completion state)
+      const fadeTimer = setTimeout(() => {
+        setInternalFading(true);
+      }, 400);
+      return () => clearTimeout(fadeTimer);
+    } else if (!hasCompleted) {
+      setInternalFading(false);
+    }
+  }, [hasCompleted, isFading]);
 
   // Calculate circle radius for SVG (accounting for stroke width)
   const radius = 90; // Inner radius, accounting for 6px stroke
 
   return (
-    <LoadingContainer $isFading={isFading}>
+    <LoadingContainer $isFading={internalFading}>
       {/* Starfield background - matching Hero */}
       <StarfieldBackground />
       
       <LoadingContent>
         {/* Circular progress ring with rotating astronaut */}
-        <ProgressRingContainer $isFading={isFading}>
+        <ProgressRingContainer $isFading={internalFading}>
           {/* SVG Progress Ring */}
           <ProgressRingSVG viewBox="0 0 200 200">
             {/* Background circle (unfilled) */}
@@ -413,13 +421,13 @@ const LoadingScreen = ({ progress = 0, isFading = false }) => {
         </ProgressRingContainer>
         
         {/* Loading message - below the ring */}
-        <LoadingMessage $isFading={isFading}>
+        <LoadingMessage $isFading={internalFading}>
           {loadingMessage}
         </LoadingMessage>
         
         {/* Progress percentage - below the message */}
         {animatedProgress > 0 && (
-          <ProgressText $isFading={isFading}>
+          <ProgressText $isFading={internalFading}>
             {Math.round(animatedProgress)}%
           </ProgressText>
         )}

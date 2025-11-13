@@ -4,8 +4,8 @@
 // waves. i put too much time into it to not keep it so its STAYING!
 
 // imports.
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from 'react';
+import styled, { css } from 'styled-components';
 
 // generate smooth wave paths.
 function generateWavePath(width = 2400, height = 120, amplitude = 26, frequency = 5, phase = 0, thickness = 36) {
@@ -51,84 +51,127 @@ function generateWavePath(width = 2400, height = 120, amplitude = 26, frequency 
 
 // actual component.
 const Aurora = () => {
-  // generate different wave patterns for each layer with increased thickness.
-  const wave1Path = generateWavePath(2400, 120, 30, 4, 0, 40);
-  const wave1Path2 = generateWavePath(2400, 120, 32, 4, Math.PI/8, 40);
-  const wave1Path3 = generateWavePath(2400, 120, 28, 4, Math.PI/4, 40);
-  const wave1Path4 = generateWavePath(2400, 120, 31, 4, 3*Math.PI/8, 40);
+  // Performance optimization state
+  const [isInViewport, setIsInViewport] = useState(false);
+  const [isSlowDevice, setIsSlowDevice] = useState(false);
+  const sectionRef = useRef(null);
 
-  const wave2Path = generateWavePath(2400, 120, 35, 5, Math.PI/3, 44);
-  const wave2Path2 = generateWavePath(2400, 120, 37, 5, Math.PI/3 + Math.PI/8, 44);
-  const wave2Path3 = generateWavePath(2400, 120, 33, 5, Math.PI/3 + Math.PI/4, 44);
-  const wave2Path4 = generateWavePath(2400, 120, 36, 5, Math.PI/3 + 3*Math.PI/8, 44);
+  // Detect slower devices
+  useEffect(() => {
+    const cores = navigator.hardwareConcurrency || 4;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setIsSlowDevice(cores < 4 || prefersReducedMotion);
+  }, []);
 
-  const wave3Path = generateWavePath(2400, 120, 26, 6, Math.PI/6, 48);
-  const wave3Path2 = generateWavePath(2400, 120, 28, 6, Math.PI/6 + Math.PI/8, 48);
-  const wave3Path3 = generateWavePath(2400, 120, 24, 6, Math.PI/6 + Math.PI/4, 48);
-  const wave3Path4 = generateWavePath(2400, 120, 27, 6, Math.PI/6 + 3*Math.PI/8, 48);
+  // IntersectionObserver to detect when section is in viewport
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
 
-  const wave4Path = generateWavePath(2400, 120, 40, 3, Math.PI/2, 38);
-  const wave4Path2 = generateWavePath(2400, 120, 42, 3, Math.PI/2 + Math.PI/8, 38);
-  const wave4Path3 = generateWavePath(2400, 120, 38, 3, Math.PI/2 + Math.PI/4, 38);
-  const wave4Path4 = generateWavePath(2400, 120, 41, 3, Math.PI/2 + 3*Math.PI/8, 38);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInViewport(entry.isIntersecting && entry.intersectionRatio > 0.1);
+        });
+      },
+      {
+        threshold: [0, 0.1, 0.5, 1],
+        rootMargin: '200px' // Start animations before entering viewport
+      }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // Generate wave paths - wider to stretch across entire screen
+  // Increased width from 2400 to 3200 to ensure full coverage, starting at 10% from left
+  // Amplitude range: 27-34 (moderate variation), Frequency range: 3.5-5.5 (some variation)
+  // Increased thickness for better overlap between waves
+  const wave1Path = generateWavePath(3200, 120, 30, 4, 0, 42);
+  const wave1Path2 = generateWavePath(3200, 120, 32, 4, Math.PI/8, 42);
+  const wave1Path3 = generateWavePath(3200, 120, 28, 4, Math.PI/4, 42);
+
+  const wave2Path = generateWavePath(3200, 120, 33, 4.5, Math.PI/3, 46);
+  const wave2Path2 = generateWavePath(3200, 120, 34, 4.5, Math.PI/3 + Math.PI/8, 46);
+  const wave2Path3 = generateWavePath(3200, 120, 31, 4.5, Math.PI/3 + Math.PI/4, 46);
+
+  const wave3Path = generateWavePath(3200, 120, 29, 5, Math.PI/6, 48);
+  const wave3Path2 = generateWavePath(3200, 120, 31, 5, Math.PI/6 + Math.PI/8, 48);
+  const wave3Path3 = generateWavePath(3200, 120, 27, 5, Math.PI/6 + Math.PI/4, 48);
+
+  const wave4Path = generateWavePath(3200, 120, 32, 3.8, Math.PI/2, 44);
+  const wave4Path2 = generateWavePath(3200, 120, 33, 3.8, Math.PI/2 + Math.PI/8, 44);
+  const wave4Path3 = generateWavePath(3200, 120, 30, 3.8, Math.PI/2 + Math.PI/4, 44);
+
+  // On slow devices, show only 2 waves instead of 4
+  const showAllWaves = !isSlowDevice;
 
   return (
-    <AuroraLayer>
-      {/* breathing glow background - only center two waves */}
-      <AuroraGlow />
-      <AuroraGlow />
+    <AuroraLayer ref={sectionRef} $isInViewport={isInViewport} $isSlowDevice={isSlowDevice}>
+      {/* breathing glow background - reduced to 1 on slow devices */}
+      <AuroraGlow $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} />
+      {!isSlowDevice && <AuroraGlow $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} />}
       
-      {/* first wave */}
+      {/* first wave - always show */}
       <AuroraWave 
         $top="16%"
         $opacity={0.55}
-        $blur={50}
-        $duration={60}
+        $blur={isSlowDevice ? 40 : 50}
+        $duration={isSlowDevice ? 80 : 60}
         $delay={0}
+        $isInViewport={isInViewport}
+        $isSlowDevice={isSlowDevice}
         $wavePath={wave1Path}
         $wavePath2={wave1Path2}
         $wavePath3={wave1Path3}
-        $wavePath4={wave1Path4}
       />
       
-      {/* second wave */}
+      {/* second wave - always show */}
       <AuroraWave 
         $top="26%"
         $opacity={0.525}
-        $blur={60}
-        $duration={65}
+        $blur={isSlowDevice ? 50 : 60}
+        $duration={isSlowDevice ? 85 : 65}
         $delay={8}
+        $isInViewport={isInViewport}
+        $isSlowDevice={isSlowDevice}
         $wavePath={wave2Path}
         $wavePath2={wave2Path2}
         $wavePath3={wave2Path3}
-        $wavePath4={wave2Path4}
       />
       
-      {/* third wave */}
-      <AuroraWave 
-        $top="36%"
-        $opacity={0.5}
-        $blur={70}
-        $duration={70}
-        $delay={15}
-        $wavePath={wave3Path}
-        $wavePath2={wave3Path2}
-        $wavePath3={wave3Path3}
-        $wavePath4={wave3Path4}
-      />
+      {/* third wave - hide on slow devices */}
+      {showAllWaves && (
+        <AuroraWave 
+          $top="36%"
+          $opacity={0.5}
+          $blur={isSlowDevice ? 60 : 70}
+          $duration={isSlowDevice ? 90 : 70}
+          $delay={15}
+          $isInViewport={isInViewport}
+          $isSlowDevice={isSlowDevice}
+          $wavePath={wave3Path}
+          $wavePath2={wave3Path2}
+          $wavePath3={wave3Path3}
+        />
+      )}
       
-      {/* fourth wave */}
-      <AuroraWave 
-        $top="46%"
-        $opacity={0.575}
-        $blur={80}
-        $duration={75}
-        $delay={22}
-        $wavePath={wave4Path}
-        $wavePath2={wave4Path2}
-        $wavePath3={wave4Path3}
-        $wavePath4={wave4Path4}
-      />
+      {/* fourth wave - hide on slow devices */}
+      {showAllWaves && (
+        <AuroraWave 
+          $top="46%"
+          $opacity={0.575}
+          $blur={isSlowDevice ? 70 : 80}
+          $duration={isSlowDevice ? 95 : 75}
+          $delay={22}
+          $isInViewport={isInViewport}
+          $isSlowDevice={isSlowDevice}
+          $wavePath={wave4Path}
+          $wavePath2={wave4Path2}
+          $wavePath3={wave4Path3}
+        />
+      )}
     </AuroraLayer>
   );
 };
@@ -158,29 +201,33 @@ const AuroraGlow = styled.div`
     position: absolute;
 
     /* styles */
-    filter: blur(120px);
+    filter: blur(${props => props.$isSlowDevice ? '100px' : '120px'});
     mix-blend-mode: screen;
+    /* Simplified gradient - reduced from 4 to 3 stops */
     background: radial-gradient(
         ellipse at 50% 50%,
         rgba(100, 255, 200, 0.008) 0%,
-        rgba(150, 120, 255, 0.005) 30%,
-        rgba(255, 150, 200, 0.003) 60%,
+        rgba(150, 120, 255, 0.005) 50%,
         transparent 100%
     );
-    animation: breatheGlow 12s ease-in-out infinite;
+    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    ${props => props.$isInViewport 
+      ? css`animation: breatheGlow ${props.$isSlowDevice ? '16s' : '12s'} ease-in-out infinite;`
+      : css`animation: none;`}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    will-change: ${props => props.$isInViewport ? 'opacity' : 'auto'};
 
     /* secondary radial glow */
     &:nth-child(2) {
         background: radial-gradient(
         ellipse at 30% 60%,
         rgba(150, 120, 255, 0.006) 0%,
-        rgba(255, 150, 200, 0.004) 25%,
-        rgba(100, 255, 200, 0.002) 50%,
-        transparent 80%
+        rgba(255, 150, 200, 0.004) 50%,
+        transparent 100%
         );
         animation-delay: 4s;
-        animation-duration: 15s;
-        filter: blur(140px);
+        animation-duration: ${props => props.$isSlowDevice ? '20s' : '15s'};
+        filter: blur(${props => props.$isSlowDevice ? '120px' : '140px'});
     }
 
     /* keyframes for breathing glow */
@@ -198,22 +245,26 @@ const AuroraGlow = styled.div`
 const AuroraWave = styled.div`
     /* layout */
     position: absolute;
-    inset-inline-start: 0;
+    left: -10%; /* Start 10% to the left to ensure full coverage */
     top: ${p => p.$top || '26.25%'};
-    width: 100%;
+    width: 120%; /* Extended width to cover full screen including the 10% offset */
     height: 40vh;
     isolation: isolate;
 
     /* styles */
     opacity: ${p => p.$opacity || 0.3};
     clip-path: path("${p => p.$wavePath}");              /* ribbon silhouette */
-    will-change: clip-path;                               /* we morph clip-path */
+    will-change: ${p => p.$isInViewport ? 'clip-path' : 'auto'};
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 
-    animation: maskPath ${p => p.$duration || 60}s ease-in-out infinite;
+    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    ${p => p.$isInViewport 
+      ? css`animation: maskPath ${p.$duration || 60}s ease-in-out infinite;`
+      : css`animation: none;`}
     animation-delay: ${p => p.$delay || 0}s;
+    animation-play-state: ${p => p.$isInViewport ? 'running' : 'paused'};
 
     /* effect layer 1 - main glow, rim, curtain banding */
     &::before {
@@ -223,6 +274,7 @@ const AuroraWave = styled.div`
       inset: -${p => (p.$blur || 50) * 2}px;
 
       /* styles */
+      /* Simplified gradients - reduced complexity */
       background:
         linear-gradient(90deg,
           rgba(80, 255, 180, 0.55) 0%,
@@ -230,23 +282,29 @@ const AuroraWave = styled.div`
           rgba(255, 150, 200, 0.45) 100%),
         radial-gradient(140% 60% at 50% 0%,
           rgba(255,255,255,0.25) 0%,
-          rgba(255,255,255,0.10) 35%,
-          rgba(255,255,255,0.00) 60%),
+          rgba(255,255,255,0.10) 50%,
+          transparent 100%),
         linear-gradient(180deg,
           rgba(0,0,0,0.0) 0%,
-          rgba(0,0,0,0.08) 80%,
-          rgba(0,0,0,0.12) 100%);
+          rgba(0,0,0,0.10) 100%);
       background-size: 200% 100%, 100% 100%, 100% 100%;
       background-position: 0% 50%, 50% 0%, 50% 100%;
       filter: blur(${p => p.$blur || 50}px);
       mix-blend-mode: screen;
 
-      animation:
-        colorFlow 18s linear infinite,
-        waveDrift ${p => p.$duration || 60}s ease-in-out infinite,
-        flicker 10s ease-in-out infinite,
-        bandDrift 22s linear infinite;
+      /* Animation throttling: pause when not in viewport, slower on slow devices, reduce animation count */
+      ${p => p.$isInViewport 
+        ? css`
+          animation:
+            colorFlow ${p.$isSlowDevice ? '24s' : '18s'} linear infinite,
+            waveDrift ${p.$duration || 60}s ease-in-out infinite,
+            ${!p.$isSlowDevice ? css`flicker 10s ease-in-out infinite,` : ''}
+            bandDrift ${p.$isSlowDevice ? '30s' : '22s'} linear infinite;
+        `
+        : css`animation: none;`}
       animation-delay: ${p => p.$delay || 0}s;
+      animation-play-state: ${p => p.$isInViewport ? 'running' : 'paused'};
+      will-change: ${p => p.$isInViewport ? 'background-position, transform, opacity, -webkit-mask-position, mask-position' : 'auto'};
 
       /* Curtain banding mask that drifts horizontally */
       -webkit-mask-image:
@@ -295,8 +353,12 @@ const AuroraWave = styled.div`
       mix-blend-mode: screen;
       opacity: 0.45;
       transform: translate3d(0, -2px, 0);
-      animation: colorFlow 26s linear infinite reverse;
+      /* Animation throttling: pause when not in viewport, slower on slow devices */
+      ${p => p.$isInViewport 
+        ? css`animation: colorFlow ${p.$isSlowDevice ? '35s' : '26s'} linear infinite reverse;`
+        : css`animation: none;`}
       animation-delay: ${p => (Number(p.$delay) || 0) * 0.5}s;
+      animation-play-state: ${p => p.$isInViewport ? 'running' : 'paused'};
 
       -webkit-mask-image:
         linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
@@ -316,12 +378,11 @@ const AuroraWave = styled.div`
       }
     }
 
-    /* keyframes */
+    /* keyframes - reduced from 4 to 3 path variations */
     @keyframes maskPath {
-      0%,100% { clip-path: path("${p => p.$wavePath}"); }
-      25%     { clip-path: path("${p => p.$wavePath2}"); }
-      50%     { clip-path: path("${p => p.$wavePath3}"); }
-      75%     { clip-path: path("${p => p.$wavePath4}"); }
+      0%      { clip-path: path("${p => p.$wavePath}"); }
+      50%     { clip-path: path("${p => p.$wavePath2}"); }
+      100%    { clip-path: path("${p => p.$wavePath3}"); }
     }
 
     @keyframes waveDrift {

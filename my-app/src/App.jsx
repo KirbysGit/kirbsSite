@@ -118,12 +118,8 @@ function App() {
     const now = performance.now();
     const delay = Math.max(0, heroSettleTime - now);
     
-        // console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms`);
-        // console.log(`[App] Hero will settle at ${heroSettleTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
-        
         const t = setTimeout(() => {
           setHeroSettled(true);
-          // console.log(`[App] Hero settled at ${performance.now().toFixed(2)}ms`);
         }, delay);
     
     return () => clearTimeout(t);
@@ -133,8 +129,6 @@ function App() {
   // This spreads render work across frames, allowing loading animation to run smoothly
   useEffect(() => {
     if (!componentsPreloaded) return;
-    
-    // console.log(`[App] Starting incremental component rendering...`);
     
     // Render components incrementally, spaced out to allow animation frames between renders
     // Each component gets ~200-300ms spacing to allow loading animation to run smoothly
@@ -152,14 +146,12 @@ function App() {
         // Immediate render for first component
         requestAnimationFrame(() => {
           setter(true);
-          // console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
         });
       } else {
         // Delayed renders - use setTimeout with requestAnimationFrame for smooth spacing
         setTimeout(() => {
           requestAnimationFrame(() => {
             setter(true);
-            // console.log(`[App] Rendered ${name} at ${performance.now().toFixed(2)}ms`);
           });
         }, delay);
       }
@@ -216,8 +208,6 @@ function App() {
     const now = performance.now();
     const delay = Math.max(0, unlockTime - now);
     
-        // console.log(`[App] Scroll will unlock at ${unlockTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
-        
         const unlockTimer = setTimeout(() => {
           // Restore original overflow values
           document.body.style.overflow = originalBodyOverflow;
@@ -229,8 +219,6 @@ function App() {
           
           // Restore scroll position (should be 0, but just in case)
           window.scrollTo(0, scrollY);
-          
-          // console.log(`[App] Scroll unlocked at ${performance.now().toFixed(2)}ms`);
         }, delay);
     
     return () => {
@@ -264,10 +252,8 @@ function App() {
         }
       }
       
-      // console.log(`✓ ${componentName} loaded in ${loadTime.toFixed(0)}ms`);
       return { success: true, loadTime, component };
     } catch (error) {
-      console.warn(`✗ ${componentName} preload error:`, error);
       return { success: false, loadTime: 0, component: null };
     }
   };
@@ -302,11 +288,10 @@ function App() {
           largestImage: stats.largestImage || null,
           slowestImage: stats.slowestImage || null
         }
-      };
-    } catch (error) {
-      console.warn(`✗ ${sectionName} images failed:`, error);
-      return { success: false, stats: null };
-    }
+        };
+      } catch (error) {
+        return { success: false, stats: null };
+      }
   };
 
   // Actual image and component preloading with progress tracking
@@ -418,9 +403,6 @@ function App() {
         
         // Verify all components loaded successfully
         const allComponentsLoaded = componentResults.every(result => result.status === 'fulfilled');
-        if (!allComponentsLoaded) {
-          console.warn('⚠ Some components failed to preload, but continuing...');
-        }
         setLoadingProgress(60);
         
         // Mark components as preloaded and start mounting them immediately
@@ -543,16 +525,13 @@ function App() {
         const loadingCompleteTime = performance.now();
         loadingCompleteTimeRef.current = loadingCompleteTime;
         setLoadingCompleteTime(loadingCompleteTime); // Also set in state for effects
-        // console.log(`[App] Loading completed at ${loadingCompleteTime.toFixed(2)}ms (total: ${(loadingCompleteTime - startTime).toFixed(2)}ms)`);
         
         // Hide loading screen FIRST to prevent scrollbar recalculation affecting Hero
         // Component mounting is now handled by useIdle hooks above (mounts after hero settles)
         setTimeout(() => {
           setIsLoading(false); // Hide loading screen first
-          // console.log(`[App] Loading screen hidden at ${performance.now().toFixed(2)}ms`);
         }, 800);
       } catch (error) {
-        console.error('Error during asset loading:', error);
         // Still finish loading even if there's an error
         setLoadingProgress(100);
         

@@ -124,12 +124,8 @@ const Navbar = ({ loadingCompleteTime = null }) => {
     const now = performance.now();
     const delay = Math.max(0, mountTime - now);
     
-    console.log(`[Navbar] Loading completed at ${loadingCompleteTime.toFixed(2)}ms`);
-    console.log(`[Navbar] Will mount at ${mountTime.toFixed(2)}ms (in ${delay.toFixed(2)}ms)`);
-    
     const timer = setTimeout(() => {
       setIsMounted(true);
-      console.log(`[Navbar] Mounted at ${performance.now().toFixed(2)}ms`);
     }, delay);
     
     return () => clearTimeout(timer);
@@ -309,7 +305,7 @@ const Navbar = ({ loadingCompleteTime = null }) => {
             </SocialLink>
             
             <SocialLink
-              href="/resume.pdf"
+              href="/my_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Download Resume"

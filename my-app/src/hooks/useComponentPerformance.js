@@ -22,10 +22,6 @@ export const useComponentPerformance = (componentName, enabled = true) => {
       if (mountStartRef.current) {
         const mountTime = performance.now() - mountStartRef.current;
         endMeasure(`${componentName}-mount`, 100); // 100ms threshold for mount
-        
-        if (mountTime > 100) {
-          console.warn(`⚠️ ${componentName} mount took ${mountTime.toFixed(0)}ms`);
-        }
       }
     };
   }, [componentName, enabled]);
@@ -45,10 +41,6 @@ export const useComponentPerformance = (componentName, enabled = true) => {
       const renderTime = performance.now() - renderStart;
       endMeasure(`${componentName}-render-${renderNum}`, 16);
       
-      // Log first render if it's slow
-      if (renderNum === 1 && renderTime > 50) {
-        console.warn(`⚠️ ${componentName} first render took ${renderTime.toFixed(0)}ms`);
-      }
     });
   });
 };
@@ -72,10 +64,6 @@ export const useOperationPerformance = (operationName) => {
       if (startTimeRef.current && typeof window !== 'undefined' && window.performance) {
         const duration = performance.now() - startTimeRef.current;
         endMeasure(`${operationName}-operation`, 16);
-        
-        if (duration > 16) {
-          console.warn(`⚠️ ${operationName} operation took ${duration.toFixed(2)}ms`);
-        }
         
         return duration;
       }

@@ -151,7 +151,6 @@ export const preloadImagesInChunks = async (
             imageStats.largestImage = { size, url: chunk[index], dimensions };
           }
         } else {
-          console.warn('Failed to preload image:', chunk[index], result.reason);
           // Still count as "loaded" to avoid blocking progress
           loaded++;
         }
@@ -167,7 +166,7 @@ export const preloadImagesInChunks = async (
         await new Promise(resolve => setTimeout(resolve, delayBetweenChunks));
       }
     } catch (error) {
-      console.error('Error preloading chunk:', error);
+      // Silently handle preload errors
     }
   }
 

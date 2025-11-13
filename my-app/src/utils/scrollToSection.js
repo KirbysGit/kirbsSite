@@ -8,7 +8,6 @@
 export const scrollToSection = (sectionId, desktopOffset = 0, mobileOffset = 0) => {
   const element = document.getElementById(sectionId);
   if (!element) {
-    console.warn(`[scrollToSection] Element with id "${sectionId}" not found`);
     return;
   }
   
