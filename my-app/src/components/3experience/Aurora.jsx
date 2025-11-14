@@ -241,6 +241,22 @@ const Aurora = React.memo(() => {
     return <AuroraLayer ref={sectionRef} $isInViewport={false} $isSlowDevice={true} $tier="slow" />;
   }
 
+  // Performance logging for Aurora rendering
+  useEffect(() => {
+    if (isInViewport && waveBudget > 0) {
+      performance.mark('aurora-render-start');
+      const renderTimer = setTimeout(() => {
+        performance.mark('aurora-render-end');
+        performance.measure('aurora-render', 'aurora-render-start', 'aurora-render-end');
+        const measure = performance.getEntriesByName('aurora-render')[0];
+        if (measure && measure.duration > 16) { // More than 1 frame
+          console.warn(`[Aurora] Slow render detected: ${measure.duration.toFixed(2)}ms (${waveBudget} waves, tier: ${tier})`);
+        }
+      }, 0);
+      return () => clearTimeout(renderTimer);
+    }
+  }, [isInViewport, waveBudget, tier]);
+
   return (
     <AuroraLayer ref={sectionRef} $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} $tier={tier}>
       {/* breathing glow background - reduced to 1 on slow devices */}

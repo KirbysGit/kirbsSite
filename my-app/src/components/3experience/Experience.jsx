@@ -42,6 +42,7 @@ const ActualExperience = memo(() => {
     const fpsRef = useRef(0);
     const frameCountRef = useRef(0);
     const lastFpsTimeRef = useRef(performance.now());
+    const lastCardFocusLog = useRef({});
     
     // Detect slower devices
     useEffect(() => {
@@ -57,11 +58,35 @@ const ActualExperience = memo(() => {
             hardwareConcurrency: navigator.hardwareConcurrency,
             userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
         });
+        
+        // Performance breakdown summary
+        console.log('[Experience] Performance Analysis:', {
+            issues: [
+                '1. Forced reflow violations (90ms, 66ms) - Layout thrashing detected',
+                '2. FPS drops to 16-28 FPS with 2 Aurora waves',
+                '3. Potential causes:',
+                '   - Aurora clip-path animations (even with 2 waves)',
+                '   - Backdrop-filter on cards (expensive compositing)',
+                '   - Multiple blur filters on adjacent cards',
+                '   - Skills carousel animations',
+                '   - Cloud parallax animations',
+                '   - CSS transitions triggering layout recalculations'
+            ],
+            recommendations: [
+                'Consider disabling Aurora clip-path animation on mid-tier devices',
+                'Reduce blur intensity further on mid-tier',
+                'Pause skills carousel when FPS drops below 25',
+                'Use transform/opacity only for card transitions (avoid layout properties)'
+            ]
+        });
     }, []);
     
-    // Performance monitoring: FPS tracking
+    // Performance monitoring: FPS tracking (throttled to reduce overhead)
     useEffect(() => {
+        if (!isInViewport) return; // Only measure when in viewport
+        
         let rafId;
+        let lastLogTime = 0;
         const measureFPS = () => {
             frameCountRef.current++;
             const now = performance.now();
@@ -72,9 +97,10 @@ const ActualExperience = memo(() => {
                 frameCountRef.current = 0;
                 lastFpsTimeRef.current = now;
                 
-                // Log FPS when in viewport and low
-                if (isInViewport && fpsRef.current < 30) {
-                    console.warn(`[Experience] Low FPS detected: ${fpsRef.current} FPS`);
+                // Log FPS only once per 3 seconds when low (reduce console overhead)
+                if (fpsRef.current < 30 && (now - lastLogTime) > 3000) {
+                    console.warn(`[Experience] Low FPS: ${fpsRef.current} FPS`);
+                    lastLogTime = now;
                 }
             }
             
@@ -85,21 +111,30 @@ const ActualExperience = memo(() => {
         return () => cancelAnimationFrame(rafId);
     }, [isInViewport]);
     
-    // Performance monitoring: Render timing
+    // Performance monitoring: Render timing (throttled)
+    const lastRenderLogTime = useRef(0);
     useEffect(() => {
         renderCountRef.current++;
         const now = performance.now();
         const timeSinceLastRender = now - lastRenderTimeRef.current;
         lastRenderTimeRef.current = now;
         
-        // Log render info when in viewport
-        if (isInViewport) {
+        // Log render info when in viewport, but throttle to once per 2 seconds
+        if (isInViewport && (now - lastRenderLogTime.current) > 2000) {
+            // Measure what's taking time
+            const perfEntries = performance.getEntriesByType('measure');
+            const recentMeasures = perfEntries.slice(-5); // Last 5 measures
+            
             console.log(`[Experience] Render #${renderCountRef.current}`, {
                 timeSinceLastRender: `${timeSinceLastRender.toFixed(2)}ms`,
                 fps: fpsRef.current || 'calculating...',
                 isSlowDevice,
-                timestamp: new Date().toISOString()
+                recentMeasures: recentMeasures.map(m => ({
+                    name: m.name,
+                    duration: `${m.duration.toFixed(2)}ms`
+                }))
             });
+            lastRenderLogTime.current = now;
         }
     });
     
@@ -342,15 +377,27 @@ const ActualExperience = memo(() => {
             // Skip rendering far-off cards (distance > 1) - they're fully hidden anyway
             if (cardStyle.distance > 1) return null;
             
-            // Log when card becomes focused for performance debugging
+            // Log when card becomes focused for performance debugging (throttled)
             if (cardStyle.isFocused && isInViewport) {
-                console.log(`[Experience] Card focused: ${card.name}`, {
-                    index,
-                    slideIdx,
-                    distance: cardStyle.distance,
-                    fps: fpsRef.current || 'calculating...',
-                    timestamp: new Date().toISOString()
-                });
+                const now = performance.now();
+                // Only log once per card focus change
+                if (!lastCardFocusLog.current[card.id] || (now - lastCardFocusLog.current[card.id]) > 5000) {
+                    // Measure performance breakdown
+                    performance.mark('card-focus-start');
+                    
+                    console.log(`[Experience] Card focused: ${card.name}`, {
+                        index,
+                        slideIdx,
+                        distance: cardStyle.distance,
+                        fps: fpsRef.current || 'calculating...',
+                        hasSkillsCarousel: !!card.skills,
+                        skillsCount: card.skills ? Object.keys(card.skills).length : 0
+                    });
+                    
+                    performance.mark('card-focus-end');
+                    performance.measure('card-focus', 'card-focus-start', 'card-focus-end');
+                    lastCardFocusLog.current[card.id] = now;
+                }
             }
                             const themeRGB = card.themeColorRgb;        // get theme color.
                             
