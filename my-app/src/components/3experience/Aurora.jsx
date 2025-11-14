@@ -81,7 +81,7 @@ const AuroraInner = () => {
       <AuroraWave 
         $top="16%"
         $opacity={0.55}
-        $blur={50}
+        $blur={36}
         $duration={60}
         $delay={0}
         $wavePath={wave1Path}
@@ -93,7 +93,7 @@ const AuroraInner = () => {
       <AuroraWave 
         $top="26%"
         $opacity={0.525}
-        $blur={60}
+        $blur={42}
         $duration={65}
         $delay={8}
         $wavePath={wave2Path}
@@ -105,7 +105,7 @@ const AuroraInner = () => {
       <AuroraWave 
         $top="36%"
         $opacity={0.5}
-        $blur={70}
+        $blur={48}
         $duration={70}
         $delay={15}
         $wavePath={wave3Path}
@@ -117,7 +117,7 @@ const AuroraInner = () => {
       <AuroraWave 
         $top="46%"
         $opacity={0.575}
-        $blur={80}
+        $blur={54}
         $duration={75}
         $delay={22}
         $wavePath={wave4Path}
@@ -159,7 +159,7 @@ const AuroraGlow = styled.div`
     position: absolute;
 
     /* styles */
-    filter: blur(120px);
+    filter: blur(80px);
     mix-blend-mode: screen;
     background: radial-gradient(
         ellipse at 50% 50%,
@@ -181,7 +181,7 @@ const AuroraGlow = styled.div`
         );
         animation-delay: 4s;
         animation-duration: 15s;
-        filter: blur(140px);
+        filter: blur(100px);
     }
 
     /* keyframes for breathing glow */
@@ -202,20 +202,16 @@ const AuroraWave = styled.div`
     left: -10%;
     top: ${p => p.$top || '26.25%'};
     width: 120%;
-    height: 40vh;
+    height: 32vh;
     isolation: isolate;
 
     /* styles */
     opacity: ${p => p.$opacity || 0.3};
+    /* static wave shape; we don't animate clip-path anymore */
     clip-path: path("${p => p.$wavePath}");
-    will-change: clip-path;
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-
-    animation: maskPath ${p => p.$duration || 60}s ease-in-out infinite;
-    animation-delay: ${p => p.$delay || 0}s;
-    animation-play-state: running;
 
     /* effect layer 1 - main glow, rim, curtain banding */
     &::before {
@@ -244,9 +240,7 @@ const AuroraWave = styled.div`
 
       animation:
         colorFlow 18s linear infinite,
-        waveDrift ${p => p.$duration || 60}s ease-in-out infinite,
-        flicker 10s ease-in-out infinite,
-        bandDrift 22s linear infinite;
+        waveDrift ${p => p.$duration || 60}s ease-in-out infinite;
       animation-delay: ${p => p.$delay || 0}s;
       animation-play-state: running;
       will-change: background-position, transform, opacity, -webkit-mask-position, mask-position;
@@ -276,64 +270,13 @@ const AuroraWave = styled.div`
 
       /* reduce overscan/blur on mid-width screens to avoid clipping */
       @media (max-width: 1600px) {
-        inset: -${p => (p.$blur || 50) * 1.4}px;
-        filter: blur(${p => (p.$blur || 50) * 0.85}px);
+        inset: -${p => (p.$blur || 50) * 1.2}px;
+        filter: blur(${p => (p.$blur || 50) * 0.8}px);
       }
     }
-
-    /* effect layer 2 - faint secondary tint */
-    &::after{
-      /* layout */
-      content: "";
-      position: absolute;
-      inset: -${p => (p.$blur || 50) * 2}px;
-
-      /* styles */
-      background: linear-gradient(90deg,
-        rgba(120, 220, 255, 0.28) 0%,
-        rgba(110, 255, 190, 0.22) 50%,
-        rgba(170, 140, 255, 0.20) 100%);
-      filter: blur(${(p => (p.$blur || 50) * 0.85)}px);
-      mix-blend-mode: screen;
-      opacity: 0.45;
-      transform: translate3d(0, -2px, 0);
-      animation: colorFlow 26s linear infinite reverse;
-      animation-delay: ${p => (Number(p.$delay) || 0) * 0.5}s;
-      animation-play-state: running;
-
-      -webkit-mask-image:
-        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-        repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
-      -webkit-mask-size: auto, 220% 100%;
-      -webkit-mask-position: 0 0, 0% 0;
-      mask-image:
-        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-        repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
-      mask-size: auto, 220% 100%;
-      mask-position: 0 0, 0% 0;
-
-      /* reduce overscan/blur on mid-width screens to avoid clipping */
-      @media (max-width: 1600px) {
-        inset: -${p => (p.$blur || 50) * 1.3}px;
-        filter: blur(${p => (p.$blur || 50) * 0.75}px);
-      }
-    }
-
-    /* keyframes - reduced from 4 to 3 path variations */
-    @keyframes maskPath {
-      0%      { clip-path: path("${p => p.$wavePath}"); }
-      50%     { clip-path: path("${p => p.$wavePath2}"); }
-      100%    { clip-path: path("${p => p.$wavePath3}"); }
-    }
-
     @keyframes waveDrift {
       0%,100% { transform: translate3d(0px, 0px, 0); }
       50%     { transform: translate3d(-48px, -14px, 0); }
-    }
-
-    @keyframes bandDrift {
-      0%   { -webkit-mask-position: 0 0, 0% 0; mask-position: 0 0, 0% 0; }
-      100% { -webkit-mask-position: 0 0, 200% 0; mask-position: 0 0, 200% 0; }
     }
 
     @keyframes colorFlow {
@@ -341,23 +284,17 @@ const AuroraWave = styled.div`
       100% { background-position: 200% 50%; }
     }
 
-    @keyframes flicker {
-      0%,100% { opacity: .55 }
-      45%     { opacity: .70 }
-      60%     { opacity: .42 }
-      75%     { opacity: .64 }
-    }
 
     /* media */
     @media (max-width: 900px) {
-      &::before, &::after {
-        filter: blur(${p => (p.$blur || 50) * 0.7}px);
+      &::before {
+        filter: blur(${p => (p.$blur || 50) * 0.6}px);
         opacity: 0.85;
       }
     }
     @media (prefers-reduced-motion: reduce) {
       animation: none;
-      &::before, &::after { animation: none; }
+      &::before { animation: none; }
     }
 `;
 
