@@ -1,20 +1,27 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+// navbar.jsx
+
+// main navbar component, used for navigation and smooth scrolling.
+// also we have the sidebar component in here as well, which follows the user down the site.
+
+
+// imports.
+import { motion } from 'framer-motion';
 import styled, { keyframes } from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import { scrollToSection } from '../../utils/scrollToSection';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+
+// utils.
 import { navItems } from './NavbarConfig';
+import { scrollToSection } from '../../utils/scrollToSection';
+
+// images.
 import fullLogo from '@/images/0navbar/navLogo.png';
 import cloud1Img from '@/images/3experience/clouds/cloud1.png';
 import cloud2Img from '@/images/3experience/clouds/cloud2.png';
 import cloud3Img from '@/images/3experience/clouds/cloud3.png';
 
-// Subtle star twinkle animation for space theme
-const starTwinkle = keyframes`
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
-`;
+/* ================= animated frames ================= */
 
-// Cloud drift animation (from Hero)
+// cloud drift animation. ( in projects pill )
 const cloudDrift = keyframes`
   0%, 100% { 
     background-position: 15% 20%, 70% 60%;
@@ -26,37 +33,13 @@ const cloudDrift = keyframes`
   }
 `;
 
-// Star twinkle animation (from Hero)
-const starTwinkleHero = keyframes`
-  0%, 100% { 
-    opacity: 0.6; 
-    transform: scale(1); 
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.2); 
-  }
-`;
-
-// Star field animation (from Hero)
+// star field animation. ( in who i am pill )
 const starField = keyframes`
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.6; }
 `;
 
-// Wave animation for About section
-const waveFlow = keyframes`
-  0%, 100% { 
-    background-position: 0% 50%, 100% 50%;
-    opacity: 0.4;
-  }
-  50% { 
-    background-position: 100% 50%, 0% 50%;
-    opacity: 0.5;
-  }
-`;
-
-// Floating bubbles animation (from About.jsx)
+// floating bubbles animation. ( in about section )
 const floatParticles = keyframes`
   0%, 100% { 
     opacity: 0.5; 
@@ -68,486 +51,498 @@ const floatParticles = keyframes`
   }
 `;
 
-// Generate wave path for pill-sized sinusoidal wave
-function generatePillWavePath(width = 200, height = 30, amplitude = 8, frequency = 3, phase = 0, thickness = 6) {
-  const step = width / (frequency * 20);
-  const top = [];
-  const bottom = [];
-  
-  // Generate top wave (sine curve)
-  for (let x = 0; x <= width; x += step) {
-    const y = height/2 + Math.sin((x / width) * frequency * 2 * Math.PI + phase) * amplitude;
-    top.push({ x, y });
-  }
-  
-  // Generate bottom wave (offset by thickness)
-  for (let x = width; x >= 0; x -= step) {
-    const y = height/2 + Math.sin((x / width) * frequency * 2 * Math.PI + phase) * amplitude + thickness;
-    bottom.push({ x, y });
-  }
-  
-  // Build path
-  let d = `M${top[0].x},${top[0].y}`;
-  for (let i = 1; i < top.length; i++) d += ` L${top[i].x},${top[i].y}`;
-  for (let i = 0; i < bottom.length; i++) d += ` L${bottom[i].x},${bottom[i].y}`;
-  return d + ' Z';
-}
-
-
-// Sun glow animation for Projects
-const sunGlow = keyframes`
+// star twinkle animation for hero section.
+const starTwinkleHero = keyframes`
   0%, 100% { 
-    opacity: 0.6;
-    transform: scale(1);
+    opacity: 0.3; 
+    transform: scale(1); 
   }
   50% { 
-    opacity: 0.9;
-    transform: scale(1.1);
+    opacity: 1; 
+    transform: scale(1.2); 
   }
 `;
+
+// star twinkle animation.
+const starTwinkle = keyframes`
+  0%, 100% { 
+    opacity: 0.4; 
+  }
+  50% { 
+    opacity: 1; 
+  }
+`;
+
+/* ================= helper functions ================= */
+
+// generate wave path for pill-sized sinusoidal wave.
+function generatePillWavePath(width = 200, height = 30, amplitude = 8, frequency = 3, phase = 0, thickness = 6) {
+
+	// calculate the step size.
+	const step = width / (frequency * 20);
+
+	// arrays for top and bottom waves.
+	const top = [];
+	const bottom = [];
+	
+	// generate top wave.
+	for (let x = 0; x <= width; x += step) {
+		const y = height/2 + Math.sin((x / width) * frequency * 2 * Math.PI + phase) * amplitude;
+		top.push({ x, y });
+	}
+	
+	// generate bottom wave.
+	for (let x = width; x >= 0; x -= step) {
+		const y = height/2 + Math.sin((x / width) * frequency * 2 * Math.PI + phase) * amplitude + thickness;
+		bottom.push({ x, y });
+	}
+	
+	// build the path.
+	let d = `M${top[0].x},${top[0].y}`;
+	for (let i = 1; i < top.length; i++) d += ` L${top[i].x},${top[i].y}`;
+	for (let i = 0; i < bottom.length; i++) d += ` L${bottom[i].x},${bottom[i].y}`;
+	return d + ' Z';
+}
+
+/* ================== main component ================== */
 
 const Navbar = ({ loadingCompleteTime = null }) => {
-  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [isTopNavbarVisible, setIsTopNavbarVisible] = useState(true);
-  const [activeSection, setActiveSection] = useState('hero');
-  const [isMounted, setIsMounted] = useState(false);
-  const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false);
 
-  // Mount navbar after Hero animations complete - timing relative to loading completion
-  // Hero animations: 6.0s delay + 1.0s arrow animation = 7.0s total after loading
-  useEffect(() => {
-    if (!loadingCompleteTime) return; // Wait for loading to complete
-    
-    const heroAnimationDuration = 7000; // 6s delay + 1s arrow animation
-    const mountTime = loadingCompleteTime + heroAnimationDuration;
-    const now = performance.now();
-    const delay = Math.max(0, mountTime - now);
-    
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, delay);
-    
-    return () => clearTimeout(timer);
-  }, [loadingCompleteTime]);
+	const [isMounted, setIsMounted] = useState(false);						// state for if navbar is mounted.	
+	const [lastScrollY, setLastScrollY] = useState(0);						// state for last scroll position.
+	const [activeSection, setActiveSection] = useState('hero');				// state for active section.
+	const [isTopNavbarVisible, setIsTopNavbarVisible] = useState(true);		// state for if top navbar is visible.
+	const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);	// state for if user has scrolled past hero.
+	const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false);	// state for if side navbar is collapsed.
 
-  // Detect scroll direction and Hero visibility
-  useEffect(() => {
-    if (!isMounted) return;
+	// mount navbar after hero animations complete - timing relative to loading completion.
+	useEffect(() => {
+		if (!loadingCompleteTime) return;								// wait for loading to complete.
+		const heroAnimationDuration = 7000;								// how long the hero animation takes.
+		const mountTime = loadingCompleteTime + heroAnimationDuration;	// when the navbar should mount.
+		const now = performance.now();									// now.
+		const delay = Math.max(0, mountTime - now);						// delay based on the mount time and now.
+		const timeoutId = setTimeout(() => setIsMounted(true), delay);	// set the navbar to mounted after the delay.
+		return () => clearTimeout(timeoutId);							// cleanup: clear timeout on unmount.
+	}, [loadingCompleteTime]);
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const heroElement = document.getElementById('hero');
-      
-      if (!heroElement) return;
+	// detect scroll direction and hero visibility.
+	useEffect(() => {
+		if (!isMounted) return;
+		
+		// handle scroll.
+		const handleScroll = () => {
+			const currentScrollY = window.scrollY;					// current scroll position.
+			const heroElement = document.getElementById('hero');	// set hero element.
+			
+			if (!heroElement) return;								// if hero element is not found, return.	
 
-      const heroRect = heroElement.getBoundingClientRect();
-      const heroTop = heroRect.top;
-      const heroBottom = heroRect.bottom;
-      
-      // Hide navbar threshold - hide when Hero top is within this distance from viewport top
-      // This makes navbar hide earlier, before Hero actually leaves viewport
-      const HIDE_THRESHOLD = 150; // Hide navbar 150px before Hero top reaches viewport top
-      
-      // Hero is fully in view if:
-      // - Hero top is at or above the hide threshold (Hero is well within viewport, like when centered)
-      //   OR we're at the top of the page (currentScrollY is small, meaning Hero is at initial position)
-      // - AND Hero bottom is still visible (Hero hasn't completely scrolled past)
-      // This means navbar shows when Hero is centered OR at top of page, hides when Hero top approaches threshold
-      const isAtTopOfPage = currentScrollY < 50; // Small scroll threshold to detect "at top"
-      const heroFullyInView = (heroTop >= HIDE_THRESHOLD || isAtTopOfPage) && heroBottom > 0;
-      // Show side navbar as soon as top navbar should hide (when Hero approaches leaving)
-      const shouldShowSideNav = !heroFullyInView;
+			const heroRect = heroElement.getBoundingClientRect();	// get the bounding client rect of the hero element.
+			const heroTop = heroRect.top;							// get the top of the hero element.
+			const heroBottom = heroRect.bottom;						// get the bottom of the hero element.
+			
+			const HIDE_THRESHOLD = 150;								// hide navbar threshold when hero top is within this distance from viewport top.
+			
+			const isAtTopOfPage = currentScrollY < 50;				// check if hero is at top of page.
 
-      setIsScrolledPastHero(shouldShowSideNav);
+			const heroFullyInView = (heroTop >= HIDE_THRESHOLD || isAtTopOfPage) && heroBottom > 0;	// check if hero is fully in view.
 
-      // Navbar visibility logic:
-      // - Visible only when Hero is fully in view (Hero top at/above viewport top)
-      // - Hide immediately when Hero starts leaving viewport (when scrolling down past Hero top)
-      // - Side navbar appears as soon as top navbar is hidden
-      if (heroFullyInView) {
-        // Hero is fully in view - show navbar
-        setIsTopNavbarVisible(true);
-      } else {
-        // Hero is leaving or has left viewport - hide navbar immediately
-        setIsTopNavbarVisible(false);
-      }
+			const shouldShowSideNav = !heroFullyInView;				// check if the side navbar should be shown.
 
-      setLastScrollY(currentScrollY);
+			setIsScrolledPastHero(shouldShowSideNav);				// set the state for if the user has scrolled past the hero.
 
-      // Detect active section based on scroll position
-      const sections = ['hero', 'who-i-am', 'experience', 'projects', 'skills', 'about'];
-      const scrollPosition = currentScrollY + window.innerHeight / 3;
+			if (heroFullyInView) {									// if hero is visible.
+				setIsTopNavbarVisible(true);						// show the top navbar.
+			} else {												// if hero is not visible.
+				setIsTopNavbarVisible(false);						// hide the top navbar.
+			}
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i]);
-        if (section) {
-          const sectionTop = section.offsetTop;
-          if (scrollPosition >= sectionTop) {
-            setActiveSection(sections[i]);
-            break;
-          }
-        }
-      }
-    };
+			setLastScrollY(currentScrollY);							// set the last scroll position.
 
-    // Throttle scroll listener for performance
-    let ticking = false;
-    const throttledScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
+			// detect active section based on scroll position.
+			const sections = ['hero', 'who-i-am', 'experience', 'projects', 'skills', 'about'];
+			const scrollPosition = currentScrollY + window.innerHeight / 3;
 
-    window.addEventListener('scroll', throttledScroll, { passive: true });
-    handleScroll(); // Initial check
+			// detect active section based on scroll position.
+			// basically we're checking if the scroll position is greater than the section top.
+			for (let i = sections.length - 1; i >= 0; i--) {
+				const section = document.getElementById(sections[i]);
+				if (section) {
+					const sectionTop = section.offsetTop;
+					if (scrollPosition >= sectionTop) {
+						setActiveSection(sections[i]);
+						break;
+					}
+				}
+			}
+		};
 
-    return () => {
-      window.removeEventListener('scroll', throttledScroll);
-    };
-  }, [lastScrollY, isMounted]);
+		// throttle scroll listener for performance.
+		// basically, only handle scroll once per animation frame.
+		let ticking = false;
+		const throttledScroll = () => {
+			if (!ticking) {
+				window.requestAnimationFrame(() => {
+					handleScroll();
+					ticking = false;
+				});
+				ticking = true;
+			}
+		};
 
-  // Handle navigation click
-  const handleNavClick = useCallback((sectionId, desktopOffset, mobileOffset) => {
-    scrollToSection(sectionId, desktopOffset, mobileOffset);
-  }, []);
+		// add the scroll listener.
+    	window.addEventListener('scroll', throttledScroll, { passive: true });
+		// run the initial check.
+		handleScroll();
 
-  const handleScrollToTop = useCallback(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }, []);
+		// on dismount, remove the scroll listener.
+    	return () => {
+      		window.removeEventListener('scroll', throttledScroll);
+    	};
+  	}, [lastScrollY, isMounted]);
 
-  // Top navbar animation config
-  const topNavbarConfig = useMemo(() => ({
-    initial: { y: '-100%', opacity: 0 },
-    animate: { 
-      y: isTopNavbarVisible ? '0%' : '-100%',
-      opacity: isTopNavbarVisible ? 1 : 0
-    },
-    transition: { duration: 0.4, ease: 'easeInOut' }
-  }), [isTopNavbarVisible]);
+  // handle navigation click.
+	const handleNavClick = useCallback((sectionId, desktopOffset, mobileOffset) => {
+		scrollToSection(sectionId, desktopOffset, mobileOffset);
+	}, []);
 
-  // Side pill navbar animation config
-  const sideNavbarConfig = useMemo(() => ({
-    initial: { x: '-100%', opacity: 0 },
-    animate: { 
-      x: isScrolledPastHero ? '0%' : '-100%',
-      opacity: isScrolledPastHero ? 1 : 0
-    },
-    transition: { duration: 0.5, ease: 'easeOut' }
-  }), [isScrolledPastHero]);
+  	// handle scroll to top.
+	const handleScrollToTop = useCallback(() => {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}, []);
 
-  if (!isMounted) return null;
+	// top navbar animation config.
+	const topNavbarConfig = useMemo(() => ({
+		initial: { y: '-100%', opacity: 0 },
+		animate: { y: isTopNavbarVisible ? '0%' : '-100%', opacity: isTopNavbarVisible ? 1 : 0 },
+		transition: { duration: 0.4, ease: 'easeInOut' }
+	}), [isTopNavbarVisible]);
 
-  return (
-    <>
-      {/* Top Navbar */}
-      <TopNavbarContainer
-        {...topNavbarConfig}
-        style={{ 
-          pointerEvents: isTopNavbarVisible ? 'auto' : 'none',
-          visibility: isTopNavbarVisible ? 'visible' : 'hidden'
-        }}
-      >
-        <TopNavbarContent>
-          {/* Logo */}
-          <LogoContainer onClick={handleScrollToTop}>
-            <LogoImage src={fullLogo} alt="Colin Kirby" />
-          </LogoContainer>
+  // side pill navbar animation config.
+	const sideNavbarConfig = useMemo(() => ({
+		initial: { x: '-100%', opacity: 0 },
+		animate: { x: isScrolledPastHero ? '0%' : '-100%', opacity: isScrolledPastHero ? 1 : 0 },
+		transition: { duration: 0.5, ease: 'easeOut' }
+	}), [isScrolledPastHero]);
 
-          {/* Navigation Buttons */}
-          <NavButtonsContainer>
-            {navItems.map((item) => {
-              const NavButtonVariant = getNavButtonVariant(item.id);
-              const NavButtonBackground = getNavButtonBackground(item.id);
-              return (
-                <NavButtonVariant
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id, item.desktopOffset, item.mobileOffset)}
-                  $isActive={activeSection === item.id}
-                >
-                  {NavButtonBackground && <NavButtonBackground />}
-                  <NavButtonIcon>{item.icon}</NavButtonIcon>
-                  <NavButtonText>{item.label}</NavButtonText>
-                </NavButtonVariant>
-              );
-            })}
-          </NavButtonsContainer>
+	// if the navbar is not mounted, return null.
+	if (!isMounted) return null;
 
-          {/* Social Links */}
-          <SocialLinksContainer>
-            <SocialLink
-              href="https://www.linkedin.com/in/colinwkirby/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn Profile"
-            >
-              <SocialIcon viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </SocialIcon>
-            </SocialLink>
-            
-            <SocialLink
-              href="https://github.com/KirbysGit"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub Profile"
-            >
-              <SocialIcon viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </SocialIcon>
-            </SocialLink>
-            
-            <SocialLink
-              href="/my_resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Download Resume"
-            >
-              <SocialIcon viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-              </SocialIcon>
-            </SocialLink>
-          </SocialLinksContainer>
-        </TopNavbarContent>
-      </TopNavbarContainer>
+	return (
+		<>
+			{/* top navbar */}
+			<TopNavbarContainer
+				{...topNavbarConfig}
+				style={{ 
+				pointerEvents: isTopNavbarVisible ? 'auto' : 'none',
+				visibility: isTopNavbarVisible ? 'visible' : 'hidden'
+				}}
+			>
+				<TopNavbarContent>
+					{/* logo container */}
+					<LogoContainer onClick={handleScrollToTop}>
+						<LogoImage src={fullLogo} alt="Colin Kirby" />
+					</LogoContainer>
 
-      {/* Side Pill Navbar */}
-      <SideNavbarWrapper $isCollapsed={isSideNavCollapsed}>
-        {/* Wrap both ToggleButton and SideNavbarContainer in same motion container */}
-        {/* so they animate together when sliding out */}
-        <SideNavbarMotionContainer
-          {...sideNavbarConfig}
-          style={{
-            pointerEvents: isScrolledPastHero ? 'auto' : 'none',
-            visibility: isScrolledPastHero ? 'visible' : 'hidden'
-          }}
-        >
-          {/* Toggle Button - Half circle hump attached to pill */}
-          <ToggleButton
-            onClick={() => setIsSideNavCollapsed(!isSideNavCollapsed)}
-            $isVisible={isScrolledPastHero}
-          >
-            <ChevronRight as="svg" aria-hidden="true">
-              <polyline points="9 18 15 12 9 6" />
-            </ChevronRight>
-          </ToggleButton>
-          
-          <SideNavbarContainer
-            $isCollapsed={isSideNavCollapsed}
-          >
-          <SideNavContent $isCollapsed={isSideNavCollapsed}>
-            {navItems.map((item) => {
-              const SideNavButtonVariant = getSideNavButtonVariant(item.id);
-              return (
-                <SideNavButtonWrapper key={item.id}>
-                  <SideNavButtonVariant
-                    onClick={() => handleNavClick(item.id, item.desktopOffset, item.mobileOffset)}
-                    $isActive={activeSection === item.id}
-                  >
-                    <SideNavIcon>{item.icon}</SideNavIcon>
-                    {activeSection === item.id && <ActiveIndicator />}
-                  </SideNavButtonVariant>
-                  <TooltipVariant sectionId={item.id} className="tooltip">{item.label}</TooltipVariant>
-                </SideNavButtonWrapper>
-              );
-            })}
-          </SideNavContent>
-          </SideNavbarContainer>
-        </SideNavbarMotionContainer>
-      </SideNavbarWrapper>
-    </>
-  );
+					{/* navigation buttons (all the pills)*/}
+					<NavButtonsContainer>
+						{navItems.map((item) => {
+							const NavButtonVariant = getNavButtonVariant(item.id);
+							const NavButtonBackground = getNavButtonBackground(item.id);
+							return (
+								<NavButtonVariant
+									key={item.id}
+									onClick={() => handleNavClick(item.id, item.desktopOffset, item.mobileOffset)}
+									$isActive={activeSection === item.id}
+								>
+									{NavButtonBackground && <NavButtonBackground />}
+									<NavButtonIcon>{item.icon}</NavButtonIcon>
+									<NavButtonText>{item.label}</NavButtonText>
+								</NavButtonVariant>
+							);
+						})}
+					</NavButtonsContainer>
+
+					{/* social links (linkedin, github, resume) */}
+					<SocialLinksContainer>
+						{/* linkedin */}
+						<SocialLink
+							href="https://www.linkedin.com/in/colinwkirby/"
+							target="_blank"
+							rel="noopener noreferrer"
+							aria-label="LinkedIn Profile"
+						>
+							<SocialIcon viewBox="0 0 24 24" fill="currentColor">
+								<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+							</SocialIcon>
+						</SocialLink>
+						
+						{/* github */}
+						<SocialLink
+							href="https://github.com/KirbysGit"
+							target="_blank"
+							rel="noopener noreferrer"
+							aria-label="GitHub Profile"
+						>
+							<SocialIcon viewBox="0 0 24 24" fill="currentColor">
+								<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+							</SocialIcon>
+						</SocialLink>
+						
+						{/* resume */}
+						<SocialLink
+							href="/my_resume.pdf"
+							target="_blank"
+							rel="noopener noreferrer"
+							aria-label="Download Resume"
+						>
+							<SocialIcon viewBox="0 0 24 24" fill="currentColor">
+								<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+							</SocialIcon>
+						</SocialLink>
+					</SocialLinksContainer>
+				</TopNavbarContent>
+			</TopNavbarContainer>
+
+			{/* side pill navbar */}
+			<SideNavbarWrapper $isCollapsed={isSideNavCollapsed}>
+				{/* toggle button & navbar content*/}
+				<SideNavbarMotionContainer
+					{...sideNavbarConfig}
+					style={{
+						pointerEvents: isScrolledPastHero ? 'auto' : 'none',
+						visibility: isScrolledPastHero ? 'visible' : 'hidden'
+					}}
+				>
+					{/* toggle button - half circle hump attached to pill */}
+					<ToggleButton
+						onClick={() => setIsSideNavCollapsed(!isSideNavCollapsed)}
+						$isVisible={isScrolledPastHero}
+					>
+						<ChevronRight as="svg" aria-hidden="true">
+							<polyline points="9 18 15 12 9 6" />
+						</ChevronRight>
+					</ToggleButton>
+					
+					{/* side navbar container - the circle w/ emojis */}
+					<SideNavbarContainer
+						$isCollapsed={isSideNavCollapsed}
+					>
+						<SideNavContent $isCollapsed={isSideNavCollapsed}>
+							{navItems.map((item) => {
+							const SideNavButtonVariant = getSideNavButtonVariant(item.id);
+							return (
+								<SideNavButtonWrapper key={item.id}>
+									{/* side nav button variants */}
+									<SideNavButtonVariant
+										onClick={() => handleNavClick(item.id, item.desktopOffset, item.mobileOffset)}
+										$isActive={activeSection === item.id}
+									>
+										<SideNavIcon>{item.icon}</SideNavIcon>
+										{activeSection === item.id && <ActiveIndicator />}
+									</SideNavButtonVariant>
+									{/* customized tooltip */}
+									<TooltipVariant sectionId={item.id} className="tooltip">{item.label}</TooltipVariant>
+								</SideNavButtonWrapper>
+							);
+							})}
+						</SideNavContent>
+					</SideNavbarContainer>
+				</SideNavbarMotionContainer>
+			</SideNavbarWrapper>
+		</>
+	);
 };
 
-/* ========== Styled Components ========== */
+/* ====================== styled ====================== */
 
-// Top Navbar Container
 const TopNavbarContainer = styled(motion.nav)`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  width: 100%;
-  
-  /* Enhanced glass morphism effect */
-  background: linear-gradient(
-    135deg,
-    rgba(13, 7, 27, 0.5) 0%,
-    rgba(20, 12, 35, 0.4) 50%,
-    rgba(13, 7, 27, 0.5) 100%
-  );
-  backdrop-filter: blur(30px) saturate(200%);
-  -webkit-backdrop-filter: blur(30px) saturate(200%);
-  
-  /* Glass border effect */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 20px rgba(100, 150, 255, 0.1);
-  
-  /* Subtle star effect */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: 
-      radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 1px, transparent 1px),
-      radial-gradient(circle at 80% 50%, rgba(255,255,255,0.08) 1px, transparent 1px);
-    background-size: 100% 100%;
-    animation: ${starTwinkle} 4s ease-in-out infinite;
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
-  /* GPU acceleration */
-  transform: translateZ(0);
-  will-change: transform, opacity;
-
-  /* Respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
+    /* layout */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+	position: fixed;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    
+    /* spacing */
+    width: 100%;
+    
+    /* styles */
+	backdrop-filter: blur(30px) saturate(200%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    background: linear-gradient( 135deg,
+        rgba(13, 7, 27, 0.5) 0%,
+        rgba(20, 12, 35, 0.4) 50%,
+        rgba(13, 7, 27, 0.5) 100%
+    );
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(100, 150, 255, 0.1);
+    
+    /* media queries */
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
 `;
 
-// Top Navbar Content
 const TopNavbarContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-  max-width: 100%;
-  position: relative;
-  z-index: 1;
-
-  @media (max-width: 1600px) {
-    padding: 0.875rem 1.5rem;
-  }
-  
-  @media (max-width: 900px) {
-    padding: 0.875rem 1rem;
-    /* On mobile, hide logo and center nav buttons */
+    /* layout */
+	z-index: 1;
+    display: flex;
+    position: relative;
+    align-items: center;
     justify-content: center;
-  }
+    
+    /* spacing */
+    max-width: 100%;
+    padding: 1rem 2rem;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        padding: 0.875rem 1.5rem;
+    }
+    
+    @media (max-width: 900px) {
+        justify-content: center;
+        padding: 0.875rem 1rem;
+    }
 `;
 
-// Logo Container
+/* ============ logo ============ */
+
 const LogoContainer = styled.div`
-  position: absolute;
-  left: 2rem;
-  display: flex;
-  align-items: center;
-  height: 50px;
-  cursor: pointer;
-  
-  @media (max-width: 1600px) {
-    left: 1.5rem;
-    height: 40px;
-  }
-  
-  @media (max-width: 900px) {
-    display: none; /* Hide logo on mobile */
-  }
+    /* layout */
+    position: absolute;
+    left: 2rem;
+    display: flex;
+    align-items: center;
+    
+    /* spacing */
+    height: 50px;
+    
+    /* styles */
+    cursor: pointer;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        left: 1.5rem;
+        height: 40px;
+    }
+    
+    @media (max-width: 900px) {
+        display: none;
+    }
 `;
 
 const LogoImage = styled.img`
-  height: 100%;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 0 10px rgba(150, 200, 255, 0.3));
-  transition: all 0.3s ease;
-  
-  ${LogoContainer}:hover & {
-    filter: drop-shadow(0 0 20px rgba(150, 200, 255, 0.8)) drop-shadow(0 0 30px rgba(100, 150, 255, 0.6));
-    transform: scale(1.05);
-  }
-`;
-
-// Social Links Container - positioned on right side
-const SocialLinksContainer = styled.div`
-  position: absolute;
-  right: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  height: 50px;
-  
-  @media (max-width: 1600px) {
-    right: 1.5rem;
-    height: 40px;
-    gap: 0.625rem;
-  }
-  
-  @media (max-width: 900px) {
-    display: none; /* Hide on mobile to save space */
-  }
-`;
-
-// Social Link Button - matching pill styling
-const SocialLink = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  background: transparent;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  
-  /* GPU acceleration */
-  transform: translateZ(0);
-  will-change: border-color, box-shadow;
-  
-  /* Subtle base glow */
-  box-shadow: none;
-  
-  &:hover {
-    border-color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
-  }
-  
-  &:active {
-    transition: all 0.1s ease;
-  }
-  
-  @media (max-width: 1600px) {
-    width: 36px;
-    height: 36px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    &:hover {
-      transform: none;
+    /* layout */
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+    
+    /* styles */
+	transition: all 0.3s ease;
+    filter: drop-shadow(0 0 10px rgba(150, 200, 255, 0.3));
+    
+    /* hover styles */
+    ${LogoContainer}:hover & {
+        filter: drop-shadow(0 0 20px rgba(150, 200, 255, 0.8)) drop-shadow(0 0 30px rgba(100, 150, 255, 0.6));
+        transform: scale(1.05);
     }
-  }
 `;
 
-// Social Icon SVG
+/* ======== social links ======== */
+
+const SocialLinksContainer = styled.div`
+    /* layout */
+    position: absolute;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    
+    /* spacing */
+    gap: 0.75rem;
+    height: 50px;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        right: 1.5rem;
+        gap: 0.625rem;
+        height: 40px;
+    }
+    
+    @media (max-width: 900px) {
+        display: none;
+    }
+`;
+
+const SocialLink = styled.a`
+    /* layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(0);
+    will-change: border-color, box-shadow;
+    
+    /* spacing */
+    width: 40px;
+    height: 40px;
+    
+    /* styles */
+	color: white;
+    cursor: pointer;
+    box-shadow: none;
+    border-radius: 50%;
+	text-decoration: none;
+	background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    }
+    
+    &:active {
+        transition: all 0.1s ease;
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        width: 36px;
+        height: 36px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        
+        &:hover {
+            transform: none;
+        }
+    }
+`;
+
 const SocialIcon = styled.svg`
-  width: 20px;
-  height: 20px;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
-  
-  @media (max-width: 1600px) {
-    width: 18px;
-    height: 18px;
-  }
+    /* spacing */
+    width: 20px;
+    height: 20px;
+    
+    /* styles */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        width: 18px;
+        height: 18px;
+    }
 `;
 
-// Navigation Buttons Container
+/* ======== nav. buttons ======== */
+
 const NavButtonsContainer = styled.div`
   display: flex;
   align-items: center;
@@ -828,7 +823,6 @@ const ExperienceBGWrap = styled.div`
     );
     filter: blur(20px);
     mix-blend-mode: screen;
-    animation: ${starTwinkleHero} 10s ease-in-out infinite;
   }
 `;
 
@@ -910,22 +904,6 @@ const NavButtonBackgroundProjects = styled.div`
   animation: ${cloudDrift} 10s ease-in-out infinite;
   background-position: 10% 30%, 60% 50%, 85% 20%;
   background-size: 20px 12px, 18px 10px, 22px 14px;
-  
-  /* Subtle sun glow */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 25%;
-    right: 15%;
-    width: 30%;
-    height: 30%;
-    background: radial-gradient(circle, 
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.2) 40%,
-      transparent 70%);
-    border-radius: 50%;
-    animation: ${sunGlow} 4s ease-in-out infinite;
-  }
 `;
 
 const NavButtonBackgroundSkills = styled.div`
@@ -1016,9 +994,9 @@ const NavButtonBackgroundAbout = styled.div`
   pointer-events: none;
   overflow: hidden;
   
-  /* Floating bubbles - similar to About.jsx underwater particles */
+  /* floating bubbles - similar to about section underwater particles */
   background-image:
-    /* Multiple bubbles at different positions */
+    /* multiple bubbles at different positions */
     radial-gradient(circle at 12% 20%, rgba(255,255,255,0.2) 0%, transparent 2px),
     radial-gradient(circle at 38% 35%, rgba(255,255,255,0.15) 0%, transparent 2.5px),
     radial-gradient(circle at 65% 15%, rgba(255,255,255,0.18) 0%, transparent 2px),
