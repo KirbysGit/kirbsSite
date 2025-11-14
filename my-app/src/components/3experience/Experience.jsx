@@ -13,7 +13,7 @@ import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // component imports.
 import Cloud from './Cloud';
-import Aurora from './Aurora';
+import AuroraLite from './AuroraLite';
 
 // image imports.
 import curiousImg from '@/images/3experience/curious.jpg';
@@ -98,12 +98,10 @@ const ActualExperience = memo(() => {
     // main return.
     return (
         <ExperienceContainer id="experience" data-section-snap>
-            {/* aurora effects at the top */}
-            {/*
+            {/* aurora effects at the top - lightweight version */}
             <AuroraWrapper>
-                <Aurora />
+                <AuroraLite />
             </AuroraWrapper>
-            */}
             {/* parallax cloud layers - far, mid, near */}
             <CloudLayer>
                 {/* far layer */}
