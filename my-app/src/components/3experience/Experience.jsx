@@ -36,12 +36,72 @@ const ActualExperience = memo(() => {
     const [isSlowDevice, setIsSlowDevice] = useState(false);
     const sectionRef = useRef(null);
     
+    // Performance monitoring refs
+    const renderCountRef = useRef(0);
+    const lastRenderTimeRef = useRef(performance.now());
+    const fpsRef = useRef(0);
+    const frameCountRef = useRef(0);
+    const lastFpsTimeRef = useRef(performance.now());
+    
     // Detect slower devices
     useEffect(() => {
         const cores = navigator.hardwareConcurrency || 4;
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        setIsSlowDevice(cores < 4 || prefersReducedMotion);
+        const isSlow = cores < 4 || prefersReducedMotion;
+        setIsSlowDevice(isSlow);
+        
+        console.log('[Experience] Device Detection:', {
+            cores,
+            prefersReducedMotion,
+            isSlowDevice: isSlow,
+            hardwareConcurrency: navigator.hardwareConcurrency,
+            userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
+        });
     }, []);
+    
+    // Performance monitoring: FPS tracking
+    useEffect(() => {
+        let rafId;
+        const measureFPS = () => {
+            frameCountRef.current++;
+            const now = performance.now();
+            const elapsed = now - lastFpsTimeRef.current;
+            
+            if (elapsed >= 1000) {
+                fpsRef.current = Math.round((frameCountRef.current * 1000) / elapsed);
+                frameCountRef.current = 0;
+                lastFpsTimeRef.current = now;
+                
+                // Log FPS when in viewport and low
+                if (isInViewport && fpsRef.current < 30) {
+                    console.warn(`[Experience] Low FPS detected: ${fpsRef.current} FPS`);
+                }
+            }
+            
+            rafId = requestAnimationFrame(measureFPS);
+        };
+        
+        rafId = requestAnimationFrame(measureFPS);
+        return () => cancelAnimationFrame(rafId);
+    }, [isInViewport]);
+    
+    // Performance monitoring: Render timing
+    useEffect(() => {
+        renderCountRef.current++;
+        const now = performance.now();
+        const timeSinceLastRender = now - lastRenderTimeRef.current;
+        lastRenderTimeRef.current = now;
+        
+        // Log render info when in viewport
+        if (isInViewport) {
+            console.log(`[Experience] Render #${renderCountRef.current}`, {
+                timeSinceLastRender: `${timeSinceLastRender.toFixed(2)}ms`,
+                fps: fpsRef.current || 'calculating...',
+                isSlowDevice,
+                timestamp: new Date().toISOString()
+            });
+        }
+    });
     
     // IntersectionObserver to detect when section is in viewport - optimized to prevent thrash
     const lastInView = useRef(false);
@@ -279,8 +339,19 @@ const ActualExperience = memo(() => {
                         {EXPERIENCE_CARDS.map((card, i) => {
                             const slideIdx = i + 1;                     // get slide index.
                             const cardStyle = getCardStyle(slideIdx);   // get card style.
-                            // Skip rendering far-off cards (distance > 1) - they're fully hidden anyway
-                            if (cardStyle.distance > 1) return null;
+            // Skip rendering far-off cards (distance > 1) - they're fully hidden anyway
+            if (cardStyle.distance > 1) return null;
+            
+            // Log when card becomes focused for performance debugging
+            if (cardStyle.isFocused && isInViewport) {
+                console.log(`[Experience] Card focused: ${card.name}`, {
+                    index,
+                    slideIdx,
+                    distance: cardStyle.distance,
+                    fps: fpsRef.current || 'calculating...',
+                    timestamp: new Date().toISOString()
+                });
+            }
                             const themeRGB = card.themeColorRgb;        // get theme color.
                             
                             // ternary operator to get logo source based on card id.

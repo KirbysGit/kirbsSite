@@ -59,7 +59,7 @@ const Aurora = React.memo(() => {
   const lastInView = useRef(false); // prevent state thrash
   const rafIdRef = useRef(null); // track pending RAF for cleanup
 
-  // Detect device tier (slow/mid/fast)
+  // Detect device tier (slow/mid/fast) - more aggressive detection for laptops
   const tier = useMemo(() => {
     if (typeof window === 'undefined') return 'fast';
     const dpr = window.devicePixelRatio || 1;
@@ -67,9 +67,33 @@ const Aurora = React.memo(() => {
     const cores = navigator.hardwareConcurrency || 4;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
-    if (cores < 4 || prefersReducedMotion) return 'slow';
-    if (dpr < 1.25 || isMobile) return 'mid';
-    return 'fast';
+    // More aggressive detection: laptops often have 4+ cores but are still slower
+    // Check for lower-end devices more aggressively
+    const isSlow = cores < 4 || prefersReducedMotion;
+    // Mid tier: 4-6 cores OR lower DPR OR mobile OR smaller screen
+    const isMid = cores <= 6 || dpr < 1.5 || isMobile || window.innerWidth < 1400;
+    
+    let detectedTier;
+    if (isSlow) {
+      detectedTier = 'slow';
+    } else if (isMid) {
+      detectedTier = 'mid';
+    } else {
+      detectedTier = 'fast';
+    }
+    
+    // Log tier detection for debugging
+    console.log('[Aurora] Tier Detection:', {
+      tier: detectedTier,
+      cores,
+      dpr,
+      isMobile,
+      prefersReducedMotion,
+      screenWidth: window.innerWidth,
+      waveBudget: detectedTier === 'slow' ? 0 : detectedTier === 'mid' ? 2 : 4
+    });
+    
+    return detectedTier;
   }, []);
 
   // Detect slower devices
@@ -210,7 +234,7 @@ const Aurora = React.memo(() => {
   }, []);
 
   // Wave budget based on tier
-  const waveBudget = tier === 'slow' ? 0 : 4; // mid and fast = 4, slow = none
+  const waveBudget = tier === 'slow' ? 0 : tier === 'mid' ? 2 : 4; // slow = 0, mid = 2, fast = 4
 
   // Render minimal placeholder when paths not ready
   if (!pathsReady) {
