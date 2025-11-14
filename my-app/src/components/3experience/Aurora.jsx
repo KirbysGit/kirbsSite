@@ -4,7 +4,7 @@
 // waves. i put too much time into it to not keep it so its STAYING!
 
 // imports.
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 // generate smooth wave paths.
@@ -50,11 +50,26 @@ function generateWavePath(width = 2400, height = 120, amplitude = 26, frequency 
 }
 
 // actual component.
-const Aurora = () => {
+const Aurora = React.memo(() => {
   // Performance optimization state
   const [isInViewport, setIsInViewport] = useState(false);
   const [isSlowDevice, setIsSlowDevice] = useState(false);
+  const [pathsReady, setPathsReady] = useState(false);
   const sectionRef = useRef(null);
+  const lastInView = useRef(false); // prevent state thrash
+
+  // Detect device tier (slow/mid/fast)
+  const tier = useMemo(() => {
+    if (typeof window === 'undefined') return 'fast';
+    const dpr = window.devicePixelRatio || 1;
+    const isMobile = window.matchMedia('(max-width: 900px)').matches;
+    const cores = navigator.hardwareConcurrency || 4;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (cores < 4 || prefersReducedMotion) return 'slow';
+    if (dpr < 1.25 || isMobile) return 'mid';
+    return 'fast';
+  }, []);
 
   // Detect slower devices
   useEffect(() => {
@@ -63,16 +78,19 @@ const Aurora = () => {
     setIsSlowDevice(cores < 4 || prefersReducedMotion);
   }, []);
 
-  // IntersectionObserver to detect when section is in viewport
+  // IntersectionObserver to detect when section is in viewport - optimized to prevent thrash
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsInViewport(entry.isIntersecting && entry.intersectionRatio > 0.1);
-        });
+      ([entry]) => {
+        // only update state if value actually changed
+        const next = entry.isIntersecting && entry.intersectionRatio > 0.1;
+        if (next !== lastInView.current) {
+          lastInView.current = next;
+          setIsInViewport(next);
+        }
       },
       {
         threshold: [0, 0.1, 0.5, 1],
@@ -84,115 +102,194 @@ const Aurora = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Generate wave paths - wider to stretch across entire screen
-  // Increased width from 2400 to 3200 to ensure full coverage, starting at 10% from left
-  // Amplitude range: 27-34 (moderate variation), Frequency range: 3.5-5.5 (some variation)
-  // Increased thickness for better overlap between waves
-  const wave1Path = generateWavePath(3200, 120, 30, 4, 0, 42);
-  const wave1Path2 = generateWavePath(3200, 120, 32, 4, Math.PI/8, 42);
-  const wave1Path3 = generateWavePath(3200, 120, 28, 4, Math.PI/4, 42);
+  // Memoize every wave path set. Recompute only when device tier changes.
+  const {
+    wave1Path, wave1Path2, wave1Path3,
+    wave2Path, wave2Path2, wave2Path3,
+    wave3Path, wave3Path2, wave3Path3,
+    wave4Path, wave4Path2, wave4Path3
+  } = useMemo(() => {
+    const p = (a, f, ph, t) => ({
+      a1: generateWavePath(3200, 120, a, f, ph, t),
+      a2: generateWavePath(3200, 120, a + 2, f, ph + Math.PI / 8, t),
+      a3: generateWavePath(3200, 120, a - 2, f, ph + Math.PI / 4, t),
+    });
 
-  const wave2Path = generateWavePath(3200, 120, 33, 4.5, Math.PI/3, 46);
-  const wave2Path2 = generateWavePath(3200, 120, 34, 4.5, Math.PI/3 + Math.PI/8, 46);
-  const wave2Path3 = generateWavePath(3200, 120, 31, 4.5, Math.PI/3 + Math.PI/4, 46);
+    const w1 = p(30, 4, 0, 42);
+    const w2 = p(33, 4.5, Math.PI / 3, 46);
+    const w3 = p(29, 5, Math.PI / 6, 48);
+    const w4 = p(32, 3.8, Math.PI / 2, 44);
 
-  const wave3Path = generateWavePath(3200, 120, 29, 5, Math.PI/6, 48);
-  const wave3Path2 = generateWavePath(3200, 120, 31, 5, Math.PI/6 + Math.PI/8, 48);
-  const wave3Path3 = generateWavePath(3200, 120, 27, 5, Math.PI/6 + Math.PI/4, 48);
+    return {
+      wave1Path: w1.a1, wave1Path2: w1.a2, wave1Path3: w1.a3,
+      wave2Path: w2.a1, wave2Path2: w2.a2, wave2Path3: w2.a3,
+      wave3Path: w3.a1, wave3Path2: w3.a2, wave3Path3: w3.a3,
+      wave4Path: w4.a1, wave4Path2: w4.a2, wave4Path3: w4.a3,
+    };
+  }, [tier]); // stable knob based on device tier
 
-  const wave4Path = generateWavePath(3200, 120, 32, 3.8, Math.PI/2, 44);
-  const wave4Path2 = generateWavePath(3200, 120, 33, 3.8, Math.PI/2 + Math.PI/8, 44);
-  const wave4Path3 = generateWavePath(3200, 120, 30, 3.8, Math.PI/2 + Math.PI/4, 44);
+  // Generate paths off the main thread when possible
+  useEffect(() => {
+    let canceled = false;
+    const run = () => {
+      if (!canceled) {
+        setPathsReady(true);
+      }
+    };
+    
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(run, { timeout: 200 });
+      return () => {
+        canceled = true;
+        if (window.cancelIdleCallback) {
+          window.cancelIdleCallback(id);
+        }
+      };
+    } else {
+      const t = setTimeout(run, 0);
+      return () => {
+        canceled = true;
+        clearTimeout(t);
+      };
+    }
+  }, []);
 
-  // On slow devices, show only 2 waves instead of 4
-  const showAllWaves = !isSlowDevice;
+  // Wave budget based on tier
+  const waveBudget = tier === 'slow' ? 0 : 4; // mid and fast = 4, slow = none
+
+  // Render minimal placeholder when paths not ready
+  if (!pathsReady) {
+    return <AuroraLayer ref={sectionRef} $isInViewport={false} $isSlowDevice={true} $tier="slow" />;
+  }
 
   return (
-    <AuroraLayer ref={sectionRef} $isInViewport={isInViewport} $isSlowDevice={isSlowDevice}>
+    <AuroraLayer ref={sectionRef} $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} $tier={tier}>
       {/* breathing glow background - reduced to 1 on slow devices */}
-      <AuroraGlow $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} />
-      {!isSlowDevice && <AuroraGlow $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} />}
+      <AuroraGlow $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} $tier={tier} />
+      {tier === 'fast' && <AuroraGlow $isInViewport={isInViewport} $isSlowDevice={isSlowDevice} $tier={tier} />}
       
-      {/* first wave - always show */}
-      <AuroraWave 
-        $top="16%"
-        $opacity={0.55}
-        $blur={isSlowDevice ? 40 : 50}
-        $duration={isSlowDevice ? 80 : 60}
-        $delay={0}
-        $isInViewport={isInViewport}
-        $isSlowDevice={isSlowDevice}
-        $wavePath={wave1Path}
-        $wavePath2={wave1Path2}
-        $wavePath3={wave1Path3}
-      />
-      
-      {/* second wave - always show */}
-      <AuroraWave 
-        $top="26%"
-        $opacity={0.525}
-        $blur={isSlowDevice ? 50 : 60}
-        $duration={isSlowDevice ? 85 : 65}
-        $delay={8}
-        $isInViewport={isInViewport}
-        $isSlowDevice={isSlowDevice}
-        $wavePath={wave2Path}
-        $wavePath2={wave2Path2}
-        $wavePath3={wave2Path3}
-      />
-      
-      {/* third wave - hide on slow devices */}
-      {showAllWaves && (
-        <AuroraWave 
-          $top="36%"
-          $opacity={0.5}
-          $blur={isSlowDevice ? 60 : 70}
-          $duration={isSlowDevice ? 90 : 70}
-          $delay={15}
-          $isInViewport={isInViewport}
-          $isSlowDevice={isSlowDevice}
-          $wavePath={wave3Path}
-          $wavePath2={wave3Path2}
-          $wavePath3={wave3Path3}
+      {/* Conditional rendering: full waves when in viewport, minimal static when out */}
+      {isInViewport && waveBudget > 0 ? (
+        <>
+          {/* first wave */}
+          <AuroraWave 
+            style={{
+              ['--p1']: `path("${wave1Path}")`,
+              ['--p2']: `path("${wave1Path2}")`,
+              ['--p3']: `path("${wave1Path3}")`,
+            }}
+            $top="16%"
+            $opacity={0.55}
+            $blur={50}
+            $duration={60}
+            $delay={0}
+            $isInViewport={isInViewport}
+            $isSlowDevice={isSlowDevice}
+            $tier={tier}
+          />
+          
+          {/* second wave */}
+          {waveBudget >= 2 && (
+            <AuroraWave 
+              style={{
+                ['--p1']: `path("${wave2Path}")`,
+                ['--p2']: `path("${wave2Path2}")`,
+                ['--p3']: `path("${wave2Path3}")`,
+              }}
+              $top="26%"
+              $opacity={0.525}
+              $blur={60}
+              $duration={65}
+              $delay={8}
+              $isInViewport={isInViewport}
+              $isSlowDevice={isSlowDevice}
+              $tier={tier}
+            />
+          )}
+          
+          {/* third wave */}
+          {waveBudget >= 3 && (
+            <AuroraWave 
+              style={{
+                ['--p1']: `path("${wave3Path}")`,
+                ['--p2']: `path("${wave3Path2}")`,
+                ['--p3']: `path("${wave3Path3}")`,
+              }}
+              $top="36%"
+              $opacity={0.5}
+              $blur={70}
+              $duration={70}
+              $delay={15}
+              $isInViewport={isInViewport}
+              $isSlowDevice={isSlowDevice}
+              $tier={tier}
+            />
+          )}
+          
+          {/* fourth wave */}
+          {waveBudget >= 4 && (
+            <AuroraWave 
+              style={{
+                ['--p1']: `path("${wave4Path}")`,
+                ['--p2']: `path("${wave4Path2}")`,
+                ['--p3']: `path("${wave4Path3}")`,
+              }}
+              $top="46%"
+              $opacity={0.575}
+              $blur={80}
+              $duration={75}
+              $delay={22}
+              $isInViewport={isInViewport}
+              $isSlowDevice={isSlowDevice}
+              $tier={tier}
+            />
+          )}
+        </>
+      ) : !isInViewport && waveBudget > 0 ? (
+        /* Minimal static version when out of viewport (only for mid/fast devices) */
+        <AuroraWave
+          style={{
+            ['--p1']: `path("${wave1Path}")`,
+          }}
+          $top="26%"
+          $opacity={0.3}
+          $blur={30}
+          $duration={0}
+          $delay={0}
+          $isInViewport={false}
+          $isSlowDevice={false}
+          $tier={tier}
         />
-      )}
-      
-      {/* fourth wave - hide on slow devices */}
-      {showAllWaves && (
-        <AuroraWave 
-          $top="46%"
-          $opacity={0.575}
-          $blur={isSlowDevice ? 70 : 80}
-          $duration={isSlowDevice ? 95 : 75}
-          $delay={22}
-          $isInViewport={isInViewport}
-          $isSlowDevice={isSlowDevice}
-          $wavePath={wave4Path}
-          $wavePath2={wave4Path2}
-          $wavePath3={wave4Path3}
-        />
-      )}
+      ) : null}
     </AuroraLayer>
   );
-};
+});
 
 // aurora layer container.
-const AuroraLayer = styled.div`
+const AuroraLayer = styled.div.attrs(props => ({
+  $tier: props.$tier || 'fast'
+}))`
     /* layout */
     inset: 0;
     z-index: 1;
     overflow: hidden;
     position: absolute;
     pointer-events: none;
+    /* Aggressive containment for performance */
     contain: layout style paint;
+    content-visibility: auto;
 
     /* styles */
     will-change: auto;
     transform: translateZ(0);
+    /* Isolate compositing layer */
+    isolation: isolate;
 `;
 
 // breathing glow background.
-const AuroraGlow = styled.div`
+const AuroraGlow = styled.div.attrs(props => ({
+  $tier: props.$tier || 'fast'
+}))`
     /* layout */
     top: 35%;
     left: 0;
@@ -201,8 +298,12 @@ const AuroraGlow = styled.div`
     position: absolute;
 
     /* styles */
-    filter: blur(${props => props.$isSlowDevice ? '100px' : '120px'});
-    mix-blend-mode: screen;
+    filter: blur(${props => {
+      if (props.$tier === 'slow') return '100px';
+      if (props.$tier === 'mid') return '110px';
+      return '120px';
+    }});
+    mix-blend-mode: ${props => (props.$tier === 'slow' || !props.$isInViewport) ? 'normal' : 'screen'};
     /* Simplified gradient - reduced from 4 to 3 stops */
     background: radial-gradient(
         ellipse at 50% 50%,
@@ -212,7 +313,7 @@ const AuroraGlow = styled.div`
     );
     /* Animation throttling: pause when not in viewport, slower on slow devices */
     ${props => props.$isInViewport 
-      ? css`animation: breatheGlow ${props.$isSlowDevice ? '16s' : '12s'} ease-in-out infinite;`
+      ? css`animation: breatheGlow ${props.$tier === 'slow' ? '16s' : props.$tier === 'mid' ? '14s' : '12s'} ease-in-out infinite;`
       : css`animation: none;`}
     animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
     will-change: ${props => props.$isInViewport ? 'opacity' : 'auto'};
@@ -226,8 +327,16 @@ const AuroraGlow = styled.div`
         transparent 100%
         );
         animation-delay: 4s;
-        animation-duration: ${props => props.$isSlowDevice ? '20s' : '15s'};
-        filter: blur(${props => props.$isSlowDevice ? '120px' : '140px'});
+        animation-duration: ${props => {
+          if (props.$tier === 'slow') return '20s';
+          if (props.$tier === 'mid') return '17s';
+          return '15s';
+        }};
+        filter: blur(${props => {
+          if (props.$tier === 'slow') return '120px';
+          if (props.$tier === 'mid') return '130px';
+          return '140px';
+        }});
     }
 
     /* keyframes for breathing glow */
@@ -242,7 +351,9 @@ const AuroraGlow = styled.div`
 `;
 
 // aurora wave.
-const AuroraWave = styled.div`
+const AuroraWave = styled.div.attrs(props => ({
+  $tier: props.$tier || 'fast'
+}))`
     /* layout */
     position: absolute;
     left: -10%; /* Start 10% to the left to ensure full coverage */
@@ -253,18 +364,28 @@ const AuroraWave = styled.div`
 
     /* styles */
     opacity: ${p => p.$opacity || 0.3};
-    clip-path: path("${p => p.$wavePath}");              /* ribbon silhouette */
-    will-change: ${p => p.$isInViewport ? 'clip-path' : 'auto'};
+    /* Use CSS variable for clip-path - fallback to static path if var not supported */
+    clip-path: var(--p1, path("M0,60 L3200,60 L3200,102 L0,102 Z"));
+    /* Disable expensive clip-path animation on slow devices - use static path */
+    will-change: ${p => (p.$isInViewport && !p.$isSlowDevice && p.$tier === 'fast') ? 'clip-path, transform, opacity' : 'auto'};
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 
-    /* Animation throttling: pause when not in viewport, slower on slow devices */
-    ${p => p.$isInViewport 
-      ? css`animation: maskPath ${p.$duration || 60}s ease-in-out infinite;`
-      : css`animation: none;`}
+    /* Animation throttling: pause when not in viewport, disable clip-path animation on slow devices */
+    ${p => {
+      if (!p.$isInViewport) {
+        return css`animation: none;`;
+      }
+      // On slow/mid devices, disable clip-path animation (very expensive) - keep static path
+      if (p.$isSlowDevice || p.$tier !== 'fast') {
+        return css`animation: none;`;
+      }
+      // Fast devices: full clip-path animation using CSS variables
+      return css`animation: maskPath ${p.$duration || 60}s ease-in-out infinite;`;
+    }}
     animation-delay: ${p => p.$delay || 0}s;
-    animation-play-state: ${p => p.$isInViewport ? 'running' : 'paused'};
+    animation-play-state: ${p => (p.$isInViewport && !p.$isSlowDevice && p.$tier === 'fast') ? 'running' : 'paused'};
 
     /* effect layer 1 - main glow, rim, curtain banding */
     &::before {
@@ -289,46 +410,84 @@ const AuroraWave = styled.div`
           rgba(0,0,0,0.10) 100%);
       background-size: 200% 100%, 100% 100%, 100% 100%;
       background-position: 0% 50%, 50% 0%, 50% 100%;
-      filter: blur(${p => p.$blur || 50}px);
-      mix-blend-mode: screen;
+      /* Reduce blur based on tier - blur is very expensive */
+      filter: blur(${p => {
+        const base = p.$blur || 50;
+        if (p.$tier === 'slow') return Math.max(20, base * 0.4) + 'px';
+        if (p.$tier === 'mid') return Math.max(24, base * 0.7) + 'px';
+        return base + 'px';
+      }});
+      mix-blend-mode: ${p => (p.$tier === 'slow' || !p.$isInViewport) ? 'normal' : 'screen'};
 
-      /* Animation throttling: pause when not in viewport, slower on slow devices, reduce animation count */
-      ${p => p.$isInViewport 
-        ? css`
+      /* Animation throttling: pause when not in viewport, disable expensive animations on slow/mid devices */
+      ${p => {
+        if (!p.$isInViewport) {
+          return css`animation: none;`;
+        }
+        // On slow devices, only use simple colorFlow (disable expensive mask animations)
+        if (p.$tier === 'slow' || p.$isSlowDevice) {
+          return css`
+            animation: colorFlow 30s linear infinite;
+          `;
+        }
+        // Mid tier: colorFlow and waveDrift only
+        if (p.$tier === 'mid') {
+          return css`
+            animation:
+              colorFlow 20s linear infinite,
+              waveDrift ${p.$duration || 60}s ease-in-out infinite;
+          `;
+        }
+        // Fast devices: all animations
+        return css`
           animation:
-            colorFlow ${p.$isSlowDevice ? '24s' : '18s'} linear infinite,
+            colorFlow 18s linear infinite,
             waveDrift ${p.$duration || 60}s ease-in-out infinite,
-            ${!p.$isSlowDevice ? css`flicker 10s ease-in-out infinite,` : ''}
-            bandDrift ${p.$isSlowDevice ? '30s' : '22s'} linear infinite;
-        `
-        : css`animation: none;`}
+            flicker 10s ease-in-out infinite,
+            bandDrift 22s linear infinite;
+        `;
+      }}
       animation-delay: ${p => p.$delay || 0}s;
       animation-play-state: ${p => p.$isInViewport ? 'running' : 'paused'};
-      will-change: ${p => p.$isInViewport ? 'background-position, transform, opacity, -webkit-mask-position, mask-position' : 'auto'};
+      will-change: ${p => {
+        if (!p.$isInViewport) return 'auto';
+        // On slow devices, only animate background-position (cheapest)
+        if (p.$tier === 'slow' || p.$isSlowDevice) return 'background-position';
+        // Mid tier: background-position and transform
+        if (p.$tier === 'mid') return 'background-position, transform';
+        // Fast devices: all properties
+        return 'background-position, transform, opacity, -webkit-mask-position, mask-position';
+      }};
 
-      /* Curtain banding mask that drifts horizontally */
-      -webkit-mask-image:
-        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-        repeating-linear-gradient(
-          90deg,
-          #000 0 16px,
-          rgba(0,0,0,.7) 16px 26px,
-          rgba(0,0,0,.35) 26px 40px,
-          transparent 40px 64px
-        );
-      -webkit-mask-size: auto, 220% 100%;
-      -webkit-mask-position: 0 0, 0% 0;
-              mask-image:
-        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-        repeating-linear-gradient(
-          90deg,
-          #000 0 16px,
-          rgba(0,0,0,.7) 16px 26px,
-          rgba(0,0,0,.35) 26px 40px,
-          transparent 40px 64px
-        );
-              mask-size: auto, 220% 100%;
-              mask-position: 0 0, 0% 0;
+      /* Curtain banding mask that drifts horizontally - disable on slow/mid devices */
+      ${p => (p.$tier === 'fast' && !p.$isSlowDevice) ? css`
+        -webkit-mask-image:
+          linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+          repeating-linear-gradient(
+            90deg,
+            #000 0 16px,
+            rgba(0,0,0,.7) 16px 26px,
+            rgba(0,0,0,.35) 26px 40px,
+            transparent 40px 64px
+          );
+        -webkit-mask-size: auto, 220% 100%;
+        -webkit-mask-position: 0 0, 0% 0;
+                mask-image:
+          linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+          repeating-linear-gradient(
+            90deg,
+            #000 0 16px,
+            rgba(0,0,0,.7) 16px 26px,
+            rgba(0,0,0,.35) 26px 40px,
+            transparent 40px 64px
+          );
+                mask-size: auto, 220% 100%;
+                mask-position: 0 0, 0% 0;
+      ` : css`
+        /* Simplified mask on slow devices - no repeating pattern */
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+                mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+      `}
 
       /* reduce overscan/blur on mid-width screens to avoid clipping */
       @media (max-width: 1600px) {
@@ -349,27 +508,44 @@ const AuroraWave = styled.div`
         rgba(120, 220, 255, 0.28) 0%,
         rgba(110, 255, 190, 0.22) 50%,
         rgba(170, 140, 255, 0.20) 100%);
-      filter: blur(${p => (p.$blur || 50) * 0.85}px);
-      mix-blend-mode: screen;
+      /* Disable secondary layer blur on slow devices - hide entire layer */
+      ${p => {
+        if (p.$tier === 'slow' || p.$isSlowDevice) {
+          return css`display: none;`;
+        }
+        const base = p.$blur || 50;
+        const blurValue = p.$tier === 'mid' ? base * 0.75 : base * 0.85;
+        return css`filter: blur(${blurValue}px);`;
+      }}
+      mix-blend-mode: ${p => (p.$tier === 'slow' || !p.$isInViewport) ? 'normal' : 'screen'};
       opacity: 0.45;
       transform: translate3d(0, -2px, 0);
-      /* Animation throttling: pause when not in viewport, slower on slow devices */
-      ${p => p.$isInViewport 
-        ? css`animation: colorFlow ${p.$isSlowDevice ? '35s' : '26s'} linear infinite reverse;`
-        : css`animation: none;`}
+      /* Animation throttling: disable on slow/mid devices (secondary layer not critical) */
+      ${p => {
+        if (!p.$isInViewport || p.$tier === 'slow' || p.$isSlowDevice) {
+          return css`animation: none;`;
+        }
+        return css`animation: colorFlow 26s linear infinite reverse;`;
+      }}
       animation-delay: ${p => (Number(p.$delay) || 0) * 0.5}s;
-      animation-play-state: ${p => p.$isInViewport ? 'running' : 'paused'};
+      animation-play-state: ${p => (p.$isInViewport && p.$tier === 'fast' && !p.$isSlowDevice) ? 'running' : 'paused'};
 
-      -webkit-mask-image:
-        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-        repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
-      -webkit-mask-size: auto, 220% 100%;
-      -webkit-mask-position: 0 0, 0% 0;
-              mask-image:
-        linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
-        repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
-              mask-size: auto, 220% 100%;
-              mask-position: 0 0, 0% 0;
+      /* Simplified mask on slow/mid devices - disable complex repeating patterns */
+      ${p => (p.$tier === 'fast' && !p.$isSlowDevice) ? css`
+        -webkit-mask-image:
+          linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+          repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
+        -webkit-mask-size: auto, 220% 100%;
+        -webkit-mask-position: 0 0, 0% 0;
+                mask-image:
+          linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%),
+          repeating-linear-gradient(90deg,#000 0 16px,rgba(0,0,0,.7) 16px 26px,rgba(0,0,0,.35) 26px 40px,transparent 40px 64px);
+                mask-size: auto, 220% 100%;
+                mask-position: 0 0, 0% 0;
+      ` : css`
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+                mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+      `}
 
       /* reduce overscan/blur on mid-width screens to avoid clipping */
       @media (max-width: 1600px) {
@@ -378,11 +554,11 @@ const AuroraWave = styled.div`
       }
     }
 
-    /* keyframes - reduced from 4 to 3 path variations */
+    /* keyframes - use CSS variables for static keyframes (no prop interpolation) */
     @keyframes maskPath {
-      0%      { clip-path: path("${p => p.$wavePath}"); }
-      50%     { clip-path: path("${p => p.$wavePath2}"); }
-      100%    { clip-path: path("${p => p.$wavePath3}"); }
+      0%      { clip-path: var(--p1); }
+      50%     { clip-path: var(--p2); }
+      100%    { clip-path: var(--p3); }
     }
 
     @keyframes waveDrift {

@@ -186,28 +186,26 @@ const CloudImage = styled.img`
     /* GPU acceleration */
     transform: translateZ(0);
     
-    /* apply secondary animations - reduced complexity on slow devices */
+    /* apply secondary animations - heavily reduced on slow devices */
     ${props => {
         if (!props.$isInViewport) {
             return css`animation: none;`;
         }
         
-        const floatDuration = {
-            'far': props.$isSlowDevice ? '10s' : '8s',
-            'mid': props.$isSlowDevice ? '9s' : '7s',
-            'near': props.$isSlowDevice ? '8s' : '6s',
-            'default': props.$isSlowDevice ? '9s' : '7s'
-        };
-        const duration = floatDuration[props.$layer] || floatDuration.default;
-        
-        // On slow devices, only use vertical float (remove scale breathing and opacity drift)
+        // On slow devices, disable ALL secondary animations (only horizontal drift remains)
         if (props.$isSlowDevice) {
-            return css`
-                animation: ${verticalFloat} ${duration} ease-in-out ${props.$delay * 0.3}s infinite;
-            `;
+            return css`animation: none;`;
         }
         
         // Fast devices: all animations
+        const floatDuration = {
+            'far': '8s',
+            'mid': '7s',
+            'near': '6s',
+            'default': '7s'
+        };
+        const duration = floatDuration[props.$layer] || floatDuration.default;
+        
         const scaleDuration = {
             'far': '12s',
             'mid': '10s',
@@ -229,7 +227,12 @@ const CloudImage = styled.img`
         `;
     }}
     animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-    will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
+    will-change: ${props => {
+        if (!props.$isInViewport) return 'auto';
+        // On slow devices, only will-change for horizontal drift (handled by container)
+        if (props.$isSlowDevice) return 'auto';
+        return 'transform, opacity';
+    }};
 `;
 
 // export component.

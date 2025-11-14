@@ -137,25 +137,37 @@ const ActualExperience = memo(() => {
             </AuroraWrapper>
             
             {/* parallax cloud layers - far, mid, near */}
-            {/* Optimized: Reduced from 20 to 12 clouds for better performance */}
+            {/* Optimized: Reduced cloud count on slow devices (12 → 6) for better performance */}
             <CloudLayer>
-                {/* far layer - 4 clouds (reduced from 6) */}
+                {/* far layer - 2 clouds on slow devices, 4 on fast */}
                 <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
                 <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                {!isSlowDevice && (
+                    <>
+                        <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                        <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                    </>
+                )}
                 
-                {/* mid layer - 4 clouds (reduced from 7) */}
+                {/* mid layer - 2 clouds on slow devices, 4 on fast */}
                 <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
                 <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                {!isSlowDevice && (
+                    <>
+                        <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                        <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                    </>
+                )}
                 
-                {/* near layer - 4 clouds (reduced from 7) */}
+                {/* near layer - 2 clouds on slow devices, 4 on fast */}
                 <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
                 <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                {!isSlowDevice && (
+                    <>
+                        <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                        <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
+                    </>
+                )}
             </CloudLayer>
             
             {/* entire content wrapper */}
@@ -240,9 +252,9 @@ const ActualExperience = memo(() => {
                             // if card type is tech, return tech experience card.
                             if (card.type === 'tech') {
                                 return (
-                                    <Slide key={card.id} $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
+                                    <Slide key={card.id} $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance} $isSlowDevice={isSlowDevice}>
                                         {/* overall experience card */}
-                                        <ExperienceCard>
+                                        <ExperienceCard $isFocused={cardStyle.isFocused} $isSlowDevice={isSlowDevice}>
                                             <CardHeader>
                                                 {/* header of card, includes company name, how long i worked there, and company logo */}
                                                 <HeaderTop>
@@ -294,7 +306,12 @@ const ActualExperience = memo(() => {
                                                                 {/* viewport for skill carousel */}
                                                                 <RowViewport>
                                                                     {/* track for skill carousel */}
-                                                                    <RowTrack style={{'--dur': cfg.dur, '--delay': cfg.delay}} $reverse={cfg.reverse}>
+                                                                    <RowTrack 
+                                                                        style={{'--dur': cfg.dur, '--delay': cfg.delay}} 
+                                                                        $reverse={cfg.reverse}
+                                                                        $isCardFocused={cardStyle.isFocused}
+                                                                        $isSlowDevice={isSlowDevice}
+                                                                    >
                                                                         {[0,1,2].map(rep => (
                                                                             <Sequence key={`${cfg.key}-seq-${rep}`} aria-hidden={rep>0}>
                                                                                 {card.skills[cfg.key].map(name => (
@@ -319,14 +336,15 @@ const ActualExperience = memo(() => {
 
                             // if card type is service, return service experience card.
                             return (
-                                <Slide 
-                                    key={card.id} 
-                                    $position={cardStyle.position} 
-                                    $isFocused={cardStyle.isFocused} 
-                                    $distance={cardStyle.distance}
-                                    data-transitioning={cardStyle.distance > 0 ? "true" : "false"}
-                                >
-                                    <ServiceExperienceCard $theme={card.theme}>
+                                    <Slide 
+                                        key={card.id} 
+                                        $position={cardStyle.position} 
+                                        $isFocused={cardStyle.isFocused} 
+                                        $distance={cardStyle.distance}
+                                        $isSlowDevice={isSlowDevice}
+                                        data-transitioning={cardStyle.distance > 0 ? "true" : "false"}
+                                    >
+                                        <ServiceExperienceCard $theme={card.theme} $isSlowDevice={isSlowDevice}>
                                         {/* overall service experience card */}
                                         <CardHeader>
                                             {/* header of card, includes company name, how long i worked there, and company logo */}
@@ -437,10 +455,12 @@ const CloudLayer = styled.div`
     z-index: 1;
     position: absolute;
 
-    /* GPU acceleration and containment */
+    /* GPU acceleration and aggressive containment */
     transform: translateZ(0);
     contain: layout style paint;
+    content-visibility: auto;
     will-change: auto;
+    isolation: isolate;
 
     /* styles */
     overflow: hidden;
@@ -600,9 +620,10 @@ const Stage = styled.div`
     overflow: visible; /* Allow cards to overflow */
     place-items: center;
 
-    /* GPU acceleration */
+    /* GPU acceleration and containment */
     transform: translateZ(0);
     contain: layout style; /* Removed paint containment to allow overflow */
+    isolation: isolate; /* Create new stacking context for better performance */
 
     /* spacing */
     margin: 0 auto;
@@ -698,7 +719,9 @@ const Track = styled.div`
 `;
 
 // slide - individual carousel item.
-const Slide = styled.div`
+const Slide = styled.div.attrs(props => ({
+    $isSlowDevice: props.$isSlowDevice || false
+}))`
     /* layout */
     height: 100%;
     width: 100%;
@@ -711,7 +734,8 @@ const Slide = styled.div`
 
     /* GPU acceleration */
     transform: translateZ(0);
-    will-change: transform, opacity;
+    will-change: ${({ $isFocused, $distance }) => 
+        ($isFocused || $distance <= 1) ? 'transform, opacity' : 'auto'};
     contain: layout style; /* Removed paint containment to allow overflow */
     
     /* styles */
@@ -730,20 +754,21 @@ const Slide = styled.div`
     `}
     
     /* adjacent card */
-    ${({ $distance, $position }) => $distance === 1 && `
+    ${({ $distance, $position, $isSlowDevice }) => $distance === 1 && `
         transform: translateX(${$position > 0 ? '28%' : '-28%'}) scale(0.8) translateZ(-30px);
         opacity: 0.5;
         z-index: 5;
-        filter: blur(1.5px) saturate(0.75);
-        will-change: transform, opacity;
+        ${!$isSlowDevice ? 'filter: blur(1.5px) saturate(0.75);' : 'filter: blur(0.5px) saturate(0.8);'}
+        will-change: ${$isSlowDevice ? 'auto' : 'transform, opacity'};
     `}
     /* far cards (distance > 1) - keep off-stage and fully hidden */
-    ${({ $distance, $position }) => $distance > 1 && `
+    ${({ $distance, $position, $isSlowDevice }) => $distance > 1 && `
         transform: translateX(${$position > 0 ? '40%' : '-40%'}) scale(0.6) translateZ(-60px);
         opacity: 0;
         z-index: 1;
-        filter: blur(2px) saturate(0.6);
-        will-change: transform, opacity;
+        ${!$isSlowDevice ? 'filter: blur(2px) saturate(0.6);' : 'filter: none;'}
+        will-change: auto;
+        content-visibility: auto; /* Skip rendering when off-screen */
     `}
     
     /* media queries */
@@ -845,7 +870,10 @@ const CompanyLogo = styled.img`
 /* ========== experience card ========== */
 
 // individual experience card - phone screen style with frosted glass
-const ExperienceCard = styled.div`
+const ExperienceCard = styled.div.attrs(props => ({
+    $isFocused: props.$isFocused || false,
+    $isSlowDevice: props.$isSlowDevice || false
+}))`
     /* layout */
     width: 500px;
     height: fit-content;
@@ -859,7 +887,7 @@ const ExperienceCard = styled.div`
 
     /* GPU acceleration */
     transform: translateZ(0);
-    will-change: transform;
+    will-change: ${({ $isFocused }) => $isFocused ? 'transform' : 'auto'};
     contain: layout style; /* Removed paint containment to allow overflow */
     overflow: visible; /* Allow card content to overflow */
 
@@ -872,8 +900,11 @@ const ExperienceCard = styled.div`
         rgba(68, 75, 182, 0.98) 60%,
         rgba(132, 159, 241, 0.97) 100%
     );
-    backdrop-filter: blur(20px) saturate(110%);
-    -webkit-backdrop-filter: blur(20px) saturate(110%);
+    /* Disable expensive backdrop-filter on slow devices */
+    ${({ $isSlowDevice }) => !$isSlowDevice ? `
+        backdrop-filter: blur(20px) saturate(110%);
+        -webkit-backdrop-filter: blur(20px) saturate(110%);
+    ` : ''}
     border: 1px solid rgba(13, 173, 220, 0.4);
     border-radius: 24px;
     box-shadow:
@@ -1480,7 +1511,10 @@ const scroll = keyframes`
 `;
 
 // the moving track (three identical sequences inside for almost seamless loop)
-const RowTrack = styled.div`
+const RowTrack = styled.div.attrs(props => ({
+    $isCardFocused: props.$isCardFocused || false,
+    $isSlowDevice: props.$isSlowDevice || false
+}))`
     /* layout */
     display: flex;
     align-items: center;
@@ -1491,13 +1525,26 @@ const RowTrack = styled.div`
 
     /* GPU acceleration */
     transform: translateZ(0);
-    will-change: transform;
+    will-change: ${({ $isCardFocused, $isSlowDevice }) => 
+        ($isCardFocused && !$isSlowDevice) ? 'transform' : 'auto'};
     contain: layout style;
 
     /* styles */
-    animation: ${scroll} var(--dur, 20s) linear infinite;
+    /* Disable skills carousel entirely on slow devices - major performance boost */
+    /* On fast devices, only run when card is focused */
+    ${({ $isCardFocused, $isSlowDevice }) => 
+        ($isCardFocused && !$isSlowDevice) 
+            ? css`animation: ${scroll} var(--dur, 20s) linear infinite;`
+            : css`animation: none;`}
     animation-delay: var(--delay, 0s);
     animation-direction: ${({ $reverse }) => ($reverse ? 'reverse' : 'normal')};
+    animation-play-state: ${({ $isCardFocused, $isSlowDevice }) => 
+        ($isCardFocused && !$isSlowDevice) ? 'running' : 'paused'};
+    
+    /* On slow devices, hide the carousel entirely to save rendering */
+    ${({ $isSlowDevice }) => $isSlowDevice ? `
+        display: none;
+    ` : ''}
     
     /* Pause animations during loading */
     [data-loading="true"] & {
@@ -1686,7 +1733,9 @@ const SkillPillName = styled.span`
 
 /* ========== service experience cards ========== */
 
-const ServiceExperienceCard = styled.div`
+const ServiceExperienceCard = styled.div.attrs(props => ({
+    $isSlowDevice: props.$isSlowDevice || false
+}))`
     /* styles */
     --theme-rgb: ${({ $theme }) =>
         $theme === 'barlouie' ? '203, 192, 196'
@@ -1728,7 +1777,10 @@ const ServiceExperienceCard = styled.div`
             )`;
         }
     }};
-    backdrop-filter: blur(20px) saturate(110%);
+    /* Disable expensive backdrop-filter on slow devices */
+    ${({ $isSlowDevice }) => !$isSlowDevice ? `
+        backdrop-filter: blur(20px) saturate(110%);
+    ` : ''}
     border: 1px solid ${({ $theme }) => {
         if ($theme === 'barlouie') return 'rgba(203, 192, 196, 0.4)';
         if ($theme === 'hawkers') return 'rgba(245, 148, 40, 0.4)';
