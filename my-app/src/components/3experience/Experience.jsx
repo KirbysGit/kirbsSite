@@ -43,16 +43,28 @@ const ActualExperience = memo(() => {
         setIsSlowDevice(cores < 4 || prefersReducedMotion);
     }, []);
     
-    // IntersectionObserver to detect when section is in viewport
+    // IntersectionObserver to detect when section is in viewport - optimized to prevent thrash
+    const lastInView = useRef(false);
+    const rafIdRef = useRef(null);
+    
     useEffect(() => {
         const section = sectionRef.current;
         if (!section) return;
         
         const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    setIsInViewport(entry.isIntersecting && entry.intersectionRatio > 0.1);
-                });
+            ([entry]) => {
+                // only update state if value actually changed - use requestAnimationFrame to batch updates
+                const next = entry.isIntersecting && entry.intersectionRatio > 0.1;
+                if (next !== lastInView.current) {
+                    lastInView.current = next;
+                    // Cancel any pending RAF to prevent multiple updates
+                    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+                    // Batch state update to prevent thrashing during transitions
+                    rafIdRef.current = requestAnimationFrame(() => {
+                        setIsInViewport(next);
+                        rafIdRef.current = null;
+                    });
+                }
             },
             {
                 threshold: [0, 0.1, 0.5, 1],
@@ -61,7 +73,13 @@ const ActualExperience = memo(() => {
         );
         
         observer.observe(section);
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+            if (rafIdRef.current) {
+                cancelAnimationFrame(rafIdRef.current);
+                rafIdRef.current = null;
+            }
+        };
     }, []);
     
     // state variables.
@@ -127,6 +145,25 @@ const ActualExperience = memo(() => {
             distance
         };
     }, [index]);
+    
+    // Memoize skills carousel config to prevent recreation on every render
+    const skillsCarouselConfig = useMemo(() => [
+        { key: 'frontend', label: 'Frontend', dur: '18s', delay: '-3s', reverse: true },
+        { key: 'backend', label: 'Backend', dur: '20s', delay: '-6s' },
+        { key: 'devops', label: 'DevOps', dur: '22s', delay: '-2s', reverse: true },
+        { key: 'cloud', label: 'Cloud & Auth', dur: '24s', delay: '-5s' }
+    ], []);
+    
+    // Memoize sequence array to prevent recreation
+    const sequenceArray = useMemo(() => [0, 1, 2], []);
+    
+    // Memoize style objects for skills carousel to prevent DOM updates
+    const carouselStyles = useMemo(() => ({
+        frontend: { '--dur': '18s', '--delay': '-3s' },
+        backend: { '--dur': '20s', '--delay': '-6s' },
+        devops: { '--dur': '22s', '--delay': '-2s' },
+        cloud: { '--dur': '24s', '--delay': '-5s' }
+    }), []);
     
     // main return.
     return (
@@ -238,9 +275,12 @@ const ActualExperience = memo(() => {
                             );
                         })()}
                         {/* data-driven experience slides (index offset +1 to account for "hire me" slide) */}
+                        {/* Only render cards that are visible or adjacent (distance <= 1) to save rendering */}
                         {EXPERIENCE_CARDS.map((card, i) => {
                             const slideIdx = i + 1;                     // get slide index.
                             const cardStyle = getCardStyle(slideIdx);   // get card style.
+                            // Skip rendering far-off cards (distance > 1) - they're fully hidden anyway
+                            if (cardStyle.distance > 1) return null;
                             const themeRGB = card.themeColorRgb;        // get theme color.
                             
                             // ternary operator to get logo source based on card id.
@@ -293,12 +333,7 @@ const ActualExperience = memo(() => {
                                                 <Divider $themeColor={`rgb(${themeRGB})`} />
                                                 {/* skills carousel modularized for adding more skills later */}
                                                 <SkillsCarousel>
-                                                    {[
-                                                        { key: 'frontend', label: 'Frontend', dur: '18s', delay: '-3s', reverse: true },
-                                                        { key: 'backend', label: 'Backend', dur: '20s', delay: '-6s' },
-                                                        { key: 'devops', label: 'DevOps', dur: '22s', delay: '-2s', reverse: true },
-                                                        { key: 'cloud', label: 'Cloud & Auth', dur: '24s', delay: '-5s' }
-                                                    ].map(cfg => (
+                                                    {skillsCarouselConfig.map(cfg => (
                                                         card.skills?.[cfg.key] ? (
                                                             <CarouselRow key={cfg.key}>
                                                                 {/* label for skill category */}
@@ -307,12 +342,12 @@ const ActualExperience = memo(() => {
                                                                 <RowViewport>
                                                                     {/* track for skill carousel */}
                                                                     <RowTrack 
-                                                                        style={{'--dur': cfg.dur, '--delay': cfg.delay}} 
+                                                                        style={carouselStyles[cfg.key]} 
                                                                         $reverse={cfg.reverse}
                                                                         $isCardFocused={cardStyle.isFocused}
                                                                         $isSlowDevice={isSlowDevice}
                                                                     >
-                                                                        {[0,1,2].map(rep => (
+                                                                        {sequenceArray.map(rep => (
                                                                             <Sequence key={`${cfg.key}-seq-${rep}`} aria-hidden={rep>0}>
                                                                                 {card.skills[cfg.key].map(name => (
                                                                                     <SkillPill key={`${cfg.key}-${rep}-${name}`} $skillName={name} title={name}>

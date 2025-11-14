@@ -57,6 +57,7 @@ const Aurora = React.memo(() => {
   const [pathsReady, setPathsReady] = useState(false);
   const sectionRef = useRef(null);
   const lastInView = useRef(false); // prevent state thrash
+  const rafIdRef = useRef(null); // track pending RAF for cleanup
 
   // Detect device tier (slow/mid/fast)
   const tier = useMemo(() => {
@@ -79,17 +80,36 @@ const Aurora = React.memo(() => {
   }, []);
 
   // IntersectionObserver to detect when section is in viewport - optimized to prevent thrash
+  // Use a more stable approach: observe parent Experience section via document query
   useEffect(() => {
-    const section = sectionRef.current;
+    // Find the parent Experience section instead of observing Aurora itself
+    const findExperienceSection = () => {
+      const auroraElement = sectionRef.current;
+      if (!auroraElement) return null;
+      // Traverse up to find the Experience section
+      let parent = auroraElement.parentElement;
+      while (parent && parent.id !== 'experience') {
+        parent = parent.parentElement;
+      }
+      return parent || document.getElementById('experience');
+    };
+
+    const section = findExperienceSection();
     if (!section) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // only update state if value actually changed
+        // only update state if value actually changed - use requestAnimationFrame to batch updates
         const next = entry.isIntersecting && entry.intersectionRatio > 0.1;
         if (next !== lastInView.current) {
           lastInView.current = next;
-          setIsInViewport(next);
+          // Cancel any pending RAF to prevent multiple updates
+          if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+          // Batch state update to prevent thrashing during transitions
+          rafIdRef.current = requestAnimationFrame(() => {
+            setIsInViewport(next);
+            rafIdRef.current = null;
+          });
         }
       },
       {
@@ -99,7 +119,13 @@ const Aurora = React.memo(() => {
     );
 
     observer.observe(section);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+    };
   }, []);
 
   // Memoize every wave path set. Recompute only when device tier changes.
@@ -127,6 +153,35 @@ const Aurora = React.memo(() => {
       wave4Path: w4.a1, wave4Path2: w4.a2, wave4Path3: w4.a3,
     };
   }, [tier]); // stable knob based on device tier
+
+  // Memoize style objects to prevent unnecessary DOM updates
+  const wave1Style = useMemo(() => ({
+    ['--p1']: `path("${wave1Path}")`,
+    ['--p2']: `path("${wave1Path2}")`,
+    ['--p3']: `path("${wave1Path3}")`,
+  }), [wave1Path, wave1Path2, wave1Path3]);
+
+  const wave2Style = useMemo(() => ({
+    ['--p1']: `path("${wave2Path}")`,
+    ['--p2']: `path("${wave2Path2}")`,
+    ['--p3']: `path("${wave2Path3}")`,
+  }), [wave2Path, wave2Path2, wave2Path3]);
+
+  const wave3Style = useMemo(() => ({
+    ['--p1']: `path("${wave3Path}")`,
+    ['--p2']: `path("${wave3Path2}")`,
+    ['--p3']: `path("${wave3Path3}")`,
+  }), [wave3Path, wave3Path2, wave3Path3]);
+
+  const wave4Style = useMemo(() => ({
+    ['--p1']: `path("${wave4Path}")`,
+    ['--p2']: `path("${wave4Path2}")`,
+    ['--p3']: `path("${wave4Path3}")`,
+  }), [wave4Path, wave4Path2, wave4Path3]);
+
+  const staticWaveStyle = useMemo(() => ({
+    ['--p1']: `path("${wave1Path}")`,
+  }), [wave1Path]);
 
   // Generate paths off the main thread when possible
   useEffect(() => {
@@ -173,11 +228,7 @@ const Aurora = React.memo(() => {
         <>
           {/* first wave */}
           <AuroraWave 
-            style={{
-              ['--p1']: `path("${wave1Path}")`,
-              ['--p2']: `path("${wave1Path2}")`,
-              ['--p3']: `path("${wave1Path3}")`,
-            }}
+            style={wave1Style}
             $top="16%"
             $opacity={0.55}
             $blur={50}
@@ -191,11 +242,7 @@ const Aurora = React.memo(() => {
           {/* second wave */}
           {waveBudget >= 2 && (
             <AuroraWave 
-              style={{
-                ['--p1']: `path("${wave2Path}")`,
-                ['--p2']: `path("${wave2Path2}")`,
-                ['--p3']: `path("${wave2Path3}")`,
-              }}
+              style={wave2Style}
               $top="26%"
               $opacity={0.525}
               $blur={60}
@@ -210,11 +257,7 @@ const Aurora = React.memo(() => {
           {/* third wave */}
           {waveBudget >= 3 && (
             <AuroraWave 
-              style={{
-                ['--p1']: `path("${wave3Path}")`,
-                ['--p2']: `path("${wave3Path2}")`,
-                ['--p3']: `path("${wave3Path3}")`,
-              }}
+              style={wave3Style}
               $top="36%"
               $opacity={0.5}
               $blur={70}
@@ -229,11 +272,7 @@ const Aurora = React.memo(() => {
           {/* fourth wave */}
           {waveBudget >= 4 && (
             <AuroraWave 
-              style={{
-                ['--p1']: `path("${wave4Path}")`,
-                ['--p2']: `path("${wave4Path2}")`,
-                ['--p3']: `path("${wave4Path3}")`,
-              }}
+              style={wave4Style}
               $top="46%"
               $opacity={0.575}
               $blur={80}
@@ -248,9 +287,7 @@ const Aurora = React.memo(() => {
       ) : !isInViewport && waveBudget > 0 ? (
         /* Minimal static version when out of viewport (only for mid/fast devices) */
         <AuroraWave
-          style={{
-            ['--p1']: `path("${wave1Path}")`,
-          }}
+          style={staticWaveStyle}
           $top="26%"
           $opacity={0.3}
           $blur={30}
