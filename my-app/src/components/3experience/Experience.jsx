@@ -99,10 +99,11 @@ const ActualExperience = memo(() => {
     return (
         <ExperienceContainer id="experience" data-section-snap>
             {/* aurora effects at the top */}
+            {/*
             <AuroraWrapper>
                 <Aurora />
             </AuroraWrapper>
-            
+            */}
             {/* parallax cloud layers - far, mid, near */}
             <CloudLayer>
                 {/* far layer */}
