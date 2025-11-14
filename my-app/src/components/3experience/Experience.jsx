@@ -31,152 +31,6 @@ const ActualExperience = memo(() => {
     // Performance monitoring
     useComponentPerformance('Experience', process.env.NODE_ENV === 'development');
     
-    // Animation throttling state
-    const [isInViewport, setIsInViewport] = useState(false);
-    const [isSlowDevice, setIsSlowDevice] = useState(false);
-    const sectionRef = useRef(null);
-    
-    // Performance monitoring refs
-    const renderCountRef = useRef(0);
-    const lastRenderTimeRef = useRef(performance.now());
-    const fpsRef = useRef(0);
-    const frameCountRef = useRef(0);
-    const lastFpsTimeRef = useRef(performance.now());
-    const lastCardFocusLog = useRef({});
-    
-    // Detect slower devices
-    useEffect(() => {
-        const cores = navigator.hardwareConcurrency || 4;
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const isSlow = cores < 4 || prefersReducedMotion;
-        setIsSlowDevice(isSlow);
-        
-        console.log('[Experience] Device Detection:', {
-            cores,
-            prefersReducedMotion,
-            isSlowDevice: isSlow,
-            hardwareConcurrency: navigator.hardwareConcurrency,
-            userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
-        });
-        
-        // Performance breakdown summary
-        console.log('[Experience] Performance Analysis:', {
-            issues: [
-                '1. Forced reflow violations (90ms, 66ms) - Layout thrashing detected',
-                '2. FPS drops to 16-28 FPS with 2 Aurora waves',
-                '3. Potential causes:',
-                '   - Aurora clip-path animations (even with 2 waves)',
-                '   - Backdrop-filter on cards (expensive compositing)',
-                '   - Multiple blur filters on adjacent cards',
-                '   - Skills carousel animations',
-                '   - Cloud parallax animations',
-                '   - CSS transitions triggering layout recalculations'
-            ],
-            recommendations: [
-                'Consider disabling Aurora clip-path animation on mid-tier devices',
-                'Reduce blur intensity further on mid-tier',
-                'Pause skills carousel when FPS drops below 25',
-                'Use transform/opacity only for card transitions (avoid layout properties)'
-            ]
-        });
-    }, []);
-    
-    // Performance monitoring: FPS tracking (throttled to reduce overhead)
-    useEffect(() => {
-        if (!isInViewport) return; // Only measure when in viewport
-        
-        let rafId;
-        let lastLogTime = 0;
-        const measureFPS = () => {
-            frameCountRef.current++;
-            const now = performance.now();
-            const elapsed = now - lastFpsTimeRef.current;
-            
-            if (elapsed >= 1000) {
-                fpsRef.current = Math.round((frameCountRef.current * 1000) / elapsed);
-                frameCountRef.current = 0;
-                lastFpsTimeRef.current = now;
-                
-                // Log FPS only once per 3 seconds when low (reduce console overhead)
-                if (fpsRef.current < 30 && (now - lastLogTime) > 3000) {
-                    console.warn(`[Experience] Low FPS: ${fpsRef.current} FPS`);
-                    lastLogTime = now;
-                }
-            }
-            
-            rafId = requestAnimationFrame(measureFPS);
-        };
-        
-        rafId = requestAnimationFrame(measureFPS);
-        return () => cancelAnimationFrame(rafId);
-    }, [isInViewport]);
-    
-    // Performance monitoring: Render timing (throttled)
-    const lastRenderLogTime = useRef(0);
-    useEffect(() => {
-        renderCountRef.current++;
-        const now = performance.now();
-        const timeSinceLastRender = now - lastRenderTimeRef.current;
-        lastRenderTimeRef.current = now;
-        
-        // Log render info when in viewport, but throttle to once per 2 seconds
-        if (isInViewport && (now - lastRenderLogTime.current) > 2000) {
-            // Measure what's taking time
-            const perfEntries = performance.getEntriesByType('measure');
-            const recentMeasures = perfEntries.slice(-5); // Last 5 measures
-            
-            console.log(`[Experience] Render #${renderCountRef.current}`, {
-                timeSinceLastRender: `${timeSinceLastRender.toFixed(2)}ms`,
-                fps: fpsRef.current || 'calculating...',
-                isSlowDevice,
-                recentMeasures: recentMeasures.map(m => ({
-                    name: m.name,
-                    duration: `${m.duration.toFixed(2)}ms`
-                }))
-            });
-            lastRenderLogTime.current = now;
-        }
-    });
-    
-    // IntersectionObserver to detect when section is in viewport - optimized to prevent thrash
-    const lastInView = useRef(false);
-    const rafIdRef = useRef(null);
-    
-    useEffect(() => {
-        const section = sectionRef.current;
-        if (!section) return;
-        
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                // only update state if value actually changed - use requestAnimationFrame to batch updates
-                const next = entry.isIntersecting && entry.intersectionRatio > 0.1;
-                if (next !== lastInView.current) {
-                    lastInView.current = next;
-                    // Cancel any pending RAF to prevent multiple updates
-                    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-                    // Batch state update to prevent thrashing during transitions
-                    rafIdRef.current = requestAnimationFrame(() => {
-                        setIsInViewport(next);
-                        rafIdRef.current = null;
-                    });
-                }
-            },
-            {
-                threshold: [0, 0.1, 0.5, 1],
-                rootMargin: '200px' // Start animations before entering viewport
-            }
-        );
-        
-        observer.observe(section);
-        return () => {
-            observer.disconnect();
-            if (rafIdRef.current) {
-                cancelAnimationFrame(rafIdRef.current);
-                rafIdRef.current = null;
-            }
-        };
-    }, []);
-    
     // state variables.
     const [index, setIndex] = useState(1);              // current card index.
     const [paused, setPaused] = useState(false);        // whether carousel is paused.
@@ -241,65 +95,33 @@ const ActualExperience = memo(() => {
         };
     }, [index]);
     
-    // Memoize skills carousel config to prevent recreation on every render
-    const skillsCarouselConfig = useMemo(() => [
-        { key: 'frontend', label: 'Frontend', dur: '18s', delay: '-3s', reverse: true },
-        { key: 'backend', label: 'Backend', dur: '20s', delay: '-6s' },
-        { key: 'devops', label: 'DevOps', dur: '22s', delay: '-2s', reverse: true },
-        { key: 'cloud', label: 'Cloud & Auth', dur: '24s', delay: '-5s' }
-    ], []);
-    
-    // Memoize sequence array to prevent recreation
-    const sequenceArray = useMemo(() => [0, 1, 2], []);
-    
-    // Memoize style objects for skills carousel to prevent DOM updates
-    const carouselStyles = useMemo(() => ({
-        frontend: { '--dur': '18s', '--delay': '-3s' },
-        backend: { '--dur': '20s', '--delay': '-6s' },
-        devops: { '--dur': '22s', '--delay': '-2s' },
-        cloud: { '--dur': '24s', '--delay': '-5s' }
-    }), []);
-    
     // main return.
     return (
-        <ExperienceContainer id="experience" data-section-snap ref={sectionRef}>
+        <ExperienceContainer id="experience" data-section-snap>
             {/* aurora effects at the top */}
-            <AuroraWrapper >
+            <AuroraWrapper>
                 <Aurora />
             </AuroraWrapper>
             
             {/* parallax cloud layers - far, mid, near */}
-            {/* Optimized: Reduced cloud count on slow devices (12 → 6) for better performance */}
             <CloudLayer>
-                {/* far layer - 2 clouds on slow devices, 4 on fast */}
-                <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                {!isSlowDevice && (
-                    <>
-                        <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                        <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                    </>
-                )}
+                {/* far layer */}
+                <Cloud top="67%" delay="18" duration="188" layer="far" type={4} direction="left" />
+                <Cloud top="70%" delay="0" duration="180" layer="far" type={1} direction="left" />
+                <Cloud top="73%" delay="10" duration="200" layer="far" type={3} direction="right" />
+                <Cloud top="76%" delay="20" duration="190" layer="far" type={2} direction="left" />
                 
-                {/* mid layer - 2 clouds on slow devices, 4 on fast */}
-                <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                {!isSlowDevice && (
-                    <>
-                        <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                        <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                    </>
-                )}
+                {/* mid layer */}
+                <Cloud top="68%" delay="8" duration="148" layer="mid" type={1} direction="right" />
+                <Cloud top="71%" delay="3" duration="145" layer="mid" type={4} direction="left" />
+                <Cloud top="74%" delay="13" duration="140" layer="mid" type={2} direction="right" />
+                <Cloud top="75%" delay="53" duration="148" layer="mid" type={4} direction="right" />
                 
-                {/* near layer - 2 clouds on slow devices, 4 on fast */}
-                <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                {!isSlowDevice && (
-                    <>
-                        <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                        <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" isInViewport={isInViewport} isSlowDevice={isSlowDevice} />
-                    </>
-                )}
+                {/* near layer */}
+                <Cloud top="69%" delay="12" duration="118" layer="near" type={5} direction="right" />
+                <Cloud top="72%" delay="6" duration="115" layer="near" type={3} direction="left" />
+                <Cloud top="75%" delay="17" duration="125" layer="near" type={1} direction="right" />
+                <Cloud top="77%" delay="22" duration="122" layer="near" type={2} direction="left" />
             </CloudLayer>
             
             {/* entire content wrapper */}
@@ -370,35 +192,9 @@ const ActualExperience = memo(() => {
                             );
                         })()}
                         {/* data-driven experience slides (index offset +1 to account for "hire me" slide) */}
-                        {/* Only render cards that are visible or adjacent (distance <= 1) to save rendering */}
                         {EXPERIENCE_CARDS.map((card, i) => {
                             const slideIdx = i + 1;                     // get slide index.
                             const cardStyle = getCardStyle(slideIdx);   // get card style.
-            // Skip rendering far-off cards (distance > 1) - they're fully hidden anyway
-            if (cardStyle.distance > 1) return null;
-            
-            // Log when card becomes focused for performance debugging (throttled)
-            if (cardStyle.isFocused && isInViewport) {
-                const now = performance.now();
-                // Only log once per card focus change
-                if (!lastCardFocusLog.current[card.id] || (now - lastCardFocusLog.current[card.id]) > 5000) {
-                    // Measure performance breakdown
-                    performance.mark('card-focus-start');
-                    
-                    console.log(`[Experience] Card focused: ${card.name}`, {
-                        index,
-                        slideIdx,
-                        distance: cardStyle.distance,
-                        fps: fpsRef.current || 'calculating...',
-                        hasSkillsCarousel: !!card.skills,
-                        skillsCount: card.skills ? Object.keys(card.skills).length : 0
-                    });
-                    
-                    performance.mark('card-focus-end');
-                    performance.measure('card-focus', 'card-focus-start', 'card-focus-end');
-                    lastCardFocusLog.current[card.id] = now;
-                }
-            }
                             const themeRGB = card.themeColorRgb;        // get theme color.
                             
                             // ternary operator to get logo source based on card id.
@@ -410,9 +206,9 @@ const ActualExperience = memo(() => {
                             // if card type is tech, return tech experience card.
                             if (card.type === 'tech') {
                                 return (
-                                    <Slide key={card.id} $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance} $isSlowDevice={isSlowDevice}>
+                                    <Slide key={card.id} $position={cardStyle.position} $isFocused={cardStyle.isFocused} $distance={cardStyle.distance}>
                                         {/* overall experience card */}
-                                        <ExperienceCard $isFocused={cardStyle.isFocused} $isSlowDevice={isSlowDevice}>
+                                        <ExperienceCard $isFocused={cardStyle.isFocused}>
                                             <CardHeader>
                                                 {/* header of card, includes company name, how long i worked there, and company logo */}
                                                 <HeaderTop>
@@ -451,7 +247,12 @@ const ActualExperience = memo(() => {
                                                 <Divider $themeColor={`rgb(${themeRGB})`} />
                                                 {/* skills carousel modularized for adding more skills later */}
                                                 <SkillsCarousel>
-                                                    {skillsCarouselConfig.map(cfg => (
+                                                    {[
+                                                        { key: 'frontend', label: 'Frontend', dur: '18s', delay: '-3s', reverse: true },
+                                                        { key: 'backend', label: 'Backend', dur: '20s', delay: '-6s' },
+                                                        { key: 'devops', label: 'DevOps', dur: '22s', delay: '-2s', reverse: true },
+                                                        { key: 'cloud', label: 'Cloud & Auth', dur: '24s', delay: '-5s' }
+                                                    ].map(cfg => (
                                                         card.skills?.[cfg.key] ? (
                                                             <CarouselRow key={cfg.key}>
                                                                 {/* label for skill category */}
@@ -460,12 +261,11 @@ const ActualExperience = memo(() => {
                                                                 <RowViewport>
                                                                     {/* track for skill carousel */}
                                                                     <RowTrack 
-                                                                        style={carouselStyles[cfg.key]} 
+                                                                        style={{'--dur': cfg.dur, '--delay': cfg.delay}} 
                                                                         $reverse={cfg.reverse}
                                                                         $isCardFocused={cardStyle.isFocused}
-                                                                        $isSlowDevice={isSlowDevice}
                                                                     >
-                                                                        {sequenceArray.map(rep => (
+                                                                        {[0,1,2].map(rep => (
                                                                             <Sequence key={`${cfg.key}-seq-${rep}`} aria-hidden={rep>0}>
                                                                                 {card.skills[cfg.key].map(name => (
                                                                                     <SkillPill key={`${cfg.key}-${rep}-${name}`} $skillName={name} title={name}>
@@ -494,10 +294,9 @@ const ActualExperience = memo(() => {
                                         $position={cardStyle.position} 
                                         $isFocused={cardStyle.isFocused} 
                                         $distance={cardStyle.distance}
-                                        $isSlowDevice={isSlowDevice}
                                         data-transitioning={cardStyle.distance > 0 ? "true" : "false"}
                                     >
-                                        <ServiceExperienceCard $theme={card.theme} $isSlowDevice={isSlowDevice}>
+                                        <ServiceExperienceCard $theme={card.theme}>
                                         {/* overall service experience card */}
                                         <CardHeader>
                                             {/* header of card, includes company name, how long i worked there, and company logo */}
@@ -872,9 +671,7 @@ const Track = styled.div`
 `;
 
 // slide - individual carousel item.
-const Slide = styled.div.attrs(props => ({
-    $isSlowDevice: props.$isSlowDevice || false
-}))`
+const Slide = styled.div`
     /* layout */
     height: 100%;
     width: 100%;
@@ -907,21 +704,20 @@ const Slide = styled.div.attrs(props => ({
     `}
     
     /* adjacent card */
-    ${({ $distance, $position, $isSlowDevice }) => $distance === 1 && `
+        ${({ $distance, $position }) => $distance === 1 && `
         transform: translateX(${$position > 0 ? '28%' : '-28%'}) scale(0.8) translateZ(-30px);
         opacity: 0.5;
         z-index: 5;
-        ${!$isSlowDevice ? 'filter: blur(1.5px) saturate(0.75);' : 'filter: blur(0.5px) saturate(0.8);'}
-        will-change: ${$isSlowDevice ? 'auto' : 'transform, opacity'};
+        filter: blur(1.5px) saturate(0.75);
+        will-change: transform, opacity;
     `}
     /* far cards (distance > 1) - keep off-stage and fully hidden */
-    ${({ $distance, $position, $isSlowDevice }) => $distance > 1 && `
+    ${({ $distance, $position }) => $distance > 1 && `
         transform: translateX(${$position > 0 ? '40%' : '-40%'}) scale(0.6) translateZ(-60px);
         opacity: 0;
         z-index: 1;
-        ${!$isSlowDevice ? 'filter: blur(2px) saturate(0.6);' : 'filter: none;'}
+        filter: blur(2px) saturate(0.6);
         will-change: auto;
-        content-visibility: auto; /* Skip rendering when off-screen */
     `}
     
     /* media queries */
@@ -1024,8 +820,7 @@ const CompanyLogo = styled.img`
 
 // individual experience card - phone screen style with frosted glass
 const ExperienceCard = styled.div.attrs(props => ({
-    $isFocused: props.$isFocused || false,
-    $isSlowDevice: props.$isSlowDevice || false
+    $isFocused: props.$isFocused || false
 }))`
     /* layout */
     width: 500px;
@@ -1053,11 +848,8 @@ const ExperienceCard = styled.div.attrs(props => ({
         rgba(68, 75, 182, 0.98) 60%,
         rgba(132, 159, 241, 0.97) 100%
     );
-    /* Disable expensive backdrop-filter on slow devices */
-    ${({ $isSlowDevice }) => !$isSlowDevice ? `
-        backdrop-filter: blur(20px) saturate(110%);
-        -webkit-backdrop-filter: blur(20px) saturate(110%);
-    ` : ''}
+    backdrop-filter: blur(20px) saturate(110%);
+    -webkit-backdrop-filter: blur(20px) saturate(110%);
     border: 1px solid rgba(13, 173, 220, 0.4);
     border-radius: 24px;
     box-shadow:
@@ -1665,8 +1457,7 @@ const scroll = keyframes`
 
 // the moving track (three identical sequences inside for almost seamless loop)
 const RowTrack = styled.div.attrs(props => ({
-    $isCardFocused: props.$isCardFocused || false,
-    $isSlowDevice: props.$isSlowDevice || false
+    $isCardFocused: props.$isCardFocused || false
 }))`
     /* layout */
     display: flex;
@@ -1678,26 +1469,19 @@ const RowTrack = styled.div.attrs(props => ({
 
     /* GPU acceleration */
     transform: translateZ(0);
-    will-change: ${({ $isCardFocused, $isSlowDevice }) => 
-        ($isCardFocused && !$isSlowDevice) ? 'transform' : 'auto'};
+    will-change: ${({ $isCardFocused }) => 
+        $isCardFocused ? 'transform' : 'auto'};
     contain: layout style;
 
     /* styles */
-    /* Disable skills carousel entirely on slow devices - major performance boost */
-    /* On fast devices, only run when card is focused */
-    ${({ $isCardFocused, $isSlowDevice }) => 
-        ($isCardFocused && !$isSlowDevice) 
+    ${({ $isCardFocused }) => 
+        $isCardFocused 
             ? css`animation: ${scroll} var(--dur, 20s) linear infinite;`
             : css`animation: none;`}
     animation-delay: var(--delay, 0s);
     animation-direction: ${({ $reverse }) => ($reverse ? 'reverse' : 'normal')};
-    animation-play-state: ${({ $isCardFocused, $isSlowDevice }) => 
-        ($isCardFocused && !$isSlowDevice) ? 'running' : 'paused'};
-    
-    /* On slow devices, hide the carousel entirely to save rendering */
-    ${({ $isSlowDevice }) => $isSlowDevice ? `
-        display: none;
-    ` : ''}
+    animation-play-state: ${({ $isCardFocused }) => 
+        $isCardFocused ? 'running' : 'paused'};
     
     /* Pause animations during loading */
     [data-loading="true"] & {
@@ -1886,9 +1670,7 @@ const SkillPillName = styled.span`
 
 /* ========== service experience cards ========== */
 
-const ServiceExperienceCard = styled.div.attrs(props => ({
-    $isSlowDevice: props.$isSlowDevice || false
-}))`
+const ServiceExperienceCard = styled.div`
     /* styles */
     --theme-rgb: ${({ $theme }) =>
         $theme === 'barlouie' ? '203, 192, 196'
@@ -1930,10 +1712,7 @@ const ServiceExperienceCard = styled.div.attrs(props => ({
             )`;
         }
     }};
-    /* Disable expensive backdrop-filter on slow devices */
-    ${({ $isSlowDevice }) => !$isSlowDevice ? `
-        backdrop-filter: blur(20px) saturate(110%);
-    ` : ''}
+    backdrop-filter: blur(20px) saturate(110%);
     border: 1px solid ${({ $theme }) => {
         if ($theme === 'barlouie') return 'rgba(203, 192, 196, 0.4)';
         if ($theme === 'hawkers') return 'rgba(245, 148, 40, 0.4)';
