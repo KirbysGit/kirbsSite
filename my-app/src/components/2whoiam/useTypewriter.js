@@ -45,7 +45,7 @@ export function useTypewriter(
             // if the output length is 0, set the output to the text.
             if (out.length === 0) setOut(textRef.current);
         }
-    }, [phase]); // intentionally not including `out` to avoid double-executions.
+    }, [phase]);
 
     // clear timers on unmount.
     useEffect(() => () => { if (tRef.current) clearTimeout(tRef.current); }, []);
@@ -66,17 +66,19 @@ export function useTypewriter(
 
         // step function.
         const step = () => {
-            if (phaseRef.current !== phase) return; // phase changed; abort this cycle.
+            if (phaseRef.current !== phase) return;
 
+            // if the phase is type, type the text.
             if (phase === 'type') {
                 const target = textRef.current;
                 if (iRef.current < target.length) {
                     if (prefersReducedMotion) {
-                        // show all at once for reduced motion.
+                        // if the user has reduced motion, show all the text at once.
                         setOut(target);
                         iRef.current = target.length;
                         onDone?.('type');
                     } else {
+                        // if the user has not reduced motion, type the text one character at a time.
                         const next = target.slice(0, iRef.current + 1);
                         iRef.current += 1;
                         setOut(next);
@@ -87,14 +89,16 @@ export function useTypewriter(
                 }
             }
 
+            // if the phase is delete, delete the text.
             if (phase === 'delete') {
                 if (iRef.current > 0) {
                     if (prefersReducedMotion) {
-                        // clear instantly for reduced motion.
+                        // if the user has reduced motion, clear the text instantly.
                         setOut('');
                         iRef.current = 0;
                         onDone?.('delete');
                     } else {
+                        // if the user has not reduced motion, delete the text one character at a time.
                         const next = out.slice(0, iRef.current - 1);
                         iRef.current -= 1;
                         setOut(next);
@@ -106,20 +110,20 @@ export function useTypewriter(
             }
         };
 
-        // kill any previous timer before starting a new cycle.
+        // clear any previous timer before starting a new cycle.
         if (tRef.current) clearTimeout(tRef.current);
         tRef.current = window.setTimeout(step, phase === 'type' ? typeMs : deleteMs);
 
-        // also clear if deps change.
+        // also clear if dependencies change.
         return () => { if (tRef.current) clearTimeout(tRef.current); };
     }, [start, phase, typeMs, deleteMs, onDone, out]);
 
-    // reset to function.
+    // reset the text to a new string.
     const resetTo = (s) => {
         iRef.current = s.length;
         setOut(s);
     };
 
-    // return the output, phase, setPhase, and resetTo functions.
+    // return the output, phase, setPhase, and resetTo.
     return { out, phase, setPhase, resetTo };
 }

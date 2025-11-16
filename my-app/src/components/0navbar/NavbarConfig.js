@@ -1,6 +1,6 @@
 /**
- * Navigation configuration for navbar
- * Defines sections, icons, labels, and scroll offsets
+ *   navigation configuration for navbar.
+ *   defines sections, icons, labels, and scroll offsets.
  */
 export const navItems = [
   {

@@ -3,7 +3,6 @@
 // main navbar component, used for navigation and smooth scrolling.
 // also we have the sidebar component in here as well, which follows the user down the site.
 
-
 // imports.
 import { motion } from 'framer-motion';
 import styled, { keyframes } from 'styled-components';
@@ -19,61 +18,7 @@ import cloud1Img from '@/images/3experience/clouds/cloud1.png';
 import cloud2Img from '@/images/3experience/clouds/cloud2.png';
 import cloud3Img from '@/images/3experience/clouds/cloud3.png';
 
-/* ================= animated frames ================= */
-
-// cloud drift animation. ( in projects pill )
-const cloudDrift = keyframes`
-  0%, 100% { 
-    background-position: 15% 20%, 70% 60%;
-    opacity: 0.25;
-  }
-  50% { 
-    background-position: 10% 25%, 65% 65%;
-    opacity: 0.3;
-  }
-`;
-
-// star field animation. ( in who i am pill )
-const starField = keyframes`
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
-`;
-
-// floating bubbles animation. ( in about section )
-const floatParticles = keyframes`
-  0%, 100% { 
-    opacity: 0.5; 
-    transform: translateY(0) translateZ(0); 
-  }
-  50% { 
-    opacity: 0.8; 
-    transform: translateY(-8px) translateZ(0); 
-  }
-`;
-
-// star twinkle animation for hero section.
-const starTwinkleHero = keyframes`
-  0%, 100% { 
-    opacity: 0.3; 
-    transform: scale(1); 
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.2); 
-  }
-`;
-
-// star twinkle animation.
-const starTwinkle = keyframes`
-  0%, 100% { 
-    opacity: 0.4; 
-  }
-  50% { 
-    opacity: 1; 
-  }
-`;
-
-/* ================= helper functions ================= */
+/* ================= helper functions & components ================= */
 
 // generate wave path for pill-sized sinusoidal wave.
 function generatePillWavePath(width = 200, height = 30, amplitude = 8, frequency = 3, phase = 0, thickness = 6) {
@@ -103,6 +48,60 @@ function generatePillWavePath(width = 200, height = 30, amplitude = 8, frequency
 	for (let i = 0; i < bottom.length; i++) d += ` L${bottom[i].x},${bottom[i].y}`;
 	return d + ' Z';
 }
+
+// helper function to get the right background component.
+const getNavButtonBackground = (sectionId) => {
+	switch(sectionId) {
+	  case 'who-i-am': return NavButtonBackgroundWhoIAm;
+	  case 'experience': return NavButtonBackgroundExperience;
+	  case 'projects': return NavButtonBackgroundProjects;
+	  case 'skills': return NavButtonBackgroundSkills;
+	  case 'about': return NavButtonBackgroundAbout;
+	  default: return null;
+	}
+};
+
+// helper function to get the right button variant.
+const getNavButtonVariant = (sectionId) => {
+	switch(sectionId) {
+	  case 'who-i-am': return NavButtonWhoIAm;
+	  case 'experience': return NavButtonExperience;
+	  case 'projects': return NavButtonProjects;
+	  case 'skills': return NavButtonSkills;
+	  case 'about': return NavButtonAbout;
+	  default: return NavButtonBase;
+	}
+};
+
+// helper function to get the right tooltip variant.
+const getTooltipVariant = (sectionId) => {
+	switch(sectionId) {
+	  case 'who-i-am': return TooltipWhoIAm;
+	  case 'experience': return TooltipExperience;
+	  case 'projects': return TooltipProjects;
+	  case 'skills': return TooltipSkills;
+	  case 'about': return TooltipAbout;
+	  default: return TooltipBase;
+	}
+};
+
+// tooltip component that uses the correct variant.
+const TooltipVariant = ({ sectionId, className, children }) => {
+	const TooltipComponent = getTooltipVariant(sectionId);
+	return <TooltipComponent className={className}>{children}</TooltipComponent>;
+};
+
+// helper function to get the right side nav button variant.
+const getSideNavButtonVariant = (sectionId) => {
+	switch(sectionId) {
+	  case 'who-i-am': return SideNavButtonWhoIAm;
+	  case 'experience': return SideNavButtonExperience;
+	  case 'projects': return SideNavButtonProjects;
+	  case 'skills': return SideNavButtonSkills;
+	  case 'about': return SideNavButtonAbout;
+	  default: return SideNavButtonBase;
+	}
+};
 
 /* ================== main component ================== */
 
@@ -354,6 +353,62 @@ const Navbar = ({ loadingCompleteTime = null }) => {
 	);
 };
 
+export default Navbar;
+
+/* ================= animated frames ================= */
+
+// cloud drift animation. ( in projects pill )
+const cloudDrift = keyframes`
+  0%, 100% { 
+    background-position: 15% 20%, 70% 60%;
+    opacity: 0.25;
+  }
+  50% { 
+    background-position: 10% 25%, 65% 65%;
+    opacity: 0.3;
+  }
+`;
+
+// star field animation. ( in who i am pill )
+const starField = keyframes`
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+`;
+
+// floating bubbles animation. ( in about section )
+const floatParticles = keyframes`
+  0%, 100% { 
+    opacity: 0.5; 
+    transform: translateY(0) translateZ(0); 
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: translateY(-8px) translateZ(0); 
+  }
+`;
+
+// star twinkle animation for hero section.
+const starTwinkleHero = keyframes`
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2); 
+  }
+`;
+
+// star twinkle animation.
+const starTwinkle = keyframes`
+  0%, 100% { 
+    opacity: 0.4; 
+  }
+  50% { 
+    opacity: 1; 
+  }
+`;
+
 /* ====================== styled ====================== */
 
 const TopNavbarContainer = styled(motion.nav)`
@@ -544,988 +599,975 @@ const SocialIcon = styled.svg`
 /* ======== nav. buttons ======== */
 
 const NavButtonsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  @media (max-width: 1600px) {
-    gap: 0.75rem;
-  }
-
-  @media (max-width: 900px) {
-    gap: 0.5rem;
-    /* Center on mobile since logo is hidden */
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-  }
-`;
-
-// Base Navigation Button - shared styles
-const NavButtonBase = styled.button`
-  font: inherit;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  position: relative;
-  
-  /* GPU acceleration */
-  transform: translateZ(0);
-  will-change: border-color, box-shadow, transform;
-  
-  /* Subtle base glow */
-  box-shadow: none;
-  
-  &:hover {
-    border-color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
-  }
-  
-  &:active {
-    transition: all 0.1s ease;
-  }
-
-  @media (max-width: 900px) {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.8rem;
-    gap: 0.3rem;
-    min-width: 40px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    justify-content: center;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    &:hover {
-      transform: none;
+    /* layout */
+    display: flex;
+    align-items: center;
+    
+    /* spacing */
+    gap: 1rem;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: 0.75rem;
     }
-  }
+
+    @media (max-width: 900px) {
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+        gap: 0.5rem;
+    }
 `;
 
-// Who I Am - Space/Star theme (astronaut)
+// base nav button - shared styles.
+const NavButtonBase = styled.button`
+    /* layout */
+    display: flex;
+	overflow: hidden;
+    position: relative;
+    align-items: center;
+    transform: translateZ(0);
+    will-change: border-color, box-shadow, transform;
+    
+    /* spacing */
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    
+    /* styles */
+    font: inherit;
+    color: white;
+    cursor: pointer;
+	font-weight: 500;
+    box-shadow: none;
+    font-size: 0.95rem;
+	border-radius: 50px;
+	border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    }
+    
+    &:active {
+        transition: all 0.1s ease;
+    }
+    
+    /* media queries */
+    @media (max-width: 900px) {
+        justify-content: center;
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+        padding: 0.4rem 0.75rem;
+        border-radius: 50%;
+        font-size: 0.8rem;
+        gap: 0.3rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        
+        &:hover {
+            transform: none;
+        }
+    }
+`;
+
+// who i am - space / star theme.
 const NavButtonWhoIAm = styled(NavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(13, 7, 27) 0%,
-    rgb(30, 20, 55) 40%,
-    rgb(45, 30, 80) 70%,
-    rgb(85, 60, 135) 95%,
-    rgb(100, 70, 150) 100%);
-  
-  &:hover {
-    border-color: rgba(100, 70, 150, 0.9);
-    box-shadow: 0 0 20px rgba(100, 70, 150, 0.5),
-                0 0 40px rgba(85, 60, 135, 0.3);
-    transform: translateZ(0) scale(1.05);
-  }
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(13, 7, 27) 0%,
+        rgb(30, 20, 55) 40%,
+        rgb(45, 30, 80) 70%,
+        rgb(85, 60, 135) 95%,
+        rgb(100, 70, 150) 100%);
+    
+    /* hover effects */
+    &:hover {
+        border-color: rgba(100, 70, 150, 0.9);
+        transform: translateZ(0) scale(1.05);
+        box-shadow: 0 0 20px rgba(100, 70, 150, 0.5),
+                    0 0 40px rgba(85, 60, 135, 0.3);
+    }
 `;
 
-// Experience - Purple to Blue gradient (matching Experience section)
+// experience - upper atmosphere theme.
 const NavButtonExperience = styled(NavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(78, 58, 128) 0%,
-    rgb(78, 58, 128) 10%,
-    rgb(92, 74, 155) 32%,
-    rgb(112, 95, 182) 54%,
-    rgb(132, 127, 210) 78%,
-    rgb(148, 180, 243) 100%);
-  
-  &:hover {
-    border-color: rgba(148, 180, 243, 0.9);
-    box-shadow: 0 0 20px rgba(148, 180, 243, 0.5),
-                0 0 40px rgba(132, 127, 210, 0.3);
-    transform: translateZ(0) scale(1.05);
-  }
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(78, 58, 128) 0%,
+        rgb(78, 58, 128) 10%,
+        rgb(92, 74, 155) 32%,
+        rgb(112, 95, 182) 54%,
+        rgb(132, 127, 210) 78%,
+        rgb(148, 180, 243) 100%);
+    
+    /* hover effects */
+    &:hover {
+        border-color: rgba(148, 180, 243, 0.9);
+        transform: translateZ(0) scale(1.05);
+        box-shadow: 0 0 20px rgba(148, 180, 243, 0.5),
+                    0 0 40px rgba(132, 127, 210, 0.3);
+    }
 `;
 
-// Projects - Light Blue Sky gradient (more blue, less white - matching Projects section)
+// projects - light blue sky theme.
 const NavButtonProjects = styled(NavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(120, 165, 234) 0%,
-    rgb(106, 158, 232) 25%,
-    rgb(95, 157, 236) 50%,
-    rgb(83, 158, 237) 75%,
-    rgb(71, 160, 238) 100%);
-  
-  &:hover {
-    border-color: rgba(120, 165, 234, 0.9);
-    box-shadow: 0 0 20px rgba(120, 165, 234, 0.5),
-                0 0 40px rgba(95, 157, 236, 0.3);
-    transform: translateZ(0) scale(1.05);
-  }
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(120, 165, 234) 0%,
+        rgb(106, 158, 232) 25%,
+        rgb(95, 157, 236) 50%,
+        rgb(83, 158, 237) 75%,
+        rgb(71, 160, 238) 100%);
+    
+    /* hover effects */
+    &:hover {
+        border-color: rgba(120, 165, 234, 0.9);
+        transform: translateZ(0) scale(1.05);
+        box-shadow: 0 0 20px rgba(120, 165, 234, 0.5),
+                    0 0 40px rgba(95, 157, 236, 0.3);
+    }
 `;
 
-// Skills - Bright Blue Sky gradient (matching Skills section)
+// skills - bright blue sky theme.
 const NavButtonSkills = styled(NavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(71, 160, 238) 0%,
-    rgb(80, 170, 242) 25%,
-    rgb(90, 180, 246) 50%,
-    rgb(115, 205, 255) 75%,
-    rgb(135, 225, 255) 100%);
-  
-  &:hover {
-    border-color: rgba(135, 225, 255, 0.9);
-    box-shadow: 0 0 20px rgba(135, 225, 255, 0.5),
-                0 0 40px rgba(115, 205, 255, 0.3);
-    transform: translateZ(0) scale(1.05);
-  }
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(71, 160, 238) 0%,
+        rgb(80, 170, 242) 25%,
+        rgb(90, 180, 246) 50%,
+        rgb(115, 205, 255) 75%,
+        rgb(135, 225, 255) 100%);
+    
+    /* hover effects */
+    &:hover {
+        border-color: rgba(135, 225, 255, 0.9);
+        transform: translateZ(0) scale(1.05);
+        box-shadow: 0 0 20px rgba(135, 225, 255, 0.5),
+                    0 0 40px rgba(115, 205, 255, 0.3);
+    }
 `;
 
-// About - Darker underwater theme with bubbles
+// about - darker underwater theme with bubbles.
 const NavButtonAbout = styled(NavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(18, 66, 114) 0%,
-    rgb(23, 82, 126) 20%,
-    rgb(29, 98, 138) 40%,
-    rgb(36, 114, 150) 60%,
-    rgb(44, 130, 162) 75%,
-    rgb(54, 146, 174) 90%,
-    rgb(60, 154, 180) 100%);
-  
-  &:hover {
-    border-color: rgba(60, 154, 180, 0.9);
-    box-shadow: 0 0 20px rgba(60, 154, 180, 0.5),
-                0 0 40px rgba(44, 130, 162, 0.3);
-    transform: translateZ(0) scale(1.05);
-  }
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(18, 66, 114) 0%,
+        rgb(23, 82, 126) 20%,
+        rgb(29, 98, 138) 40%,
+        rgb(36, 114, 150) 60%,
+        rgb(44, 130, 162) 75%,
+        rgb(54, 146, 174) 90%,
+        rgb(60, 154, 180) 100%);
+    
+    /* hover effects */
+    &:hover {
+        border-color: rgba(60, 154, 180, 0.9);
+        transform: translateZ(0) scale(1.05);
+        box-shadow: 0 0 20px rgba(60, 154, 180, 0.5),
+                    0 0 40px rgba(44, 130, 162, 0.3);
+    }
 `;
-
-// Helper function to get the right button variant
-const getNavButtonVariant = (sectionId) => {
-  switch(sectionId) {
-    case 'who-i-am': return NavButtonWhoIAm;
-    case 'experience': return NavButtonExperience;
-    case 'projects': return NavButtonProjects;
-    case 'skills': return NavButtonSkills;
-    case 'about': return NavButtonAbout;
-    default: return NavButtonBase;
-  }
-};
 
 const NavButtonIcon = styled.span`
-  font-size: 1.1rem;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-  z-index: 2;
-  position: relative;
-  
-  @media (max-width: 900px) {
-    font-size: 0.9rem;
-  }
+    /* layout */
+    z-index: 2;
+	position: relative;
+    
+    /* styles */
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    
+    /* media queries */
+    @media (max-width: 900px) {
+        font-size: 0.9rem;
+    }
 `;
 
 const NavButtonText = styled.span`
-  font: inherit;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  z-index: 2;
-  position: relative;
-  
-  @media (max-width: 900px) {
-    display: none;
-  }
+    /* layout */
+    z-index: 2;
+	position: relative;
+    
+    /* styles */
+    font: inherit;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    
+    /* media queries */
+    @media (max-width: 900px) {
+        display: none;
+    }
 `;
 
-// Background components for each section
+/* ======== background components per nav button ======== */
 const NavButtonBackgroundWhoIAm = styled.div`
-  position: absolute;
-  inset: 0;
-  opacity: 0.4;
-  border-radius: 50px;
-  pointer-events: none;
-  
-  /* Starry background */
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-    animation: ${starTwinkleHero} 4s ease-in-out infinite;
-  }
-  
-  &::before {
-    width: 3px;
-    height: 3px;
-    top: 20%;
-    left: 15%;
-    animation-delay: 0s;
-    box-shadow: 
-      0 0 6px rgba(255, 255, 255, 0.8),
-      0 0 12px rgba(255, 255, 255, 0.4);
-  }
-  
-  &::after {
-    width: 2.5px;
-    height: 2.5px;
-    top: 70%;
-    right: 20%;
-    animation-delay: 2s;
-    box-shadow: 
-      0 0 5px rgba(255, 255, 255, 0.8),
-      0 0 10px rgba(255, 255, 255, 0.4);
-  }
-  
-  background-image: 
-    radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
-    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
-    radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%;
-  animation: ${starField} 8s ease-in-out infinite;
+    /* layout */
+    inset: 0;
+	position: absolute;
+    pointer-events: none;
+    
+    /* styles */
+    opacity: 0.4;
+    border-radius: 50px;
+    background-image: 
+        radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+        radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    animation: ${starField} 8s ease-in-out infinite;
+    
+    /* pseudo-elements (stars in the background) */
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        animation: ${starTwinkleHero} 4s ease-in-out infinite;
+    }
+    
+    &::before {
+        top: 20%;
+        left: 15%;
+        width: 3px;
+        height: 3px;
+        animation-delay: 0s;
+        box-shadow: 
+            0 0 6px rgba(255, 255, 255, 0.8),
+            0 0 12px rgba(255, 255, 255, 0.4);
+    }
+    
+    &::after {
+        top: 70%;
+        right: 20%;
+        width: 2.5px;
+        height: 2.5px;
+        animation-delay: 2s;
+        box-shadow: 
+            0 0 5px rgba(255, 255, 255, 0.8),
+            0 0 10px rgba(255, 255, 255, 0.4);
+    }
 `;
 
-// Wave SVG container
+// wave svg container.
 const WaveSVGContainer = styled.svg`
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 60%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 2;
-  overflow: visible;
-`;
-
-// Experience background wrapper
-const ExperienceBGWrap = styled.div`
-  position: absolute;
-  inset: 0;
-  opacity: 0.6;
-  border-radius: 50px;
-  pointer-events: none;
-  overflow: hidden;
-  
-  /* Aurora glow effect - breathing background */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 25%;
+    /* layout */
     left: 0;
-    right: 0;
-    height: 50%;
-    z-index: 1;
-    background: radial-gradient(
-      ellipse at 50% 50%,
-      rgba(100, 255, 200, 0.25) 0%,
-      rgba(150, 120, 255, 0.2) 30%,
-      rgba(255, 150, 200, 0.15) 60%,
-      transparent 100%
-    );
-    filter: blur(20px);
-    mix-blend-mode: screen;
-  }
+	top: 50%;
+	z-index: 2;
+    overflow: visible;
+	position: absolute;
+	pointer-events: none;
+    transform: translateY(-50%);
+    
+    /* spacing */
+    width: 100%;
+    height: 60%;
 `;
 
-// Static wave path component (no animation)
+/* ======== experience bg ======== */
+
+// experience background wrapper.
+const ExperienceBGWrap = styled.div`
+    /* layout */
+    inset: 0;
+	overflow: hidden;
+	position: absolute;
+    pointer-events: none;
+    
+    /* styles */
+    opacity: 0.6;
+    border-radius: 50px;
+    
+    /* pseudo-elements (aurora effect) */
+    &::before {
+        content: '';
+        position: absolute;
+        top: 25%;
+        left: 0;
+        right: 0;
+        height: 50%;
+        z-index: 1;
+        background: radial-gradient(
+            ellipse at 50% 50%,
+            rgba(100, 255, 200, 0.25) 0%,
+            rgba(150, 120, 255, 0.2) 30%,
+            rgba(255, 150, 200, 0.15) 60%,
+            transparent 100%
+        );
+        filter: blur(20px);
+        mix-blend-mode: screen;
+    }
+`;
+
+// static wave path component (no animation).
 const WavePath = styled.path`
-  /* No animation - static wave shape */
+  /* no animation - static wave shape */
 `;
 
-// Experience background component with SVG wave
+// experience background component with svg wave.
 function NavButtonBackgroundExperience() {
-  // Generate wave path for pill size - use viewBox that scales
+  // generate wave path for pill size - use viewBox that scales.
   const wavePath = useMemo(() => {
-    // Use a reasonable width that will scale with the SVG viewBox
+    // use a reasonable width that will scale with the svg viewBox.
     return generatePillWavePath(200, 30, 8, 3, 0, 6);
   }, []);
 
-  // Generate second wave with slight phase offset for depth
+  // generate second wave with slight phase offset for depth.
   const wavePath2 = useMemo(() => {
     return generatePillWavePath(200, 30, 7, 3, Math.PI / 4, 5);
   }, []);
 
   return (
     <ExperienceBGWrap>
-      <WaveSVGContainer
-        viewBox="0 0 200 40"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id="expWaveGrad1" x1="0%" y1="50%" x2="100%" y2="50%">
-            <stop offset="0%" stopColor="rgba(80, 255, 180, 0.85)" />
-            <stop offset="33%" stopColor="rgba(150, 120, 255, 0.8)" />
-            <stop offset="66%" stopColor="rgba(255, 150, 200, 0.82)" />
-            <stop offset="100%" stopColor="rgba(110, 255, 190, 0.85)" />
-          </linearGradient>
-          <linearGradient id="expWaveGrad2" x1="0%" y1="50%" x2="100%" y2="50%">
-            <stop offset="0%" stopColor="rgba(80, 255, 180, 0.7)" />
-            <stop offset="33%" stopColor="rgba(150, 120, 255, 0.65)" />
-            <stop offset="66%" stopColor="rgba(255, 150, 200, 0.68)" />
-            <stop offset="100%" stopColor="rgba(110, 255, 190, 0.7)" />
-          </linearGradient>
-          <filter id="waveBlur">
-            <feGaussianBlur stdDeviation="1.5" />
-          </filter>
-        </defs>
-        {/* Main wave */}
-        <WavePath
-          d={wavePath}
-          fill="url(#expWaveGrad1)"
-          filter="url(#waveBlur)"
-          style={{ mixBlendMode: 'screen' }}
-        />
-        {/* Secondary wave for depth */}
-        <WavePath
-          d={wavePath2}
-          fill="url(#expWaveGrad2)"
-          filter="url(#waveBlur)"
-          style={{ mixBlendMode: 'screen', opacity: 0.6 }}
-        />
-      </WaveSVGContainer>
+		{/* wave svg container */}
+		<WaveSVGContainer
+			viewBox="0 0 200 40"
+			preserveAspectRatio="none"
+			aria-hidden="true"
+		>
+			{/* defs for the waves */}
+			<defs>
+				<linearGradient id="expWaveGrad1" x1="0%" y1="50%" x2="100%" y2="50%">
+					<stop offset="0%" stopColor="rgba(80, 255, 180, 0.85)" />
+					<stop offset="33%" stopColor="rgba(150, 120, 255, 0.8)" />
+					<stop offset="66%" stopColor="rgba(255, 150, 200, 0.82)" />
+					<stop offset="100%" stopColor="rgba(110, 255, 190, 0.85)" />
+				</linearGradient>
+				<linearGradient id="expWaveGrad2" x1="0%" y1="50%" x2="100%" y2="50%">
+					<stop offset="0%" stopColor="rgba(80, 255, 180, 0.7)" />
+					<stop offset="33%" stopColor="rgba(150, 120, 255, 0.65)" />
+					<stop offset="66%" stopColor="rgba(255, 150, 200, 0.68)" />
+					<stop offset="100%" stopColor="rgba(110, 255, 190, 0.7)" />
+				</linearGradient>
+				<filter id="waveBlur">
+					<feGaussianBlur stdDeviation="1.5" />
+				</filter>
+			</defs>
+			{/* main wave */}
+			<WavePath
+				d={wavePath}
+				fill="url(#expWaveGrad1)"
+				filter="url(#waveBlur)"
+				style={{ mixBlendMode: 'screen' }}
+			/>
+			{/* secondary wave for depth */}
+			<WavePath
+				d={wavePath2}
+				fill="url(#expWaveGrad2)"
+				filter="url(#waveBlur)"
+				style={{ mixBlendMode: 'screen', opacity: 0.6 }}
+			/>
+		</WaveSVGContainer>
     </ExperienceBGWrap>
   );
 }
 
+/* ======== projects bg ======== */
+
 const NavButtonBackgroundProjects = styled.div`
-  position: absolute;
-  inset: 0;
-  opacity: 0.35;
-  border-radius: 50px;
-  pointer-events: none;
-  overflow: hidden;
-  
-  /* Clouds overlay */
-  background-repeat: no-repeat;
-  background-image: 
-    url(${cloud1Img}),
-    url(${cloud2Img}),
-    url(${cloud3Img});
-  animation: ${cloudDrift} 10s ease-in-out infinite;
-  background-position: 10% 30%, 60% 50%, 85% 20%;
-  background-size: 20px 12px, 18px 10px, 22px 14px;
+    /* layout */
+    inset: 0;
+	position: absolute;
+    pointer-events: none;
+    
+    /* styles */
+    opacity: 0.35;
+    border-radius: 50px;
+    
+    /* clouds overlay */
+  	background-repeat: no-repeat;
+  	background-image: 
+		url(${cloud1Img}),
+		url(${cloud2Img}),
+		url(${cloud3Img});
+	animation: ${cloudDrift} 10s ease-in-out infinite;
+	background-position: 10% 30%, 60% 50%, 85% 20%;
+	background-size: 20px 12px, 18px 10px, 22px 14px;
 `;
+
+/* ======== skills bg ======== */
 
 const NavButtonBackgroundSkills = styled.div`
-  position: absolute;
-  inset: 0;
-  opacity: 0.25;
-  border-radius: 50px;
-  pointer-events: none;
-  overflow: hidden;
-  
-  /* Tiny skyline - buildings as rectangles */
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 35%;
-    background-image: 
-      /* Building 1 - tallest */
-      linear-gradient(to top, 
-        rgba(80, 100, 130, 0.6) 0%,
-        rgba(80, 100, 130, 0.6) 100%),
-      /* Building 2 - medium */
-      linear-gradient(to top, 
-        rgba(90, 110, 140, 0.5) 0%,
-        rgba(90, 110, 140, 0.5) 100%),
-      /* Building 3 - short */
-      linear-gradient(to top, 
-        rgba(100, 120, 150, 0.4) 0%,
-        rgba(100, 120, 150, 0.4) 100%),
-      /* Building 4 - tall */
-      linear-gradient(to top, 
-        rgba(85, 105, 135, 0.55) 0%,
-        rgba(85, 105, 135, 0.55) 100%),
-      /* Building 5 - medium */
-      linear-gradient(to top, 
-        rgba(95, 115, 145, 0.45) 0%,
-        rgba(95, 115, 145, 0.45) 100%);
-    background-size: 
-      14% 100%,  /* Building 1 width and height */
-      12% 75%,   /* Building 2 */
-      10% 50%,   /* Building 3 */
-      13% 90%,   /* Building 4 */
-      11% 65%;   /* Building 5 */
-    background-position: 
-      2% bottom,    /* Building 1 - closer together */
-      18% bottom,   /* Building 2 - closer together */
-      35% bottom,   /* Building 3 - closer together */
-      52% bottom,   /* Building 4 - closer together */
-      70% bottom;   /* Building 5 - closer together */
-    background-repeat: no-repeat;
-  }
-  
-  /* Building windows detail - simple grid pattern */
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 35%;
-    opacity: 0.4;
-    background-image: 
-      /* Window dots for all buildings - adjusted positions */
-      radial-gradient(circle at 5% 70%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-      radial-gradient(circle at 9% 50%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-      radial-gradient(circle at 7% 30%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-      radial-gradient(circle at 21% 65%, rgba(255, 255, 255, 0.25) 1px, transparent 1px),
-      radial-gradient(circle at 19% 40%, rgba(255, 255, 255, 0.25) 1px, transparent 1px),
-      radial-gradient(circle at 38% 55%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-      radial-gradient(circle at 36% 35%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-      radial-gradient(circle at 55% 75%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-      radial-gradient(circle at 57% 50%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-      radial-gradient(circle at 59% 30%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-      radial-gradient(circle at 73% 60%, rgba(255, 255, 255, 0.25) 1px, transparent 1px),
-      radial-gradient(circle at 75% 35%, rgba(255, 255, 255, 0.25) 1px, transparent 1px);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-  }
+    /* layout */
+    inset: 0;
+	overflow: hidden;
+	position: absolute;
+    pointer-events: none;
+    
+    /* styles */
+    opacity: 0.25;
+    border-radius: 50px;
+    
+    /* pseudo-elements (skyline buildings) */
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 35%;
+        background-image: 
+            linear-gradient(to top, 
+                rgba(80, 100, 130, 0.6) 0%,
+                rgba(80, 100, 130, 0.6) 100%),
+            linear-gradient(to top, 
+                rgba(90, 110, 140, 0.5) 0%,
+                rgba(90, 110, 140, 0.5) 100%),
+            linear-gradient(to top, 
+                rgba(100, 120, 150, 0.4) 0%,
+                rgba(100, 120, 150, 0.4) 100%),
+            linear-gradient(to top, 
+                rgba(85, 105, 135, 0.55) 0%,
+                rgba(85, 105, 135, 0.55) 100%),
+            linear-gradient(to top, 
+                rgba(95, 115, 145, 0.45) 0%,
+                rgba(95, 115, 145, 0.45) 100%);
+        background-size: 
+            14% 100%,
+            12% 75%,
+            10% 50%,
+            13% 90%,
+            11% 65%;
+        background-position: 
+            2% bottom,
+            18% bottom,
+            35% bottom,
+            52% bottom,
+            70% bottom;
+        background-repeat: no-repeat;
+    }
 `;
+
+/* ======== about bg ======== */
 
 const NavButtonBackgroundAbout = styled.div`
-  position: absolute;
-  inset: 0;
-  opacity: 0.6;
-  border-radius: 50px;
-  pointer-events: none;
-  overflow: hidden;
-  
-  /* floating bubbles - similar to about section underwater particles */
-  background-image:
-    /* multiple bubbles at different positions */
-    radial-gradient(circle at 12% 20%, rgba(255,255,255,0.2) 0%, transparent 2px),
-    radial-gradient(circle at 38% 35%, rgba(255,255,255,0.15) 0%, transparent 2.5px),
-    radial-gradient(circle at 65% 15%, rgba(255,255,255,0.18) 0%, transparent 2px),
-    radial-gradient(circle at 85% 45%, rgba(255,255,255,0.12) 0%, transparent 1.5px),
-    radial-gradient(circle at 22% 60%, rgba(255,255,255,0.16) 0%, transparent 2px),
-    radial-gradient(circle at 55% 70%, rgba(255,255,255,0.14) 0%, transparent 1.8px),
-    radial-gradient(circle at 78% 55%, rgba(255,255,255,0.13) 0%, transparent 2.2px),
-    radial-gradient(circle at 42% 25%, rgba(255,255,255,0.17) 0%, transparent 2px),
-    radial-gradient(circle at 8% 50%, rgba(255,255,255,0.11) 0%, transparent 1.5px),
-    radial-gradient(circle at 68% 75%, rgba(255,255,255,0.13) 0%, transparent 2px),
-    radial-gradient(circle at 30% 80%, rgba(255,255,255,0.10) 0%, transparent 2.5px),
-    radial-gradient(circle at 90% 30%, rgba(255,255,255,0.08) 0%, transparent 2px),
-    radial-gradient(circle at 15% 85%, rgba(255,255,255,0.07) 0%, transparent 1.8px),
-    radial-gradient(circle at 75% 65%, rgba(255,255,255,0.06) 0%, transparent 1.5px);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  animation: ${floatParticles} 15s ease-in-out infinite;
-  transform: translateZ(0);
-  will-change: transform, opacity;
+    /* layout */
+    inset: 0;
+    overflow: hidden;
+	position: absolute;
+	pointer-events: none;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    
+    /* styles */
+    opacity: 0.6;
+    border-radius: 50px;
+    background-image:
+        radial-gradient(circle at 12% 20%, rgba(255,255,255,0.2) 0%, transparent 2px),
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.15) 0%, transparent 2.5px),
+        radial-gradient(circle at 65% 15%, rgba(255,255,255,0.18) 0%, transparent 2px),
+        radial-gradient(circle at 85% 45%, rgba(255,255,255,0.12) 0%, transparent 1.5px),
+        radial-gradient(circle at 22% 60%, rgba(255,255,255,0.16) 0%, transparent 2px),
+        radial-gradient(circle at 55% 70%, rgba(255,255,255,0.14) 0%, transparent 1.8px),
+        radial-gradient(circle at 78% 55%, rgba(255,255,255,0.13) 0%, transparent 2.2px),
+        radial-gradient(circle at 42% 25%, rgba(255,255,255,0.17) 0%, transparent 2px),
+        radial-gradient(circle at 8% 50%, rgba(255,255,255,0.11) 0%, transparent 1.5px),
+        radial-gradient(circle at 68% 75%, rgba(255,255,255,0.13) 0%, transparent 2px),
+        radial-gradient(circle at 30% 80%, rgba(255,255,255,0.10) 0%, transparent 2.5px),
+        radial-gradient(circle at 90% 30%, rgba(255,255,255,0.08) 0%, transparent 2px),
+        radial-gradient(circle at 15% 85%, rgba(255,255,255,0.07) 0%, transparent 1.8px),
+        radial-gradient(circle at 75% 65%, rgba(255,255,255,0.06) 0%, transparent 1.5px);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    animation: ${floatParticles} 15s ease-in-out infinite;
 `;
 
-// Helper function to get the right background component
-const getNavButtonBackground = (sectionId) => {
-  switch(sectionId) {
-    case 'who-i-am': return NavButtonBackgroundWhoIAm;
-    case 'experience': return NavButtonBackgroundExperience;
-    case 'projects': return NavButtonBackgroundProjects;
-    case 'skills': return NavButtonBackgroundSkills;
-    case 'about': return NavButtonBackgroundAbout;
-    default: return null;
-  }
-};
+/* ======== side navbar ======== */
 
-// Side Navbar Wrapper for proper transform layering
 const SideNavbarWrapper = styled.div`
-  position: fixed;
-  left: 1.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 99;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* When collapsed, slide mostly off-screen but leave a portion visible (empty pill appearance) */
-  /* Leave about 30% of the pill visible (the right side) */
-  transform: translateY(-50%) translateX(${props => props.$isCollapsed ? 'calc(-70% - 1.5rem)' : '0'});
-  
-  /* Hide side navbar on mobile (below 1000px) */
-  @media (max-width: 1000px) {
-    display: none;
-  }
-  
-  @media (max-width: 900px) {
-    left: 1rem;
-    transform: translateY(-50%) translateX(${props => props.$isCollapsed ? 'calc(-70% - 1rem)' : '0'});
-  }
-  
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
+    /* layout */
+    top: 50%;
+    z-index: 99;
+	left: 1.5rem;
+	position: fixed;
+    transform: translateY(-50%) translateX(${props => props.$isCollapsed ? 'calc(-70% - 1.5rem)' : '0'});
+    
+    /* styles */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* media queries */
+    @media (max-width: 1000px) {
+        display: none;
+    }
+    
+    @media (max-width: 900px) {
+        left: 1rem;
+        transform: translateY(-50%) translateX(${props => props.$isCollapsed ? 'calc(-70% - 1rem)' : '0'});
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
 `;
 
-// Side Navbar Motion Container - wraps both toggle button and container
-// This ensures they animate together when sliding out
+// ensures toggle button and container animate together.
 const SideNavbarMotionContainer = styled(motion.div)`
-  position: relative;
-  display: flex;
-  align-items: center;
-  /* Ensure container wraps both toggle button and navbar pill */
-  width: fit-content;
-  height: fit-content;
+    /* layout */
+    display: flex;
+	position: relative;
+    align-items: center;
+    
+    /* spacing */
+    width: fit-content;
+    height: fit-content;
 `;
 
-// Side Pill Navbar Container - floating pill disconnected from edge
+// floating pill disconnected from edge.
 const SideNavbarContainer = styled.nav`
-  position: relative;
-  z-index: 10;
-  
-  /* Enhanced glass morphism effect - matching toggle button exactly */
-  background: linear-gradient(
-    135deg,
-    rgba(13, 7, 27, 0.6) 0%,
-    rgba(20, 12, 35, 0.5) 50%,
-    rgba(13, 7, 27, 0.6) 100%
-  );
-  backdrop-filter: blur(30px) saturate(200%);
-  -webkit-backdrop-filter: blur(30px) saturate(200%);
-  
-  /* Very light white shadow for visibility on dark backgrounds */
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.04),
-              0 0 40px rgba(255, 255, 255, 0.02);
-  
-  /* Full pill shape - fully rounded, disconnected from edge */
-  border-radius: 50px;
-  padding: 1.5rem 0.75rem;
-  
-  /* No transform here - handled by motion container */
-  
-  /* GPU acceleration */
-  will-change: transform, opacity;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-`;
-
-// Side Nav Content
-const SideNavContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  opacity: ${props => props.$isCollapsed ? '0' : '1'};
-  pointer-events: ${props => props.$isCollapsed ? 'none' : 'auto'};
-  transition: opacity 0.3s ease;
-`;
-
-// Side Nav Button Wrapper - for tooltip positioning
-const SideNavButtonWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  
-  /* Show tooltip on hover */
-  &:hover .tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-  }
-`;
-
-// Base Tooltip - shared styles
-const TooltipBase = styled.div`
-  position: absolute;
-  left: calc(100% + 1rem);
-  white-space: nowrap;
-  padding: 0.5rem 0.875rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: white;
-  pointer-events: none;
-  z-index: 10000;
-  
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 0 20px rgba(100, 150, 255, 0.3);
-  
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  
-  /* Initial state - hidden */
-  opacity: 0;
-  visibility: hidden;
-  transform: translateZ(0) translateX(-10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, opacity;
-  
-  @media (prefers-reduced-motion: reduce) {
-    transition: opacity 0.2s ease;
-    transform: none;
-  }
-`;
-
-// Who I Am Tooltip - Space/Star theme
-const TooltipWhoIAm = styled(TooltipBase)`
-  background: linear-gradient(135deg,
-    rgb(13, 7, 27) 0%,
-    rgb(30, 20, 55) 40%,
-    rgb(45, 30, 80) 70%,
-    rgb(85, 60, 135) 95%,
-    rgb(100, 70, 150) 100%);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    right: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 6px 8px 6px 0;
-    border-color: transparent rgb(30, 20, 55) transparent transparent;
-  }
-`;
-
-// Experience Tooltip - Purple to Blue gradient
-const TooltipExperience = styled(TooltipBase)`
-  background: linear-gradient(135deg,
-    rgb(78, 58, 128) 0%,
-    rgb(78, 58, 128) 10%,
-    rgb(92, 74, 155) 32%,
-    rgb(112, 95, 182) 54%,
-    rgb(132, 127, 210) 78%,
-    rgb(148, 180, 243) 100%);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    right: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 6px 8px 6px 0;
-    border-color: transparent rgb(92, 74, 155) transparent transparent;
-  }
-`;
-
-// Projects Tooltip - Light Blue Sky gradient
-const TooltipProjects = styled(TooltipBase)`
-  background: linear-gradient(135deg,
-    rgb(120, 165, 234) 0%,
-    rgb(106, 158, 232) 25%,
-    rgb(95, 157, 236) 50%,
-    rgb(83, 158, 237) 75%,
-    rgb(71, 160, 238) 100%);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    right: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 6px 8px 6px 0;
-    border-color: transparent rgb(95, 157, 236) transparent transparent;
-  }
-`;
-
-// Skills Tooltip - Bright Blue Sky gradient
-const TooltipSkills = styled(TooltipBase)`
-  background: linear-gradient(135deg,
-    rgb(71, 160, 238) 0%,
-    rgb(80, 170, 242) 25%,
-    rgb(90, 180, 246) 50%,
-    rgb(115, 205, 255) 75%,
-    rgb(135, 225, 255) 100%);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    right: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 6px 8px 6px 0;
-    border-color: transparent rgb(90, 180, 246) transparent transparent;
-  }
-`;
-
-// About Tooltip - Darker underwater theme
-const TooltipAbout = styled(TooltipBase)`
-  background: linear-gradient(135deg,
-    rgb(18, 66, 114) 0%,
-    rgb(23, 82, 126) 20%,
-    rgb(29, 98, 138) 40%,
-    rgb(36, 114, 150) 60%,
-    rgb(44, 130, 162) 75%,
-    rgb(54, 146, 174) 90%,
-    rgb(60, 154, 180) 100%);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    right: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 6px 8px 6px 0;
-    border-color: transparent rgb(29, 98, 138) transparent transparent;
-  }
-`;
-
-// Helper function to get the right tooltip variant
-const getTooltipVariant = (sectionId) => {
-  switch(sectionId) {
-    case 'who-i-am': return TooltipWhoIAm;
-    case 'experience': return TooltipExperience;
-    case 'projects': return TooltipProjects;
-    case 'skills': return TooltipSkills;
-    case 'about': return TooltipAbout;
-    default: return TooltipBase;
-  }
-};
-
-// Tooltip component that uses the correct variant
-const TooltipVariant = ({ sectionId, className, children }) => {
-  const TooltipComponent = getTooltipVariant(sectionId);
-  return <TooltipComponent className={className}>{children}</TooltipComponent>;
-};
-
-// Base Side Nav Button - shared styles
-const SideNavButtonBase = styled.button`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  
-  /* GPU acceleration */
-  transform: translateZ(0);
-  will-change: border-color, box-shadow;
-  
-  /* Subtle base glow */
-  box-shadow: none;
-  
-  &:hover {
-    border-color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
-  }
-  
-  &:active {
-    transition: all 0.1s ease;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    &:hover {
-      transform: none;
-    }
-  }
-`;
-
-// Who I Am - Space/Star theme
-const SideNavButtonWhoIAm = styled(SideNavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(13, 7, 27) 0%,
-    rgb(30, 20, 55) 40%,
-    rgb(45, 30, 80) 70%,
-    rgb(85, 60, 135) 95%,
-    rgb(100, 70, 150) 100%);
-`;
-
-// Experience - Purple to Blue gradient
-const SideNavButtonExperience = styled(SideNavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(78, 58, 128) 0%,
-    rgb(78, 58, 128) 10%,
-    rgb(92, 74, 155) 32%,
-    rgb(112, 95, 182) 54%,
-    rgb(132, 127, 210) 78%,
-    rgb(148, 180, 243) 100%);
-`;
-
-// Projects - Light Blue Sky gradient
-const SideNavButtonProjects = styled(SideNavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(120, 165, 234) 0%,
-    rgb(106, 158, 232) 25%,
-    rgb(95, 157, 236) 50%,
-    rgb(83, 158, 237) 75%,
-    rgb(71, 160, 238) 100%);
-`;
-
-// Skills - Bright Blue Sky gradient
-const SideNavButtonSkills = styled(SideNavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(71, 160, 238) 0%,
-    rgb(80, 170, 242) 25%,
-    rgb(90, 180, 246) 50%,
-    rgb(115, 205, 255) 75%,
-    rgb(135, 225, 255) 100%);
-`;
-
-// About - Darker underwater theme
-const SideNavButtonAbout = styled(SideNavButtonBase)`
-  background: linear-gradient(135deg,
-    rgb(18, 66, 114) 0%,
-    rgb(23, 82, 126) 20%,
-    rgb(29, 98, 138) 40%,
-    rgb(36, 114, 150) 60%,
-    rgb(44, 130, 162) 75%,
-    rgb(54, 146, 174) 90%,
-    rgb(60, 154, 180) 100%);
-`;
-
-// Helper function to get the right side nav button variant
-const getSideNavButtonVariant = (sectionId) => {
-  switch(sectionId) {
-    case 'who-i-am': return SideNavButtonWhoIAm;
-    case 'experience': return SideNavButtonExperience;
-    case 'projects': return SideNavButtonProjects;
-    case 'skills': return SideNavButtonSkills;
-    case 'about': return SideNavButtonAbout;
-    default: return SideNavButtonBase;
-  }
-};
-
-// Chevron SVG component (from WhoIAm.jsx) - positioned to be fully visible in half circle
-const ChevronRight = styled.svg`
-  width: 20px;
-  height: 20px;
-  viewBox: 0 0 24 24;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  display: block;
-  flex-shrink: 0;
-  /* Shift chevron to the right so it's fully visible in the half circle */
-  margin-left: 17.5px;
-`;
-
-// Toggle Button - Pure half circle hump attached to pill's right side
-const ToggleButton = styled.button`
-  position: absolute;
-  right: -26.5px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 55px;
-  height: 50px;
-  z-index: 5;
-  
-  /* Exact same glass morphism as SideNavbarContainer - seamless connection */
-  background: linear-gradient(
-    135deg,
-    rgba(13, 7, 27, 0.6) 0%,
-    rgba(20, 12, 35, 0.5) 50%,
-    rgba(13, 7, 27, 0.6) 100%
-  );
-  backdrop-filter: blur(30px) saturate(200%);
-  -webkit-backdrop-filter: blur(30px) saturate(200%);
-  
-  /* Match border styling exactly - no left border for seamless connection */
-  border: 1px solid rgba(255, 255, 255, 0.0);
-  border-left: none;
-  
-  /* Pure half circle using clip-path - only show right half */
-  clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
-  border-radius: 50%;
-  
-  /* Inset shadow for depth + drop-shadow that respects clip-path */
-  box-shadow: inset -2px 0 8px rgba(255, 255, 255, 0.1);
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.04))
-          drop-shadow(0 0 40px rgba(255, 255, 255, 0.02));
-  
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 8px;
-  
-  /* Ensure no overflow creates rectangular appearance */
-  overflow: hidden;
-  
-  /* Smooth transitions */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Visibility based on scroll state - opacity handled by parent motion container */
-  /* Only handle pointer-events here, opacity animation is on parent */
-  pointer-events: ${props => props.$isVisible ? 'auto' : 'none'};
-  
-  /* Color for chevron */
-  color: rgba(255, 255, 255, 0.9);
-  
-  /* GPU acceleration */
-  will-change: transform, opacity;
-  
-  &:hover {
-    /* Slightly brighter on hover but maintain same structure */
+    /* layout */
+    z-index: 10;
+	position: relative;
+    will-change: transform, opacity;
+    
+    /* spacing */
+    padding: 1.5rem 0.75rem;
+    
+    /* styles */
+    border-radius: 50px;
     background: linear-gradient(
-      135deg,
-      rgba(20, 12, 35, 0.65) 0%,
-      rgba(25, 18, 42, 0.55) 50%,
-      rgba(20, 12, 35, 0.65) 100%
+        135deg,
+        rgba(13, 7, 27, 0.6) 0%,
+        rgba(20, 12, 35, 0.5) 50%,
+        rgba(13, 7, 27, 0.6) 100%
     );
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 1);
-  }
-  
-  &:active {
-    transition: all 0.1s ease;
-    transform: translateY(-50%) translateX(-2px);
-  }
-
-  @media (max-width: 900px) {
-    width: 44px;
-    height: 44px;
-    right: -22px;
-    padding-left: 6px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    &:hover {
-      transform: translateY(-50%);
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.04),
+                0 0 40px rgba(255, 255, 255, 0.02);
+    
+    /* media queries */
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
     }
-  }
 `;
 
+// side nav content.
+const SideNavContent = styled.div`
+    /* layout */
+    display: flex;
+    align-items: center;
+	flex-direction: column;
+    pointer-events: ${props => props.$isCollapsed ? 'none' : 'auto'};
+    
+    /* spacing */
+    gap: 1rem;
+    
+    /* styles */
+    opacity: ${props => props.$isCollapsed ? '0' : '1'};
+    transition: opacity 0.3s ease;
+`;
+
+// side nav button wrapper - for tooltip positioning.
+const SideNavButtonWrapper = styled.div`
+    /* layout */
+    display: flex;
+	position: relative;
+    align-items: center;
+    
+    /* hover effects */
+    &:hover .tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+    }
+`;
+
+/* ======== tooltips ======== */
+
+const TooltipBase = styled.div`
+    /* layout */
+    z-index: 10000;
+	position: absolute;
+	pointer-events: none;
+    left: calc(100% + 1rem);
+	will-change: transform, opacity;
+    transform: translateZ(0) translateX(-10px);
+    
+    /* spacing */
+    padding: 0.5rem 0.875rem;
+    
+    /* styles */
+    color: white;
+	opacity: 0;
+	font-weight: 500;
+    border-radius: 8px;
+	visibility: hidden;
+    font-size: 0.875rem;
+    white-space: nowrap;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 20px rgba(100, 150, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* media queries */
+    @media (prefers-reduced-motion: reduce) {
+        transition: opacity 0.2s ease;
+        transform: none;
+    }
+`;
+
+// who i am tooltip - space/star theme.
+const TooltipWhoIAm = styled(TooltipBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(13, 7, 27) 0%,
+        rgb(30, 20, 55) 40%,
+        rgb(45, 30, 80) 70%,
+        rgb(85, 60, 135) 95%,
+        rgb(100, 70, 150) 100%);
+    
+    /* pseudo-elements (arrow pointer) */
+    &::before {
+        content: '';
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        width: 0;
+        height: 0;
+        transform: translateY(-50%);
+        border-style: solid;
+        border-width: 6px 8px 6px 0;
+        border-color: transparent rgb(30, 20, 55) transparent transparent;
+    }
+`;
+
+// experience tooltip - purple to blue gradient.
+const TooltipExperience = styled(TooltipBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(78, 58, 128) 0%,
+        rgb(78, 58, 128) 10%,
+        rgb(92, 74, 155) 32%,
+        rgb(112, 95, 182) 54%,
+        rgb(132, 127, 210) 78%,
+        rgb(148, 180, 243) 100%);
+    
+    /* pseudo-elements (arrow pointer) */
+    &::before {
+        content: '';
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        width: 0;
+        height: 0;
+        transform: translateY(-50%);
+        border-style: solid;
+        border-width: 6px 8px 6px 0;
+        border-color: transparent rgb(92, 74, 155) transparent transparent;
+    }
+`;
+
+// projects tooltip - light blue sky gradient.
+const TooltipProjects = styled(TooltipBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(120, 165, 234) 0%,
+        rgb(106, 158, 232) 25%,
+        rgb(95, 157, 236) 50%,
+        rgb(83, 158, 237) 75%,
+        rgb(71, 160, 238) 100%);
+    
+    /* pseudo-elements (arrow pointer) */
+    &::before {
+        content: '';
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        width: 0;
+        height: 0;
+        transform: translateY(-50%);
+        border-style: solid;
+        border-width: 6px 8px 6px 0;
+        border-color: transparent rgb(95, 157, 236) transparent transparent;
+    }
+`;
+
+// skills tooltip - bright blue sky gradient.
+const TooltipSkills = styled(TooltipBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(71, 160, 238) 0%,
+        rgb(80, 170, 242) 25%,
+        rgb(90, 180, 246) 50%,
+        rgb(115, 205, 255) 75%,
+        rgb(135, 225, 255) 100%);
+    
+    /* pseudo-elements (arrow pointer) */
+    &::before {
+        content: '';
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        width: 0;
+        height: 0;
+        transform: translateY(-50%);
+        border-style: solid;
+        border-width: 6px 8px 6px 0;
+        border-color: transparent rgb(90, 180, 246) transparent transparent;
+    }
+`;
+
+// about tooltip - darker underwater theme.
+const TooltipAbout = styled(TooltipBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(18, 66, 114) 0%,
+        rgb(23, 82, 126) 20%,
+        rgb(29, 98, 138) 40%,
+        rgb(36, 114, 150) 60%,
+        rgb(44, 130, 162) 75%,
+        rgb(54, 146, 174) 90%,
+        rgb(60, 154, 180) 100%);
+    
+    /* pseudo-elements (arrow pointer) */
+    &::before {
+        content: '';
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        width: 0;
+        height: 0;
+        transform: translateY(-50%);
+        border-style: solid;
+        border-width: 6px 8px 6px 0;
+        border-color: transparent rgb(29, 98, 138) transparent transparent;
+    }
+`;
+
+/* ======== side nav buttons ======== */
+
+const SideNavButtonBase = styled.button`
+    /* layout */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transform: translateZ(0);
+    will-change: border-color, box-shadow;
+    
+    /* spacing */
+    width: 50px;
+    height: 50px;
+    
+    /* styles */
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* hover effects */
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+    }
+    
+    /* active state */
+    &:active {
+        transition: all 0.1s ease;
+    }
+    
+    /* media queries */
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        
+        &:hover {
+            transform: none;
+        }
+    }
+`;
+
+// who i am - space/star gradient.
+const SideNavButtonWhoIAm = styled(SideNavButtonBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(13, 7, 27) 0%,
+        rgb(30, 20, 55) 40%,
+        rgb(45, 30, 80) 70%,
+        rgb(85, 60, 135) 95%,
+        rgb(100, 70, 150) 100%);
+`;
+
+// experience - purple to blue gradient.
+const SideNavButtonExperience = styled(SideNavButtonBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(78, 58, 128) 0%,
+        rgb(78, 58, 128) 10%,
+        rgb(92, 74, 155) 32%,
+        rgb(112, 95, 182) 54%,
+        rgb(132, 127, 210) 78%,
+        rgb(148, 180, 243) 100%);
+`;
+
+// projects - light blue sky gradient.
+const SideNavButtonProjects = styled(SideNavButtonBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(120, 165, 234) 0%,
+        rgb(106, 158, 232) 25%,
+        rgb(95, 157, 236) 50%,
+        rgb(83, 158, 237) 75%,
+        rgb(71, 160, 238) 100%);
+`;
+
+// skills - bright blue sky gradient.
+const SideNavButtonSkills = styled(SideNavButtonBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(71, 160, 238) 0%,
+        rgb(80, 170, 242) 25%,
+        rgb(90, 180, 246) 50%,
+        rgb(115, 205, 255) 75%,
+        rgb(135, 225, 255) 100%);
+`;
+
+// about - darker underwater theme.
+const SideNavButtonAbout = styled(SideNavButtonBase)`
+    /* styles */
+    background: linear-gradient(135deg,
+        rgb(18, 66, 114) 0%,
+        rgb(23, 82, 126) 20%,
+        rgb(29, 98, 138) 40%,
+        rgb(36, 114, 150) 60%,
+        rgb(44, 130, 162) 75%,
+        rgb(54, 146, 174) 90%,
+        rgb(60, 154, 180) 100%);
+`;
+
+// chevron svg component - positioned to be fully visible in half circle.
+const ChevronRight = styled.svg`
+    /* layout */
+    display: block;
+    flex-shrink: 0;
+    
+    /* spacing */
+    width: 20px;
+    height: 20px;
+    margin-left: 17.5px;
+    
+    /* styles */
+    fill: none;
+	stroke-width: 3;
+    viewBox: 0 0 24 24;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+`;
+
+// toggle button - pure half circle hump attached to pill's right side.
+const ToggleButton = styled.button`
+    /* layout */
+    top: 50%;
+    z-index: 5;
+    display: flex;
+    right: -26.5px;
+	overflow: hidden;
+	position: absolute;
+    align-items: center;
+    justify-content: flex-start;
+    transform: translateY(-50%);
+	will-change: transform, opacity;
+    pointer-events: ${props => props.$isVisible ? 'auto' : 'none'};
+
+    /* spacing */
+    width: 55px;
+    height: 50px;
+    padding-left: 8px;
+    
+    /* styles */
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.0);
+    border-left: none;
+    clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(13, 7, 27, 0.6) 0%,
+        rgba(20, 12, 35, 0.5) 50%,
+        rgba(13, 7, 27, 0.6) 100%
+    );
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    box-shadow: inset -2px 0 8px rgba(255, 255, 255, 0.1);
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.04))
+            drop-shadow(0 0 40px rgba(255, 255, 255, 0.02));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+        background: linear-gradient(
+            135deg,
+            rgba(20, 12, 35, 0.65) 0%,
+            rgba(25, 18, 42, 0.55) 50%,
+            rgba(20, 12, 35, 0.65) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 1);
+    }
+    
+    &:active {
+        transform: translateY(-50%) translateX(-2px);
+        transition: all 0.1s ease;
+    }
+    
+    /* media queries */
+    @media (max-width: 900px) {
+        right: -22px;
+        width: 44px;
+        height: 44px;
+        padding-left: 6px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        
+        &:hover {
+            transform: translateY(-50%);
+        }
+    }
+`;
+
+// side nav icon - the emoji icon that appears on the side nav button.
 const SideNavIcon = styled.span`
-  font-size: 1.5rem;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
-  z-index: 1;
-  position: relative;
+    /* layout */
+    position: relative;
+    z-index: 1;
+    
+    /* styles */
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
 `;
 
+// active indicator - the small line that appears when the button is active.
 const ActiveIndicator = styled.div`
-  position: absolute;
-  left: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 60%;
-  background: linear-gradient(to bottom, 
-    rgba(100, 150, 255, 1),
-    rgba(150, 200, 255, 0.8));
-  border-radius: 0 2px 2px 0;
-  box-shadow: 0 0 10px rgba(100, 150, 255, 0.8);
-  animation: ${starTwinkle} 2s ease-in-out infinite;
+    /* layout */
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* spacing */
+    width: 4px;
+    height: 60%;
+    
+    /* styles */
+    border-radius: 0 2px 2px 0;
+    background: linear-gradient(to bottom, 
+        rgba(100, 150, 255, 1),
+        rgba(150, 200, 255, 0.8));
+    box-shadow: 0 0 10px rgba(100, 150, 255, 0.8);
+    animation: ${starTwinkle} 2s ease-in-out infinite;
 `;
 
-export default Navbar;
 

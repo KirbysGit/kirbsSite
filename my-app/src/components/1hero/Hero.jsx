@@ -6,101 +6,70 @@
 // had idea of adding some more stuff in background, thinking ufo, astronaut, and maybe one more thing.
 
 // imports.
-import React, { memo, useCallback, useMemo } from 'react';
-import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
-import { useComponentPerformance } from '../../hooks/useComponentPerformance';
+import styled, { keyframes } from 'styled-components';
+import React, { memo, useCallback, useMemo } from 'react';
+
+// utils.
 import { scrollToSection } from '../../utils/scrollToSection';
 
-// Image imports
-import astronautImg from '@/images/1hero/astronaut.png';
+// config.
+import { getHeroAnimationConfigs } from './HeroConfig';
+
+// images.
 import ufoImg from '@/images/1hero/ufo.png';
+import astronautImg from '@/images/1hero/astronaut.png';
 import cloud1Img from '@/images/3experience/clouds/cloud1.png';
 import cloud2Img from '@/images/3experience/clouds/cloud2.png';
-import cloud3Img from '@/images/3experience/clouds/cloud3.png';
 
-// hero component.
+/* ================== main component ================== */
+
 const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
-    // Performance monitoring
-    useComponentPerformance('Hero', process.env.NODE_ENV === 'development');
     
-    // Track when loading is complete and animations can start
+    // track when loading is complete and animations can start.
     const [loadingComplete, setLoadingComplete] = React.useState(false);
     
-    // When loading screen finishes, allow animations to start
+    // when loading screen finishes, allow animations to start.
     React.useEffect(() => {
         if (!isLoading && !loadingComplete) {
             setLoadingComplete(true);
-            const now = performance.now();
         }
     }, [isLoading, loadingComplete]);
             
-    // Memoized smooth scroll function using shared utility
+    // memoized smooth scroll function using shared utility.
     const handleScrollToSection = useCallback((sectionId, desktopOffset = 0, mobileOffset = 0) => {
         scrollToSection(sectionId, desktopOffset, mobileOffset);
     }, []);
     
-    // Memoize animation configs - only animate after loading completes
-    // Use false to prevent animation until loadingComplete is true
-    const msgWrapperConfig = useMemo(() => ({
-        initial: { opacity: 0 },
-        animate: loadingComplete ? { opacity: 1 } : false,
-        transition: { delay: 0.5, duration: 0.8, ease: "easeOut" }
-    }), [loadingComplete]);
+    // memoize animation configs, only animate after loading completes.
+    const animationConfigs = useMemo(
+        () => getHeroAnimationConfigs(loadingComplete),
+        [loadingComplete]
+    );
     
-    const supMsgConfig = useMemo(() => ({
-        initial: { x: -500, opacity: 0 },
-        animate: loadingComplete ? { x: 0, opacity: 1 } : false,
-        transition: { delay: 0.8, duration: 1.2, ease: "easeOut" }
-    }), [loadingComplete]);
-    
-    const introNameConfig = useMemo(() => ({
-        initial: { x: -500, opacity: 0 },
-        animate: loadingComplete ? { x: 0, opacity: 1 } : false,
-        transition: { delay: 1.8, duration: 1.2, ease: "easeOut" }
-    }), [loadingComplete]);
-    
-    const nameRowConfig = useMemo(() => ({
-        initial: { x: -500, opacity: 0 },
-        animate: loadingComplete ? { x: 0, opacity: 1 } : false,
-        transition: { delay: 2.8, duration: 1.2, ease: "easeOut" }
-    }), [loadingComplete]);
-    
-    const subNameConfig = useMemo(() => ({
-        initial: { y: -50, opacity: 0 },
-        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
-        transition: { delay: 3.8, duration: 1.2, ease: "easeOut" }
-    }), [loadingComplete]);
-    
-    const scrollInviteConfig = useMemo(() => ({
-        initial: { y: 50, opacity: 0 },
-        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
-        transition: { delay: 4.8, duration: 1.2, ease: "easeOut" }
-    }), [loadingComplete]);
-    
-    const navPillsConfig = useMemo(() => ({
-        initial: { y: 50, opacity: 0 },
-        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
-        transition: { delay: 5.4, duration: 1.2, ease: "easeOut" }
-    }), [loadingComplete]);
-    
-    const arrowConfig = useMemo(() => ({
-        initial: { y: 30, opacity: 0 },
-        animate: loadingComplete ? { y: 0, opacity: 1 } : false,
-        transition: { delay: 6.0, duration: 1.0, ease: "easeOut" }
-    }), [loadingComplete]);
+    // animation configs for cleanliness.
+    const {
+        msgWrapperConfig,
+        supMsgConfig,
+        introNameConfig,
+        nameRowConfig,
+        subNameConfig,
+        scrollInviteConfig,
+        navPillsConfig,
+        arrowConfig
+    } = animationConfigs;
 
     return (
         <HeroContainer id="hero" data-section-snap $isLoading={isLoading}>
             
-            {/* Optimized starfield - CSS background approach for better performance */}
+            {/* starfield (optimized for performance aka got rid of all the individual stars) */}
             <ParticleField className="twinkles">
-                {/* Reduced to 3 most visible stars for better render performance (target: <16ms) */}
+                {/* reduced down to 3 stars */}
                 <Star style={{ '--top': '15%', '--left': '25%', '--size': '2px', '--opacity': '0.6', '--duration': '23.7' }} className="twinkle1" />
                 <Star style={{ '--top': '45%', '--left': '65%', '--size': '1px', '--opacity': '0.7', '--duration': '31.2' }} className="twinkle2" />
                 <Star style={{ '--top': '75%', '--left': '35%', '--size': '2px', '--opacity': '0.8', '--duration': '18.9' }} className="twinkle3" />
                 
-                {/* moon (thinking bout adding some more to it, like a guy waving on it */}
+                {/* moon (thinking bout adding some more to it, like a guy waving on it) */}
                 <Moon>
                     <Crater style={{ '--top': '15%', '--left': '55%', '--size': '6px', '--depth': '0.1', '--depth-half': '0.05', '--shadow-size': '1.8px', '--shadow-opacity': '0.08' }} />
                     <Crater style={{ '--top': '60%', '--left': '25%', '--size': '10px', '--depth': '0.08', '--depth-half': '0.04', '--shadow-size': '3px', '--shadow-opacity': '0.064' }} />
@@ -123,61 +92,58 @@ const Hero = memo(({ isLoading = true, loadingCompleteTime = null }) => {
             <MsgsWrapper {...msgWrapperConfig}>
                     <Msgs>
                         {/* what's up! message */}
-                    <SupMsg {...supMsgConfig}>
+                        <SupMsg {...supMsgConfig}>
                             What's up! 
                             <WavingHand>👋</WavingHand>
                         </SupMsg>
 
                         {/* my name's... message */}
-                    <IntroNameMsg {...introNameConfig}>
+                        <IntroNameMsg {...introNameConfig}>
                             My name's
                         </IntroNameMsg>
 
                         {/* my name */}
-                    <NameRow {...nameRowConfig}>
+                        <NameRow {...nameRowConfig}>
                             <Name className="nameGradient">Colin Kirby</Name>
                         </NameRow>
 
-                        {/* sub name message*/}
-                    <SubNameMsg {...subNameConfig}>
+                        {/* sub name message */}
+                        <SubNameMsg {...subNameConfig}>
                             <b>* Most people just call me Kirby</b>
                         </SubNameMsg>
 
                         {/* scroll invitation message */}
-                    {/* give the user options to navigate the site */}
-                    <ScrollInvite {...scrollInviteConfig}>
-                        {/* cta */}
-                        <ScrollText>What do you want to see?</ScrollText>
-                        
-                        {/* navigation pills */}
-                        <NavPills {...navPillsConfig}>
-                            {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
-                            {/* Adjust the first number for 2000px+, second for 1600-1999px */}
-                            <NavPillProjects onClick={() => handleScrollToSection('experience', 20, -110)}>
-                                <NavPillBackgroundProjects />
-                                <NavPillText>Strictly business</NavPillText>
-                                <NavPillIcon>✈️</NavPillIcon>
-                            </NavPillProjects>
-                            {/* who even are you? (tim robinson type shi) */}
-                            {/* Adjust the first number for 2000px+, second for 1600-1999px */}
-                            <NavPillStory onClick={() => handleScrollToSection('who-i-am', -25, -35)}>
-                                <NavPillBackgroundStory />
-                                <NavPillText>Who even are you?</NavPillText>
-                                <NavPillIcon>👨‍🚀</NavPillIcon>
-                            </NavPillStory>
-                        </NavPills>
-                        
-                        {/* constellation arrow */}
-                        <SimpleArrow {...arrowConfig}>
-                            <ArrowText>Scroll to explore</ArrowText>
-                            <ArrowIcon>
-                                <ConstellationArrowDown />
-                            </ArrowIcon>
-                        </SimpleArrow>
+                        {/* give the user options to navigate the site */}
+                        <ScrollInvite {...scrollInviteConfig}>
+                            {/* cta */}
+                            <ScrollText>What do you want to see?</ScrollText>
+                            
+                            {/* navigation pills */}
+                            <NavPills {...navPillsConfig}>
+                                {/* strictly business thing (want to make it strickly biznus but might be a bit too jokey)*/}
+                                <NavPillProjects onClick={() => handleScrollToSection('experience', 20, -110)}>
+                                    <NavPillBackgroundProjects />
+                                    <NavPillText>Strictly business</NavPillText>
+                                    <NavPillIcon>✈️</NavPillIcon>
+                                </NavPillProjects>
+                                {/* who even are you? (tim robinson type shi) */}
+                                <NavPillStory onClick={() => handleScrollToSection('who-i-am', -25, -35)}>
+                                    <NavPillBackgroundStory />
+                                    <NavPillText>Who even are you?</NavPillText>
+                                    <NavPillIcon>👨‍🚀</NavPillIcon>
+                                </NavPillStory>
+                            </NavPills>
+                            
+                            {/* constellation arrow */}
+                            <SimpleArrow {...arrowConfig}>
+                                <ArrowText>Scroll to explore</ArrowText>
+                                <ArrowIcon>
+                                    <ConstellationArrowDown />
+                                </ArrowIcon>
+                            </SimpleArrow>
                         </ScrollInvite>
                     </Msgs>
-                </MsgsWrapper>
-            
+            </MsgsWrapper>  
         </HeroContainer>
     )
 });
@@ -186,77 +152,60 @@ Hero.displayName = 'Hero';
 
 export default Hero;
 
-/* ========== styled ========== */
+/* ====================== styled ====================== */
 
 // entire container for the hero content.
 const HeroContainer = styled.div`
     /* layout */
+    z-index: 1;
     display: flex;
     overflow: hidden;
     min-height: 100vh;
+    will-change: auto;
+    isolation: isolate;
     position: relative;
-    padding-top: 1rem;
-    
-    /* mobile media queries */
-    @media (max-width: 768px) {
-        padding-top: 0.5rem;
-    }
-    
-    @media (max-width: 480px) {
-        padding-top: 0.25rem;
-    }
-    
-    /* Performance optimizations - isolate Hero from layout shifts below */
-    contain: layout style paint;
-    transform: translateZ(0); /* Force GPU layer */
-    will-change: auto; /* Only set when actively animating */
+    transform: translateZ(0);
     backface-visibility: hidden;
+    contain: layout style paint;
     -webkit-backface-visibility: hidden;
     
-    /* Prevent layout shifts from affecting Hero */
-    isolation: isolate; /* Create new stacking context */
-    z-index: 1; /* Ensure Hero stays above other content during loading */
+    /* spacing */
+    padding-top: 1rem;
     
-    /* Prevent scrollbar changes from affecting Hero rendering */
-    :root[data-loading="true"] & {
-        position: relative;
-        /* Maintain fixed height during loading to prevent scrollbar recalculation */
-        height: 100vh;
-        max-height: 100vh;
-        /* Hide Hero content during loading - only show loading screen */
-        opacity: 0;
-        pointer-events: none;
-    }
-    
-    /* Show Hero content after loading */
-    :root[data-loading="false"] & {
-        opacity: 1;
-        pointer-events: auto;
-        transition: opacity 0.5s ease-in;
-    }
-
-    /* styles */ 
+    /* styles */
     background: radial-gradient(ellipse at center, 
         rgba(20, 5, 40, 0.8) 0%, 
         rgba(0, 0, 0, 0.9) 30%, 
         rgba(13, 7, 27, 1) 70%);
     
-    /* breathing nebula effect (optimized - reduced gradient complexity) */
+    /* loading states */
+    :root[data-loading="true"] & {
+        position: relative;
+        height: 100vh;
+        max-height: 100vh;
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    :root[data-loading="false"] & {
+        opacity: 1;
+        pointer-events: auto;
+        transition: opacity 0.5s ease-in;
+    }
+    
+    /* breathing nebula effect */
     &::after {
         /* layout */
         inset: 0;
         content: '';
         position: absolute;
         z-index: 0;
-
+        
         /* styles */
         opacity: 0.7;
-        /* GPU-accelerated animation */
         animation: breathe 10s ease-in-out infinite;
-        transform: translateZ(0); /* Force GPU acceleration */
-        will-change: opacity, transform; /* Only properties that actually animate */
-        
-        /* Simplified gradients - fewer layers for better performance */
+        transform: translateZ(0);
+        will-change: opacity, transform;
         background: 
             radial-gradient(ellipse at 20% 20%, rgba(120, 50, 200, 0.3) 0%, transparent 50%),
             radial-gradient(ellipse at 80% 80%, rgba(50, 100, 200, 0.2) 0%, transparent 50%),
@@ -264,22 +213,18 @@ const HeroContainer = styled.div`
                 rgba(0, 0, 0, 0.8) 0%, 
                 rgba(20, 5, 40, 0.6) 50%,
                 rgba(0, 0, 0, 0.8) 100%);
-
-        
-        /* fade out near bottom */
         -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
-                mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
         pointer-events: none;
         
-        
-        /* Respect reduced motion preference */
+        /* media queries */
         @media (prefers-reduced-motion: reduce) {
             animation: none;
             opacity: 0.7;
         }
     }
     
-    /* keyframes for nebula breathing - optimized */
+    /* keyframes */
     @keyframes breathe {
         0%, 100% { 
             opacity: 0.5;
@@ -290,23 +235,29 @@ const HeroContainer = styled.div`
             transform: translateZ(0) scale(1.05);
         }
     }
+    
+    /* media queries */
+    @media (max-width: 768px) {
+        padding-top: 0.5rem;
+    }
+    
+    @media (max-width: 480px) {
+        padding-top: 0.25rem;
+    }
 `;
 
-// particle field for natural twinkling - optimized with CSS background stars
+// particle field for natural twinkling - optimized with CSS background stars.
 const ParticleField = styled.div`
     /* layout */
     inset: 0;
     z-index: 1;
     position: absolute;
-    
-    /* Performance optimizations */
-    contain: layout style paint;
     transform: translateZ(0);
     backface-visibility: hidden;
+    contain: layout style paint;
     
-    /* CSS-based starfield background - much more performant than individual divs */
+    /* styles */
     background-image:
-        /* Static stars - rendered via CSS, no DOM overhead */
         radial-gradient(circle at 8% 12%, rgba(255,255,255,0.4) 0.5px, transparent 1px),
         radial-gradient(circle at 22% 88%, rgba(255,255,255,0.3) 0.5px, transparent 1px),
         radial-gradient(circle at 38% 28%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
@@ -325,10 +276,39 @@ const ParticleField = styled.div`
     background-size: 100% 100%;
     background-repeat: no-repeat;
     pointer-events: none;
-    
 `;
 
-// Twinkle keyframes - extracted outside component to avoid re-creation
+/* ============ animated keyframes ============ */
+
+const cloudDrift = keyframes`
+    0%, 100% { 
+        background-position: 15% 20%, 70% 60%;
+        opacity: 0.25;
+    }
+    50% { 
+        background-position: 10% 25%, 65% 65%;
+        opacity: 0.3;
+    }
+`;
+
+const starTwinkle = keyframes`
+    0%, 100% { 
+        opacity: 0.6; 
+        transform: scale(1); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2); 
+    }
+`;
+
+const starField = keyframes`
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+`;
+
+/* ==== twinkles ==== */
+
 const twinkle1 = keyframes`
         0%, 92% { opacity: 0.4; }
         93% { opacity: 1; }
@@ -406,30 +386,28 @@ const twinkle6 = keyframes`
         100% { opacity: 0.3; }
 `;
 
-// star particles - optimized for performance (using CSS variables instead of props)
+
+/* ============ hero bg components ============ */
+
 const Star = styled.div`
     /* layout */
     position: absolute;
     top: var(--top, 50%);
     left: var(--left, 50%);
-
+    
     /* spacing */
     width: var(--size, 1px);
     height: var(--size, 1px);
-
+    
     /* styles */
     background: white;
     border-radius: 50%;
+    will-change: opacity;
+    transform: translateZ(0);
     opacity: var(--opacity, 0.5);
-    
-    /* Simplified box-shadow - fewer layers for better performance */
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
     
-    /* GPU-accelerated animation - using CSS classes for animation selection */
-    transform: translateZ(0);
-    will-change: opacity; /* Only animate opacity */
-    
-    /* Animation selection via CSS classes - duration passed via CSS variable */
+    /* animation classes */
     &.twinkle1 {
         animation: ${twinkle1} calc(var(--duration, 23.7) * 1s) ease-in-out infinite;
     }
@@ -449,41 +427,23 @@ const Star = styled.div`
         animation: ${twinkle6} calc(var(--duration, 35.8) * 1s) ease-in-out infinite;
     }
     
-    /* Pause until text animations finish */
-    
-    /* Respect reduced motion */
+    /* media queries */
     @media (prefers-reduced-motion: reduce) {
         animation: none !important;
     }
 `;
 
-// moon component. (looks great!)
 const Moon = styled.div`
     /* layout */
-    position: absolute;
     top: 15%;
     right: 20%;
     z-index: 2;
-
+    position: absolute;
+    
     /* spacing */
     width: 80px;
     height: 80px;
     
-    /* mobile media queries */
-    @media (max-width: 768px) {
-        width: 60px;
-        height: 60px;
-        top: 12%;
-        right: 15%;
-    }
-    
-    @media (max-width: 480px) {
-        width: 45px;
-        height: 45px;
-        top: 10%;
-        right: 10%;
-    }
-
     /* styles */
     border-radius: 50%;
     animation: moonFloat 15s ease-in-out infinite;
@@ -499,10 +459,7 @@ const Moon = styled.div`
         0 0 16px rgba(255, 255, 255, 0.1),
         inset -8px -8px 15px rgba(0, 0, 0, 0.15);
     
-    
-    /* Pause until text animations finish */
-    
-    /* keyframes, moon float animation */
+    /* keyframes */
     @keyframes moonFloat {
         0%, 100% { 
             transform: translateY(0px) scale(1);
@@ -513,9 +470,23 @@ const Moon = styled.div`
             opacity: 0.9;
         }
     }
+    
+    /* media queries */
+    @media (max-width: 768px) {
+        width: 60px;
+        height: 60px;
+        top: 12%;
+        right: 15%;
+    }
+    
+    @media (max-width: 480px) {
+        width: 45px;
+        height: 45px;
+        top: 10%;
+        right: 10%;
+    }
 `;
 
-// flexible crater component for moon - optimized with CSS variables
 const Crater = styled.div`
     /* layout */
     position: absolute;
@@ -535,45 +506,34 @@ const Crater = styled.div`
     box-shadow: 0 0 var(--shadow-size, 1.8px) rgba(0, 0, 0, var(--shadow-opacity, 0.08));
 `;
 
-// astronaut - optimized animation
 const Astronaut = styled.div`
     /* layout */
     top: 60%; 
     left: -10%;
     z-index: 0;
     position: absolute;
-
+    
     /* spacing */
     width: 90px;
     height: 90px;
     
-    /* mobile media queries */
-    @media (max-width: 768px) {
-        width: 70px;
-        height: 70px;
-    }
-    
-    @media (max-width: 480px) {
-        width: 55px;
-        height: 55px;
-    }
-
     /* styles */
+    filter: none;
     animation-delay: 6s;
+    will-change: transform;
     background-size: contain;
+    transform: translateZ(0);
     background-position: center;
     background-repeat: no-repeat;
-    animation: astronautFloat 30s linear infinite;
     background-image: url(${astronautImg});
+    animation: astronautFloat 30s linear infinite;
     
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
+    /* loading states */
+    :root[data-loading="true"] & {
+        animation-play-state: paused;
+    }
     
-    /* Simplified filter - drop-shadow is expensive, use box-shadow instead */
-    filter: none;
-    
-    /* keyframes, rotating and floating - simplified for performance */
+    /* keyframes */
     @keyframes astronautFloat {
         0% {
             transform: translateZ(0) translateX(0) rotate(0deg);
@@ -586,55 +546,50 @@ const Astronaut = styled.div`
         }
     }
     
-    /* pause animation during loading and until text animations finish */
-    :root[data-loading="true"] & {
-        animation-play-state: paused;
+    /* media queries */
+    @media (max-width: 768px) {
+        width: 70px;
+        height: 70px;
     }
     
+    @media (max-width: 480px) {
+        width: 55px;
+        height: 55px;
+    }
     
-    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
         animation: none;
         transform: translateZ(0) translateX(0);
     }
 `;
 
-// ufo - optimized animation
 const UFO = styled.div`
     /* layout */
     top: 20%;
     z-index: 1;
     right: -10%;
     position: absolute;
-
+    
     /* spacing */
     width: 70px;
     height: 70px;
     
-    /* mobile media queries */
-    @media (max-width: 768px) {
-        width: 55px;
-        height: 55px;
-    }
-    
-    @media (max-width: 480px) {
-        width: 45px;
-        height: 45px;
-    }
-
     /* styles */
     animation-delay: 8s;
+    will-change: transform;
+    transform: translateZ(0);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    animation: ufoMove 20s linear infinite;
     background-image: url(${ufoImg});
+    animation: ufoMove 20s linear infinite;
     
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
+    /* loading states */
+    :root[data-loading="true"] & {
+        animation-play-state: paused;
+    }
     
-    /* bobbing up and down animation - GPU optimized */
+    /* keyframes */
     @keyframes ufoMove {
         0% {
             transform: translateZ(0) translateX(0) translateY(0);
@@ -653,20 +608,25 @@ const UFO = styled.div`
         }
     }
     
-    /* pause animation during loading and until text animations finish */
-    :root[data-loading="true"] & {
-        animation-play-state: paused;
+    /* media queries */
+    @media (max-width: 768px) {
+        width: 55px;
+        height: 55px;
     }
     
+    @media (max-width: 480px) {
+        width: 45px;
+        height: 45px;
+    }
     
-    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
         animation: none;
         transform: translateZ(0) translateX(0) translateY(0);
     }
 `;
 
-// wrapper for smooth fade-in of messages.
+/* ============ messages ============ */
+
 const MsgsWrapper = styled(motion.div)`
     /* layout */
     z-index: 15;
@@ -676,10 +636,8 @@ const MsgsWrapper = styled(motion.div)`
 
     /* styles */
     opacity: 0.9;
-    /* will-change removed - only use when element is actively animating */
 `;
 
-// my messages container.
 const Msgs = styled.div`
     /* layout */
     z-index: 15;
@@ -691,7 +649,7 @@ const Msgs = styled.div`
     gap: 0;
     padding: 6rem 4rem;
     
-    /* mobile media queries */
+    /* media queries */
     @media (max-width: 768px) {
         padding: 5rem 2rem 4rem 2rem;
     }
@@ -701,7 +659,6 @@ const Msgs = styled.div`
     }
 `;
 
-// my first message floating in "What's up!"
 const SupMsg = styled(motion.div)`
     /* layout */
     z-index: 10;
@@ -732,7 +689,6 @@ const SupMsg = styled(motion.div)`
     }
 `;
 
-// waving hand emoji.
 const WavingHand = styled.span`
     /* layout */
     display: inline-block;
@@ -752,9 +708,8 @@ const WavingHand = styled.span`
         60% { transform: rotate(0deg); }
         100% { transform: rotate(0deg); }
     }
-`
+`;
 
-// my second message floating in saying "My name's..."
 const IntroNameMsg = styled(motion.div)`
     /* layout */
     z-index: 10;
@@ -783,7 +738,6 @@ const IntroNameMsg = styled(motion.div)`
     }
 `;
 
-// my name!
 const NameRow = styled(motion.div)`
     /* layout */
     left: 1.5vw;
@@ -824,7 +778,7 @@ const NameRow = styled(motion.div)`
 const Name = styled.span`
     /* layout */
     z-index: 15;
-
+    
     /* styles */
     font-weight: 900;
     background-size: 200% 100%;
@@ -840,26 +794,21 @@ const Name = styled.span`
         rgb(0, 97, 241) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    
-    /* GPU acceleration - background-position is GPU accelerated */
-    will-change: background-position;
     transform: translateZ(0);
-
-    /* keyframes, gradient shift animation */
+    will-change: background-position;
+    
+    /* keyframes */
     @keyframes gradientShift {
         0% { background-position: 0% 50%; }
         100% { background-position: 200% 50%; }
     }
     
-    /* Pause gradient animation until text finishes sliding in */
-    
-    /* Respect reduced motion */
+    /* media queries */
     @media (prefers-reduced-motion: reduce) {
         animation: none;
     }
 `;
 
-// lil sub msg for my name.
 const SubNameMsg = styled(motion.div)`
     /* layout */
     z-index: 10;
@@ -892,7 +841,6 @@ const SubNameMsg = styled(motion.div)`
     }
 `;
 
-// scroll invitation message.
 const ScrollInvite = styled(motion.div)`
     /* layout */
     z-index: 15;
@@ -909,7 +857,6 @@ const ScrollInvite = styled(motion.div)`
     text-align: center;
 `;
 
-// scroll text. what do you want to see?
 const ScrollText = styled.div`
     /* spacing */
     width: 100%;
@@ -937,7 +884,8 @@ const ScrollText = styled.div`
     }
 `;
 
-// navigation pills container.
+/* ============ prompt pills ============ */
+
 const NavPills = styled(motion.div)`
     /* layout */
     z-index: 10;
@@ -950,7 +898,7 @@ const NavPills = styled(motion.div)`
     width: min(80vw, 680px);
     text-align: center;
     
-    /* mobile media queries */
+    /* media queries */
     @media (max-width: 768px) {
         gap: 1rem;
         width: min(90vw, 500px);
@@ -958,7 +906,7 @@ const NavPills = styled(motion.div)`
     }
     
     @media (max-width: 480px) {
-        /* Stack pills vertically on mobile */
+        /* stack pill vertically on mobile. */
         grid-template-columns: 1fr;
         gap: 0.75rem;
         width: 85vw;
@@ -966,7 +914,7 @@ const NavPills = styled(motion.div)`
     }
 `;
 
-// Base navigation pill styles - shared between variants
+// base navigation pill styles - shared between variants.
 const NavPillBase = styled.button`
     /* layout */
     width: 100%;
@@ -981,32 +929,17 @@ const NavPillBase = styled.button`
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     
-    /* mobile media queries */
-    @media (max-width: 768px) {
-        padding: 0.65rem 1.25rem;
-        gap: 0.4rem;
-    }
-    
-    @media (max-width: 480px) {
-        padding: 0.6rem 1rem;
-        gap: 0.35rem;
-    }
-
     /* styles */
     cursor: pointer;
     font: inherit;
     border-radius: 50px;
+    will-change: transform;
+    transform: translateZ(0);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    /* Only transition transform and opacity for better performance */
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
                 opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
-    
-    /* hover effect */
     &:hover {
         transform: translateY(-3px) scale(1.08) translateZ(0);
         box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
@@ -1017,73 +950,54 @@ const NavPillBase = styled.button`
         transform: translateY(-1px) scale(1.05) translateZ(0);
         transition: all 0.1s ease;
     }
+    
+    /* media queries */
+    @media (max-width: 768px) {
+        padding: 0.65rem 1.25rem;
+        gap: 0.4rem;
+    }
+    
+    @media (max-width: 480px) {
+        padding: 0.6rem 1rem;
+        gap: 0.35rem;
+    }
 `;
 
-// Projects variant - simplified gradient (reduced from 16 to 8 stops)
 const NavPillProjects = styled(NavPillBase)`
-        background: linear-gradient(to bottom,
-            rgb(150, 200, 246) 0%,
+    /* styles */
+    background: linear-gradient(to bottom,
+        rgb(150, 200, 246) 0%,
         rgb(138, 194, 246) 20%,
         rgb(122, 186, 245) 40%,
         rgb(106, 178, 243) 60%,
         rgb(92, 171, 241) 80%,
         rgb(78, 164, 239) 95%,
-            rgb(71, 160, 238) 100%);
-        box-shadow: 0 0 20px rgba(150, 200, 246, 0.1);
+        rgb(71, 160, 238) 100%);
+    box-shadow: 0 0 20px rgba(150, 200, 246, 0.1);
 `;
     
-// Story variant - simplified gradient (reduced from 7 to 5 stops)
 const NavPillStory = styled(NavPillBase)`
-        background: linear-gradient(to bottom,
-            rgb(13, 7, 27) 0%,
+    /* styles */
+    background: linear-gradient(to bottom,
+        rgb(13, 7, 27) 0%,
         rgb(30, 20, 55) 40%,
         rgb(45, 30, 80) 70%,
         rgb(85, 60, 135) 95%,
-            rgb(100, 70, 150) 100%);
-        box-shadow: 0 0 20px rgba(100, 70, 150, 0.1);
+        rgb(100, 70, 150) 100%);
+    box-shadow: 0 0 20px rgba(100, 70, 150, 0.1);
 `;
 
-// Cloud drift keyframe - extracted outside component
-const cloudDrift = keyframes`
-    0%, 100% { 
-        background-position: 15% 20%, 70% 60%;
-        opacity: 0.25;
-    }
-    50% { 
-        background-position: 10% 25%, 65% 65%;
-        opacity: 0.3;
-    }
-`;
-
-// Star twinkle keyframes - extracted outside component
-const starTwinkle = keyframes`
-    0%, 100% { 
-        opacity: 0.6; 
-        transform: scale(1); 
-    }
-    50% { 
-        opacity: 1; 
-        transform: scale(1.2); 
-    }
-`;
-
-const starField = keyframes`
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.6; }
-`;
-
-// Background effects for projects pill - separate component
 const NavPillBackgroundProjects = styled.div`
     /* layout */
     inset: 0;
     position: absolute;
-
+    
     /* styles */
     opacity: 0.25;
     border-radius: 50px;
     pointer-events: none;
-        background-repeat: no-repeat;
-        background-image: 
+    background-repeat: no-repeat;
+    background-image: 
         url(${cloud1Img}),
         url(${cloud2Img});
     animation: ${cloudDrift} 12s ease-in-out infinite;
@@ -1091,59 +1005,67 @@ const NavPillBackgroundProjects = styled.div`
     background-size: 25px 15px, 20px 12px;
 `;
         
-// Background effects for story pill - separate component
 const NavPillBackgroundStory = styled.div`
     /* layout */
     inset: 0;
     position: absolute;
-
+    
     /* styles */
     opacity: 0.4;
     border-radius: 50px;
     pointer-events: none;
-
-        /* various stars in the background, twinkling and such. */
-        &::before,
-        &::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-        animation: ${starTwinkle} 4s ease-in-out infinite;
-        }
-        
-        &::before {
-            width: 3px;
-            height: 3px;
-            top: 20%;
-            left: 15%;
-            animation-delay: 0s;
-            box-shadow: 
-                0 0 6px rgba(255, 255, 255, 0.8),
-                0 0 12px rgba(255, 255, 255, 0.4);
-        }
-        
-        &::after {
-            width: 2.5px;
-            height: 2.5px;
-    top: 70%;
-            right: 20%;
-            animation-delay: 2s;
-            box-shadow: 
-                0 0 5px rgba(255, 255, 255, 0.8),
-                0 0 10px rgba(255, 255, 255, 0.4);
-        }
-        
-        /* additional star using background */
-        background-image: 
-            radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
-            radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
-            radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
-        background-size: 100% 100%, 100% 100%, 100% 100%;
+    background-image: 
+        radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+        radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
     animation: ${starField} 8s ease-in-out infinite;
+    
+    &::before,
+    &::after {
+        /* layout */
+        content: '';
+        position: absolute;
+        
+        /* styles */
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        animation: ${starTwinkle} 4s ease-in-out infinite;
+    }
+    
+    &::before {
+        /* layout */
+        top: 20%;
+        left: 15%;
+        
+        /* spacing */
+        width: 3px;
+        height: 3px;
+        
+        /* styles */
+        animation-delay: 0s;
+        box-shadow: 
+            0 0 6px rgba(255, 255, 255, 0.8),
+            0 0 12px rgba(255, 255, 255, 0.4);
+    }
+    
+    &::after {
+        /* layout */
+        top: 70%;
+        right: 20%;
+        
+        /* spacing */
+        width: 2.5px;
+        height: 2.5px;
+        
+        /* styles */
+        animation-delay: 2s;
+        box-shadow: 
+            0 0 5px rgba(255, 255, 255, 0.8),
+            0 0 10px rgba(255, 255, 255, 0.4);
+    }
 `;
 
-// pill text.
 const NavPillText = styled.span`
     /* layout */
     z-index: 2;
@@ -1152,8 +1074,8 @@ const NavPillText = styled.span`
     /* styles */
     color: white;
     font-size: 1rem;
-    font-family: inherit;
     font-weight: 500;
+    font-family: inherit;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     
     /* mobile media queries */
@@ -1166,7 +1088,6 @@ const NavPillText = styled.span`
     }
 `;
 
-// pill icon.
 const NavPillIcon = styled.span`
     /* layout */
     z-index: 2;
@@ -1186,7 +1107,8 @@ const NavPillIcon = styled.span`
     }
 `;
 
-// arrow text. ("scroll to explore")
+/* ============ constellation arrow ============ */
+
 const ArrowText = styled.div`
     /* spacing */
     margin-top: 0.5rem;
@@ -1199,7 +1121,7 @@ const ArrowText = styled.div`
     transition: opacity 0.3s ease;
     color: rgba(255, 255, 255, 0.6);
     
-    /* mobile media queries */
+    /* media queries */
     @media (max-width: 768px) {
         font-size: 0.8rem;
         margin-top: 0.4rem;
@@ -1213,14 +1135,13 @@ const ArrowText = styled.div`
     }
 `;
 
-// arrow container.
 const ArrowIcon = styled.div`
     /* layout */
     position: relative;
     width: 40px;
     height: 60px;
     
-    /* mobile media queries */
+    /* media queries */
     @media (max-width: 768px) {
         width: 35px;
         height: 50px;
@@ -1232,28 +1153,29 @@ const ArrowIcon = styled.div`
     }
 `;
 
-// svg for arrow, constellation style.
 const SimpleArrowSvg = styled.svg`
     /* layout */
     width: 100%;
     height: 100%;
     display: block;
     animation: floatUpDown 3s ease-in-out infinite;
-
-    /* styles */
+    
+    /* nested selectors */
     .star {
+        /* styles */
         fill: #fff;
         transform-origin: center;
         filter: drop-shadow(0 0 3px rgba(150,200,255,.4));
     }
-
+    
     .line {
+        /* styles */
         stroke: rgba(255, 255, 255, 0.3);
         stroke-width: 1;
         stroke-linecap: round;
     }
-
-    /* keyframes for floating up and down */
+    
+    /* keyframes */
     @keyframes floatUpDown {
         0%, 100% { 
             transform: translateY(0px); 
@@ -1264,7 +1186,19 @@ const SimpleArrowSvg = styled.svg`
     }
 `;
 
-// arrow svg.
+const SimpleArrow = styled(motion.div)`
+    /* layout */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    /* spacing */
+    margin-top: 0.5rem;
+
+    /* styles */
+    transition: all 0.3s ease;
+`;
+
 const ConstellationArrowDown = () => (
     <SimpleArrowSvg viewBox="0 0 40 60" aria-hidden="true">
         {/* connecting lines */}
@@ -1288,17 +1222,3 @@ const ConstellationArrowDown = () => (
         <circle className="star" cx="20" cy="10" r="1.8" />
     </SimpleArrowSvg>
 );
-
-// simple arrow container.
-const SimpleArrow = styled(motion.div)`
-    /* layout */
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-
-    /* spacing */
-    margin-top: 0.5rem;
-
-    /* styles */
-    transition: all 0.3s ease;
-`;

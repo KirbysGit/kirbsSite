@@ -5,12 +5,13 @@
 
 // imports.
 import styled, { keyframes, css } from 'styled-components';
-import { useTypewriter } from '@/components/2whoiam/useTypewriter.js';
-import { CARDS, LONGEST_ROLE_CH } from '../../data/aboutData.jsx';
 import React, { memo, useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
-// space elements images.
+// utils.
+import { CARDS, LONGEST_ROLE_CH } from '../../data/aboutData.jsx';
+import { useTypewriter } from '@/components/2whoiam/useTypewriter.js';
+
+// images.
 import satellite1 from '@/images/2story/satellite1.png';
 import satellite2 from '@/images/2story/satellite2.png';
 import spaceStation from '@/images/2story/spacestation.png';
@@ -21,9 +22,8 @@ const BUFFER_MS = 40;         // extra buffer for animation end
 const TYPE_SPEED = 40;        // ms/char (typing)
 const DELETE_SPEED = 30;      // ms/char (deleting)
 
-// ========== Keyframes - extracted outside components to avoid re-creation ==========
+/* ================= animated frames ================= */
 
-// Image slide animations
 const slideOutRight = keyframes`
     0% { transform: translateX(0) translateZ(0); opacity: 1; }
     50% { opacity: 0; }
@@ -68,7 +68,6 @@ const slideInLeftVert = keyframes`
     100% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
 `;
 
-// Bubble pop-in animation
 const popIn = keyframes`
     from {
         opacity: 0;
@@ -80,23 +79,11 @@ const popIn = keyframes`
     }
 `;
 
-// Twinkle animation for bullet points
-const twinkle = keyframes`
-    0%, 100% { 
-        opacity: 0.6; 
-    }
-    50% { 
-        opacity: 1; 
-    }
-`;
-
-// Blink animation for caret
 const blink = keyframes`
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
 `;
 
-// Space station float animation
 const spaceStationFloat = keyframes`
     0%, 100% { 
         transform: translate3d(0, 0, 0) rotate(0deg);
@@ -106,7 +93,6 @@ const spaceStationFloat = keyframes`
     }
 `;
 
-// Satellite 1 float animation
 const satellite1Float = keyframes`
     0% {
         transform: translate3d(0, 0, 0) rotate(0deg);
@@ -125,7 +111,6 @@ const satellite1Float = keyframes`
     }
 `;
 
-// Satellite 2 float animation
 const satellite2Float = keyframes`
     0% {
         transform: translate3d(0, 0, 0) rotate(0deg);
@@ -147,7 +132,8 @@ const satellite2Float = keyframes`
     }
 `;
 
-// svg chevrons (too lazy to do FontAwesome).
+/* ================= helper functions & components ================= */
+
 const ChevronRight = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -162,9 +148,9 @@ const ChevronLeft = () => (
     </svg>
 );
 
-// Optimized image item component - separated to allow proper memoization
 const ImageItem = memo(({ img, index, card, cardIndex, isSlidingOut, slideDirection, isNewCardSet, loadedImages, onImageLoad }) => {
-    // Memoize positioning calculation
+    
+    // memoize positioning calculation.
     const positioning = useMemo(() => {
         if (img.position === 'top-left') {
             return { top: 0, left: 0 };
@@ -176,28 +162,28 @@ const ImageItem = memo(({ img, index, card, cardIndex, isSlidingOut, slideDirect
         return {};
     }, [img.position]);
     
-    // Memoize slide direction calculation
+    // memoize slide direction calculation.
     const imgSlideDirection = useMemo(() => {
         return img.position === 'middle-right' ? 'right' : 'left';
     }, [img.position]);
     
-    // Memoize bubbles lookup
+    // memoize bubbles lookup.
     const imageBubbles = useMemo(() => {
         return card.imageBubbles ? card.imageBubbles[index] : [];
     }, [card.imageBubbles, index]);
     
-    // Create unique image key for tracking load state
+    // create unique image key for tracking load state.
     const imageKey = useMemo(() => `${img.image}-${cardIndex}-${index}`, [img.image, cardIndex, index]);
     const isImageLoaded = loadedImages.has(imageKey);
     
-    // Memoized callback ref - checks if image is already loaded when element mounts
+    // memoized callback ref - checks if image is already loaded when element mounts.
     const imageRefCallback = useCallback((imgElement) => {
         if (imgElement && imgElement.complete && !isImageLoaded) {
             onImageLoad(imageKey);
         }
     }, [imageKey, isImageLoaded, onImageLoad]);
     
-    // Memoized handleLoad callback
+    // memoized handleLoad callback.
     const handleLoad = useCallback(() => {
         onImageLoad(imageKey);
     }, [imageKey, onImageLoad]);
@@ -243,10 +229,9 @@ const ImageItem = memo(({ img, index, card, cardIndex, isSlidingOut, slideDirect
     );
 });
 
-// whoiam component.
+/* ================== main component ================== */
+
 const WhoIAm = memo(() => {
-    // Performance monitoring
-    useComponentPerformance('WhoIAm', process.env.NODE_ENV === 'development');
 
     // state management.
     const [index, setIndex] = useState(0);						    // current card index.
@@ -263,7 +248,7 @@ const WhoIAm = memo(() => {
     const nextIdxRef = useRef(0);									// next card index.
     const triggerRef = useRef(null);								// trigger reference.
 
-    // our hook for the typewriter effect - memoize role to avoid recalculation
+    // our hook for the typewriter effect.
     const role = useMemo(() => CARDS[index].role, [index]);
     const { out, phase, setPhase, resetTo } = useTypewriter(role, {
         typeMs: TYPE_SPEED,											    // ms/char (typing)
@@ -312,9 +297,9 @@ const WhoIAm = memo(() => {
         return () => obs.disconnect();
     }, [startInitial]);
 
-    // navigation function - memoized to avoid recreation
+    // navigation function.
     const goTo = useCallback((nextIndex) => {
-        // ignore clicks during delete.
+        // ignore clicks during delete phase.
         if (phase === 'delete') return;
 
         // store the next index.
@@ -324,19 +309,19 @@ const WhoIAm = memo(() => {
         const isMobile = window.innerWidth <= 768;
         
         if (isMobile) {
-            // On mobile: skip slide-out animation, just swap directly
+            // on mobile: skip slide-out animation, just swap directly.
             setShowImages(false);
             setShowContent(false);
             setFrozen(false);
             setPhase('delete');
-            // Update index immediately after delete completes
+            // update index immediately after delete completes.
             setTimeout(() => {
                 setIndex(nextIndex);
                 resetTo('');
                 setPhase('type');
             }, 100);
         } else {
-            // Desktop: use slide-out animation
+            // desktop: use slide-out animation.
             // determine & set slide direction.
             const direction = nextIndex > index ? 'right' : 'left';
             setSlideDirection(direction);
@@ -363,13 +348,13 @@ const WhoIAm = memo(() => {
         }
     }, [phase, index, resetTo, setPhase]);
 
-    // next function - memoized
+    // next function.
     const next = useCallback(() => goTo((index + 1) % CARDS.length), [goTo, index]);
 
-    // prev function - memoized
+    // prev function.
     const prev = useCallback(() => goTo((index - 1 + CARDS.length) % CARDS.length), [goTo, index]);
 
-    // get current card's images for the zigzag - memoized
+    // get current card's images for the zigzag.
     const getCurrentImageSet = useCallback(() => {
         const currentCard = CARDS[index];
         
@@ -381,19 +366,19 @@ const WhoIAm = memo(() => {
         ];
     }, [index]);
 
-    // get the current card - memoized
+    // get the current card.
     const card = useMemo(() => CARDS[index], [index]);
 
-    // get the current image set - memoized
+    // get the current image set.
     const imageSet = useMemo(() => getCurrentImageSet(), [getCurrentImageSet]);
     
-    // track if we just switched cards (for slide-in animation) - memoized
+    // track if we just switched cards (for slide-in animation).
     const isNewCardSet = useMemo(() => index !== previousIndex, [index, previousIndex]);
     
-    // Memoized image load handler to prevent infinite re-renders
+    // memoized image load handler to prevent infinite re-renders.
     const handleImageLoad = useCallback((imageKey) => {
         setLoadedImages(prev => {
-            // Only update if image isn't already loaded (prevents unnecessary re-renders)
+            // only update if image isn't already loaded (prevents unnecessary re-renders).
             if (prev.has(imageKey)) return prev;
             const newSet = new Set(prev);
             newSet.add(imageKey);
@@ -401,7 +386,7 @@ const WhoIAm = memo(() => {
         });
     }, []);
     
-    // Reset loaded images when card changes (before showing new images)
+    // reset loaded images when card changes (before showing new images).
     useEffect(() => {
         if (isNewCardSet) {
             setLoadedImages(new Set());
@@ -424,12 +409,12 @@ const WhoIAm = memo(() => {
 
     return (
         <SectionWrap id="who-i-am">
-            {/* space elements - satellites and space station */}
+            {/* space elements - satellites and space station. */}
             <SpaceStation />
             <Satellite1 />
             <Satellite2 />
             
-            {/* page title - snap point for centering */}
+            {/* page title - snap point for centering. */}
             <PageTitle data-snap-title>Who I Am</PageTitle>
 
             {/* grid container */}
@@ -513,61 +498,51 @@ const WhoIAm = memo(() => {
                     </NavRow>
                 </RightCol>
             </Grid>
-            
         </SectionWrap>
     );
 });
 
-/* ========== styled ========== */
+/* ====================== styled ====================== */
 
-// entire section wrapper.
 const SectionWrap = styled.section`
     /* layout */
     min-height: 110vh;
     position: relative;
-    
-    /* CSS containment for performance */
     contain: layout style;
-
+    
     /* spacing */
     padding: 4rem 6rem 8rem;
     
-    /* compact at 1600px */
-    @media (max-width: 1600px) {
-        padding: 3rem 4rem 4rem;
-    }
-    
-    /* mobile */
-    @media (max-width: 768px) {
-        padding: 2rem 1.5rem 4rem;
-        min-height: auto;
-    }
-
-    /* styles - gradient fallback */
+    /* styles */
     background: linear-gradient(
         to bottom,
         rgb(13 7 27) 0%,
         rgb(13 7 27) 15%,
-        /* begin easing into lighter purples a bit earlier */
         rgb(16 10 32) 40%,
         rgb(25 18 48) 65%,
         rgb(40 28 75) 82%,
-        /* finish on the seam for a perfect handoff */
         rgb(78 58 128) 92%,
         rgb(78 58 128) 100%
     );
     
-    /* perceptual blend - smoother on modern browsers */
     @supports (background: linear-gradient(in oklch, red, blue)) {
         background: linear-gradient(
             to bottom in oklch,
-            /* simple perceptual ramp from deep space to seam */
             rgb(13 7 27) 0%,
             rgb(78 58 128) 100%
         );
     }
     
     /* media queries */
+    @media (max-width: 1600px) {
+        padding: 3rem 4rem 4rem;
+    }
+    
+    @media (max-width: 768px) {
+        padding: 2rem 1.5rem 4rem;
+        min-height: auto;
+    }
+    
     @media (prefers-reduced-motion: reduce) {
         * {
             animation-duration: 0s !important;
@@ -579,19 +554,9 @@ const SectionWrap = styled.section`
     }
 `;
 
-// page title. ("Who I Am")
 const PageTitle = styled.div`
     /* spacing */
     margin: 0 0 2rem;
-    
-    @media (max-width: 1600px) {
-        margin: 0 0 1.5rem;
-    }
-    
-    @media (max-width: 768px) {
-        margin: 0 0 1.5rem;
-        font-size: clamp(2rem, 8vw, 3rem);
-    }
 
     /* styles */
     opacity: 0.9;
@@ -602,6 +567,17 @@ const PageTitle = styled.div`
     -webkit-background-clip: text; 
     background-clip: text; 
     -webkit-text-fill-color: transparent;
+
+    /* media queries */
+
+    @media (max-width: 1600px) {
+        margin: 0 0 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        margin: 0 0 1.5rem;
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
 `;
 
 // grid container. left column, spacer, right column.
@@ -612,16 +588,16 @@ const Grid = styled.div`
     align-items: center;
     justify-items: start;
     grid-template-columns: 45% 2.5% 52.5%;
-    padding-left: 2rem;
+    
     /* spacing */
     margin: 0 auto;
-
-    /* compact at 1600px - give more space to text */
+    padding-left: 2rem;
+    
+    /* media queries */
     @media (max-width: 1600px) {
         grid-template-columns: 42% 2% 56%;
     }
     
-    /* mobile - stack vertically */
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto;
@@ -639,7 +615,7 @@ const LeftCol = styled.div`
     height: 100%;
     justify-content: center;
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         order: 2;
         height: auto;
@@ -655,12 +631,10 @@ const ImageStack = styled.div`
     overflow: visible;
     position: relative;
     align-items: center;
-    justify-content: center;
-
-    /* CSS containment for performance */
     contain: layout style;
+    justify-content: center;
     
-    /* mobile - stack images vertically */
+    /* media queries */
     @media (max-width: 768px) {
         flex-direction: column;
         gap: 1.5rem;
@@ -671,7 +645,9 @@ const ImageStack = styled.div`
     }
 `;
 
-// Base image shell component
+/* ========== image set up ========== */
+
+// base image shell component.
 const ImgShellBase = styled.div`
     /* layout */
     --width: 360px;  
@@ -680,6 +656,26 @@ const ImgShellBase = styled.div`
     height: var(--height);
     position: absolute;
     
+    /* styles */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* loading states */
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
+    
+    /* animation states */
+    &[data-animating="true"] {
+        will-change: transform, opacity;
+    }
+    
+    &[data-animating="false"] {
+        will-change: auto;
+    }
+    
+    /* media queries */
     @media (max-width: 2000px) {
         --width: 400px;
         --height: 360px;
@@ -690,7 +686,6 @@ const ImgShellBase = styled.div`
         --height: 320px;
     }
     
-    /* mobile - smaller images, static positioning */
     @media (max-width: 768px) {
         --width: 280px;
         --height: 280px;
@@ -701,143 +696,151 @@ const ImgShellBase = styled.div`
         right: auto !important;
         bottom: auto !important;
     }
-  
-    /* GPU acceleration - only set will-change when actually animating */
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-        
-    /* Pause animations during loading */
-    [data-loading="true"] & {
-        animation-play-state: paused;
-    }
-    
-    /* Only set will-change when animating to reduce initial render cost */
-    &[data-animating="true"] {
-        will-change: transform, opacity;
-        }
-        
-    &[data-animating="false"] {
-        will-change: auto;
-    }
 `;
 
-// Variant components for different animation states - eliminates expensive conditional logic
+// variant components for different animation states.
 const ImgShellSlideOutLeft = styled(ImgShellBase)`
+    /* styles */
     transform: translateZ(0);
     animation: ${slideOutLeft} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
-                `;
+`;
 
 const ImgShellSlideOutLeftVert = styled(ImgShellBase)`
+    /* styles */
     transform: translateY(-50%) translateZ(0);
     animation: ${slideOutLeftVert} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
-                `;
+`;
 
 const ImgShellSlideOutRight = styled(ImgShellBase)`
+    /* styles */
     transform: translateZ(0);
     animation: ${slideOutRight} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
 `;
 
 const ImgShellSlideOutRightVert = styled(ImgShellBase)`
+    /* styles */
     transform: translateY(-50%) translateZ(0);
     animation: ${slideOutRightVert} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
-                `;
+`;
 
 const ImgShellSlideInLeft = styled(ImgShellBase)`
+    /* styles */
     transform: translateZ(0);
     animation: ${slideInLeft} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
-                `;
+`;
 
 const ImgShellSlideInLeftVert = styled(ImgShellBase)`
+    /* styles */
     transform: translateY(-50%) translateZ(0);
     animation: ${slideInLeftVert} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
 `;
 
 const ImgShellSlideInRight = styled(ImgShellBase)`
+    /* styles */
     transform: translateZ(0);
     animation: ${slideInRight} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
 `;
 
 const ImgShellSlideInRightVert = styled(ImgShellBase)`
+    /* styles */
     transform: translateY(-50%) translateZ(0);
     animation: ${slideInRightVert} 400ms ease-out forwards;
     
+    /* media queries */
     @media (max-width: 768px) {
         animation: none;
     }
 `;
 
 const ImgShellStatic = styled(ImgShellBase)`
+    /* styles */
     transform: translateZ(0);
 `;
 
 const ImgShellStaticVert = styled(ImgShellBase)`
+    /* styles */
     transform: translateY(-50%) translateZ(0);
 `;
 
-// Wrapper component that selects the right variant - eliminates prop interpolation
-// Memoized to prevent unnecessary re-renders when props haven't changed
+// wrapper component that selects the right variant.
 const ImgShell = memo(({ $imgPosition, $isSlidingOut, $imgSlideDirection, $isNewCardSet, ...props }) => {
+    // determine position and direction.
     const isMiddleRight = $imgPosition === 'middle-right';
     const isRight = $imgSlideDirection === 'right';
     
+    // if cards are sliding out, use slide-out variants.
     if ($isSlidingOut) {
+        // slide out right.
         if (isRight) {
             return isMiddleRight 
                 ? <ImgShellSlideOutRightVert {...props} />
                 : <ImgShellSlideOutRight {...props} />;
-        } else {
+        } 
+        // slide out left.
+        else {
             return isMiddleRight
                 ? <ImgShellSlideOutLeftVert {...props} />
                 : <ImgShellSlideOutLeft {...props} />;
         }
     }
     
+    // if cards are sliding in, use slide-in variants.
     if ($isNewCardSet) {
+        // slide in right.
         if (isRight) {
             return isMiddleRight
                 ? <ImgShellSlideInRightVert {...props} />
                 : <ImgShellSlideInRight {...props} />;
-        } else {
+        } 
+        // slide in left.
+        else {
             return isMiddleRight
                 ? <ImgShellSlideInLeftVert {...props} />
                 : <ImgShellSlideInLeft {...props} />;
         }
     }
     
+    // default static state (no animation).
     return isMiddleRight 
         ? <ImgShellStaticVert {...props} />
         : <ImgShellStatic {...props} />;
 }, (prevProps, nextProps) => {
-    // Custom comparison function for memo - only re-render if relevant props change
+    // custom comparison function for memo - only re-render if relevant props change.
     return (
         prevProps.$imgPosition === nextProps.$imgPosition &&
         prevProps.$isSlidingOut === nextProps.$isSlidingOut &&
@@ -853,28 +856,24 @@ const StyledImage = styled.img`
     display: block;
     object-fit: cover;
     aspect-ratio: 1 / 1;
-
+    
     /* spacing */
     width: calc(var(--width) - 10px);
     height: calc(var(--height) - 10px);
-
+    
     /* styles */
     border-radius: 12px;
     border: 3px solid #fff;
+    transform: translateZ(0);
+    will-change: transform, opacity;
     box-shadow: 0 0 10px rgba(0,0,0,.2);
-    
-    /* Border and image will be controlled by parent ImgShell based on load state */
-    /* Start hidden, parent will show when loaded */
     opacity: ${props => props.$isLoaded ? 1 : 0};
     border-color: ${props => props.$isLoaded ? '#fff' : 'transparent'};
     transition: opacity 150ms ease-in, border-color 150ms ease-in;
-    
-    /* GPU acceleration for smooth rendering */
-    transform: translateZ(0);
-    will-change: transform, opacity;
 `;
 
-// speech bubble container.
+/* ========== speech bubbles ========== */
+
 const BubbleContainer = styled.div`
     /* layout */
     z-index: 10;
@@ -882,16 +881,16 @@ const BubbleContainer = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
-
+    
     /* spacing */
     gap: 8px;   
     max-width: calc(100% - 20px);
-
+    
     /* styles */
     pointer-events: none;
     transform: scale(0.9);
     
-    /* positioning based on image position */
+    /* conditional positioning */
     ${props => props.$position === 'top-left' && `
         top: -20px;
         left: -25px;
@@ -907,33 +906,38 @@ const BubbleContainer = styled.div`
         left: -25px;
     `}
     
-    /* cool pop in animation for the bubbles - GPU accelerated */
+    /* nested selectors */
     > * {
+        /* styles */
         opacity: 0;
         transform: translateY(-8px) scale(0.9) translateZ(0);
         animation: ${popIn} 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         will-change: transform, opacity;
     }
     
-    > *:nth-child(1) { animation-delay: 500ms; } /* starts after slide-in (400ms) */
-    > *:nth-child(2) { animation-delay: 700ms; }
+    > *:nth-child(1) { 
+        animation-delay: 500ms; 
+    }
     
-    /* Pause animations during loading */
+    > *:nth-child(2) { 
+        animation-delay: 700ms; 
+    }
+    
+    /* loading states */
     [data-loading="true"] > * {
         animation-play-state: paused;
     }
 `;
 
-// speech bubble.
 const SpeechBubble = styled.div`
     /* layout */
     position: relative;
-
+    
     /* spacing */
     width: max-content;
     max-width: max-content;
     padding: 10px 18px 8px 18px;
-
+    
     /* styles */
     color: white;
     font-weight: 500;
@@ -945,48 +949,46 @@ const SpeechBubble = styled.div`
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
-        
     
-    /* right-align bubbles when on right side */
+    /* conditional alignment */
     ${props => props.$parentPosition === 'middle-right' && `
         margin-left: auto;
     `}
     
-    /* left-align bubbles when on left side */
     ${props => (props.$parentPosition === 'top-left' || props.$parentPosition === 'bottom-left') && `
         margin-right: auto;
     `}
     
-    /* speech bubble tail - only on the last bubble */
+    /* pseudo-elements */
     &:last-child::after {
         /* layout */
         z-index: 1;
         content: "";
         position: absolute;
-
+        
         /* spacing */
         width: 15.515px;
         height: 17.5px;
-
+        
         /* styles */
         background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='15.515px' height='17.5px' viewBox='32.484 17.5 15.515 17.5' enable-background='new 32.484 17.5 15.515 17.5'><path fill='%23007AFF' d='M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'/></svg>") no-repeat;
         background-size: 15.515px 17.5px;
         
-        /* tail positioning based on parent bubble container position */
+        /* conditional positioning */
         ${props => {
-        const parentPosition = props.$parentPosition;
-        if (parentPosition === 'top-left' || parentPosition === 'bottom-left') {
-            return `
-            left: -6px;
-            bottom: -1px;
-            `;
-        } else {
-            return `
-            right: -6px;
-            bottom: -1px;
-            transform: scaleX(-1);
-            `;
-        }
+            const parentPosition = props.$parentPosition;
+            if (parentPosition === 'top-left' || parentPosition === 'bottom-left') {
+                return `
+                    left: -6px;
+                    bottom: -1px;
+                `;
+            } else {
+                return `
+                    right: -6px;
+                    bottom: -1px;
+                    transform: scaleX(-1);
+                `;
+            }
         }}
     }
 `;
@@ -1000,7 +1002,6 @@ const Spacer = styled.div`
 
 /* ========== right column ========== */
 
-// right column. content.
 const RightCol = styled.div`
     /* layout */
     width: 100%;
@@ -1013,7 +1014,6 @@ const RightCol = styled.div`
     }
 `;
 
-// sub-container for content.
 const ContentBox = styled.div`
     /* layout */
     width: 100%;
@@ -1031,7 +1031,6 @@ const ContentBox = styled.div`
     }
 `;
 
-// content wrapper for the animations.
 const ContentWrapper = styled.div`
     /* layout */
     min-width: 0;
@@ -1149,7 +1148,6 @@ const StaticA = styled.span`
     }
 `;
 
-// container for typed text.
 const TypedBox = styled.span`
     /* layout */
     min-width: 0;               
@@ -1173,22 +1171,21 @@ const Caret = styled.span`
     }
 `;
 
-// live region for accessibility (screen readers).
+// live region for accessibility.
 const LiveRegion = styled.span`
     /* layout */
     position: relative;
     display: inline-block;
 `;
 
-// Base role text component
+// base role text component.
 const RoleTextBase = styled.span`
     /* styles */
     font-weight: 800;
     -webkit-text-fill-color: transparent;
 `;
 
-// Variant components for different role gradients (simplified from 3 color stops to 2)
-// Each variant includes both gradient AND clip properties together
+// variant components for different role gradients.
 const RoleTextSoftwareEngineer = styled(RoleTextBase)`
     background: linear-gradient(135deg, 
         rgba(180, 140, 255, 0.95), 
@@ -1221,7 +1218,7 @@ const RoleTextDefault = styled(RoleTextBase)`
     background-clip: text;
 `;
 
-// Gradient text for the role - wrapper that selects the right variant
+// gradient text for the role - wrapper that selects the right variant.
 const RoleText = ({ $roleIndex: roleIndex, ...props }) => {
     switch(roleIndex) {
         case 0:
@@ -1239,7 +1236,7 @@ const RoleText = ({ $roleIndex: roleIndex, ...props }) => {
 const OneLiner = styled.div`
     /* spacing */
     max-width: 100%;
-
+    
     /* styles */
     line-height: 1.8; 
     text-align: justify;
@@ -1247,24 +1244,24 @@ const OneLiner = styled.div`
     overflow-wrap: break-word;
     color: rgba(255,255,255,.88);
     font-size: clamp(0.85rem, 1.8vw, 1.275rem);
-
-    /* smaller at 1600px */
+    
+    /* nested selectors */
+    strong {
+        /* styles */
+        font-weight: 600;
+        color: rgba(150, 200, 255, 1);
+    }
+    
+    /* media queries */
     @media (max-width: 1600px) {
         font-size: clamp(0.85rem, 1.4vw, 1.1rem);
         line-height: 1.7;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(0.95rem, 3vw, 1.1rem);
         line-height: 1.75;
         margin-bottom: 0.5rem;
-    }
-
-    /* strong text */
-    strong {
-        font-weight: 600;
-        color: rgba(150, 200, 255, 1);
     }
 `;
 
@@ -1272,19 +1269,18 @@ const OneLiner = styled.div`
 const SectionTitle = styled.div`
     /* spacing */
     margin: 1rem 0;
-
+    
     /* styles */
     font-weight: 600;
     color: rgba(200, 180, 255, 1);
     font-size: clamp(1.5rem, 2.2vw, 2.5rem);
-
-    /* smaller at 1600px */
+    
+    /* media queries */
     @media (max-width: 1600px) {
         font-size: clamp(1.3rem, 1.8vw, 2rem);
         margin: 0.8rem 0;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(1.2rem, 4vw, 1.6rem);
         margin: 1rem 0 0.75rem;
@@ -1366,15 +1362,8 @@ const BulletItem = styled.div`
         font-weight: 400;
         font-size: 1.5rem;
         color: rgba(150, 200, 255, 0.9);
-        animation: ${twinkle} 2s ease-in-out infinite;
-        animation-delay: ${props => props.$delay || 0}s;
-        will-change: opacity;
     }
 
-    /* Pause animations during loading */
-    [data-loading="true"] &::before {
-        animation-play-state: paused;
-    }
 `;
 
 // closer paragraph.
