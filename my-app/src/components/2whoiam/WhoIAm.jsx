@@ -1245,7 +1245,6 @@ const OneLiner = styled.div`
     color: rgba(255,255,255,.88);
     font-size: clamp(0.85rem, 1.8vw, 1.275rem);
     
-    /* nested selectors */
     strong {
         /* styles */
         font-weight: 600;
@@ -1287,7 +1286,6 @@ const SectionTitle = styled.div`
     }
 `;
 
-// bullet list container.
 const BulletList = styled.div`
     /* spacing */
     padding: 0;
@@ -1295,7 +1293,7 @@ const BulletList = styled.div`
     /* styles */
     list-style: none;
     
-    /* two columns at 1600px to save vertical space - skip for card index 1 (second card) */
+    /* two columns on smaller monitor */
     @media (max-width: 1600px) {
         display: ${props => props.$cardIndex === 1 ? 'block' : 'grid'};
         ${props => props.$cardIndex !== 1 && `
@@ -1306,42 +1304,15 @@ const BulletList = styled.div`
     }
 `;
 
-// individual bullet item.
 const BulletItem = styled.div`
     /* layout */
     position: relative;
-
+    
     /* spacing */
     max-width: 100%;
     margin-bottom: 1rem;
     padding-left: 1.75rem;
     
-    
-    /* compact at 1600px */
-    @media (max-width: 1600px) {
-        text-align: left;
-        font-size: clamp(0.95rem, 1.2vw, 1.15rem);
-        margin-bottom: 0.5rem;
-        padding-left: 1.8rem;
-        
-        /* smaller bullet at 1600px */
-        &::before {
-            font-size: 1.3rem;
-        }
-    }
-    
-    /* mobile */
-    @media (max-width: 768px) {
-        font-size: clamp(1rem, 3vw, 1.15rem);
-        line-height: 1.7;
-        margin-bottom: 0.75rem;
-        padding-left: 1.5rem;
-        
-        &::before {
-            font-size: 1.2rem;
-        }
-    }
-
     /* styles */
     line-height: 1.6;
     word-wrap: break-word;
@@ -1349,53 +1320,73 @@ const BulletItem = styled.div`
     color: rgba(255,255,255,.85);
     font-size: clamp(1rem, 1.6vw, 1.275rem);
     
-    /* star bullet point */
+    /* pseudo-elements */
     &::before {
         /* layout */
         left: 0;
         top: 50%;
-        content: '✦';
         position: absolute;
         transform: translateY(-50%) translateZ(0);
-
+        
         /* styles */
+        content: '✦';
         font-weight: 400;
         font-size: 1.5rem;
         color: rgba(150, 200, 255, 0.9);
     }
-
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        margin-bottom: 0.5rem;
+        padding-left: 1.8rem;
+        text-align: left;
+        font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+        
+        &::before {
+            font-size: 1.3rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        line-height: 1.7;
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
+        font-size: clamp(1rem, 3vw, 1.15rem);
+        
+        &::before {
+            font-size: 1.2rem;
+        }
+    }
 `;
 
 // closer paragraph.
 const Closer = styled.div`
     /* spacing */
     max-width: 100%;
-
+    
     /* styles */
-    line-height: 1.8; 
+    line-height: 1.8;
     text-align: justify;
     word-wrap: break-word;
     overflow-wrap: break-word;
     color: rgba(255,255,255,.88);
     font-size: clamp(1rem, 1.8vw, 1.3rem);
-
-    /* smaller at 1600px */
-    @media (max-width: 1600px) {
-        font-size: clamp(0.9rem, 1.4vw, 1.2rem);
-        line-height: 1.7;
-    }
     
-    /* mobile */
-    @media (max-width: 768px) {
-        font-size: clamp(1rem, 3vw, 1.15rem);
-        line-height: 1.75;
-        margin-top: 0.5rem;
-    }
-    
-    /* strong text */
     strong {
         font-weight: 600;
         color: rgba(150, 200, 255, 1);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        line-height: 1.7;
+        font-size: clamp(0.9rem, 1.4vw, 1.2rem);
+    }
+    
+    @media (max-width: 768px) {
+        line-height: 1.75;
+        margin-top: 0.5rem;
+        font-size: clamp(1rem, 3vw, 1.15rem);
     }
 `;
 
@@ -1406,13 +1397,13 @@ const NavRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-
+    
     /* spacing */
     gap: 1.5rem;
     padding: 1rem;
     margin-bottom: 1rem;
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         gap: 1rem;
         padding: 0.75rem;
@@ -1444,15 +1435,16 @@ const NavBtn = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-
+    
     /* spacing */
     width: 52px;
     height: 52px;
     
-
     /* styles */
     cursor: pointer;
     border-radius: 50%;
+    will-change: transform;
+    transform: translateZ(0);
     backdrop-filter: blur(20px);
     color: rgba(255, 255, 255, 0.95);
     background: rgba(255, 255, 255, 0.25);
@@ -1460,11 +1452,7 @@ const NavBtn = styled.button`
     border: 1.5px solid rgba(255, 255, 255, 0.4);
     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
-    
-    /* hover effects of buttons */
+    /* hover effects */
     &:hover {
         transform: translateY(-2px) scale(1.05) translateZ(0);
         background: rgba(150, 200, 255, 0.3);
@@ -1473,15 +1461,14 @@ const NavBtn = styled.button`
         box-shadow: 0 6px 20px rgba(150, 200, 255, 0.3);
     }
     
-    /* active state of buttons */
+    /* active state */
     &:active {
         transform: translateY(0) scale(0.98) translateZ(0);
         box-shadow: 0 2px 6px rgba(150, 200, 255, 0.15);
     }
     
-    /* disabled state for when animation is happening */
+    /* disabled state */
     &:disabled {
-        /* styles */
         opacity: 0.4;
         transform: none;
         cursor: not-allowed;
@@ -1500,26 +1487,24 @@ const SpaceStation = styled.div`
     right: 5%;
     z-index: 2;
     position: absolute;
-
+    
     /* spacing */
     width: 250px;
     height: 250px;
-
+    
     /* styles */
+    opacity: 1;
+    will-change: transform;
     background-size: contain;
+    transform: translateZ(0);
+    contain: layout style paint;
     background-position: center;
     background-repeat: no-repeat;
     background-image: url(${spaceStation});
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
-    opacity: 1;
-    will-change: transform;
-    contain: layout style paint;
-    
-    /* subtle floating animation - GPU accelerated */
     animation: ${spaceStationFloat} 8s ease-in-out infinite;
-    transform: translateZ(0);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
     
-    /* Pause animations during loading */
+    /* loading states */
     [data-loading="true"] & {
         animation-play-state: paused;
     }
@@ -1532,10 +1517,10 @@ const SpaceStation = styled.div`
     }
     
     @media (max-width: 768px) {
-        width: 120px;
-        height: 120px;
         top: 2%;
         right: 3%;
+        width: 120px;
+        height: 120px;
         opacity: 0.5;
     }
 `;
@@ -1547,27 +1532,25 @@ const Satellite1 = styled.div`
     left: -15%;
     z-index: 0;
     position: absolute;
-
+    
     /* spacing */
     width: 80px;
     height: 144px;
-
+    
     /* styles */
+    opacity: 0.6;
+    animation-delay: 6s;
+    will-change: transform;
     background-size: contain;
+    transform: translateZ(0);
+    contain: layout style paint;
     background-position: center;
     background-repeat: no-repeat;
     background-image: url(${satellite1});
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
-    opacity: 0.6;
-    will-change: transform;
-    contain: layout style paint;
-    
-    /* floating animation with delay - GPU accelerated */
-    animation-delay: 6s;
     animation: ${satellite1Float} 25s linear infinite;
-    transform: translateZ(0);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
     
-    /* Pause animations during loading */
+    /* loading states */
     [data-loading="true"] & {
         animation-play-state: paused;
     }
@@ -1580,7 +1563,7 @@ const Satellite1 = styled.div`
     }
     
     @media (max-width: 768px) {
-        display: none; /* Hide satellites on mobile */
+        display: none;
     }
 `;
 
@@ -1591,27 +1574,25 @@ const Satellite2 = styled.div`
     right: -15%;
     z-index: 0;
     position: absolute;
-
+    
     /* spacing */
     width: 80px;
     height: 144px;
-
+    
     /* styles */
+    opacity: 0.5;
+    animation-delay: 7s;
+    will-change: transform;
     background-size: contain;
+    transform: translateZ(0);
+    contain: layout style paint;
     background-position: center;
     background-repeat: no-repeat;
     background-image: url(${satellite2});
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
-    opacity: 0.5;
-    will-change: transform;
-    contain: layout style paint;
-    
-    /* floating animation with different delay and path - right to left - GPU accelerated */
-    animation-delay: 7s;
     animation: ${satellite2Float} 30s linear infinite;
-    transform: translateZ(0);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
     
-    /* Pause animations during loading */
+    /* loading states */
     [data-loading="true"] & {
         animation-play-state: paused;
     }
@@ -1624,7 +1605,7 @@ const Satellite2 = styled.div`
     }
     
     @media (max-width: 768px) {
-        display: none; /* Hide satellites on mobile */
+        display: none;
     }
 `;
 
