@@ -34,6 +34,9 @@ import orangecoral from '@/images/5about/footer/orangecoral.png';
 import purplecoral from '@/images/5about/footer/purplecoral.png';
 import rockwithseaweed from '@/images/5about/footer/rockwithseaweed.png';
 
+// logos.
+import cursorLogo from '@/images/logos/cursor.png';
+
 
 /* ================== main component ================== */
 
@@ -347,14 +350,14 @@ const Background = () => {
                                 <CardTitle>My Mantras</CardTitle>
                                 
                                 <MantrasWrapper>
-                                    <MantraText>
-                                        <MantraHighlight>Amor Fati</MantraHighlight>
-                                        Love Of Fate. Trying to appreciate everything that happens, good or bad. Just experiencing it.
-                                    </MantraText>
-                                    <MantraText>
-                                        <MantraHighlight>Nothing changes if nothing changes.</MantraHighlight>
-                                        My life is in my hands. It's up to me to determine what it looks like (from a Theo Von podcast btw).
-                                    </MantraText>
+                                <MantraText>
+                                    <MantraHighlight>Amor Fati</MantraHighlight>
+                                    “Love of fate.” Trying to treat whatever happens as material to grow from, even when it is not exactly fun in the moment.
+                                </MantraText>
+                                <MantraText>
+                                    <MantraHighlight>Nothing changes if nothing changes.</MantraHighlight>
+                                    If I keep doing the same things, I will keep getting the same results. Simple, obvious, and weirdly easy to forget. Heard it on a Theo Von podcast btw.
+                                </MantraText>
                                 </MantrasWrapper>
                                 
                                 <EmojiRow aria-hidden="true">
@@ -429,7 +432,11 @@ const Background = () => {
                 
                 {/* made with love - positioned within sand plane */}
                 <MadeWithLoveContainer>
-                    Made with<HeartEmoji>❤️</HeartEmoji>by me (CK)
+                    <MadeWithText>Made with</MadeWithText>
+                    <HeartEmoji>❤️</HeartEmoji>
+                    <MadeWithText>&</MadeWithText>
+                    <CursorLogo src={cursorLogo} alt="Cursor" />
+                    <MadeWithText>by me (CK)</MadeWithText>
                 </MadeWithLoveContainer>
 
                 {/* copyright - positioned within sand plane */}
@@ -2862,7 +2869,10 @@ const SandText = styled.div`
     
     /* styles */
     color: var(--sand-dark);
-    text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.2);
+    text-shadow: 
+        -1px -1px 0 rgba(255, 255, 255, 0.5),
+        -2px -2px 0 rgba(255, 255, 255, 0.3),
+        1px 1px 2px rgba(0, 0, 0, 0.2);
     
     /* media queries */
     @media (max-width: 768px) {
@@ -2970,12 +2980,40 @@ const MadeWithLoveContainer = styled.div`
     pointer-events: none;
     
     /* spacing */
-    gap: 0.3rem;
-    font-size: 2rem;
+    gap: 0.5rem;
     
     /* styles */
     z-index: 30;
-    color: rgba(255, 255, 255, 0.7);
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        gap: 0.4rem;
+    }
+    
+    @media (max-width: 768px) {
+        bottom: 0.5rem;
+        left: 1rem;
+        right: auto;
+        gap: 0.3rem;
+    }
+`;
+
+// made with text with gradient
+const MadeWithText = styled.span`
+    /* spacing */
+    font-size: 2rem;
+    
+    /* styles */
+    font-weight: 600;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(220, 220, 220, 0.9) 50%,
+        rgba(255, 255, 255, 0.95) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     
     /* media queries */
     @media (max-width: 1200px) {
@@ -2983,9 +3021,6 @@ const MadeWithLoveContainer = styled.div`
     }
     
     @media (max-width: 768px) {
-        bottom: 0.5rem;
-        left: 1rem;
-        right: auto;
         font-size: clamp(0.7rem, 2.5vw, 0.9rem);
     }
 `;
@@ -3014,6 +3049,38 @@ const HeartEmoji = styled.span`
     
     @media (max-width: 768px) {
         font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    }
+`;
+
+// cursor logo
+const CursorLogo = styled.img`
+    /* layout */
+    display: block;
+    flex-shrink: 0;
+    
+    /* spacing */
+    width: 2rem;
+    height: 2rem;
+    
+    /* styles */
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+    
+    /* hover effects */
+    ${MadeWithLoveContainer}:hover & {
+        transform: scale(1.1);
+    }
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        width: clamp(0.7rem, 2.5vw, 0.9rem);
+        height: clamp(0.7rem, 2.5vw, 0.9rem);
     }
 `;
 

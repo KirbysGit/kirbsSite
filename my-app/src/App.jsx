@@ -23,6 +23,9 @@ const About = lazy(() => import('./components/6about/About.jsx'));
 // global styles.
 import GlobalStyle from './styles/GlobalStyle';
 
+// vercel analytics.
+import { Analytics } from '@vercel/analytics/react';
+
 // image preloader utility.
 import { preloadImagesInChunks } from './components/utils/imagePreloader.js';
 import { getCriticalImages, getImportantImages } from './components/utils/imageMap.js';
@@ -229,7 +232,7 @@ function App() {
 	useEffect(() => {
 		document.documentElement.dataset.heroSettled = heroSettled ? "true" : "false";
 	}, [heroSettled]);
-	
+
 	// lock scrolling during hero animations.
 	useEffect(() => {
 		if (!loadingCompleteTime) return;
@@ -286,246 +289,247 @@ function App() {
 
 	// component preloading.
 	const preloadComponent = async (importFn) => {
-		try {
+    try {
 			const component = await importFn();
 			return { success: true, component };
-		} catch (error) {
+    } catch (error) {
 			return { success: false, component: null };
-		}
-	};
-
+    }
+  };
+  
 	// verify images for a specific section are loaded.
-	const verifySectionImages = async (sectionName, images) => {
+  const verifySectionImages = async (sectionName, images) => {
 		if (!images || images.length === 0) return { success: true };
-		
-		try {
+    
+    try {
 			await preloadImagesInChunks(
-				images, 
+        images, 
 				5,
-				() => {},
+        () => {},
 				'auto',
 				0
 			);
 			
 			return { success: true };
-		} catch (error) {
+      } catch (error) {
 			return { success: false };
-		}
-	};
+      }
+  };
 
 	// actual image and component preloading.
-	useEffect(() => {
+  useEffect(() => {
 		// prevent duplicate execution in react strict mode.
-		if (hasLoadedRef.current) return;
-		hasLoadedRef.current = true;
-		
+    if (hasLoadedRef.current) return;
+    hasLoadedRef.current = true;
+    
 		const MIN_LOADING_TIME = 2000;
-		
+    
 		// preload critical images first, then important images, then components, then fonts.
-		const loadAssets = async () => {
+    const loadAssets = async () => {
 		const startTime = Date.now();
-		
-		try {
+      
+      try {
 			// get critical images (hero section - lcp)
-			const criticalImages = getCriticalImages();
-			
+        const criticalImages = getCriticalImages();
+        
 			// start with critical images.
 			await preloadImagesInChunks(
-				criticalImages,
+          criticalImages,
 				2,
-				(loaded, total) => {
-					const progress = Math.min(25, Math.floor((loaded / total) * 25));
-					setLoadingProgress(progress);
-				},
+          (loaded, total) => {
+            const progress = Math.min(25, Math.floor((loaded / total) * 25));
+            setLoadingProgress(progress);
+          },
 				'high',
 				0
-			);
+        );
 
 			// load important images.
-			const importantImages = getImportantImages();
-			const importantImagesPromise = preloadImagesInChunks(
-				importantImages,
+        const importantImages = getImportantImages();
+        const importantImagesPromise = preloadImagesInChunks(
+          importantImages,
 				6,
-				(loaded, total) => {
-					const progress = 25 + Math.min(20, Math.floor((loaded / total) * 20));
-					setLoadingProgress(progress);
-				},
+          (loaded, total) => {
+            const progress = 25 + Math.min(20, Math.floor((loaded / total) * 20));
+            setLoadingProgress(progress);
+          },
 				'high',
 				0
 			);
-			
+        
 			// start component loading in parallel with important images.
-			setLoadingProgress(50);
-			
-			const componentPromise = Promise.allSettled([
+        setLoadingProgress(50);
+        
+        const componentPromise = Promise.allSettled([
 				preloadComponent(() => import('./components/2whoiam/WhoIAm')),
 				preloadComponent(() => import('./components/3experience/Experience')),
 				preloadComponent(() => import('./components/4projects/Projects')),
 				preloadComponent(() => import('./components/5skills/Skills.jsx')),
 				preloadComponent(() => import('./components/6about/About.jsx')),
-			]);
-			
+        ]);
+        
 			// wait for both to complete.
 			await Promise.all([importantImagesPromise, componentPromise]);
 			
-			setLoadingProgress(60);
-			
+        setLoadingProgress(60);
+        
 			// mark components as preloaded and start mounting them immediately.
-			setComponentsPreloaded(true);
+        setComponentsPreloaded(true);
 
 			// load important section-specific images.
-			const { getImagesBySection } = await import('./components/utils/imageMap.js');
-			setLoadingProgress(65);
-			
+        const { getImagesBySection } = await import('./components/utils/imageMap.js');
+        setLoadingProgress(65);
+        
 			// preload only important images for each section.
 			await Promise.allSettled([
-				verifySectionImages('WhoIAm', getImagesBySection('whoIAm', 'important')),
-				verifySectionImages('Experience', getImagesBySection('experience', 'important')),
-				verifySectionImages('Projects', getImagesBySection('projects', 'important')),
-				verifySectionImages('Skills', getImagesBySection('skills', 'important')),
-				verifySectionImages('About', getImagesBySection('about', 'important')),
-			]);
+          verifySectionImages('WhoIAm', getImagesBySection('whoIAm', 'important')),
+          verifySectionImages('Experience', getImagesBySection('experience', 'important')),
+          verifySectionImages('Projects', getImagesBySection('projects', 'important')),
+          verifySectionImages('Skills', getImagesBySection('skills', 'important')),
+          verifySectionImages('About', getImagesBySection('about', 'important')),
+        ]);
 			
-			setLoadingProgress(80);
+        setLoadingProgress(80);
 
-			setLoadingProgress(88);
+        setLoadingProgress(88);
 
-			setLoadingProgress(90);
+        setLoadingProgress(90);
 
-			await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-			setLoadingProgress(92);
+        setLoadingProgress(92);
 
-			setLoadingProgress(95);
-			
+        setLoadingProgress(95);
+        
 			// ensure minimum loading time.
 			const elapsedTime = Date.now() - startTime;
-			const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
-			
+        const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+        
 			// pre-render components in background for smooth first scroll.
-			if (remainingTime > 0) {
-				requestAnimationFrame(() => {
-					const sections = ['who-i-am', 'experience', 'projects', 'skills', 'about'];
-					sections.forEach(sectionId => {
-					const element = document.getElementById(sectionId);
-					if (element) {
-						void element.offsetHeight;
-						}
-					});
-				});
-			
+        if (remainingTime > 0) {
+          requestAnimationFrame(() => {
+            const sections = ['who-i-am', 'experience', 'projects', 'skills', 'about'];
+            sections.forEach(sectionId => {
+              const element = document.getElementById(sectionId);
+              if (element) {
+                void element.offsetHeight;
+              }
+            });
+          });
+          
 				// update progress smoothly during wait
 				const waitSteps = 20;
-				const stepDuration = remainingTime / waitSteps;
-				
+          const stepDuration = remainingTime / waitSteps;
+          
 				// distribute remaining time across progress updates
-				for (let i = 0; i < waitSteps; i++) {
-					await new Promise(resolve => setTimeout(resolve, stepDuration));
+          for (let i = 0; i < waitSteps; i++) {
+            await new Promise(resolve => setTimeout(resolve, stepDuration));
 					// smooth progress from 92% to 98%
-					const progress = 92 + (i + 1) * (6 / waitSteps);
-					setLoadingProgress(Math.min(98, progress));
-				}
-			}
-			
-			setLoadingProgress(100);
+            const progress = 92 + (i + 1) * (6 / waitSteps);
+            setLoadingProgress(Math.min(98, progress));
+          }
+        }
+        
+        setLoadingProgress(100);
 			
 			// fade out loading screen
-			setIsFading(true);
-			
+        setIsFading(true);
+        
 			// store the actual loading completion time.
-			const loadingCompleteTime = performance.now();
-			loadingCompleteTimeRef.current = loadingCompleteTime;
+        const loadingCompleteTime = performance.now();
+        loadingCompleteTimeRef.current = loadingCompleteTime;
 			setLoadingCompleteTime(loadingCompleteTime);
-			
+        
 			// hide loading screen first to prevent scrollbar recalculation affecting hero.
-			setTimeout(() => {
+        setTimeout(() => {
 			setIsLoading(false);
-			}, 800);
-		} catch (error) {
+        }, 800);
+      } catch (error) {
 			// still finish loading even if there's an error.
-			setLoadingProgress(100);
-			
+        setLoadingProgress(100);
+        
 			// ensure minimum loading time even on error.
 			const elapsedTime = Date.now() - startTime;
-			const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
-			if (remainingTime > 0) {
-				await new Promise(resolve => setTimeout(resolve, remainingTime));
-			}
-			
-			setIsFading(true);
-			
+        const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+        if (remainingTime > 0) {
+          await new Promise(resolve => setTimeout(resolve, remainingTime));
+        }
+        
+            setIsFading(true);
+        
 			// mount components even on error.
-			setTimeout(() => {
+            setTimeout(() => {
 			setHeroSettled(true);
-			setIsLoading(false);
-			}, 800);
-		}
-		};
+              setIsLoading(false);
+        }, 800);
+      }
+    };
 
-		loadAssets();
-	}, []);
+    loadAssets();
+  }, []);
 
 	// minimal fallback component.
-	const ComponentFallback = () => null;
+  const ComponentFallback = () => null;
 
-	return (
-		<>
-		<GlobalStyle />
-		<Progress />
-		<BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-			<Routes>
-			<Route 
-				path="/"
-				element={
-				<>
+  return (
+    <>
+      <GlobalStyle />
+      <Progress />
+		<Analytics />
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route 
+            path="/"
+            element={
+              <>
 					{/* hero always mounts */}
-					<Hero isLoading={isLoading} loadingCompleteTime={loadingCompleteTime} />
-					
+                <Hero isLoading={isLoading} loadingCompleteTime={loadingCompleteTime} />
+                
 					{/* navbar - mounts after hero */}
-					<Navbar loadingCompleteTime={loadingCompleteTime} />
-					
+                <Navbar loadingCompleteTime={loadingCompleteTime} />
+                
 					{/* incremental rendering - components mount one at a time during loading */}
-					<Suspense fallback={<ComponentFallback />}>
-						{showWhoIAm && (
-							<ComponentWrapper $isVisible={showWhoIAm} $heroSettled={heroSettled}>
-								<WhoIAm />
-							</ComponentWrapper>
-						)}
-						
-						{showExperience && (
-							<ComponentWrapper $isVisible={showExperience} $heroSettled={heroSettled}>
-								<AExperience />
-							</ComponentWrapper>
-						)}
-						
-						{showProjects && (
-							<ComponentWrapper $isVisible={showProjects} $heroSettled={heroSettled}>
-								<Projects />
-							</ComponentWrapper>
-						)}
-						
-						{showSkills && (
-							<ComponentWrapper $isVisible={showSkills} $heroSettled={heroSettled}>
-								<Skills />
-							</ComponentWrapper>
-						)}
-						
-						{showAbout && (
-							<ComponentWrapper $isVisible={showAbout} $heroSettled={heroSettled}>
-								<About />
-							</ComponentWrapper>
-						)}
-					</Suspense>
-				</>
-				}
-			/>
-			</Routes>
-		</BrowserRouter>
-		
+                <Suspense fallback={<ComponentFallback />}>
+                  {showWhoIAm && (
+                    <ComponentWrapper $isVisible={showWhoIAm} $heroSettled={heroSettled}>
+                <WhoIAm />
+                    </ComponentWrapper>
+                  )}
+                  
+                  {showExperience && (
+                    <ComponentWrapper $isVisible={showExperience} $heroSettled={heroSettled}>
+                <AExperience />
+                    </ComponentWrapper>
+                  )}
+                  
+                  {showProjects && (
+                    <ComponentWrapper $isVisible={showProjects} $heroSettled={heroSettled}>
+                <Projects />
+                    </ComponentWrapper>
+                  )}
+                  
+                  {showSkills && (
+                    <ComponentWrapper $isVisible={showSkills} $heroSettled={heroSettled}>
+                <Skills />
+                    </ComponentWrapper>
+                  )}
+                  
+                  {showAbout && (
+                    <ComponentWrapper $isVisible={showAbout} $heroSettled={heroSettled}>
+                <About />
+                    </ComponentWrapper>
+                  )}
+                </Suspense>
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+      
 		{/* loading screen overlays on top */}
-		{isLoading && <LoadingScreen progress={loadingProgress} isFading={isFading} />}
-		</>
-	);
+      {isLoading && <LoadingScreen progress={loadingProgress} isFading={isFading} />}
+    </>
+  );
 }
 
 // export.
@@ -536,32 +540,32 @@ export default App;
 // wrapper to prevent layout shifts during component mounting.
 const ComponentWrapper = styled.div`
     /* layout */
-    position: relative;
-    
-    /* GPU acceleration */
-    transform: translateZ(0);
-    contain: layout style paint;
-    
+  position: relative;
+  
+  /* GPU acceleration */
+  transform: translateZ(0);
+  contain: layout style paint;
+  
     /* nested selectors */
-    :root[data-loading="true"] & {
+  :root[data-loading="true"] & {
         /* styles */
-        opacity: 0;
-        pointer-events: none;
-        visibility: visible;
-    }
-    
-    ${props => !props.$heroSettled ? `
+    opacity: 0;
+    pointer-events: none;
+    visibility: visible;
+  }
+  
+  ${props => !props.$heroSettled ? `
         /* styles */
-        opacity: 0;
-        pointer-events: none;
-        visibility: visible;
-    ` : ''}
-    
-    :root[data-loading="false"] & {
+    opacity: 0;
+    pointer-events: none;
+    visibility: visible;
+  ` : ''}
+  
+  :root[data-loading="false"] & {
         /* styles */
-        opacity: ${props => props.$heroSettled ? '1' : '0'};
-        pointer-events: ${props => props.$heroSettled ? 'auto' : 'none'};
-        visibility: visible;
-        transition: opacity 0.3s ease-in;
-    }
+    opacity: ${props => props.$heroSettled ? '1' : '0'};
+    pointer-events: ${props => props.$heroSettled ? 'auto' : 'none'};
+    visibility: visible;
+    transition: opacity 0.3s ease-in;
+  }
 `;

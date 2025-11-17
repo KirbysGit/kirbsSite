@@ -79,74 +79,75 @@ const Skills = memo(() => {
             {/* floating text section - right below title on mobile */}
             <FloatingTextContainer>
                 <FloatingText>
-                    Across most portfolio sites I've seen, I never saw a skills section that wasn't 
-                    basically just a list of random technologies, so I decided to make mine a bit more 
-                    <em> confusing</em> because why not? 
+                    Most portfolio sites I've seenhave a skills section that is basically a grocery list of buzzwords. 
+                    I turned mine into a tiny skyline instead. Slightly less useful, way more fun.
                 </FloatingText>
                 <FloatingText>
-                    In reality, I feel like listing most of these skills doesn't really tell a story, you're 
-                    gonna get that from my projects. But I wanted to show some of my experiences thus far 
-                    in my career.
+                    Each building is a technology I use. The taller the building, the more experience I have with it. 
+                    Shorter buildings are tools I am still growing with.
                 </FloatingText>
+                <FloatingText>
+                    Skills alone do not tell much of a story. You will get that from my projects. 
+                    This is a quick visual snapshot of where I have been spending my time.
+                </FloatingText>
+                <PSNote>
+                    P.S. — All the objects here are custom SVGs that took <em>way</em> too long to build/optimize. 
+                    Don't recommend it to others.
+                </PSNote>
             </FloatingTextContainer>
-            
-            <PSNote>
-                P.S. — All the objects here are custom SVGs that took <em>way</em> too long to build/optimize. 
-                Don't recommend it to others.
-            </PSNote>
             
             {/* hot air balloons - shrunk below text on mobile */}
             <BalloonsWrapper>
                 {/* git - orange and white */}
                 <HotAirBalloon
-                top="12%"
-                left="81%"
-                size={95}
-                palette={["#F05032", "#FFFFFF", "#F05032", "#FFFFFF", "#F05032", "#FFFFFF"]}
-                floatMs={9000}
-                delay="0s"
-                logo={gitLogo}
-                name="Git"
-                tooltipColor="#F05032"
-            />
-            
-            {/* canva - teal and white/purple */}
-            <HotAirBalloon
-                top="5%"
-                left="90%"
-                size={75}
-                palette={["#00C4CC", "#FFFFFF", "#7D2AE8", "#FFFFFF", "#00C4CC", "#7D2AE8"]}
-                floatMs={10500}
-                delay="2s"
-                logo={canvaLogo}
-                name="Canva"
-                tooltipColor="#00C4CC"
-            />
-            
-            {/* figma - multicolor with white */}
-            <HotAirBalloon
-                top="8%"
-                left="70%"
-                size={105}
-                palette={["#F24E1E", "#FFFFFF", "#A259FF", "#FFFFFF", "#1ABCFE", "#FFFFFF"]}
-                floatMs={8500}
-                delay="4s"
-                logo={figmaLogo}
-                name="Figma"
-                tooltipColor="#A259FF"
-            />
-            
-            {/* ms office - red, orange, blue, green */}
-            <HotAirBalloon
-                top="15%"
-                left="60%"
-                size={85}
-                palette={["#D83B01", "#FFFFFF", "#0078D4", "#FFFFFF", "#7FBA00", "#FFFFFF"]}
-                floatMs={9800}
-                delay="6s"
-                logo={msofficeLogo}
-                name="Microsoft Office"
-                tooltipColor="#0078D4"
+                    top="12%"
+                    left="81%"
+                    size={95}
+                    palette={["#F05032", "#FFFFFF", "#F05032", "#FFFFFF", "#F05032", "#FFFFFF"]}
+                    floatMs={9000}
+                    delay="0s"
+                    logo={gitLogo}
+                    name="Git"
+                    tooltipColor="#F05032"
+                />
+                
+                {/* canva - teal and white/purple */}
+                <HotAirBalloon
+                    top="5%"
+                    left="90%"
+                    size={75}
+                    palette={["#00C4CC", "#FFFFFF", "#7D2AE8", "#FFFFFF", "#00C4CC", "#7D2AE8"]}
+                    floatMs={10500}
+                    delay="2s"
+                    logo={canvaLogo}
+                    name="Canva"
+                    tooltipColor="#00C4CC"
+                />
+                
+                {/* figma - multicolor with white */}
+                <HotAirBalloon
+                    top="8%"
+                    left="70%"
+                    size={105}
+                    palette={["#F24E1E", "#FFFFFF", "#A259FF", "#FFFFFF", "#1ABCFE", "#FFFFFF"]}
+                    floatMs={8500}
+                    delay="4s"
+                    logo={figmaLogo}
+                    name="Figma"
+                    tooltipColor="#A259FF"
+                />
+                
+                {/* ms office - red, orange, blue, green */}
+                <HotAirBalloon
+                    top="15%"
+                    left="60%"
+                    size={85}
+                    palette={["#D83B01", "#FFFFFF", "#0078D4", "#FFFFFF", "#7FBA00", "#FFFFFF"]}
+                    floatMs={9800}
+                    delay="6s"
+                    logo={msofficeLogo}
+                    name="Microsoft Office"
+                    tooltipColor="#0078D4"
                 />
             </BalloonsWrapper>
             
@@ -376,9 +377,9 @@ const SectionTitle = styled.h1`
         rgba(255, 255, 255, 0.95) 0%,
         rgba(255, 200, 100, 0.9) 50%,
         rgba(255, 150, 50, 0.95) 100%);
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
-	-webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
     
     /* media queries */
     @media (max-width: 1600px) {
@@ -464,7 +465,7 @@ const Road = styled.div`
         right: 0;
         
         /* spacing */
-        height: 2px;
+        height: 2px; 
         
         /* styles */
         opacity: 0.8;
@@ -955,7 +956,7 @@ const HarborWater = styled.div`
         /* styles */
         background: linear-gradient(to top, transparent 70%, rgba(255, 255, 255, 0.25));
     }
-
+    
     /* shimmer stripes */
     &::after {
         /* layout */
@@ -1076,18 +1077,18 @@ const BridgeRail = styled.div`
 // floating text container.
 const FloatingTextContainer = styled.div`
     /* layout */
-    top: 34%;
+    top: 32%;
     right: 5%;
     z-index: 5;
     position: absolute;
     
     /* spacing */
-    width: 33%;
+    width: 37%;
     max-width: 45%;
-    
+        
     /* media queries */
     @media (max-width: 1600px) {
-        top: 34%;
+        top: 36%;
         width: 36%;
     }
     
@@ -1151,16 +1152,13 @@ const FloatingText = styled.p`
 // little ps note at bottom.
 const PSNote = styled.p`
     /* layout */
-    top: 60%;
-    right: 5%;
     margin: 0;
-    z-index: 5;
     text-align: right;
-    position: absolute;
+    position: relative;
     
     /* spacing */
-    width: 30%;
-    max-width: 45%;
+    margin-top: 1.5rem;
+    width: 100%;
     
     /* styles */
     font-size: 1rem;
@@ -1183,21 +1181,14 @@ const PSNote = styled.p`
     
     /* media queries */
     @media (max-width: 1600px) {
-        top: 62%;
-        width: 28%;
         font-size: 0.9rem;
         line-height: 1.6;
+        margin-top: 1.25rem;
     }
     
     /* mobile */
     @media (max-width: 768px) {
-        position: relative;
-        top: auto;
-        right: auto;
-        width: 100%;
-        max-width: 100%;
         text-align: left;
-        padding: 0 1rem;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
         font-size: clamp(0.8rem, 2.5vw, 0.9rem);

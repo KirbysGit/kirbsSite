@@ -45,12 +45,12 @@ const ActualExperience = memo(() => {
     const copyEmail = useCallback(async () => {
         const email = 'kirbycolin26@gmail.com';
         try {
-            await navigator.clipboard.writeText(email);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            // silently fail - user can manually copy if needed.
-        }
+        await navigator.clipboard.writeText(email);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        // silently fail - user can manually copy if needed.
+      }
     }, []);
     
     
@@ -65,7 +65,7 @@ const ActualExperience = memo(() => {
     }, []);
     
     // swipe functionality for mobile.
-
+    
     // handles pointer down event for mobile.
     const onPointerDown = useCallback((e) => {
         if (!isMobile) return;
@@ -406,10 +406,10 @@ const ExperienceContainer = styled.div`
     min-height: 100vh;
     position: relative;
     flex-direction: column;
-    
+
     /* spacing */
     padding: 4rem 2rem;
-    
+
     /* styles */
     background: linear-gradient(
         to bottom,
@@ -442,7 +442,7 @@ const CloudLayer = styled.div`
     inset: 0;
     z-index: 1;
     position: absolute;
-    
+
     /* styles */
     overflow: hidden;
     will-change: auto;
@@ -589,7 +589,7 @@ const Stage = styled.div`
     overflow: visible;
     position: relative;
     place-items: center;
-    
+
     /* spacing */
     margin: 0 auto;
     min-height: 80vh;
@@ -600,7 +600,7 @@ const Stage = styled.div`
     transform: translateZ(0);
     contain: layout style;
     isolation: isolate;
-    
+
     /* media queries */
     @media (min-width: 2000px) {
         padding-bottom: 80px;
@@ -639,7 +639,7 @@ const Track = styled.div`
     overflow: visible;
     position: relative;
     perspective: 1200px;
-    
+
     /* spacing */
     margin: 0 auto;
     max-width: 1400px;
@@ -650,7 +650,7 @@ const Track = styled.div`
     contain: layout style;
     will-change: transform;
     transform: translateZ(0);
-    
+
     /* media queries */
     @media (max-width: 2000px) {
         width: 85%;
@@ -692,7 +692,7 @@ const Slide = styled.div`
     position: absolute;
     place-items: center;
     pointer-events: none;
-    
+
     /* styles */
     transform: translateZ(0);
     contain: layout style;
@@ -713,7 +713,7 @@ const Slide = styled.div`
     `}
     
     /* adjacent cards (1 position away from focused) */
-    ${({ $distance, $position }) => $distance === 1 && `
+        ${({ $distance, $position }) => $distance === 1 && `
         transform: translateX(${$position > 0 ? '28%' : '-28%'}) scale(0.8) translateZ(-30px);
         opacity: 0.5;
         z-index: 5;
@@ -804,7 +804,7 @@ const CompanyLogo = styled.img`
     position: absolute;
     width: 100px;
     height: 100px;
-    
+
     /* styles */
     cursor: pointer;
     object-fit: cover;
@@ -841,10 +841,10 @@ const ExperienceCard = styled.div.attrs(props => ({ $isFocused: props.$isFocused
     position: relative;
     height: fit-content;
     flex-direction: column;
-    
+
     /* spacing */
     padding: 1.5rem 1.5rem 0.5rem 1.5rem;
-    
+
     /* styles */
     --theme-rgb: 13, 173, 220;
     border-radius: 24px;
@@ -965,7 +965,7 @@ const DateRange = styled.span`
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.7);
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         font-size: 0.9rem;
@@ -980,18 +980,18 @@ const DateRange = styled.span`
 const Divider = styled.div`
     /* layout */
     width: 100%;
-    
+
     /* spacing */
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
-    
+
     /* styles */
     height: 2px;
     opacity: 0.5;
     border-radius: 2px;
     background: ${props => props.$themeColor || 'rgba(255, 255, 255, 0.2)'};
     box-shadow: 0 0 10px ${props => props.$themeColor || 'rgba(255, 255, 255, 0.2)'};
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         margin-top: 0.4rem;
@@ -1034,15 +1034,15 @@ const JobTitle = styled.div`
             )`;
         } else {
             return `linear-gradient(
-                135deg,
-                rgb(180, 200, 230) 0%,
-                rgb(220, 230, 245) 15%,
-                rgb(140, 180, 230) 30%,
-                rgb(100, 160, 220) 45%,
-                rgb(180, 200, 230) 60%,
-                rgb(220, 235, 250) 75%,
-                rgb(160, 190, 230) 90%,
-                rgb(120, 170, 225) 100%
+        135deg,
+        rgb(180, 200, 230) 0%,
+        rgb(220, 230, 245) 15%,
+        rgb(140, 180, 230) 30%,
+        rgb(100, 160, 220) 45%,
+        rgb(180, 200, 230) 60%,
+        rgb(220, 235, 250) 75%,
+        rgb(160, 190, 230) 90%,
+        rgb(120, 170, 225) 100%
             )`;
         }
     }};
@@ -1094,7 +1094,7 @@ const ProjectDescription = styled.p`
     font-size: 0.95rem;
     font-style: italic;
     color: rgba(255, 255, 255, 0.8);
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         line-height: 1.45;
@@ -1161,7 +1161,7 @@ const AchievementIcon = styled.div`
     
     /* spacing */
     margin-top: 2px;
-    
+
     /* styles */
     width: 12px;
     height: 12px;
@@ -1265,14 +1265,14 @@ const TechConnection = styled.div`
 const TechConnectionTitle = styled.h4`
     /* spacing */
     margin: 0;
-    
+
     /* styles */
     font-weight: 600;
     font-size: 0.85rem;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         font-size: 0.8rem;
@@ -1312,7 +1312,7 @@ const TechConnectionDot = styled.div`
     /* layout */
     flex-shrink: 0;
     position: relative;
-    
+
     /* styles */
     width: 12px;
     height: 12px;
@@ -1366,7 +1366,7 @@ const TechConnectionText = styled.p`
     font-style: italic;
     text-align: justify;
     color: rgba(255, 255, 255, 0.88);
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         line-height: 1.45;
@@ -1413,14 +1413,14 @@ const RowLabel = styled.div`
     
     /* spacing */
     min-width: 70px;
-    
+
     /* styles */
     font-weight: 700;
     font-size: 0.75rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.65);
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         min-width: 62px;
@@ -1441,14 +1441,14 @@ const RowViewport = styled.div`
     flex: 1;
     overflow: hidden;
     position: relative;
-    
+
     /* spacing */
     height: 34px;
-    
+
     /* styles */
-    mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         height: 30px;
@@ -1463,10 +1463,10 @@ const RowTrack = styled.div.attrs(props => ({
     display: flex;
     align-items: center;
     width: max-content;
-    
+
     /* spacing */
     gap: 0.4rem;
-    
+
     /* styles */
     transform: translateZ(0);
     contain: layout style;
@@ -1490,12 +1490,12 @@ const RowTrack = styled.div.attrs(props => ({
     ${RowViewport}:hover & {
         animation-play-state: paused;
     }
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         gap: 0.32rem;
     }
-    
+
     @media (prefers-reduced-motion: reduce) {
         animation: none !important;
         transform: none !important;
@@ -1527,11 +1527,11 @@ const SkillPill = styled.div`
     position: relative;
     align-items: center;
     display: inline-flex;
-    
+
     /* spacing */
     gap: 0.5rem;
     padding: 0.45rem 0.85rem;
-    
+
     /* styles */
     cursor: default;
     font-weight: 600;
@@ -1589,7 +1589,7 @@ const SkillPill = styled.div`
             0 0 20px ${({ $skillName }) => {
                 const colors = getBrandColors($skillName);
                 return colors.hoverGlow;
-            }};
+        }};
         
         &::before {
             left: 100%;
@@ -1619,7 +1619,7 @@ const SkillPillIcon = styled.img`
     width: 1.05rem;
     height: 1.05rem;
     align-items: center;
-    
+
     /* styles */
     object-fit: contain;
     transition: transform 0.3s ease;
@@ -1629,7 +1629,7 @@ const SkillPillIcon = styled.img`
     ${SkillPill}:hover & {
         transform: scale(1.1) rotate(5deg);
     }
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         width: 0.95rem;
@@ -1672,10 +1672,10 @@ const ServiceExperienceCard = styled.div`
     display: flex;
     height: fit-content;
     flex-direction: column;
-    
+
     /* spacing */
     padding: 2rem 1.5rem 0rem 1.5rem;
-    
+
     /* styles */
     --theme-rgb: ${({ $theme }) =>
         $theme === 'barlouie' ? '203, 192, 196'
@@ -1796,7 +1796,7 @@ const ArrowBase = styled.button`
 const ArrowLeft = styled(ArrowBase)`
     /* layout */
     left: max(12px, 4vw);
-    
+
     /* styles */
     animation-delay: 0.5s;
     animation: ${leftBounce} 2s ease-in-out infinite;
@@ -1906,7 +1906,7 @@ const HireHeader = styled.div`
 const HireTitle = styled.h3`
     /* spacing */
     margin: 0;
-    
+
     /* styles */
     font-weight: 900;
     font-size: 1.9rem;
@@ -1914,7 +1914,7 @@ const HireTitle = styled.h3`
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    
+
     /* media queries */
     @media (max-width: 1600px) {
         font-size: 1.5rem;

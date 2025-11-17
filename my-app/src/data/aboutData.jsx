@@ -100,11 +100,11 @@ export const CARDS = [
     images: [naturalAthlete, lilG, legos],
     imageBubbles: [
       // bubbles for top-left image (naturalAthlete)
-      ['Natural athlete 💯', 'Yes... That was a home run ⚾'],
+      ['Natural athlete 💯', 'Yes... the MLB tried to sign me ⚾'],
       // bubbles for middle-right image (lilG)
       ['Unrelated but heres my dog 🐕', 'His name is Guinness 🍺'],
       // bubbles for bottom-left image (legos)
-      ['Always building something new 🧱', '#LegosToEngineeringPipeline'],
+      ['Always building something new 🧱', '#BrickByBrick'],
     ],
     role: 'Professional Beginner',
     bubbles: [

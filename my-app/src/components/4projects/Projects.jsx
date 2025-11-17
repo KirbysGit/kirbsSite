@@ -48,8 +48,8 @@ const Projects = memo(() => {
 	// keyboard navigation. (right & left arrows)
 	useEffect(() => {
 		const onKey = (e) => {
-            if (e.key === 'ArrowRight') next();
-            if (e.key === 'ArrowLeft') prev();
+		if (e.key === 'ArrowRight') next();
+		if (e.key === 'ArrowLeft') prev();
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
@@ -70,7 +70,7 @@ const Projects = memo(() => {
 		window.addEventListener('resize', checkMobile);
 		return () => window.removeEventListener('resize', checkMobile);
 	}, []);
-	
+
 	const onPointerDown = useCallback((e) => {
 		if (!isMobile) return; // disable swipe on desktop.
 		drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
@@ -152,21 +152,21 @@ const Projects = memo(() => {
 					{/* track - the container for the cards. */}
 					<Track>
 						{cardConfigs.map((config, i) => {
-                            const cardStyle = getCardStyle(i);
-                            if (!cardStyle) return null;
+						const cardStyle = getCardStyle(i);
+						if (!cardStyle) return null;
                             
                             const { Component } = config;
-                            
-                            return (
-                                <Slide 
+						
+						return (
+							<Slide 
                                     key={config.id} 
-                                    $position={cardStyle.position}
-                                    $isFocused={cardStyle.isFocused}
-                                    $distance={cardStyle.distance}
-                                >
+								$position={cardStyle.position}
+								$isFocused={cardStyle.isFocused}
+								$distance={cardStyle.distance}
+							>
                                     <Component isFocused={cardStyle.isFocused} />
-                                </Slide>
-                            );
+							</Slide>
+						);
 						})}
 					</Track>
 
@@ -331,7 +331,7 @@ const BottomSeamFade = styled.div`
 // main content wrapper for text and carousel.
 const ContentWrapper = styled.div`
     /* layout */
-	z-index: 2;
+    z-index: 2;
     display: flex;
     position: relative;
     align-items: center;
@@ -339,7 +339,7 @@ const ContentWrapper = styled.div`
     
     /* spacing */
     width: 100%;
-	padding: 2rem;
+    padding: 2rem;
     margin: 0 auto;
     max-width: 1400px;
     
@@ -434,35 +434,35 @@ const SectionSubtitle = styled.h2`
 // stage for the cards to be displayed.
 const Stage = styled.div`
     /* layout */
-    display: grid;
+  display: grid;
     overflow: visible;
     position: relative;
-    place-items: center;
+  place-items: center;
     
     /* gpu faster! */
     contain: layout style;
     transform: translateZ(0);
     
     /* spacing */
-    width: 100%;
+  width: 100%;
     min-height: 72vh;
     padding: 40px 0 60px 0;
-    
+  
     /* media queries */
-    @media (min-width: 2000px) {
+  @media (min-width: 2000px) {
         min-height: 70vh;
-        padding: 32px 0;
-    }
-    
-    @media (max-width: 1600px) {
+    padding: 32px 0;
+  }
+  
+  @media (max-width: 1600px) {
         min-height: 60vh;
-        padding: 24px 0;
-    }
-    
-    @media (max-width: 1200px) {
-        min-height: 56vh;
-        padding: 20px 0;
-    }
+    padding: 24px 0;
+  }
+  
+  @media (max-width: 1200px) {
+    min-height: 56vh;
+    padding: 20px 0;
+  }
     
     @media (max-width: 768px) {
         height: auto;
@@ -488,28 +488,28 @@ const Track = styled.div`
     transform: translateZ(0);
     
     /* spacing */
-    width: 50vw;
-    height: clamp(520px, 60vh, 720px);
-    
+  width: 50vw;
+  height: clamp(520px, 60vh, 720px);
+  
     /* media queries */
-    @media (min-width: 2000px) {
-        height: clamp(560px, 58vh, 780px);
-    }
-    
-    @media (max-width: 1600px) {
-        width: 60vw;
-        height: clamp(480px, 55vh, 660px);
-    }
-    
-    @media (max-width: 1200px) {
-        width: 70vw;
-        height: clamp(440px, 52vh, 620px);
-    }
-    
-    @media (max-width: 900px) {
-        width: 85vw;
-        height: clamp(400px, 50vh, 580px);
-    }
+  @media (min-width: 2000px) {
+    height: clamp(560px, 58vh, 780px);
+  }
+  
+  @media (max-width: 1600px) {
+    width: 60vw;
+    height: clamp(480px, 55vh, 660px);
+  }
+  
+  @media (max-width: 1200px) {
+    width: 70vw;
+    height: clamp(440px, 52vh, 620px);
+  }
+  
+  @media (max-width: 900px) {
+    width: 85vw;
+    height: clamp(400px, 50vh, 580px);
+  }
     
     @media (max-width: 768px) {
         width: 100%;
@@ -527,16 +527,16 @@ const Track = styled.div`
 // slide - individual carousel item.
 const Slide = styled.div`
     /* layout */
-    top: 0;
-    left: 0;
+  top: 0;
+  left: 0;
     z-index: 1;
     display: grid;
     position: absolute;
     place-items: center;
     
     /* spacing */
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
     
     /* gpu faster! */
     contain: layout style;
@@ -545,50 +545,50 @@ const Slide = styled.div`
     
     /* styles */
     pointer-events: none;
-    transition:
+  transition:
         transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
         opacity 200ms ease;
-    
+
     /* nested selectors */
-    ${({ $isFocused }) => $isFocused && `
-        opacity: 1;
+  ${({ $isFocused }) => $isFocused && `
+    opacity: 1;
         z-index: 100;
-        pointer-events: auto;
+    pointer-events: auto;
         will-change: transform;
         transform: translateX(0) translateZ(0) scale(1);
-    `}
+  `}
 
-    ${({ $distance, $position }) => $distance === 1 && `
-        opacity: 0.4;
-        z-index: 5;
-        filter: blur(2px) saturate(0.7);
+  ${({ $distance, $position }) => $distance === 1 && `
+    opacity: 0.4;
+    z-index: 5;
+    filter: blur(2px) saturate(0.7);
         will-change: transform, opacity;
         transform: translateX(${$position > 0 ? '35%' : '-35%'}) scale(0.75) translateZ(-30px);
-    `}
+  `}
 
-    ${({ $distance, $position }) => $distance === 2 && `
-        opacity: 0.2;
-        z-index: 1;
-        filter: blur(4px) saturate(0.5);
+  ${({ $distance, $position }) => $distance === 2 && `
+    opacity: 0.2;
+    z-index: 1;
+    filter: blur(4px) saturate(0.5);
         will-change: transform, opacity;
         transform: translateX(${$position > 0 ? '65%' : '-65%'}) scale(0.6) translateZ(-60px);
-    `}
-    
-    /* media queries */
-    @media (max-width: 1200px) {
-        ${({ $distance, $position }) => $distance === 1 && `
-            transform: translateX(${$position > 0 ? '30%' : '-30%'}) scale(0.8) translateZ(-30px);
-        `}
-        ${({ $distance }) => $distance === 2 && `
-            display: none;
-        `}
-    }
+  `}
 
-    @media (max-width: 820px) {
-        ${({ $distance, $position }) => $distance === 1 && `
-            transform: translateX(${$position > 0 ? '25%' : '-25%'}) scale(0.85) translateZ(-30px);
-        `}
-    }
+    /* media queries */
+  @media (max-width: 1200px) {
+    ${({ $distance, $position }) => $distance === 1 && `
+      transform: translateX(${$position > 0 ? '30%' : '-30%'}) scale(0.8) translateZ(-30px);
+    `}
+    ${({ $distance }) => $distance === 2 && `
+      display: none;
+    `}
+  }
+
+  @media (max-width: 820px) {
+    ${({ $distance, $position }) => $distance === 1 && `
+      transform: translateX(${$position > 0 ? '25%' : '-25%'}) scale(0.85) translateZ(-30px);
+    `}
+  }
     
     @media (max-width: 768px) {
         width: 100%;
@@ -630,27 +630,27 @@ const Slide = styled.div`
 
 // bounce animations for arrows - GPU accelerated
 const leftBounce = keyframes`
-    0%, 100% {
+  0%, 100% {
         transform: translateY(-50%) translateX(0) translateZ(0);
-    }
-    25% {
+  }
+  25% {
         transform: translateY(-50%) translateX(-3px) translateZ(0);
-    }
-    75% {
+  }
+  75% {
         transform: translateY(-50%) translateX(3px) translateZ(0);
-    }
+  }
 `;
 
 const rightBounce = keyframes`
-    0%, 100% {
+  0%, 100% {
         transform: translateY(-50%) translateX(0) translateZ(0);
-    }
-    25% {
+  }
+  25% {
         transform: translateY(-50%) translateX(3px) translateZ(0);
-    }
-    75% {
+  }
+  75% {
         transform: translateY(-50%) translateX(-3px) translateZ(0);
-    }
+  }
 `;
 
 // base arrow button style.
@@ -659,12 +659,12 @@ const ArrowBase = styled.button`
     top: 50%;
 	z-index: 20;
     display: grid;
-	position: absolute;
+  position: absolute;
     place-items: center;
     
     /* spacing */
-    width: 56px;
-    height: 56px;
+  width: 56px;
+  height: 56px;
     
     /* gpu faster! */
     will-change: transform;
@@ -673,47 +673,47 @@ const ArrowBase = styled.button`
     
     /* styles */
     border: 0;
-    color: #fff;
+  color: #fff;
     opacity: 0.95;
     line-height: 1;
-    font-size: 32px;
-    font-weight: bold;
+  font-size: 32px;
+  font-weight: bold;
     border-radius: 16px;
-    backdrop-filter: blur(12px);
-    border: 2px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255,255,255,0.3);
     background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
-    box-shadow: 
-        0 4px 16px rgba(0,0,0,0.15),
-        0 0 20px rgba(255,255,255,0.1),
-        inset 0 1px 2px rgba(255,255,255,0.2);
+  box-shadow: 
+    0 4px 16px rgba(0,0,0,0.15),
+    0 0 20px rgba(255,255,255,0.1),
+    inset 0 1px 2px rgba(255,255,255,0.2);
     transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1);
-    
+  
     /* hover effects */
-    &:hover { 
+  &:hover { 
         transform: translateY(-50%) scale(1.1) translateZ(0); 
-        background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.25));
-        border-color: rgba(255,255,255,0.5);
-        box-shadow: 
-            0 6px 24px rgba(0,0,0,0.2),
-            0 0 30px rgba(255,255,255,0.2),
-            inset 0 1px 3px rgba(255,255,255,0.3);
-    }
-    
+    background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.25));
+    border-color: rgba(255,255,255,0.5);
+    box-shadow: 
+      0 6px 24px rgba(0,0,0,0.2),
+      0 0 30px rgba(255,255,255,0.2),
+      inset 0 1px 3px rgba(255,255,255,0.3);
+  }
+  
     /* active state */
-    &:active {
+  &:active {
         transform: translateY(-50%) scale(0.95) translateZ(0);
-    }
+  }
 `;
 
 // left arrow button.
 const ArrowLeft = styled(ArrowBase)`
     /* layout */
-    left: max(12px, 4vw);
+  left: max(12px, 4vw);
     
     /* styles */
     animation-delay: 0.5s;
-    animation: ${leftBounce} 2s ease-in-out infinite;
+  animation: ${leftBounce} 2s ease-in-out infinite;
     
     /* media queries */
     @media (max-width: 768px) {
@@ -728,11 +728,11 @@ const ArrowLeft = styled(ArrowBase)`
 // right arrow button.
 const ArrowRight = styled(ArrowBase)`
     /* layout */
-    right: max(12px, 4vw);
+  right: max(12px, 4vw);
     
     /* styles */
     animation-delay: 1s;
-    animation: ${rightBounce} 2s ease-in-out infinite;
+  animation: ${rightBounce} 2s ease-in-out infinite;
     
     /* media queries */
     @media (max-width: 768px) {

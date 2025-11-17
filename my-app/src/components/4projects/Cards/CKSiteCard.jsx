@@ -18,7 +18,8 @@ import CardBase, {
   ProjectDescription, 
   Divider, 
   CardBody, 
-  SectionLabel 
+  SectionLabel,
+  CardFooter
 } from '../shared/CardBase';
 import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
@@ -26,6 +27,7 @@ import Highlights from '../shared/Highlights';
 
 // images.
 import fullLogo from '@/images/0navbar/navLogo.png';
+import ckPreview from '@/images/4projects/cksite/ckpreview.png';
 
 /* ================== main component ================== */
 
@@ -38,7 +40,7 @@ const CKSiteCard = ({ isFocused = false }) => {
   const highlights = [
     'Real projects I\'ve built including full-stack web applications and machine learning experiments',
     'Work experience from internships to leadership roles showing what I learned and shipped to production',
-    'Some details about me and some of the skills I\'ve picked up along the way'
+    'Who I am, what I do, and the skills I bring with me to every project'
   ];
 
   // the theme for the cksite card.
@@ -71,7 +73,7 @@ const CKSiteCard = ({ isFocused = false }) => {
 			</HeaderTop>
 
 			<ProjectDescription>
-			This site! It's a constant work in progress, but I'm using it to showcase my projects and skills. It serves as a living document of my path through my career.
+			  	This site! It's a constant work in progress, but I'm using it to showcase my projects and skills. It serves as a living document of my path through my career.
 			</ProjectDescription>
 
 			<Divider $themeColors={theme.colors} />
@@ -86,7 +88,18 @@ const CKSiteCard = ({ isFocused = false }) => {
 			<Highlights highlights={highlights} themeColors={theme.colors} />
 		</CardBody>
 
-		{/* no footer yet */}
+		{/* card footer */}
+		<CardFooter>
+			<Divider $themeColors={theme.colors} />
+			
+			<SiteCard
+				$themeColors={theme.colors}
+				onClick={() => window.open('https://colinkirby.dev', '_blank')}
+			>
+				<SitePreview $preview={ckPreview} />
+				<SiteCaption>Here, but in a new tab.</SiteCaption>
+			</SiteCard>
+		</CardFooter>
     </CardBase>
   );
 };
@@ -146,4 +159,76 @@ const LargerProjectLogo = styled(ProjectLogoImage)`
     @media (max-width: 1600px) {
         width: 130px;
     }
+`;
+
+const SiteCard = styled.div`
+    /* layout */
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    
+    /* styles */
+    cursor: pointer;
+    border-radius: 10px;
+    border: 1.5px solid ${({ $themeColors }) => $themeColors?.resourceBorder || 'rgba(153,204,255,0.3)'};
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    background: ${({ $themeColors }) => $themeColors?.resourceBackground || 'rgba(153,204,255,0.1)'};
+    
+    /* hover effects */
+    &:hover {
+        transform: translateY(-4px);
+        border-color: ${({ $themeColors }) => $themeColors?.resourceHoverBorder || 'rgba(153,204,255,0.5)'};
+        background: ${({ $themeColors }) => $themeColors?.resourceHoverBackground || 'rgba(153,204,255,0.15)'};
+        box-shadow: ${({ $themeColors }) => $themeColors?.resourceHoverShadow || '0 6px 20px rgba(153,204,255,0.25)'};
+    }
+`;
+
+const SitePreview = styled.div`
+    /* layout */
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    
+    /* spacing */
+    width: 100%;
+    height: 80px;
+    
+    /* styles */
+    background: ${({ $preview }) => 
+        $preview 
+            ? `url(${$preview}) center/cover no-repeat`
+            : 'linear-gradient(135deg, rgba(153,204,255,0.2), rgba(187,170,255,0.15))'
+    };
+    
+    /* pseudo-elements */
+    &::before {
+        /* layout */
+        inset: 0;
+        position: absolute;
+        
+        /* styles */
+        content: '';
+        background: ${({ $preview }) => 
+            $preview 
+                ? 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%)'
+                : 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 100%)'
+        };
+    }
+`;
+
+const SiteCaption = styled.div`
+    /* layout */
+    text-align: center;
+    
+    /* spacing */
+    padding: 0.5rem;
+    
+    /* styles */
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
+    color: rgba(255,255,255,0.95);
+    background: rgba(0,0,0,0.15);
 `;

@@ -19,7 +19,7 @@ export const EXPERIENCE_CARDS = [
 		cloud: ['AWS EC2', 'OAuth SSO']
     },
     achievements: [
-      	'Automated 20+ IT workflows with OAuth SSO and role-based access',
+      	'Automated 15+ IT workflows with OAuth SSO and role-based access',
       	'Saved ~150 staff hours annually with real-time monitoring dashboards',
       	'Cut script debugging time from hours to minutes with real-time WebSocket dashboards'
     ]
@@ -39,9 +39,9 @@ export const EXPERIENCE_CARDS = [
       	'Effective communication with guests, kitchen, and bar teams',
       	'Working seamlessly in fast-paced collaborative environments'
     ],
-    techConnectionTitle: 'How This Maps To Software',
+    techConnectionTitle: 'Service → Tech Connection',
     techConnectionText:
-      	"Code reviews are stressful, but no sort of stress can ever top someone who's hungry and asking where their food is."
+      	"Code reviews are definitely stressful, but there is no sort of stress that can ever top someone who's hungry and asking where their food is."
   },
   {
     id: 'hawkers',
@@ -60,7 +60,7 @@ export const EXPERIENCE_CARDS = [
     ],
     techConnectionTitle: 'Service → Tech Connection',
     techConnectionText:
-      	"Production deploys feel tense, but they are nothing compared to telling a family their reservation still is not ready."
+      	"Production deploys can for sure feel tense, but they are nothing compared to telling a unhappy family their reservation still is not ready."
   }
 ];
 
