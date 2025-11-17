@@ -2986,8 +2986,20 @@ const MadeWithLoveContainer = styled.div`
     z-index: 30;
     
     /* media queries */
-    @media (max-width: 1200px) {
+    @media (max-width: 1600px) {
+        gap: 0.45rem;
+    }
+    
+    @media (max-width: 1400px) {
         gap: 0.4rem;
+    }
+    
+    @media (max-width: 1200px) {
+        gap: 0.35rem;
+    }
+    
+    @media (max-width: 1000px) {
+        gap: 0.3rem;
     }
     
     @media (max-width: 768px) {
@@ -3016,8 +3028,20 @@ const MadeWithText = styled.span`
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     
     /* media queries */
+    @media (max-width: 1600px) {
+        font-size: 1.6rem;
+    }
+    
+    @media (max-width: 1400px) {
+        font-size: 1.4rem;
+    }
+    
     @media (max-width: 1200px) {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+    }
+    
+    @media (max-width: 1000px) {
+        font-size: 1rem;
     }
     
     @media (max-width: 768px) {
@@ -3043,8 +3067,20 @@ const HeartEmoji = styled.span`
     }
     
     /* media queries */
+    @media (max-width: 1600px) {
+        font-size: 1.6rem;
+    }
+    
+    @media (max-width: 1400px) {
+        font-size: 1.4rem;
+    }
+    
     @media (max-width: 1200px) {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+    }
+    
+    @media (max-width: 1000px) {
+        font-size: 1rem;
     }
     
     @media (max-width: 768px) {
@@ -3073,9 +3109,24 @@ const CursorLogo = styled.img`
     }
     
     /* media queries */
+    @media (max-width: 1600px) {
+        width: 1.6rem;
+        height: 1.6rem;
+    }
+    
+    @media (max-width: 1400px) {
+        width: 1.4rem;
+        height: 1.4rem;
+    }
+    
     @media (max-width: 1200px) {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+    
+    @media (max-width: 1000px) {
+        width: 1rem;
+        height: 1rem;
     }
     
     @media (max-width: 768px) {

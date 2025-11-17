@@ -79,7 +79,7 @@ const Skills = memo(() => {
             {/* floating text section - right below title on mobile */}
             <FloatingTextContainer>
                 <FloatingText>
-                    Most portfolio sites I've seenhave a skills section that is basically a grocery list of buzzwords. 
+                    Most portfolio sites I've seen have a skills section that is basically a grocery list of buzzwords. 
                     I turned mine into a tiny skyline instead. Slightly less useful, way more fun.
                 </FloatingText>
                 <FloatingText>
@@ -87,7 +87,7 @@ const Skills = memo(() => {
                     Shorter buildings are tools I am still growing with.
                 </FloatingText>
                 <FloatingText>
-                    Skills alone do not tell much of a story. You will get that from my projects. 
+                    These skills alone do not tell much of a story. You will get that from my projects. 
                     This is a quick visual snapshot of where I have been spending my time.
                 </FloatingText>
                 <PSNote>
@@ -524,7 +524,7 @@ const SkylineRow = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        left: -3.5%;
+        left: -2%;
         bottom: 18.5%;
         transform: scale(0.82) translateZ(0);
         transform-origin: bottom center;
@@ -1089,7 +1089,7 @@ const FloatingTextContainer = styled.div`
     /* media queries */
     @media (max-width: 1600px) {
         top: 36%;
-        width: 36%;
+        width: 39%;
     }
     
     /* mobile */
