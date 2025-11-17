@@ -2,12 +2,11 @@
 
 // cool radial sun with a glow effect. looks dope!
 
-
 // imports.
 import React from 'react';
 import styled from 'styled-components';
 
-// main sun component.
+/* ================== main component ================== */
 const Sun = () => {
     return (
         <SunContainer>
@@ -16,17 +15,16 @@ const Sun = () => {
     );
 };
 
-// export component.
 export default Sun;
 
-/* ================= styles ================= */
+/* ================== styles ================== */
 
 // main sun container.
 const SunContainer = styled.div`
     /* layout */
-    position: absolute;
-    bottom: 10%;
     right: 15%;
+    bottom: 10%;
+    position: absolute;
     
     /* spacing */
     width: 150px;
@@ -63,9 +61,9 @@ const SunContainer = styled.div`
 // sun glow layer.
 const SunGlow = styled.div`
     /* layout */
-    position: absolute;
     top: 50%;
     left: 50%;
+    position: absolute;
     transform: translate(-50%, -50%);
     
     /* spacing */

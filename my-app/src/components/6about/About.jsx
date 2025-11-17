@@ -1,6 +1,13 @@
+// about.jsx
+
+// just some small stuff about me.
+
+// imports.
+
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { useComponentPerformance } from '../../hooks/useComponentPerformance';
+
+// cards images.
 import meImage from '@/images/5about/me.jpg';
 import shpeLogo from '@/images/5about/shpe.png';
 import knightHacksLogo from '@/images/5about/knightshacks.png';
@@ -8,44 +15,46 @@ import aiUcfLogo from '@/images/5about/aiucf.png';
 import acmLogo from '@/images/5about/acm.png';
 import ReactionBubble from './ReactionBubble';
 
-import MessageInBottle from './footer/MessageInBottle';
-import ShellPhone from './footer/ShellPhone';
+// footer components.
+import MessageInBottle from './MessageInBottle';
+import ShellPhone from './ShellPhone';
 
-// Footer images
-import rockpileImage from '@/images/5about/footer/rockpile.png';
-import bluecoral from '@/images/5about/footer/bluecoral.png';
-import flatrock from '@/images/5about/footer/flatrock.png';
-import orangecoral from '@/images/5about/footer/orangecoral.png';
-import pinkcoral from '@/images/5about/footer/pinkcoral.png';
-import rockwithseaweed from '@/images/5about/footer/rockwithseaweed.png';
+// footer images.
+import rocket from '@/images/5about/footer/rocket.png';
 import seaweed from '@/images/5about/footer/seaweed.png';
+import flatrock from '@/images/5about/footer/flatrock.png';
+import tallrock from '@/images/5about/footer/tallrock.png';
 import seaweed2 from '@/images/5about/footer/seaweed2.png';
 import seaweed3 from '@/images/5about/footer/seaweed3.png';
-import tallrock from '@/images/5about/footer/tallrock.png';
+import bluecoral from '@/images/5about/footer/bluecoral.png';
+import pinkcoral from '@/images/5about/footer/pinkcoral.png';
+import rockpileImage from '@/images/5about/footer/rockpile.png';
 import yellowcoral from '@/images/5about/footer/yellowcoral.png';
+import orangecoral from '@/images/5about/footer/orangecoral.png';
 import purplecoral from '@/images/5about/footer/purplecoral.png';
-import rocket from '@/images/5about/footer/rocket.png';
+import rockwithseaweed from '@/images/5about/footer/rockwithseaweed.png';
+
+
+/* ================== main component ================== */
 
 const Background = () => {
-    // Performance monitoring
-    useComponentPerformance('About', process.env.NODE_ENV === 'development');
 
-    // Animation throttling state
+    // animation throttling state.
     const [isInViewport, setIsInViewport] = useState(false);
     const [isSlowDevice, setIsSlowDevice] = useState(false);
     const sectionRef = useRef(null);
 
-    // Detect slower devices
+    // detect slower devices.
     useEffect(() => {
-        // Check hardware concurrency (CPU cores)
+        // check hardware concurrency (CPU cores).
         const cores = navigator.hardwareConcurrency || 4;
-        // Check for reduced motion preference
+        // check for reduced motion preference.
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        // Consider devices with < 4 cores or reduced motion as slower
+        // consider devices with < 4 cores or reduced motion as slower.
         setIsSlowDevice(cores < 4 || prefersReducedMotion);
     }, []);
 
-    // IntersectionObserver to detect when section is in viewport
+    // intersection observer to detect when section is in viewport.
     useEffect(() => {
         const section = sectionRef.current;
         if (!section) return;
@@ -53,23 +62,26 @@ const Background = () => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    // Section is in viewport if at least 10% is visible
+                    // section is in viewport if at least 10% is visible.
                     setIsInViewport(entry.isIntersecting && entry.intersectionRatio > 0.1);
                 });
             },
             {
                 threshold: [0, 0.1, 0.5, 1],
-                rootMargin: '100px' // Start loading animations slightly before entering viewport
+                rootMargin: '100px' // start loading animations slightly before entering viewport.
             }
         );
 
+		// observe the section.
         observer.observe(section);
 
         return () => {
+			// disconnect the observer on unmount.
             observer.disconnect();
         };
     }, []);
 
+	// scroll to top function.
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -85,14 +97,14 @@ const Background = () => {
             $isInViewport={isInViewport}
             $isSlowDevice={isSlowDevice}
         >
-            {/* Surface water layer - connects to Skills ocean wall */}
+            {/* surface water layer - connects to skills' ocean wall */}
             <SurfaceWater $isInViewport={isInViewport} $isSlowDevice={isSlowDevice}>
                 <SurfaceRippleLayer />
             </SurfaceWater>
             
-            {/* Unified underwater section - continuous gradient from shallow to deep */}
+            {/* unified underwater section - continuous gradient from shallow to deep */}
             <UnderwaterSection $isInViewport={isInViewport} $isSlowDevice={isSlowDevice}>
-                {/* Underwater header */}
+                {/* underwater header */}
                 <UnderwaterHeader>
                     <HeaderTitle 
                         data-snap-title
@@ -109,15 +121,15 @@ const Background = () => {
                     </HeaderSubtitle>
                 </UnderwaterHeader>
                 
-                {/* Profile section with image and info cards */}
+                {/* profile section with image and info cards */}
                 <ProfileSection>
-                    {/* Left side - Circular profile image */}
+                    {/* left side - circular profile image */}
                     <ImageSection>
                         <ProfileImageFrame>
                             <ProfileImage src={meImage} alt="Colin Kirby" />
                         </ProfileImageFrame>
                         
-                        {/* Social bubbles below image */}
+                        {/* social bubbles below image */}
                         <SocialBubblesContainer>
                             <SocialBubble 
                                 href="https://www.linkedin.com/in/colinwkirby/" 
@@ -177,7 +189,7 @@ const Background = () => {
                         </SocialBubblesContainer>
                     </ImageSection>
                     
-                    {/* Right side - 3x2 Grid of glassmorphism cards */}
+                    {/* right side - 3x2 grid of glassmorphism cards */}
                     <InfoGridSection>
                         <InfoGrid>
                             {/* education card */}
@@ -252,17 +264,18 @@ const Background = () => {
                                 </CardTextLarge>
                                 
                                 <EmojiRow aria-hidden="true">
-                                    <Emoji title="Basketball">🏀</Emoji>
-                                    <Emoji title="Football">🏈</Emoji>
-                                    <Emoji title="Baseball">⚾</Emoji>
-                                    <Emoji title="Lacrosse">🥍</Emoji>
-                                    <Emoji title="Rowing">🚣</Emoji>
-                                    <Emoji title="Lifting">🏋️</Emoji>
-                                    <Emoji title="Skateboarding">🛹</Emoji>
-                                    <Emoji title="Golf">⛳</Emoji>
+                                    <Emoji >🏀</Emoji>
+                                    <Emoji >🏈</Emoji>
+                                    <Emoji >⚾</Emoji>
+                                    <Emoji >🥍</Emoji>
+                                    <Emoji >🚣</Emoji>
+                                    <Emoji >🏋️</Emoji>
+                                    <Emoji >🛹</Emoji>
+                                    <Emoji >⛳</Emoji>
                                 </EmojiRow>
                             </GlassCard>
                             
+                            {/* being creative card */}
                             <GlassCard>
                                 <ReactionBubble 
                                     emoji="🎨" 
@@ -280,16 +293,17 @@ const Background = () => {
  
                                 
                                 <EmojiRow aria-hidden="true">
-                                    <Emoji title="Art">🎨</Emoji>
-                                    <Emoji title="Sketching">✏️</Emoji>
-                                    <Emoji title="Design">🖌️</Emoji>
-                                    <Emoji title="Music">🎵</Emoji>
-                                    <Emoji title="Guitar">🎸</Emoji>
-                                    <Emoji title="Piano">🎹</Emoji>
-                                    <Emoji title="Production">🎧</Emoji>
+                                    <Emoji >🎨</Emoji>
+                                    <Emoji >✏️</Emoji>
+                                    <Emoji >🖌️</Emoji>
+                                    <Emoji >🎵</Emoji>
+                                    <Emoji >🎸</Emoji>
+                                    <Emoji >🎹</Emoji>
+                                    <Emoji >🎧</Emoji>
                                 </EmojiRow>
                             </GlassCard>
                             
+                            {/* my goals card */}
                             <GlassCard>
                                 <ReactionBubble 
                                     emoji="🎯" 
@@ -304,21 +318,22 @@ const Background = () => {
                                 <GoalsList>
                                     <GoalItem>Protect time for music and visuals so work stays creative, not just technical</GoalItem>
                                     <GoalItem>Keep leveling up with better routines, balance, and intentional work choices</GoalItem>
-                                    <GoalItem>Stay near design and logic: animation systems, design systems, and data viz</GoalItem>
-                                    <GoalItem>Use my service background and love of talking with people to guide work that genuinely helps others.</GoalItem>
+                                    <GoalItem>Land a job at an earlier-stage company where I can make a meaningful impact with my skills</GoalItem>
+                                    <GoalItem>Use my service background and love of talking with people to guide work that genuinely helps others</GoalItem>
                                 </GoalsList>
 
                                 
                                 <EmojiRow aria-hidden="true">
-                                    <Emoji title="Target">🎯</Emoji>
-                                    <Emoji title="Rocket">🚀</Emoji>
-                                    <Emoji title="Fire">🔥</Emoji>
-                                    <Emoji title="Brain">🧠</Emoji>
-                                    <Emoji title="People">👥</Emoji>
-                                    <Emoji title="Lightning">⚡</Emoji>
+                                    <Emoji >🎯</Emoji>
+                                    <Emoji >🚀</Emoji>
+                                    <Emoji >🔥</Emoji>
+                                    <Emoji >🧠</Emoji>
+                                    <Emoji >👥</Emoji>
+                                    <Emoji >⚡</Emoji>
                                 </EmojiRow>
                             </GlassCard>
                             
+                            {/* my mantras card */}
                             <GlassCard>
                                 <ReactionBubble 
                                     emoji="💭" 
@@ -343,15 +358,16 @@ const Background = () => {
                                 </MantrasWrapper>
                                 
                                 <EmojiRow aria-hidden="true">
-                                    <Emoji title="Mindset">💭</Emoji>
-                                    <Emoji title="Compass">🧭</Emoji>
-                                    <Emoji title="Growth">🌱</Emoji>
-                                    <Emoji title="Balance">⚖️</Emoji>
-                                    <Emoji title="Change">🔄</Emoji>
-                                    <Emoji title="Action">💪</Emoji>
+                                    <Emoji >💭</Emoji>
+                                    <Emoji >🧭</Emoji>
+                                    <Emoji >🌱</Emoji>
+                                    <Emoji >⚖️</Emoji>
+                                    <Emoji >🔄</Emoji>
+                                    <Emoji >💪</Emoji>
                                 </EmojiRow>
                             </GlassCard>
                             
+                            {/* what i listen to card */}
                             <GlassCard>
                                 <ReactionBubble 
                                     emoji="🎧" 
@@ -384,12 +400,12 @@ const Background = () => {
                                 </MusicWrapper>
                                 
                                 <EmojiRow aria-hidden="true">
-                                    <Emoji title="Headphones">🎧</Emoji>
-                                    <Emoji title="Music">🎵</Emoji>
-                                    <Emoji title="Vinyl">💿</Emoji>
-                                    <Emoji title="Microphone">🎤</Emoji>
-                                    <Emoji title="Speakers">🔊</Emoji>
-                                    <Emoji title="Notes">🎶</Emoji>
+                                    <Emoji >🎧</Emoji>
+                                    <Emoji >🎵</Emoji>
+                                    <Emoji >💿</Emoji>
+                                    <Emoji >🎤</Emoji>
+                                    <Emoji >🔊</Emoji>
+                                    <Emoji>🎶</Emoji>
                                 </EmojiRow>
                             </GlassCard>
                         </InfoGrid>
@@ -397,9 +413,9 @@ const Background = () => {
                 </ProfileSection>
             </UnderwaterSection>
             
-            {/* Footer - ocean floor with underwater objects - natural content flow component */}
+            {/* footer - ocean floor with underwater objects - natural content flow component */}
             <SandPlane>
-                {/* Top wave - adds ruggedness to the transition from ocean to sand */}
+                {/* top wave - adds ruggedness to the transition from ocean to sand */}
                 <TopWave viewBox="0 0 1440 120" preserveAspectRatio="none">
                     <path d="M0,85 C120,65 240,95 360,75 C480,55 600,85 720,65 C840,45 960,75 1080,55 C1200,35 1320,65 1440,85 L1440,120 L0,120 Z" fill="url(#sandWaveGradient)" />
                     <defs>
@@ -411,15 +427,15 @@ const Background = () => {
                     </defs>
                 </TopWave>
                 
-                {/* Made with Love - positioned within SandPlane */}
+                {/* made with love - positioned within sand plane */}
                 <MadeWithLoveContainer>
                     Made with<HeartEmoji>❤️</HeartEmoji>by me (CK)
                 </MadeWithLoveContainer>
 
-                {/* Copyright - positioned within SandPlane */}
+                {/* copyright - positioned within sand plane */}
                 <CopyrightContainer>© 2025 Colin Kirby. All rights reserved.</CopyrightContainer>
                 
-                {/* Simple Mobile Footer */}
+                {/* simple mobile footer - because images were too annoying to deal with on mobile */}
                 <MobileFooterContainer>
                     <MobileScrollButton onClick={scrollToTop}>
                         <MobileScrollIcon>
@@ -451,6 +467,7 @@ const Background = () => {
                     </MobileContactRow>
                 </MobileFooterContainer>
                 
+                {/* sand text layer - for the text and icons on the sand plane */}
                 <SandTextLayer>
                     <SandText
                         style={{ left: '50%', transform: 'translateX(-50%)', top: '65%', fontSize: '2.5rem', fontWeight: 700 }}
@@ -481,6 +498,7 @@ const Background = () => {
                     </SandIconWrap>
                 </SandTextLayer>
 
+                {/* rock with seaweed - left of center */}
                 <UnderwaterObject style={{ bottom: '57%', left: '1%' }}>
                     <img 
                         src={rockwithseaweed} 
@@ -491,6 +509,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* tall rock - left of center */}
                 <UnderwaterObject style={{ bottom: '43%', left: '5%' }}>
                     <img 
                         src={tallrock} 
@@ -501,6 +520,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* rockpile - left of center */}
                 <UnderwaterObject style={{ bottom: '29%', left: '-8%' }}>
                     <img 
                         className="rockpile-image" 
@@ -513,6 +533,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
                 
+                {/* seaweed - left of center */}
                 <UnderwaterObject style={{ bottom: '25%', left: '-2%' }}>
                     <img 
                         src={seaweed} 
@@ -523,6 +544,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* seaweed 2 - left of center */}
                 <UnderwaterObject style={{ bottom: '31%', left: '3%' }}>
                     <img 
                         src={seaweed2} 
@@ -533,6 +555,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* seaweed 3 - left of center */}
                 <UnderwaterObject style={{ bottom: '34%', left: '7%' }}>
                     <img 
                         src={seaweed3} 
@@ -543,6 +566,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* yellow coral - left of center */}
                 <UnderwaterObject style={{ bottom: '42%', left: '16%' }}>
                     <img 
                         src={yellowcoral} 
@@ -553,6 +577,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* pink coral - left of center */}
                 <UnderwaterObject style={{ bottom: '30%', left: '12%' }}>
                     <img 
                         src={pinkcoral} 
@@ -563,6 +588,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* purple coral - left of center */}
                 <UnderwaterObject style={{ bottom: '33%', left: '20%' }}>
                     <img 
                         src={purplecoral} 
@@ -573,6 +599,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* orange coral - left of center */}
                 <UnderwaterObject style={{ bottom: '19%', left: '14%' }}>
                     <img 
                         src={orangecoral} 
@@ -583,6 +610,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
                 
+                {/* blue coral - left of center */}
                 <UnderwaterObject style={{ bottom: '13%', left: '17%' }}>
                     <img 
                         src={bluecoral} 
@@ -593,11 +621,12 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* message in bottle - centered at 37.5% */}
                 <UnderwaterObject className="keep-on-mobile message-bottle" style={{ bottom: '35%', left: '37.5%', transform: 'translateX(-50%)'}}>
                     <MessageInBottle />
                 </UnderwaterObject>
                 
-                {/* Rocket - CENTERED at 50% */}
+                {/* rocket - centered at 49.75% */}
                 <RocketContainer className="keep-on-mobile rocket-mobile" style={{ bottom: '45%', left: '49.75%', transform: 'translateX(-50%)'}} onClick={scrollToTop}>
                     <img 
                         src={rocket} 
@@ -608,11 +637,12 @@ const Background = () => {
                     />
                 </RocketContainer>
                 
-                {/* Interactive Shell Phone with phone tooltip - RIGHT of center (centered at 65%) */}
+                {/* interactive shell phone with phone tooltip - right of center (centered at 65%) */}
                 <UnderwaterObject className="keep-on-mobile shell-phone" style={{ bottom: '35%', left: '62.5%', transform: 'translateX(-50%)'}}>
                     <ShellPhone />
                 </UnderwaterObject>
 
+                {/* blue coral - right of center */}
                 <UnderwaterObject style={{ bottom: '42%', right: '16%' }}>
                     <img 
                         src={bluecoral} 
@@ -623,6 +653,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* yellow coral - right of center */}
                 <UnderwaterObject style={{ bottom: '30%', right: '12%' }}>
                     <img 
                         src={yellowcoral} 
@@ -633,6 +664,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* orange coral - right of center */}
                 <UnderwaterObject style={{ bottom: '33%', right: '20%' }}>
                     <img 
                         src={orangecoral} 
@@ -643,6 +675,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* purple coral - right of center */}
                 <UnderwaterObject style={{ bottom: '19%', right: '14%' }}>
                     <img 
                         src={purplecoral} 
@@ -653,6 +686,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
                 
+                {/* pink coral - right of center */}
                 <UnderwaterObject style={{ bottom: '13%', right: '17%' }}>
                     <img 
                         src={pinkcoral} 
@@ -663,6 +697,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* rock with seaweed - right of center */}
                 <UnderwaterObject style={{ bottom: '57%', right: '1%' }}>
                     <img 
                         src={rockwithseaweed} 
@@ -673,6 +708,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* flat rock - right of center */}
                 <UnderwaterObject style={{ bottom: '44%', right: '5%' }}>
                     <img 
                         src={flatrock} 
@@ -683,6 +719,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* rockpile - right of center */}
                 <UnderwaterObject style={{ bottom: '29%', right: '-8%' }}>
                     <img 
                         className="rockpile-image" 
@@ -694,6 +731,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* seaweed - right of center */}
                 <UnderwaterObject style={{ bottom: '25%', right: '-2%' }}>
                     <img 
                         src={seaweed} 
@@ -704,6 +742,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
 
+                {/* seaweed 2 - right of center */}
                 <UnderwaterObject style={{ bottom: '31%', right: '3%' }}>
                     <img 
                         src={seaweed2} 
@@ -714,6 +753,7 @@ const Background = () => {
                     />
                 </UnderwaterObject>
                 
+                {/* seaweed 3 - right of center */}
                 <UnderwaterObject style={{ bottom: '34%', right: '7%' }}>
                     <img 
                         style={{ transform: 'scaleX(-1)' }} 
@@ -725,417 +765,33 @@ const Background = () => {
                     />
                 </UnderwaterObject>
             </SandPlane>
-
         </BackgroundContainer>
     );
 };
 
 export default Background;
 
-/* ================= Styles ================= */
+/* ============ animated keyframes ============ */
 
-// Water animation keyframes
+// water animation keyframes
 const waterFlow = keyframes`
   0% { transform: translateX(0); }
   100% { transform: translateX(20px); }
 `;
 
+// wave scroll keyframes
 const waveScroll = keyframes`
   0%   { background-position: 0 0, 0 0; }
   100% { background-position: -140px 0, -80px 0; }
 `;
 
+// float particles keyframes
 const floatParticles = keyframes`
   0%, 100% { opacity: 0.5; transform: translateY(0) translateZ(0); }
   50% { opacity: 0.8; transform: translateY(-8px) translateZ(0); }
 `;
 
-const BackgroundContainer = styled.section`
-	border: 2px solid rgba(255, 255, 255, 0.3);
-  position: relative;
-  width: 100%;
-  height: auto;
-  /* Natural content flow - no padding needed */
-  --surface-h: 5vh;          /* same as your SurfaceWater height */
-  --section-pad: clamp(24px, 4vw, 56px);
-  
-  /* CSS Variables for sand styling */
-  --sand-base: #b39873;
-  --sand-dark: #6e5843;
-  --sand-light: #efe2cc;
-`;
-
-// Surface water - connects to ocean wall in Skills section (same animation as HarborWater)
-const SurfaceWater = styled.div`
-  position: absolute;
-  inset: 0 auto auto 0;
-  width: 100%;
-  height: var(--surface-h);
-  z-index: 2;
-  overflow: hidden;
-  
-  /* Perspective transform - same as HarborWater to make it look flat/diagonal */
-  transform: perspective(90px) rotateX(12deg) translateZ(0);
-  transform-origin: top center;
-  
-  /* Water gradient - transitions from Skills ocean wall to bright underwater cyan */
-  background: linear-gradient(to bottom,
-    rgba(35, 95, 145, 0.75) 0%,
-    rgba(45, 115, 160, 0.85) 25%,
-    rgba(55, 135, 175, 0.92) 50%,
-    rgba(68, 155, 188, 0.96) 75%,
-    rgba(78, 170, 198, 0.98) 90%,
-    rgba(85, 185, 205, 1) 100%
-  );
-  
-  /* Horizon bloom (soft fade at the top) */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, transparent 40%);
-    pointer-events: none;
-  }
-  
-  /* Shimmer stripes that move via background-position (same as HarborWater) */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 42px),
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 66px);
-    mix-blend-mode: screen;
-    opacity: 0.35;
-    /* Animation throttling: pause when not in viewport, slower on slow devices */
-    ${props => props.$isInViewport 
-      ? css`animation: ${waveScroll} ${props.$isSlowDevice ? '18s' : '12s'} linear infinite;`
-      : css`animation: none;`}
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-    will-change: ${props => props.$isInViewport ? 'background-position' : 'auto'};
-  }
-`;
-
-// Ripple layer for surface water (same as HarborWater)
-const SurfaceRippleLayer = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  /* Soft oval ripples at various positions */
-  background:
-    radial-gradient(40px 20px at 20% 35%, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.08) 45%, transparent 70%),
-    radial-gradient(55px 25px at 48% 60%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.07) 40%, transparent 70%),
-    radial-gradient(34px 18px at 70% 45%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.06) 30%, transparent 70%),
-    radial-gradient(45px 22px at 15% 75%, rgba(255, 255, 255, 0.16) 0, rgba(255, 255, 255, 0.07) 35%, transparent 70%),
-    radial-gradient(38px 19px at 85% 65%, rgba(255, 255, 255, 0.13) 0, rgba(255, 255, 255, 0.06) 40%, transparent 70%);
-  mix-blend-mode: screen;
-  mask-image: linear-gradient(to bottom, black 40%, transparent 95%);
-  /* Static ripples - no animation for better performance */
-`;
-
-// Unified underwater section - spans from waterline to deep ocean with continuous gradient
-const UnderwaterSection = styled.div`
-  position: relative;                /* was absolute */
-  margin-top: var(--surface-h);      /* keep clear of the surface overlay */
-  width: 100%;
-
-  /* Let content determine height naturally - don't force min-height that creates scroll */
-  min-height: auto;
-  padding: 2rem 2rem 6rem 2rem;
-  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 1;
-  /* Prevent this section from creating its own scroll context */
-  overflow: visible;
-  overflow-x: visible;
-  overflow-y: visible;
-  
-  /* Subtle waterline effect at the top */
-  box-shadow: 
-    inset 0 8px 16px rgba(100, 180, 200, 0.15),
-    inset 0 -4px 12px rgba(0, 40, 80, 0.2);
-  
-  /* Simplified gradient - bright cyan at surface gradually darkening to deep ocean */
-  /* Reduced from 70 stops to 12 stops for better performance */
-  background: linear-gradient(to bottom,
-    /* Shallow water - bright cyan */
-    rgba(85, 185, 205, 1) 0%,
-    rgba(72, 170, 192, 1) 8%,
-    rgba(60, 154, 180, 1) 15%,
-    rgba(49, 138, 168, 1) 22%,
-    rgba(40, 122, 156, 1) 30%,
-    rgba(32, 106, 144, 1) 38%,
-    /* Transition to deeper water */
-    rgba(23, 82, 126, 1) 48%,
-    rgba(18, 66, 114, 1) 58%,
-    rgba(14, 50, 102, 1) 68%,
-    /* Deep ocean - sunlit blues */
-    rgba(10, 36, 84, 1) 78%,
-    rgba(8, 30, 72, 1) 90%,
-    rgba(6, 24, 56, 1) 100%
-  );
-  
-  /* Caustic light rays from surface - now extends smoothly down the entire section */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      /* Bright light rays near surface, gradually fading */
-      linear-gradient(to bottom, 
-        rgba(150, 220, 240, 0.15) 0%, 
-        rgba(120, 200, 220, 0.10) 10%,
-        rgba(100, 180, 200, 0.06) 20%,
-        rgba(80, 160, 180, 0.04) 35%,
-        rgba(60, 140, 160, 0.02) 50%,
-        transparent 70%
-      ),
-      /* Underwater ripple effect throughout */
-      repeating-linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.02) 10%,
-        transparent 20%
-      );
-    /* Animation throttling: pause when not in viewport, slower on slow devices */
-    ${props => props.$isInViewport 
-      ? css`animation: ${waterFlow} ${props.$isSlowDevice ? '22s' : '15s'} linear infinite reverse;`
-      : css`animation: none;`}
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-  }
-  
-  /* Underwater particles/bubbles - reduced from 15 to 8 for better performance */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      /* Upper zone particles */
-      radial-gradient(circle at 12% 8%, rgba(255,255,255,0.2) 0%, transparent 2px),
-      radial-gradient(circle at 38% 15%, rgba(255,255,255,0.15) 0%, transparent 2.5px),
-      radial-gradient(circle at 65% 12%, rgba(255,255,255,0.18) 0%, transparent 2px),
-      radial-gradient(circle at 85% 20%, rgba(255,255,255,0.12) 0%, transparent 1.5px),
-      /* Mid zone particles */
-      radial-gradient(circle at 55% 35%, rgba(255,255,255,0.14) 0%, transparent 1.8px),
-      radial-gradient(circle at 78% 40%, rgba(255,255,255,0.13) 0%, transparent 2.2px),
-      /* Lower zone particles */
-      radial-gradient(circle at 30% 65%, rgba(255,255,255,0.10) 0%, transparent 2.5px),
-      radial-gradient(circle at 75% 85%, rgba(255,255,255,0.06) 0%, transparent 1.5px);
-    /* Animation throttling: pause when not in viewport, slower on slow devices */
-    ${props => props.$isInViewport 
-      ? css`animation: ${floatParticles} ${props.$isSlowDevice ? '22s' : '15s'} ease-in-out infinite;`
-      : css`animation: none;`}
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-    transform: translateZ(0);
-    will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
-  }
-  
-  /* Pause animations during loading */
-  [data-loading="true"] &::after {
-    animation-play-state: paused;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    padding: 1.5rem 1rem 3rem 1rem;
-    margin-top: var(--surface-h);
-  }
-`;
-
-
-// Underwater header section
-const UnderwaterHeader = styled.div`
-  position: relative;
-  width: 100%;
-  margin-top: 3rem;
-  text-align: center;
-  z-index: 10;
-  flex-shrink: 0;
-  
-  /* Subtle glow effect */
-  filter: drop-shadow(0 4px 12px rgba(120, 200, 220, 0.3));
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    margin-top: 1.5rem;
-  }
-`;
-
-const HeaderTitle = styled.h1`
-  font-size: clamp(2.5rem, 5vw, 5rem);
-  font-weight: 900;
-  margin: 0;
-  
-  /* Underwater text effect - bright cyan with glow */
-  background: linear-gradient(135deg, 
-    rgba(150, 220, 240, 1) 0%,
-    rgba(100, 200, 230, 1) 30%,
-    rgba(120, 210, 235, 1) 60%,
-    rgba(160, 230, 245, 1) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  
-  /* Bright glow like light through water */
-  text-shadow: 
-    0 0 20px rgba(120, 200, 220, 0.6),
-    0 0 40px rgba(100, 180, 210, 0.4),
-    0 4px 8px rgba(0, 60, 100, 0.3);
-  
-  /* Subtle floating animation - GPU accelerated (transform only) */
-  /* Animation throttling: pause when not in viewport, slower on slow devices */
-  ${props => props.$isInViewport 
-    ? css`animation: floatTitle ${props.$isSlowDevice ? '6s' : '4s'} ease-in-out infinite;`
-    : css`animation: none;`}
-  animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-  transform: translateZ(0);
-  will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
-  
-  @keyframes floatTitle {
-    0%, 100% { transform: translateY(0px) translateZ(0); }
-    50% { transform: translateY(-8px) translateZ(0); }
-  }
-  
-  /* Pause animations during loading */
-  [data-loading="true"] & {
-    animation-play-state: paused;
-  }
-  
-  @media (max-width: 1800px) {
-    font-size: clamp(2.2rem, 4.5vw, 4.2rem);
-  }
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(2rem, 8vw, 2.5rem);
-    margin-bottom: 0.5rem;
-  }
-`;
-
-const HeaderSubtitle = styled.h2`
-  font-size: clamp(1.1rem, 2vw, 1.8rem);
-  font-weight: 400;
-  font-style: italic;
-  margin: 0;
-  
-  /* Softer cyan color */
-  color: rgba(180, 230, 245, 0.9);
-  
-  /* Subtle glow */
-  text-shadow: 
-    0 2px 8px rgba(120, 200, 220, 0.5),
-    0 4px 16px rgba(80, 160, 190, 0.3);
-  
-  /* Slightly offset floating animation - GPU accelerated (transform/opacity only) */
-  /* Animation throttling: pause when not in viewport, slower on slow devices */
-  ${props => props.$isInViewport 
-    ? css`animation: floatSubtitle ${props.$isSlowDevice ? '6s' : '4s'} ease-in-out infinite;`
-    : css`animation: none;`}
-  animation-delay: 0.5s;
-  animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-  transform: translateZ(0);
-  will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
-  
-  @keyframes floatSubtitle {
-    0%, 100% { transform: translateY(0px) translateZ(0); opacity: 0.9; }
-    50% { transform: translateY(-6px) translateZ(0); opacity: 1; }
-  }
-  
-  /* Pause animations during loading */
-  [data-loading="true"] & {
-    animation-play-state: paused;
-  }
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(1rem, 1.8vw, 1.3rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
-    margin-top: 0.25rem;
-  }
-`;
-
-// Profile section - flex container
-const ProfileSection = styled.div`
-  width: clamp(85%, 90vw, 90%);
-  margin: clamp(1.5rem, 2vw, 2rem) auto 0;
-  display: flex;
-  gap: clamp(1rem, 2vw, 2rem);
-  align-items: flex-start;
-  z-index: 10;
-  
-  @media (max-width: 1800px) {
-    width: clamp(88%, 92vw, 92%);
-  }
-  
-  @media (max-width: 1600px) {
-    width: clamp(90%, 94vw, 94%);
-    gap: clamp(0.8rem, 1.5vw, 1.5rem);
-  }
-  
-  @media (max-width: 1400px) {
-    width: 92%;
-    gap: clamp(0.75rem, 1.2vw, 1.2rem);
-  }
-  
-  @media (max-width: 1200px) {
-    flex-direction: column;
-    align-items: center;
-    margin-top: clamp(1.5rem, 2vw, 2rem);
-    width: 95%;
-  }
-  
-  @media (max-width: 900px) {
-    width: 98%;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    width: 100%;
-    margin-top: 1rem;
-    gap: 1rem;
-    padding: 0 0.5rem;
-  }
-`;
-
-// Left section - 1/3 width for image and bubbles
-const ImageSection = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 1rem;
-  min-width: 0; /* Allow flex item to shrink below content size */
-  gap: 0;
-  
-  @media (max-width: 1200px) {
-    flex: 0 0 auto;
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    padding: 0.5rem;
-    max-width: 100%;
-  }
-`;
-
-// Floating bubble animation - smooth rising motion, GPU accelerated
+// float bubble animation - smooth rising motion, GPU accelerated
 const floatBubble = keyframes`
   0%, 100% { 
     transform: translateY(0px) translateX(0px) scale(1) translateZ(0);
@@ -1148,1357 +804,1864 @@ const floatBubble = keyframes`
   }
 `;
 
+/* ================= styled ================= */
 
-const ProfileImageFrame = styled.div`
-  position: relative;
-  width: 90%;
-  max-width: 450px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  padding: 8px;
-  flex-shrink: 0;
-  
-  /* Glassmorphism border effect */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.05) 50%,
-    rgba(100, 180, 200, 0.15) 100%
-  );
-  backdrop-filter: blur(10px);
-  box-shadow: 
-    0 8px 32px rgba(31, 38, 135, 0.37),
-    inset 0 2px 8px rgba(255, 255, 255, 0.15),
-    0 0 40px rgba(100, 200, 220, 0.2);
-  
-  /* Subtle glow effect */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    background: linear-gradient(
-      135deg,
-      rgba(150, 220, 240, 0.3) 0%,
-      rgba(100, 200, 230, 0.2) 50%,
-      rgba(80, 180, 210, 0.3) 100%
-    );
-    z-index: -1;
-    filter: blur(12px);
-    opacity: 0.6;
-  }
-  
-  /* Floating animation */
-  animation: ${floatBubble} 6s ease-in-out infinite;
-  
-  @media (max-width: 1200px) {
-    width: 80%;
-    max-width: 280px;
-  }
-  
-  @media (max-width: 600px) {
-    width: 65%;
-    max-width: 250px;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    width: 70%;
-    max-width: 220px;
-    padding: 6px;
-  }
-`;
-
-const ProfileImage = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-`;
-
-// Social bubbles container - fills bottom half of left column
-const SocialBubblesContainer = styled.div`
-  position: relative;
-  width: 100%;
-  flex: 1;
-  min-height: 350px;
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-bottom: 2rem;
-  
-  @media (max-width: 1200px) {
-    min-height: 300px;
-    margin-top: 1.5rem;
-  }
-  
-  @media (max-width: 600px) {
-    min-height: 280px;
-    margin-top: 1rem;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    min-height: 200px;
-    margin-top: 0.75rem;
-    padding-bottom: 1rem;
-  }
-`;
-// Individual social bubble - glossy underwater bubble effect
-const SocialBubble = styled.a`
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  
-  /* Glossy glassmorphic bubble effect */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(150, 220, 240, 0.18) 100%
-  );
-  backdrop-filter: blur(12px);
-  
-  /* Multiple layered shadows for depth */
-  box-shadow: 
-    /* Inner highlight - glossy shine */
-    inset -4px -4px 12px rgba(255, 255, 255, 0.4),
-    inset 4px 4px 12px rgba(100, 180, 200, 0.2),
-    /* Outer glow */
-    0 8px 32px rgba(100, 200, 220, 0.3),
-    /* Depth shadow */
-    0 4px 16px rgba(31, 38, 135, 0.4);
-  
-  /* Icon color */
-  color: rgba(220, 240, 255, 0.95);
-  
-  /* Glossy highlight overlay */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 8%;
-    left: 15%;
-    width: 45%;
-    height: 45%;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle at 30% 30%,
-      rgba(255, 255, 255, 0.6) 0%,
-      rgba(255, 255, 255, 0.3) 40%,
-      transparent 70%
-    );
-    filter: blur(3px);
-    pointer-events: none;
-  }
-  
-  /* Bottom shadow inside bubble */
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 12%;
-    left: 20%;
-    width: 60%;
-    height: 30%;
-    border-radius: 50%;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(0, 40, 80, 0.2) 0%,
-      transparent 70%
-    );
-    filter: blur(4px);
-    pointer-events: none;
-  }
-  
-  /* GPU acceleration - applied to all bubbles (transform only) */
-  transform: translateZ(0);
-  will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
-  
-  /* Vertical positioning - bubbles rising from bottom to top */
-  /* Smallest bubble at bottom (LinkedIn) */
-  &:nth-child(1) {
-    left: 45%;
-    bottom: 5%;
-    width: 70px;
-    height: 70px;
-    /* Animation throttling: pause when not in viewport, slower on slow devices */
-    ${props => props.$isInViewport 
-      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '10s' : '7s'} ease-in-out infinite;`
-      : css`animation: none;`}
-    animation-delay: ${props => props.$delay}s;
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-  }
-  
-  /* Second bubble (GitHub) */
-  &:nth-child(2) {
-    left: 55%;
-    bottom: 28%;
-    width: 80px;
-    height: 80px;
-    ${props => props.$isInViewport 
-      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '11s' : '7.5s'} ease-in-out infinite;`
-      : css`animation: none;`}
-    animation-delay: ${props => props.$delay}s;
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-  }
-  
-  /* Third bubble (Instagram) */
-  &:nth-child(3) {
-    left: 40%;
-    bottom: 52%;
-    width: 88px;
-    height: 88px;
-    ${props => props.$isInViewport 
-      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '10.5s' : '7.2s'} ease-in-out infinite;`
-      : css`animation: none;`}
-    animation-delay: ${props => props.$delay}s;
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-  }
-  
-  /* Largest bubble at top (Resume) */
-  &:nth-child(4) {
-    left: 48%;
-    bottom: 78%;
-    width: 96px;
-    height: 96px;
-    ${props => props.$isInViewport 
-      ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '12s' : '8s'} ease-in-out infinite;`
-      : css`animation: none;`}
-    animation-delay: ${props => props.$delay}s;
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-  }
-  
-  /* Pause animations during loading */
-  [data-loading="true"] & {
-    animation-play-state: paused;
-  }
-  
-  /* Hover effects */
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-10px) scale(1.15) translateZ(0);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.35) 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      rgba(150, 220, 240, 0.28) 100%
-    );
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 
-      inset -4px -4px 16px rgba(255, 255, 255, 0.5),
-      inset 4px 4px 16px rgba(100, 180, 200, 0.3),
-      0 12px 48px rgba(120, 220, 240, 0.5),
-      0 6px 24px rgba(31, 38, 135, 0.5);
-    color: rgba(255, 255, 255, 1);
-  }
-  
-  /* Icon sizing - scales with bubble size */
-  svg {
+// background container
+const BackgroundContainer = styled.section`
+    /* layout */
     position: relative;
+    
+    /* spacing */
+    width: 100%;
+    height: auto;
+    
+    /* styles */
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    --surface-h: 5vh;
+    --section-pad: clamp(24px, 4vw, 56px);
+    --sand-base: #b39873;
+    --sand-dark: #6e5843;
+    --sand-light: #efe2cc;
+`;
+
+/* ================= surface water ================== */
+
+// surface water - connects to ocean wall in skills section (same animation as harbor water)
+const SurfaceWater = styled.div`
+    /* layout */
+	z-index: 2;
+    overflow: hidden;
+	position: absolute;
+    inset: 0 auto auto 0;
+    
+    /* spacing */
+    width: 100%;
+    height: var(--surface-h);
+    
+    /* styles */
+    transform-origin: top center;
+    transform: perspective(90px) rotateX(12deg) translateZ(0);
+    background: linear-gradient(to bottom,
+        rgba(35, 95, 145, 0.75) 0%,
+        rgba(45, 115, 160, 0.85) 25%,
+        rgba(55, 135, 175, 0.92) 50%,
+        rgba(68, 155, 188, 0.96) 75%,
+        rgba(78, 170, 198, 0.98) 90%,
+        rgba(85, 185, 205, 1) 100%
+    );
+    
+    /* pseudo-elements */
+    &::before {
+        /* layout */
+        inset: 0;
+        position: absolute;
+        
+        /* styles */
+        content: '';
+        pointer-events: none;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, transparent 40%);
+    }
+    
+    &::after {
+        /* layout */
+        inset: 0;
+        position: absolute;
+        
+        /* styles */
+        content: '';
+        opacity: 0.35;
+        mix-blend-mode: screen;
+        background:
+            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 42px),
+            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 66px);
+        ${props => props.$isInViewport 
+            ? css`animation: ${waveScroll} ${props.$isSlowDevice ? '18s' : '12s'} linear infinite;`
+            : css`animation: none;`}
+        animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+        will-change: ${props => props.$isInViewport ? 'background-position' : 'auto'};
+    }
+`;
+
+// ripple layer for surface water (same as harbor water)
+const SurfaceRippleLayer = styled.div`
+    /* layout */
+    inset: 0;
+    position: absolute;
+    pointer-events: none;
+    
+    /* styles */
+    mix-blend-mode: screen;
+    mask-image: linear-gradient(to bottom, black 40%, transparent 95%);
+    background:
+        radial-gradient(40px 20px at 20% 35%, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.08) 45%, transparent 70%),
+        radial-gradient(55px 25px at 48% 60%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.07) 40%, transparent 70%),
+        radial-gradient(34px 18px at 70% 45%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.06) 30%, transparent 70%),
+        radial-gradient(45px 22px at 15% 75%, rgba(255, 255, 255, 0.16) 0, rgba(255, 255, 255, 0.07) 35%, transparent 70%),
+        radial-gradient(38px 19px at 85% 65%, rgba(255, 255, 255, 0.13) 0, rgba(255, 255, 255, 0.06) 40%, transparent 70%);
+`;
+
+/* ================= underwater section ================== */
+
+// unified underwater section - spans from waterline to deep ocean with continuous gradient
+const UnderwaterSection = styled.div`
+    /* layout */
+    display: flex;
+    position: relative;
+    overflow: visible;
+    overflow-x: visible;
+    overflow-y: visible;
+    flex-direction: column;
+    align-items: center;
     z-index: 1;
-    filter: drop-shadow(0 2px 4px rgba(0, 40, 80, 0.3));
-    transition: transform 0.3s ease;
-  }
-  
-  /* Scale icons proportionally to bubble size */
-  &:nth-child(1) svg {
-    width: 26px;
-    height: 26px;
-  }
-  
-  &:nth-child(2) svg {
-    width: 28px;
-    height: 28px;
-  }
-  
-  &:nth-child(3) svg {
-    width: 30px;
-    height: 30px;
-  }
-  
-  &:nth-child(4) svg {
-    width: 32px;
-    height: 32px;
-  }
-  
-  &:hover svg {
-    transform: scale(1.1);
-  }
-  
-  @media (max-width: 1200px) {
-    /* Proportionally scale down all bubbles */
-    &:nth-child(1) {
-      width: 60px;
-      height: 60px;
-    }
     
-    &:nth-child(2) {
-      width: 68px;
-      height: 68px;
-    }
-    
-    &:nth-child(3) {
-      width: 76px;
-      height: 76px;
-    }
-    
-    &:nth-child(4) {
-      width: 84px;
-      height: 84px;
-    }
-    
-    svg {
-      width: 22px;
-      height: 22px;
-    }
-  }
-  
-  @media (max-width: 600px) {
-    /* Further scale down for mobile */
-    &:nth-child(1) {
-      width: 52px;
-      height: 52px;
-    }
-    
-    &:nth-child(2) {
-      width: 60px;
-      height: 60px;
-    }
-    
-    &:nth-child(3) {
-      width: 66px;
-      height: 66px;
-    }
-    
-    &:nth-child(4) {
-      width: 72px;
-      height: 72px;
-    }
-    
-    svg {
-      width: 20px;
-      height: 20px;
-    }
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    &:nth-child(1) {
-      width: 48px;
-      height: 48px;
-      left: 45%;
-      bottom: 8%;
-    }
-    
-    &:nth-child(2) {
-      width: 54px;
-      height: 54px;
-      left: 55%;
-      bottom: 30%;
-    }
-    
-    &:nth-child(3) {
-      width: 60px;
-      height: 60px;
-      left: 40%;
-      bottom: 54%;
-    }
-    
-    &:nth-child(4) {
-      width: 66px;
-      height: 66px;
-      left: 48%;
-      bottom: 80%;
-    }
-    
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-  }
-`;
-
-const InfoGridSection = styled.div`
-  flex: 3;
-  min-width: 0; /* Allow flex items to shrink */
-  padding-bottom: var(--section-pad);   /* bottom breathing room */
-  
-  @media (max-width: 1200px) {
-    flex: 0 0 auto;
+    /* spacing */
     width: 100%;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    padding-bottom: 1rem;
-  }
-`;
-
-// 3x2 Grid of cards
-const InfoGrid = styled.div`
-
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: minmax(300px, auto);     /* Allow cards to grow based on content */
-  gap: clamp(1rem, 1.5vw, 1.5rem);
-  align-items: stretch;    /* Stretch cards to fill grid cells */
-  
-  @media (max-width: 1800px) {
-    gap: clamp(0.9rem, 1.3vw, 1.25rem);
-    grid-auto-rows: minmax(280px, auto);
-  }
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.7rem, 1vw, 0.95rem);
-    grid-auto-rows: minmax(240px, auto);
-  }
-  
-  @media (max-width: 1400px) {
-    gap: clamp(0.65rem, 0.9vw, 0.85rem);
-    grid-auto-rows: minmax(220px, auto);
-  }
-  
-  @media (max-width: 1100px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1rem, 1.5vw, 1.5rem);
-    grid-auto-rows: minmax(280px, auto);
-  }
-  
-  @media (max-width: 900px) {
-    grid-auto-rows: minmax(260px, auto);
-  }
-  
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    grid-auto-rows: minmax(240px, auto);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    gap: 1.25rem;
-    grid-auto-rows: minmax(220px, auto);
-  }
-`;
-
-// Individual glassmorphism card
-const GlassCard = styled.article`
-  align-self: stretch;     /* Stretch to fill grid cell height */
-  min-height: 100%;
-  position: relative;
-  padding: clamp(0.9rem, 1.2vw, 1.25rem);
-  border-radius: clamp(16px, 2vw, 20px);
-  overflow: visible; /* Allow bubble to overflow */
-  min-width: 0; /* Allow flex/grid items to shrink */
-  display: flex;
-  flex-direction: column;
-  
-  @media (max-width: 1600px) {
-    padding: clamp(0.65rem, 0.85vw, 0.85rem);
-    border-radius: clamp(14px, 1.8vw, 18px);
-  }
-  
-  @media (max-width: 1200px) {
-    padding: clamp(0.6rem, 0.8vw, 0.75rem);
-    border-radius: clamp(12px, 1.6vw, 16px);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    padding: 0.9rem;
-    border-radius: 14px;
-  }
-  
-  /* Glassmorphism effect */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 
-    0 8px 32px rgba(31, 38, 135, 0.37),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  
-  /* GPU acceleration for hover effects */
-  transform: translateZ(0);
-  
-  /* Subtle glow on hover */
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px) translateZ(0);
+    min-height: auto;
+    margin-top: var(--surface-h);
+    padding: 2rem 2rem 6rem 2rem;
+    
+    /* styles */
     box-shadow: 
-      0 12px 40px rgba(31, 38, 135, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3),
-      0 0 30px rgba(100, 200, 220, 0.3);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.08) 100%
+        inset 0 8px 16px rgba(100, 180, 200, 0.15),
+        inset 0 -4px 12px rgba(0, 40, 80, 0.2);
+    background: linear-gradient(to bottom,
+        rgba(85, 185, 205, 1) 0%,
+        rgba(72, 170, 192, 1) 8%,
+        rgba(60, 154, 180, 1) 15%,
+        rgba(49, 138, 168, 1) 22%,
+        rgba(40, 122, 156, 1) 30%,
+        rgba(32, 106, 144, 1) 38%,
+        rgba(23, 82, 126, 1) 48%,
+        rgba(18, 66, 114, 1) 58%,
+        rgba(14, 50, 102, 1) 68%,
+        rgba(10, 36, 84, 1) 78%,
+        rgba(8, 30, 72, 1) 90%,
+        rgba(6, 24, 56, 1) 100%
     );
-  }
+    
+    /* pseudo-elements */
+    &::before {
+        /* layout */
+        inset: 0;
+        position: absolute;
+        
+        /* styles */
+        content: '';
+        background: 
+            linear-gradient(to bottom, 
+                rgba(150, 220, 240, 0.15) 0%, 
+                rgba(120, 200, 220, 0.10) 10%,
+                rgba(100, 180, 200, 0.06) 20%,
+                rgba(80, 160, 180, 0.04) 35%,
+                rgba(60, 140, 160, 0.02) 50%,
+                transparent 70%
+            ),
+            repeating-linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.02) 10%,
+                transparent 20%
+            );
+        ${props => props.$isInViewport 
+            ? css`animation: ${waterFlow} ${props.$isSlowDevice ? '22s' : '15s'} linear infinite reverse;`
+            : css`animation: none;`}
+        animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    }
+    
+    &::after {
+        /* layout */
+        inset: 0;
+        position: absolute;
+        
+        /* styles */
+        content: '';
+        transform: translateZ(0);
+        background-image:
+            radial-gradient(circle at 12% 8%, rgba(255,255,255,0.2) 0%, transparent 2px),
+            radial-gradient(circle at 38% 15%, rgba(255,255,255,0.15) 0%, transparent 2.5px),
+            radial-gradient(circle at 65% 12%, rgba(255,255,255,0.18) 0%, transparent 2px),
+            radial-gradient(circle at 85% 20%, rgba(255,255,255,0.12) 0%, transparent 1.5px),
+            radial-gradient(circle at 55% 35%, rgba(255,255,255,0.14) 0%, transparent 1.8px),
+            radial-gradient(circle at 78% 40%, rgba(255,255,255,0.13) 0%, transparent 2.2px),
+            radial-gradient(circle at 30% 65%, rgba(255,255,255,0.10) 0%, transparent 2.5px),
+            radial-gradient(circle at 75% 85%, rgba(255,255,255,0.06) 0%, transparent 1.5px);
+        ${props => props.$isInViewport 
+            ? css`animation: ${floatParticles} ${props.$isSlowDevice ? '22s' : '15s'} ease-in-out infinite;`
+            : css`animation: none;`}
+        animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+        will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
+    }
+    
+    /* nested selectors */
+    [data-loading="true"] &::after {
+        animation-play-state: paused;
+    }
+    
+    /* media queries */
+    @media (max-width: 768px) {
+        margin-top: var(--surface-h);
+        padding: 1.5rem 1rem 3rem 1rem;
+    }
 `;
 
-// Card title
-const CardTitle = styled.h3`
-  font-size: clamp(1.2rem, 1.8vw, 1.75rem);
-  font-weight: 700;
-  margin: 0 0 clamp(0.3rem, 0.5vw, 0.5rem) 0;
-  text-align: center;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  
-  /* Gradient text */
-  background: linear-gradient(135deg, 
-    rgba(200, 230, 245, 1) 0%,
-    rgba(150, 210, 230, 1) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  
-  /* Subtle glow */
-  text-shadow: 0 2px 8px rgba(120, 200, 220, 0.3);
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.95rem, 1.3vw, 1.2rem);
-    margin: 0 0 clamp(0.25rem, 0.4vw, 0.4rem) 0;
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-    margin: 0 0 clamp(0.2rem, 0.35vw, 0.35rem) 0;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(1rem, 4vw, 1.2rem);
-    margin-bottom: 0.4rem;
-  }
-`;
-
-// Card text - for cards with structured content (Education, Mantras, Music)
-const CardText = styled.p`
-  font-size: clamp(0.75rem, 0.95vw, 0.9rem);
-  line-height: 1.6;
-  margin: 0;
-  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
-  text-align: justify;
-  color: rgba(220, 240, 250, 0.85);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  
-  /* Subtle text shadow for readability */
-  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.65rem, 0.8vw, 0.75rem);
-    line-height: 1.45;
-    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
-    margin: 0;
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.6rem, 0.75vw, 0.7rem);
-    line-height: 1.4;
-    padding: 0 clamp(0.4rem, 0.75vw, 0.85rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.7rem, 2.5vw, 0.85rem);
-    line-height: 1.5;
-    padding: 0 0.5rem;
-  }
-`;
-
-// Card text large - for cards with just text content (Always Active, Being Creative, Goals)
-// These cards need larger text to fill the space better
-const CardTextLarge = styled.p`
-  font-size: clamp(0.9rem, 1.15vw, 1.05rem);
-  line-height: 1.65;
-  margin: 0;
-  padding: 0 0.75rem;
-  text-align: justify;
-  color: rgba(220, 240, 250, 0.85);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  
-  /* Subtle text shadow for readability */
-  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.8rem, 1vw, 0.95rem);
-    line-height: 1.55;
-    padding: 0 clamp(0.6rem, 1vw, 1.1rem);
-    margin: 0;
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
-    line-height: 1.5;
-    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.8rem, 2.8vw, 0.95rem);
-    line-height: 1.55;
-    padding: 0 0.5rem;
-  }
-`;
-
-// Goals list - bulleted list for Goals card
-const GoalsList = styled.ul`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
-  list-style: none;
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.6rem, 0.8vw, 0.7rem);
-    padding: 0 clamp(0.6rem, 1vw, 1.1rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.5rem, 0.7vw, 0.65rem);
-    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    gap: 0.5rem;
-    padding: 0 0.5rem;
-  }
-`;
-
-// Individual goal item with custom bullet - matching Experience.jsx style
-const GoalItem = styled.li`
-  font-size: clamp(0.8rem, 1vw, 0.9rem);
-  line-height: 1.65;
-  color: rgba(220, 240, 250, 0.85);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
-  text-align: justify;
-  position: relative;
-  padding-left: 1.75rem;
-  
-  /* Custom bullet matching Experience.jsx AchievementIcon style */
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 1em;  /* Align with first line of text - adjusted for better centering */
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, 
-      rgba(100, 200, 230, 1) 0%,
-      rgba(100, 200, 230, 0.85) 50%,
-      rgba(100, 200, 230, 0.7) 100%
-    );
-    transform: translateY(-50%);
-    box-shadow: 
-      0 0 10px rgba(100, 200, 230, 0.5),
-      inset 0 1px 2px rgba(255, 255, 255, 0.25);
+// underwater header section.
+const UnderwaterHeader = styled.div`
+    /* layout */
+    position: relative;
+    text-align: center;
+    z-index: 10;
     flex-shrink: 0;
-  }
-  
-  /* Inner highlight like Experience.jsx - centered within bullet */
-  &::after {
-    content: '';
-    position: absolute;
-    left: 6px;  /* Center of 12px bullet */
-    top: 1em;  /* Match bullet position */
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.4);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.7rem, 0.9vw, 0.8rem);
-    line-height: 1.55;
-    padding-left: clamp(1.5rem, 1.7vw, 1.6rem);
     
-    &::before {
-      width: 10px;
-      height: 10px;
-    }
-    
-    &::after {
-      width: 4px;
-      height: 4px;
-      left: 5px;  /* Center of 10px bullet */
-    }
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.65rem, 0.85vw, 0.75rem);
-    line-height: 1.5;
-    padding-left: clamp(1.4rem, 1.6vw, 1.5rem);
-    
-    &::before {
-      width: 9px;
-      height: 9px;
-    }
-    
-    &::after {
-      width: 3.5px;
-      height: 3.5px;
-      left: 4.5px;  /* Center of 9px bullet */
-    }
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
-    line-height: 1.5;
-    padding-left: 1.5rem;
-    
-    &::before {
-      width: 10px;
-      height: 10px;
-    }
-    
-    &::after {
-      width: 4px;
-      height: 4px;
-      left: 5px;
-    }
-  }
-`;
-// Emoji row container
-const EmojiRow = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin-top: auto;         /* Push to bottom of card */
-  padding-top: 0.75rem;
-  justify-content: center;
-  opacity: 0.95;
-  filter: drop-shadow(0 2px 8px rgba(120, 200, 220, 0.35));
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.35rem, 0.5vw, 0.45rem);
-    padding-top: clamp(0.5rem, 0.7vw, 0.65rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.3rem, 0.45vw, 0.4rem);
-    padding-top: clamp(0.45rem, 0.6vw, 0.6rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    gap: 0.35rem;
-    padding-top: 0.5rem;
-  }
-`;
-
-// Individual emoji bubble
-const Emoji = styled.span`
-  display: inline-grid;
-  place-items: center;
-  width: 1.9rem;
-  height: 1.9rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  font-size: 1.1rem;
-  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: translateY(-2px) scale(1.06);
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.28);
-  }
-  
-  @media (max-width: 1600px) {
-    width: clamp(1.5rem, 1.8vw, 1.7rem);
-    height: clamp(1.5rem, 1.8vw, 1.7rem);
-    font-size: clamp(0.9rem, 1.1vw, 1rem);
-  }
-  
-  @media (max-width: 1200px) {
-    width: clamp(1.4rem, 1.7vw, 1.6rem);
-    height: clamp(1.4rem, 1.7vw, 1.6rem);
-    font-size: clamp(0.85rem, 1vw, 0.95rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 0.9rem;
-  }
-`;
-// Wrapper for all mantras to center them
-const MantrasWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  gap: 0.25rem;
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.35rem, 0.45vw, 0.4rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.3rem, 0.4vw, 0.35rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    gap: 0.25rem;
-  }
-`;
-
-// Mantra text container with reduced spacing - uses larger text like CardTextLarge
-const MantraText = styled.div`
-  font-size: 0.95rem;
-  line-height: 1.65;
-  text-align: justify;
-  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
-  color: rgba(220, 240, 250, 0.85);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.8rem, 1vw, 0.9rem);
-    line-height: 1.55;
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
-    line-height: 1.5;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
-    line-height: 1.5;
-    padding: 0 0.5rem;
-  }
-`;
-
-// Highlighted mantra titles
-const MantraHighlight = styled.div`
-  display: block;
-  font-weight: 800;
-  font-size: 1rem;
-  margin-bottom: clamp(0.2rem, 0.3vw, 0.25rem);
-  text-align: center;
-  background: linear-gradient(135deg, 
-    rgba(255, 235, 120, 1) 0%,
-    rgba(255, 200, 100, 1) 50%,
-    rgba(255, 180, 90, 1) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 0.3px;
-  text-shadow: 0 2px 8px rgba(255, 200, 100, 0.4);
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.8rem, 0.95vw, 0.9rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.65rem, 2.2vw, 0.75rem);
-  }
-`;
-
-// Wrapper for music content to center it
-const MusicWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-`;
-
-// Music intro text - matches CardText styling
-const MusicIntroText = styled.p`
-  font-size: clamp(0.75rem, 0.95vw, 0.9rem);
-  line-height: 1.6;
-  margin: 0 0 clamp(0.4rem, 0.6vw, 0.5rem) 0;
-  padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
-  text-align: justify;
-  color: rgba(220, 240, 250, 0.85);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  
-  /* Subtle text shadow for readability */
-  text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.65rem, 0.8vw, 0.75rem);
-    line-height: 1.45;
-    padding: 0 clamp(0.5rem, 0.85vw, 1rem);
-    margin: 0 0 clamp(0.3rem, 0.45vw, 0.4rem) 0;
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.6rem, 0.75vw, 0.7rem);
-    line-height: 1.4;
-    padding: 0 clamp(0.4rem, 0.75vw, 0.85rem);
-    margin: 0 0 clamp(0.25rem, 0.4vw, 0.35rem) 0;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.65rem, 2.2vw, 0.75rem);
-    line-height: 1.45;
-    padding: 0 0.5rem;
-    margin-bottom: 0.4rem;
-  }
-`;
-// Artist grid for music card
-const ArtistGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(0.4rem, 0.6vw, 0.5rem);
-  margin-top: clamp(0.4rem, 0.6vw, 0.5rem);
-  
-  @media (max-width: 1600px) {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: clamp(0.3rem, 0.45vw, 0.4rem);
-    margin-top: clamp(0.3rem, 0.45vw, 0.4rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.25rem, 0.4vw, 0.35rem);
-    margin-top: clamp(0.25rem, 0.4vw, 0.35rem);
-  }
-  
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.4rem;
-    margin-top: 0.4rem;
-  }
-`;
-
-// Individual artist name
-const ArtistName = styled.div`
-  font-size: clamp(0.7rem, 0.9vw, 0.875rem);
-  padding: clamp(0.1rem, 0.2vw, 0.15rem) clamp(0.4rem, 0.6vw, 0.5rem);
-  text-align: center;
-  border-radius: clamp(10px, 1.2vw, 12px);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(200, 230, 245, 0.9);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
-    white-space: normal;
-    overflow: visible;
-  }
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.65rem, 0.8vw, 0.8rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.6rem, 0.75vw, 0.75rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.6rem, 2vw, 0.7rem);
-    padding: 0.1rem 0.4rem;
-  }
-`;
-
-// Date text (slightly muted)
-const CardDate = styled.span`
-  display: inline-block;
-  font-size: clamp(0.75rem, 0.9vw, 0.85rem);
-  font-style: italic;
-  line-height: 1.1;
-  color: rgba(180, 220, 240, 0.85);
-  margin: 0;
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.65rem, 0.75vw, 0.7rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.55rem, 1.8vw, 0.65rem);
-  }
-`;
-
-// Detail text (for additional info)
-const CardDetail = styled.span`
-  display: inline-block;
-  font-size: 0.9rem;
-  color: rgba(200, 230, 245, 0.8);
-  margin: 0.25rem 0;
-`;
-
-/* ================= Education Card Specific Styles ================= */
-
-// Container for education card content
-const EducationContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0;
-  flex: 1;                  /* Take remaining space */
-  justify-content: space-between;
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.5rem, 0.7vw, 0.6rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.45rem, 0.6vw, 0.55rem);
-  }
-`;
-
-// Degree section
-const DegreeSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.15rem, 0.2vw, 0.2rem);
-    padding-bottom: clamp(0.35rem, 0.45vw, 0.4rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.1rem, 0.15vw, 0.15rem);
-    padding-bottom: clamp(0.3rem, 0.4vw, 0.35rem);
-  }
-`;
-
-const DegreeName = styled.h4`
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
-  font-weight: 700;
-  margin: 0;
-  line-height: 1.2;
-  background: linear-gradient(135deg, 
-    rgba(230, 245, 255, 1) 0%,
-    rgba(180, 220, 240, 1) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-align: center;
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.85rem, 1vw, 0.95rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.8rem, 0.95vw, 0.9rem);
-  }
-`;
-
-const UniversityName = styled.p`
-  font-size: clamp(0.85rem, 1vw, 1rem);
-  margin: 0;
-  line-height: 1.2;
-  color: rgba(200, 230, 245, 0.85);
-  text-align: center;
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.7rem, 0.85vw, 0.8rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.65rem, 0.8vw, 0.75rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.6rem, 2vw, 0.7rem);
-  }
-`;
-
-// Info row with duration and GPA
-const InfoRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.9rem, 1.1vw, 1rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.8rem, 1vw, 0.9rem);
-  }
-`;
-
-const InfoItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.1rem, 0.12vw, 0.12rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.08rem, 0.1vw, 0.1rem);
-  }
-`;
-
-const InfoLabel = styled.span`
-  font-size: clamp(0.65rem, 0.8vw, 0.75rem);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: rgba(150, 200, 220, 0.7);
-  font-weight: 600;
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.55rem, 0.65vw, 0.6rem);
-  }
-`;
-
-const InfoDivider = styled.div`
-  width: 1px;
-  height: 22px;
-  background: linear-gradient(to bottom, 
-    transparent 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent 100%
-  );
-`;
-
-const GPAText = styled.span`
-  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
-  font-weight: 700;
-  color: rgba(150, 220, 240, 1);
-  text-shadow: 0 2px 8px rgba(120, 200, 220, 0.4);
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.9rem, 1.1vw, 1rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.85rem, 1vw, 0.95rem);
-  }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
-  }
-`;
-
-// Clubs section
-const ClubsSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.35rem, 0.45vw, 0.4rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.3rem, 0.4vw, 0.35rem);
-  }
-`;
-
-const ClubsLabel = styled.span`
-  font-size: clamp(0.7rem, 0.85vw, 0.8rem);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: rgba(150, 200, 220, 0.8);
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 0.125rem;
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
-  }
-  
-  @media (max-width: 1200px) {
-    font-size: clamp(0.55rem, 0.65vw, 0.6rem);
-  }
-`;
-
-const ClubsList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.35rem, 0.45vw, 0.4rem);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.3rem, 0.4vw, 0.35rem);
-  }
-`;
-
-const ClubItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.4rem 0.5rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
-  }
-  
-  @media (max-width: 1600px) {
-    gap: clamp(0.45rem, 0.55vw, 0.5rem);
-    padding: clamp(0.3rem, 0.4vw, 0.35rem) clamp(0.35rem, 0.45vw, 0.4rem);
-    border-radius: clamp(10px, 1.2vw, 11px);
-  }
-  
-  @media (max-width: 1200px) {
-    gap: clamp(0.4rem, 0.5vw, 0.45rem);
-    padding: clamp(0.25rem, 0.35vw, 0.3rem) clamp(0.3rem, 0.4vw, 0.35rem);
-    border-radius: clamp(9px, 1.1vw, 10px);
-  }
-`;
-
-const ClubLogo = styled.img`
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  border-radius: 6px;
-  padding: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  flex-shrink: 0;
-`;
-
-const ClubName = styled.span`
-  font-size: clamp(0.75rem, 0.9vw, 0.85rem);
-  font-weight: 500;
-  color: rgba(200, 230, 245, 0.9);
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  
-  @media (max-width: 1600px) {
-    font-size: clamp(0.65rem, 0.75vw, 0.7rem);
-    }
-    
-    @media (max-width: 1200px) {
-    font-size: clamp(0.6rem, 0.7vw, 0.65rem);
-    }
-  
-  /* mobile */
-  @media (max-width: 768px) {
-    font-size: clamp(0.55rem, 1.8vw, 0.65rem);
-  }
-`;
-/* ================= Footer Styles (integrated into About) ================= */
-
-// Top wave - smooth wave pattern at the top of SandPlane for rugged transition
-const TopWave = styled.svg`
-    position: absolute;
-    top: -10.5vh;               /* Extend above SandPlane to show full wave */
-    left: 0;
+    /* spacing */
     width: 100%;
-    height: 120px;             /* Wave height */
-    z-index: 2;                /* Above SandPlane background, below content */
-    pointer-events: none;
-    overflow: visible;
-    display: block;
+    margin-top: 3rem;
     
-    /* Smooth fade into sand - more gradual transparent blend */
-    mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
-    opacity: 0.95;             /* Slight transparency for smoother blend */
+    /* styles */
+    filter: drop-shadow(0 4px 12px rgba(120, 200, 220, 0.3));
+    
+    /* media queries */
+    @media (max-width: 768px) {
+        margin-top: 1.5rem;
+    }
+`;
+
+const HeaderTitle = styled.h1`
+    /* layout */
+    margin: 0;
+    
+    /* spacing */
+    font-size: clamp(2.5rem, 5vw, 5rem);
+    
+    /* styles */
+    font-weight: 900;
+    background: linear-gradient(135deg, 
+        rgba(150, 220, 240, 1) 0%,
+        rgba(100, 200, 230, 1) 30%,
+        rgba(120, 210, 235, 1) 60%,
+        rgba(160, 230, 245, 1) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 
+        0 0 20px rgba(120, 200, 220, 0.6),
+        0 0 40px rgba(100, 180, 210, 0.4),
+        0 4px 8px rgba(0, 60, 100, 0.3);
+    transform: translateZ(0);
+    ${props => props.$isInViewport 
+        ? css`animation: floatTitle ${props.$isSlowDevice ? '6s' : '4s'} ease-in-out infinite;`
+        : css`animation: none;`}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
+    
+    /* keyframes */
+    @keyframes floatTitle {
+        0%, 100% { transform: translateY(0px) translateZ(0); }
+        50% { transform: translateY(-8px) translateZ(0); }
+    }
+    
+    /* nested selectors */
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
+    
+    /* media queries */
+    @media (max-width: 1800px) {
+        font-size: clamp(2.2rem, 4.5vw, 4.2rem);
+    }
+    
+    @media (max-width: 1600px) {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+    }
     
     @media (max-width: 1200px) {
-        height: 100px;
-        top: -100px;
+        font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    }
+    
+    @media (max-width: 768px) {
+        margin-bottom: 0.5rem;
+        font-size: clamp(2rem, 8vw, 2.5rem);
+    }
+`;
+
+const HeaderSubtitle = styled.h2`
+    /* layout */
+    margin: 0;
+    
+    /* spacing */
+    font-size: clamp(1.1rem, 2vw, 1.8rem);
+    
+    /* styles */
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(180, 230, 245, 0.9);
+    text-shadow: 
+        0 2px 8px rgba(120, 200, 220, 0.5),
+        0 4px 16px rgba(80, 160, 190, 0.3);
+    animation-delay: 0.5s;
+    transform: translateZ(0);
+    ${props => props.$isInViewport 
+        ? css`animation: floatSubtitle ${props.$isSlowDevice ? '6s' : '4s'} ease-in-out infinite;`
+        : css`animation: none;`}
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    will-change: ${props => props.$isInViewport ? 'transform, opacity' : 'auto'};
+    
+    /* keyframes */
+    @keyframes floatSubtitle {
+        0%, 100% { transform: translateY(0px) translateZ(0); opacity: 0.9; }
+        50% { transform: translateY(-6px) translateZ(0); opacity: 1; }
+    }
+    
+    /* nested selectors */
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(1rem, 1.8vw, 1.3rem);
+    }
+    
+    @media (max-width: 768px) {
+        margin-top: 0.25rem;
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+    }
+`;
+
+/* ================= profile section - left side of grid ================== */
+
+const ProfileSection = styled.div`
+    /* layout */
+    display: flex;
+    align-items: flex-start;
+    z-index: 10;
+    
+    /* spacing */
+    width: clamp(85%, 90vw, 90%);
+    gap: clamp(1rem, 2vw, 2rem);
+    margin: clamp(1.5rem, 2vw, 2rem) auto 0;
+    
+    /* media queries */
+    @media (max-width: 1800px) {
+        width: clamp(88%, 92vw, 92%);
+    }
+    
+    @media (max-width: 1600px) {
+        width: clamp(90%, 94vw, 94%);
+        gap: clamp(0.8rem, 1.5vw, 1.5rem);
+    }
+    
+    @media (max-width: 1400px) {
+        width: 92%;
+        gap: clamp(0.75rem, 1.2vw, 1.2rem);
+    }
+    
+    @media (max-width: 1200px) {
+        width: 95%;
+        flex-direction: column;
+        align-items: center;
+        margin-top: clamp(1.5rem, 2vw, 2rem);
     }
     
     @media (max-width: 900px) {
-        height: 80px;
-        top: -80px;
+        width: 98%;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        height: 50px;
-        top: -40px;
+        width: 100%;
+        margin-top: 1rem;
+        gap: 1rem;
+        padding: 0 0.5rem;
     }
 `;
 
-// Sand plane - natural content flow component (like a paragraph block)
-const SandPlane = styled.div`
-    height: 30vh;             /* Simple flat height */
-    width: 100%;
-    position: relative;        /* Natural flow - sits below UnderwaterSection like normal content */
-    z-index: 2;               /* Above UnderwaterSection (z-index: 1) */
-    overflow: visible;         /* Allow TopWave to extend above */
+const ImageSection = styled.div`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    
+    /* spacing */
+    flex: 1;
+    gap: 0;
+    padding: 1rem;
+    min-width: 0;
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        width: 100%;
+        flex: 0 0 auto;
+        max-width: 400px;
+    }
+    
+    @media (max-width: 768px) {
+        max-width: 100%;
+        padding: 0.5rem;
+    }
+`;
 
+/* ========= profile image ========== */
+
+const ProfileImageFrame = styled.div`
+    /* layout */
+    position: relative;
+    flex-shrink: 0;
+    
+    /* spacing */
+    width: 90%;
+    max-width: 450px;
+    aspect-ratio: 1;
+    padding: 8px;
+    
+    /* styles */
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(100, 180, 200, 0.15) 100%
+    );
+    box-shadow: 
+        0 8px 32px rgba(31, 38, 135, 0.37),
+        inset 0 2px 8px rgba(255, 255, 255, 0.15),
+        0 0 40px rgba(100, 200, 220, 0.2);
+    animation: ${floatBubble} 6s ease-in-out infinite;
+    
+    /* pseudo-elements */
+    &::before {
+        /* layout */
+        inset: -4px;
+        position: absolute;
+        z-index: -1;
+        
+        /* styles */
+        content: '';
+        opacity: 0.6;
+        border-radius: 50%;
+        filter: blur(12px);
+        background: linear-gradient(
+            135deg,
+            rgba(150, 220, 240, 0.3) 0%,
+            rgba(100, 200, 230, 0.2) 50%,
+            rgba(80, 180, 210, 0.3) 100%
+        );
+    }
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        width: 80%;
+        max-width: 280px;
+    }
+    
+    @media (max-width: 600px) {
+        width: 65%;
+        max-width: 250px;
+    }
+    
+    @media (max-width: 768px) {
+        width: 70%;
+        max-width: 220px;
+        padding: 6px;
+    }
+`;
+
+const ProfileImage = styled.img`
+    /* layout */
+    display: block;
+    
+    /* spacing */
+    width: 100%;
+    height: 100%;
+    
+    /* styles */
+    border-radius: 50%;
+    object-fit: cover;
+`;
+
+/* ========= social bubbles ========== */
+
+const SocialBubblesContainer = styled.div`
+    /* layout */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    
+    /* spacing */
+    width: 100%;
+    flex: 1;
+    min-height: 350px;
+    margin-top: 1rem;
+    padding-bottom: 2rem;
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        min-height: 300px;
+        margin-top: 1.5rem;
+    }
+    
+    @media (max-width: 600px) {
+        min-height: 280px;
+        margin-top: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        min-height: 200px;
+        margin-top: 0.75rem;
+        padding-bottom: 1rem;
+    }
+`;
+
+// social bubble - glossy underwater bubble effect
+const SocialBubble = styled.a`
+    /* layout */
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    
+    /* spacing */
+    width: 70px;
+    height: 70px;
+    
+    /* styles */
+    border-radius: 50%;
+    color: rgba(220, 240, 255, 0.95);
+    backdrop-filter: blur(12px);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.12) 50%,
+        rgba(150, 220, 240, 0.18) 100%
+    );
+    box-shadow: 
+        inset -4px -4px 12px rgba(255, 255, 255, 0.4),
+        inset 4px 4px 12px rgba(100, 180, 200, 0.2),
+        0 8px 32px rgba(100, 200, 220, 0.3),
+        0 4px 16px rgba(31, 38, 135, 0.4);
+    transform: translateZ(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
+    will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
+    
+    /* pseudo-elements */
+    &::before {
+        /* layout */
+        top: 8%;
+        left: 15%;
+        position: absolute;
+        
+        /* spacing */
+        width: 45%;
+        height: 45%;
+        
+        /* styles */
+        content: '';
+        pointer-events: none;
+        border-radius: 50%;
+        filter: blur(3px);
+        background: radial-gradient(
+            circle at 30% 30%,
+            rgba(255, 255, 255, 0.6) 0%,
+            rgba(255, 255, 255, 0.3) 40%,
+            transparent 70%
+        );
+    }
+    
+    &::after {
+        /* layout */
+        bottom: 12%;
+        left: 20%;
+        position: absolute;
+        
+        /* spacing */
+        width: 60%;
+        height: 30%;
+        
+        /* styles */
+        content: '';
+        pointer-events: none;
+        border-radius: 50%;
+        filter: blur(4px);
+        background: radial-gradient(
+            ellipse at center,
+            rgba(0, 40, 80, 0.2) 0%,
+            transparent 70%
+        );
+    }
+    
+    /* nested selectors */
+    &:nth-child(1) {
+        left: 45%;
+        bottom: 5%;
+        width: 70px;
+        height: 70px;
+        ${props => props.$isInViewport 
+            ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '10s' : '7s'} ease-in-out infinite;`
+            : css`animation: none;`}
+        animation-delay: ${props => props.$delay}s;
+        animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    }
+    
+    &:nth-child(2) {
+        left: 55%;
+        bottom: 28%;
+        width: 80px;
+        height: 80px;
+        ${props => props.$isInViewport 
+            ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '11s' : '7.5s'} ease-in-out infinite;`
+            : css`animation: none;`}
+        animation-delay: ${props => props.$delay}s;
+        animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    }
+    
+    &:nth-child(3) {
+        left: 40%;
+        bottom: 52%;
+        width: 88px;
+        height: 88px;
+        ${props => props.$isInViewport 
+            ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '10.5s' : '7.2s'} ease-in-out infinite;`
+            : css`animation: none;`}
+        animation-delay: ${props => props.$delay}s;
+        animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    }
+    
+    &:nth-child(4) {
+        left: 48%;
+        bottom: 78%;
+        width: 96px;
+        height: 96px;
+        ${props => props.$isInViewport 
+            ? css`animation: ${floatBubble} ${props.$isSlowDevice ? '12s' : '8s'} ease-in-out infinite;`
+            : css`animation: none;`}
+        animation-delay: ${props => props.$delay}s;
+        animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
+    }
+    
+    [data-loading="true"] & {
+        animation-play-state: paused;
+    }
+    
+    /* hover effects */
+    &:hover {
+        color: rgba(255, 255, 255, 1);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-10px) scale(1.15) translateZ(0);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.35) 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(150, 220, 240, 0.28) 100%
+        );
+        box-shadow: 
+            inset -4px -4px 16px rgba(255, 255, 255, 0.5),
+            inset 4px 4px 16px rgba(100, 180, 200, 0.3),
+            0 12px 48px rgba(120, 220, 240, 0.5),
+            0 6px 24px rgba(31, 38, 135, 0.5);
+    }
+    
+    /* nested selectors */
+    svg {
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 2px 4px rgba(0, 40, 80, 0.3));
+        transition: transform 0.3s ease;
+    }
+    
+    &:nth-child(1) svg {
+        width: 26px;
+        height: 26px;
+    }
+    
+    &:nth-child(2) svg {
+        width: 28px;
+        height: 28px;
+    }
+    
+    &:nth-child(3) svg {
+        width: 30px;
+        height: 30px;
+    }
+    
+    &:nth-child(4) svg {
+        width: 32px;
+        height: 32px;
+    }
+    
+    &:hover svg {
+        transform: scale(1.1);
+    }
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        &:nth-child(1) {
+            width: 60px;
+            height: 60px;
+        }
+        
+        &:nth-child(2) {
+            width: 68px;
+            height: 68px;
+        }
+        
+        &:nth-child(3) {
+            width: 76px;
+            height: 76px;
+        }
+        
+        &:nth-child(4) {
+            width: 84px;
+            height: 84px;
+        }
+        
+        svg {
+            width: 22px;
+            height: 22px;
+        }
+    }
+    
+    @media (max-width: 600px) {
+        &:nth-child(1) {
+            width: 52px;
+            height: 52px;
+        }
+        
+        &:nth-child(2) {
+            width: 60px;
+            height: 60px;
+        }
+        
+        &:nth-child(3) {
+            width: 66px;
+            height: 66px;
+        }
+        
+        &:nth-child(4) {
+            width: 72px;
+            height: 72px;
+        }
+        
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        &:nth-child(1) {
+            left: 45%;
+            bottom: 8%;
+            width: 48px;
+            height: 48px;
+        }
+        
+        &:nth-child(2) {
+            left: 55%;
+            bottom: 30%;
+            width: 54px;
+            height: 54px;
+        }
+        
+        &:nth-child(3) {
+            left: 40%;
+            bottom: 54%;
+            width: 60px;
+            height: 60px;
+        }
+        
+        &:nth-child(4) {
+            left: 48%;
+            bottom: 80%;
+            width: 66px;
+            height: 66px;
+        }
+        
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+`;
+
+/* ================= info grid section - right side of grid ================== */
+
+const InfoGridSection = styled.div`
+    /* spacing */
+    flex: 3;
+    min-width: 0;
+    padding-bottom: var(--section-pad);
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        width: 100%;
+        flex: 0 0 auto;
+    }
+    
+    @media (max-width: 768px) {
+        padding-bottom: 1rem;
+    }
+`;
+
+// 3x2 grid of cards
+const InfoGrid = styled.div`
+    /* layout */
+    display: grid;
+    align-items: stretch;
+    
+    /* spacing */
+    gap: clamp(1rem, 1.5vw, 1.5rem);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(300px, auto);
+    
+    /* media queries */
+    @media (max-width: 1800px) {
+        gap: clamp(0.9rem, 1.3vw, 1.25rem);
+        grid-auto-rows: minmax(280px, auto);
+    }
+    
+    @media (max-width: 1600px) {
+        gap: clamp(0.7rem, 1vw, 0.95rem);
+        grid-auto-rows: minmax(240px, auto);
+    }
+    
+    @media (max-width: 1400px) {
+        gap: clamp(0.65rem, 0.9vw, 0.85rem);
+        grid-auto-rows: minmax(220px, auto);
+    }
+    
+    @media (max-width: 1100px) {
+        gap: clamp(1rem, 1.5vw, 1.5rem);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: minmax(280px, auto);
+    }
+    
+    @media (max-width: 900px) {
+        grid-auto-rows: minmax(260px, auto);
+    }
+    
+    @media (max-width: 600px) {
+        gap: 1.5rem;
+        grid-template-columns: 1fr;
+        grid-auto-rows: minmax(240px, auto);
+    }
+    
+    @media (max-width: 768px) {
+        gap: 1.25rem;
+        grid-auto-rows: minmax(220px, auto);
+    }
+`;
+
+// individual glassmorphism card
+const GlassCard = styled.article`
+    /* layout */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    align-self: stretch;
+    
+    /* spacing */
+    min-width: 0;
+    min-height: 100%;
+    padding: clamp(0.9rem, 1.2vw, 1.25rem);
+    border-radius: clamp(16px, 2vw, 20px);
+    
+    /* styles */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    box-shadow: 
+        0 8px 32px rgba(31, 38, 135, 0.37),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateZ(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    
+    /* hover effects */
+    &:hover {
+        transform: translateY(-5px) translateZ(0);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.15) 0%,
+            rgba(255, 255, 255, 0.08) 100%
+        );
+        box-shadow: 
+            0 12px 40px rgba(31, 38, 135, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 30px rgba(100, 200, 220, 0.3);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        padding: clamp(0.65rem, 0.85vw, 0.85rem);
+        border-radius: clamp(14px, 1.8vw, 18px);
+    }
+    
+    @media (max-width: 1200px) {
+        padding: clamp(0.6rem, 0.8vw, 0.75rem);
+        border-radius: clamp(12px, 1.6vw, 16px);
+    }
+    
+    @media (max-width: 768px) {
+        padding: 0.9rem;
+        border-radius: 14px;
+    }
+`;
+
+// card title
+const CardTitle = styled.h3`
+    /* layout */
+    margin: 0 0 clamp(0.3rem, 0.5vw, 0.5rem) 0;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    /* spacing */
+    font-size: clamp(1.2rem, 1.8vw, 1.75rem);
+    
+    /* styles */
+    font-weight: 700;
+    background: linear-gradient(135deg, 
+        rgba(200, 230, 245, 1) 0%,
+        rgba(150, 210, 230, 1) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 8px rgba(120, 200, 220, 0.3);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+        margin: 0 0 clamp(0.25rem, 0.4vw, 0.4rem) 0;
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+        margin: 0 0 clamp(0.2rem, 0.35vw, 0.35rem) 0;
+    }
+    
+    @media (max-width: 768px) {
+        margin-bottom: 0.4rem;
+        font-size: clamp(1rem, 4vw, 1.2rem);
+    }
+`;
+
+// card text.
+const CardTextLarge = styled.p`
+    /* layout */
+    margin: 0;
+    display: flex;
+    align-items: center;
+    text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    /* spacing */
+    flex: 1;
+    font-size: clamp(0.9rem, 1.15vw, 1.05rem);
+    line-height: 1.65;
+    padding: 0 0.75rem;
+    
+    /* styles */
+    color: rgba(220, 240, 250, 0.85);
+    text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        margin: 0;
+        font-size: clamp(0.8rem, 1vw, 0.95rem);
+        line-height: 1.55;
+        padding: 0 clamp(0.6rem, 1vw, 1.1rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+        line-height: 1.5;
+        padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.8rem, 2.8vw, 0.95rem);
+        line-height: 1.55;
+        padding: 0 0.5rem;
+    }
+`;
+
+/* =========  goals ========== */
+
+const GoalsList = styled.ul`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    
+    /* spacing */
+    flex: 1;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
+    
+    /* styles */
+    list-style: none;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.6rem, 0.8vw, 0.7rem);
+        padding: 0 clamp(0.6rem, 1vw, 1.1rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.5rem, 0.7vw, 0.65rem);
+        padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+    }
+    
+    @media (max-width: 768px) {
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+    }
+`;
+
+// individual goal item with custom bullet - matching experience.jsx style
+const GoalItem = styled.li`
+    /* layout */
+    position: relative;
+    text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    /* spacing */
+    font-size: clamp(0.8rem, 1vw, 0.95rem);
+    line-height: 1.65;
+    padding-left: 1.75rem;
+    
+    /* styles */
+    color: rgba(220, 240, 250, 0.85);
+    text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+    
+    /* pseudo-elements */
+    &::before {
+        /* layout */
+        left: 0;
+        top: 1em;
+        position: absolute;
+        
+        /* spacing */
+        width: 12px;
+        height: 12px;
+        
+        /* styles */
+        content: '';
+        flex-shrink: 0;
+        border-radius: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, 
+            rgba(100, 200, 230, 1) 0%,
+            rgba(100, 200, 230, 0.85) 50%,
+            rgba(100, 200, 230, 0.7) 100%
+        );
+        box-shadow: 
+            0 0 10px rgba(100, 200, 230, 0.5),
+            inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    }
+    
+    &::after {
+        /* layout */
+        left: 6px;
+        top: 1em;
+        position: absolute;
+        
+        /* spacing */
+        width: 5px;
+        height: 5px;
+        
+        /* styles */
+        content: '';
+        pointer-events: none;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.4);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.7rem, 0.9vw, 0.8rem);
+        line-height: 1.55;
+        padding-left: clamp(1.5rem, 1.7vw, 1.6rem);
+        
+        &::before {
+            width: 10px;
+            height: 10px;
+        }
+        
+        &::after {
+            left: 5px;
+            width: 4px;
+            height: 4px;
+        }
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.65rem, 0.85vw, 0.75rem);
+        line-height: 1.5;
+        padding-left: clamp(1.4rem, 1.6vw, 1.5rem);
+        
+        &::before {
+            width: 9px;
+            height: 9px;
+        }
+        
+        &::after {
+            left: 4.5px;
+            width: 3.5px;
+            height: 3.5px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+        line-height: 1.5;
+        padding-left: 1.5rem;
+        
+        &::before {
+            width: 10px;
+            height: 10px;
+        }
+        
+        &::after {
+            left: 5px;
+            width: 4px;
+            height: 4px;
+        }
+    }
+`;
+
+/* =========  emojis at bottom of cards ========== */
+
+const EmojiRow = styled.div`
+    /* layout */
+    display: flex;
+    justify-content: center;
+    
+    /* spacing */
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    
+    /* styles */
+    opacity: 0.95;
+    filter: drop-shadow(0 2px 8px rgba(120, 200, 220, 0.35));
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.35rem, 0.5vw, 0.45rem);
+        padding-top: clamp(0.5rem, 0.7vw, 0.65rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.3rem, 0.45vw, 0.4rem);
+        padding-top: clamp(0.45rem, 0.6vw, 0.6rem);
+    }
+    
+    @media (max-width: 768px) {
+        gap: 0.35rem;
+        padding-top: 0.5rem;
+    }
+`;
+
+// individual emoji bubble
+const Emoji = styled.span`
+    /* layout */
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+    
+    /* spacing */
+    width: 1.9rem;
+    height: 1.9rem;
+    font-size: 1.1rem;
+    
+    /* styles */
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    
+    /* hover effects */
+    &:hover {
+        transform: translateY(-2px) scale(1.06);
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.28);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        width: clamp(1.5rem, 1.8vw, 1.7rem);
+        height: clamp(1.5rem, 1.8vw, 1.7rem);
+        font-size: clamp(0.9rem, 1.1vw, 1rem);
+    }
+    
+    @media (max-width: 1200px) {
+        width: clamp(1.4rem, 1.7vw, 1.6rem);
+        height: clamp(1.4rem, 1.7vw, 1.6rem);
+        font-size: clamp(0.85rem, 1vw, 0.95rem);
+    }
+    
+    @media (max-width: 768px) {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.9rem;
+    }
+`;
+
+/* =========  mantras ========== */
+
+const MantrasWrapper = styled.div`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    
+    /* spacing */
+    flex: 1;
+    gap: 0.25rem;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.35rem, 0.45vw, 0.4rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.3rem, 0.4vw, 0.35rem);
+    }
+    
+    @media (max-width: 768px) {
+        gap: 0.25rem;
+    }
+`;
+
+const MantraText = styled.div`
+    /* layout */
+    text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    /* spacing */
+    font-size: 0.95rem;
+    line-height: 1.65;
+    padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
+    
+    /* styles */
+    color: rgba(220, 240, 250, 0.85);
+    text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.8rem, 1vw, 0.9rem);
+        line-height: 1.55;
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+        line-height: 1.5;
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+        line-height: 1.5;
+        padding: 0 0.5rem;
+    }
+`;
+
+const MantraHighlight = styled.div`
+    /* layout */
+    display: block;
+    margin-bottom: clamp(0.2rem, 0.3vw, 0.25rem);
+    text-align: center;
+    
+    /* spacing */
+    font-size: 1rem;
+    
+    /* styles */
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, 
+        rgba(255, 235, 120, 1) 0%,
+        rgba(255, 200, 100, 1) 50%,
+        rgba(255, 180, 90, 1) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 8px rgba(255, 200, 100, 0.4);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.8rem, 0.95vw, 0.9rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.65rem, 2.2vw, 0.75rem);
+    }
+`;
+
+/* =========  music card content ========== */
+
+const MusicWrapper = styled.div`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    
+    /* spacing */
+    flex: 1;
+`;
+
+const MusicIntroText = styled.p`
+    /* layout */
+    margin: 0 0 clamp(0.4rem, 0.6vw, 0.5rem) 0;
+    text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    /* spacing */
+    font-size: clamp(0.75rem, 0.95vw, 0.9rem);
+    line-height: 1.6;
+    padding: 0 clamp(0.75rem, 1.2vw, 1.5rem);
+    
+    /* styles */
+    color: rgba(220, 240, 250, 0.85);
+    text-shadow: 0 1px 3px rgba(0, 40, 80, 0.3);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        margin: 0 0 clamp(0.3rem, 0.45vw, 0.4rem) 0;
+        font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+        line-height: 1.45;
+        padding: 0 clamp(0.5rem, 0.85vw, 1rem);
+    }
+    
+    @media (max-width: 1200px) {
+        margin: 0 0 clamp(0.25rem, 0.4vw, 0.35rem) 0;
+        font-size: clamp(0.6rem, 0.75vw, 0.7rem);
+        line-height: 1.4;
+        padding: 0 clamp(0.4rem, 0.75vw, 0.85rem);
+    }
+    
+    @media (max-width: 768px) {
+        margin-bottom: 0.4rem;
+        font-size: clamp(0.65rem, 2.2vw, 0.75rem);
+        line-height: 1.45;
+        padding: 0 0.5rem;
+    }
+`;
+
+const ArtistGrid = styled.div`
+    /* layout */
+    display: grid;
+    
+    /* spacing */
+    gap: clamp(0.4rem, 0.6vw, 0.5rem);
+    margin-top: clamp(0.4rem, 0.6vw, 0.5rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.3rem, 0.45vw, 0.4rem);
+        margin-top: clamp(0.3rem, 0.45vw, 0.4rem);
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.25rem, 0.4vw, 0.35rem);
+        margin-top: clamp(0.25rem, 0.4vw, 0.35rem);
+    }
+    
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+    
+    @media (max-width: 768px) {
+        gap: 0.4rem;
+        margin-top: 0.4rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+`;
+
+const ArtistName = styled.div`
+    /* layout */
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 0;
+    
+    /* spacing */
+    font-size: clamp(0.7rem, 0.9vw, 0.875rem);
+    padding: clamp(0.1rem, 0.2vw, 0.15rem) clamp(0.4rem, 0.6vw, 0.5rem);
+    border-radius: clamp(10px, 1.2vw, 12px);
+    
+    /* styles */
+    color: rgba(200, 230, 245, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    text-overflow: ellipsis;
+    transition: all 0.2s ease;
+    
+    /* hover effects */
+    &:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        white-space: normal;
+        overflow: visible;
+        box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.65rem, 0.8vw, 0.8rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.6rem, 0.75vw, 0.75rem);
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.6rem, 2vw, 0.7rem);
+        padding: 0.1rem 0.4rem;
+    }
+`;
+
+const CardDate = styled.span`
+    /* layout */
+    display: inline-block;
+    margin: 0;
+    
+    /* spacing */
+    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+    line-height: 1.1;
+    
+    /* styles */
+    font-style: italic;
+    color: rgba(180, 220, 240, 0.85);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.65rem, 0.75vw, 0.7rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.55rem, 1.8vw, 0.65rem);
+    }
+`;
+
+/* =========  education card content ========== */
+
+const EducationContent = styled.div`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    /* spacing */
+    flex: 1;
+    gap: 0.75rem;
+    margin-top: 0;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.5rem, 0.7vw, 0.6rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.45rem, 0.6vw, 0.55rem);
+    }
+`;
+
+const DegreeSection = styled.div`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    
+    /* spacing */
+    gap: 0.25rem;
+    padding-bottom: 0.5rem;
+    
+    /* styles */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.15rem, 0.2vw, 0.2rem);
+        padding-bottom: clamp(0.35rem, 0.45vw, 0.4rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.1rem, 0.15vw, 0.15rem);
+        padding-bottom: clamp(0.3rem, 0.4vw, 0.35rem);
+    }
+`;
+
+const DegreeName = styled.h4`
+    /* layout */
+    margin: 0;
+    text-align: center;
+    
+    /* spacing */
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    line-height: 1.2;
+    
+    /* styles */
+    font-weight: 700;
+    background: linear-gradient(135deg, 
+        rgba(230, 245, 255, 1) 0%,
+        rgba(180, 220, 240, 1) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.85rem, 1vw, 0.95rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.8rem, 0.95vw, 0.9rem);
+    }
+`;
+
+const UniversityName = styled.p`
+    /* layout */
+    margin: 0;
+    text-align: center;
+    
+    /* spacing */
+    font-size: clamp(0.85rem, 1vw, 1rem);
+    line-height: 1.2;
+    
+    /* styles */
+    color: rgba(200, 230, 245, 0.85);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.6rem, 2vw, 0.7rem);
+    }
+`;
+
+const InfoRow = styled.div`
+    /* layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* spacing */
+    gap: 1.25rem;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.9rem, 1.1vw, 1rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.8rem, 1vw, 0.9rem);
+    }
+`;
+
+const InfoItem = styled.div`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    /* spacing */
+    gap: 0.15rem;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.1rem, 0.12vw, 0.12rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.08rem, 0.1vw, 0.1rem);
+    }
+`;
+
+const InfoLabel = styled.span`
+    /* spacing */
+    font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+    
+    /* styles */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(150, 200, 220, 0.7);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.55rem, 0.65vw, 0.6rem);
+    }
+`;
+
+const InfoDivider = styled.div`
+    /* spacing */
+    width: 1px;
+    height: 22px;
+    
+    /* styles */
+    background: linear-gradient(to bottom, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%
+    );
+`;
+
+const GPAText = styled.span`
+    /* spacing */
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    
+    /* styles */
+    font-weight: 700;
+    color: rgba(150, 220, 240, 1);
+    text-shadow: 0 2px 8px rgba(120, 200, 220, 0.4);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.9rem, 1.1vw, 1rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.85rem, 1vw, 0.95rem);
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    }
+`;
+
+/* =========  clubs ========== */
+
+const ClubsSection = styled.div`
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    
+    /* spacing */
+    gap: 0.5rem;
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.35rem, 0.45vw, 0.4rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.3rem, 0.4vw, 0.35rem);
+    }
+`;
+
+const ClubsLabel = styled.span`
+    /* layout */
+    margin-bottom: 0.125rem;
+    text-align: center;
+    
+    /* spacing */
+    font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+    
+    /* styles */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(150, 200, 220, 0.8);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.55rem, 0.65vw, 0.6rem);
+    }
+`;
+
+const ClubsList = styled.div`
+    /* layout */
+    display: grid;
+    
+    /* spacing */
+    gap: 0.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.35rem, 0.45vw, 0.4rem);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.3rem, 0.4vw, 0.35rem);
+    }
+`;
+
+const ClubItem = styled.div`
+    /* layout */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    
+    /* spacing */
+    gap: 0.6rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 12px;
+    
+    /* styles */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    
+    /* hover effects */
+    &:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 12px rgba(100, 200, 220, 0.2);
+    }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        gap: clamp(0.45rem, 0.55vw, 0.5rem);
+        padding: clamp(0.3rem, 0.4vw, 0.35rem) clamp(0.35rem, 0.45vw, 0.4rem);
+        border-radius: clamp(10px, 1.2vw, 11px);
+    }
+    
+    @media (max-width: 1200px) {
+        gap: clamp(0.4rem, 0.5vw, 0.45rem);
+        padding: clamp(0.25rem, 0.35vw, 0.3rem) clamp(0.3rem, 0.4vw, 0.35rem);
+        border-radius: clamp(9px, 1.1vw, 10px);
+    }
+`;
+
+const ClubLogo = styled.img`
+    /* layout */
+    flex-shrink: 0;
+    
+    /* spacing */
+    width: 28px;
+    height: 28px;
+    padding: 3px;
+    border-radius: 6px;
+    
+    /* styles */
+    object-fit: contain;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+`;
+
+const ClubName = styled.span`
+    /* layout */
+    white-space: nowrap;
+    overflow: hidden;
+    
+    /* spacing */
+    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+    
+    /* styles */
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-overflow: ellipsis;
+    color: rgba(200, 230, 245, 0.9);
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        font-size: clamp(0.65rem, 0.75vw, 0.7rem);
+    }
+    
+    @media (max-width: 1200px) {
+        font-size: clamp(0.6rem, 0.7vw, 0.65rem);
+    }
+    
+    @media (max-width: 768px) {
+        font-size: clamp(0.55rem, 1.8vw, 0.65rem);
+    }
+`;
+
+/* ==================== footer ==================== */
+
+// top wave - smooth wave pattern at the top of sand plane for rugged transition
+const TopWave = styled.svg`
+    /* layout */
+    position: absolute;
+    top: -10.5vh;
+    left: 0;
+    display: block;
+    overflow: visible;
+    pointer-events: none;
+    
+    /* spacing */
+    width: 100%;
+    height: 120px;
+    
+    /* styles */
+    z-index: 2;
+    opacity: 0.95;
+    mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    
+    /* media queries */
+    @media (max-width: 1200px) {
+        top: -100px;
+        height: 100px;
+    }
+    
+    @media (max-width: 900px) {
+        top: -80px;
+        height: 80px;
+    }
+    
+    @media (max-width: 768px) {
+        top: -40px;
+        height: 50px;
+    }
+`;
+
+// sand plane background - natural content flow component
+const SandPlane = styled.div`
+    /* layout */
+    position: relative;
+    overflow: visible;
+    
+    /* spacing */
+    width: 100%;
+    height: 30vh;
+    
+    /* styles */
+    z-index: 2;
     background: linear-gradient(
         to bottom,
         #5d4a3a 0%,
@@ -2507,14 +2670,19 @@ const SandPlane = styled.div`
         #8a7358 70%,
         #958066 100%
     );
-
+    
+    /* pseudo-elements */
     &::before {
+        /* layout */
         content: "";
         position: absolute;
         inset: 0;
-        /* DRAMATIC hills and valleys - MAXIMUM contrast for 3D terrain */
+        pointer-events: none;
+        
+        /* styles */
+        filter: blur(9px);
+        mix-blend-mode: overlay;
         background:
-            /* Depth gradient - darker toward bottom (farther away) */
             linear-gradient(
                 to bottom,
                 rgba(0,0,0,0) 0%,
@@ -2522,8 +2690,6 @@ const SandPlane = styled.div`
                 rgba(0,0,0,0.14) 65%,
                 rgba(0,0,0,0.22) 100%
             ),
-            
-            /* Large raised mounds (BRIGHT highlights) - MAXIMUM contrast */
             radial-gradient(ellipse 450px 200px at 18% 22%, 
                 rgba(255,255,255,0.7) 0%, 
                 rgba(255,255,255,0.4) 32%, 
@@ -2549,8 +2715,6 @@ const SandPlane = styled.div`
                 rgba(255,255,255,0.39) 32%, 
                 rgba(255,255,255,0.13) 52%, 
                 transparent 66%),
-            
-            /* Deep valleys (DARK shadows) - DRAMATIC depth */
             radial-gradient(ellipse 360px 170px at 35% 38%, 
                 rgba(0,0,0,0.55) 0%, 
                 rgba(0,0,0,0.32) 36%, 
@@ -2576,8 +2740,6 @@ const SandPlane = styled.div`
                 rgba(0,0,0,0.31) 36%, 
                 rgba(0,0,0,0.11) 54%, 
                 transparent 66%),
-            
-            /* Medium ridges for more detail */
             radial-gradient(ellipse 250px 120px at 28% 45%, 
                 rgba(255,255,255,0.45) 0%, 
                 rgba(255,255,255,0.15) 48%, 
@@ -2590,55 +2752,61 @@ const SandPlane = styled.div`
                 rgba(255,255,255,0.4) 0%, 
                 rgba(255,255,255,0.12) 46%, 
                 transparent 68%);
-        
-        filter: blur(9px);
-        mix-blend-mode: overlay;
-        pointer-events: none;
     }
-
+    
     &::after {
+        /* layout */
         content: "";
         position: absolute;
         inset: 0;
-        /* Subtle sandy grain texture */
-        background-image:
-            radial-gradient(circle, rgba(255, 255, 255, 0.08) 25%, transparent 60%),
-            radial-gradient(circle, rgba(0, 0, 0, 0.06) 25%, transparent 60%);
+        pointer-events: none;
+        
+        /* spacing */
         background-size: 2px 2px, 2.5px 2.5px;
         background-position: 0 0, 1px 1px;
+        
+        /* styles */
         opacity: 0.35;
         filter: blur(0.3px);
         mix-blend-mode: soft-light;
-        pointer-events: none;
+        background-image:
+            radial-gradient(circle, rgba(255, 255, 255, 0.08) 25%, transparent 60%),
+            radial-gradient(circle, rgba(0, 0, 0, 0.06) 25%, transparent 60%);
     }
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         height: 10vh;
         min-height: 100px;
     }
 `;
 
-// Rock pile component - positioned relative to SandPlane
+// rock pile component - positioned relative to sand plane
 const UnderwaterObject = styled.div`
+    /* layout */
     position: absolute;
-    bottom: 0;                /* Base positioning from bottom of SandPlane */
-    z-index: 25;               /* Above sand plane and all other content */
-    overflow: visible;         /* ensure no clipping of large images */
-    pointer-events: none;      /* allow clicks to pass through */
+    bottom: 0;
+    overflow: visible;
+    pointer-events: none;
     
-    /* Subtle underwater glow effect */
+    /* styles */
+    z-index: 25;
     filter: drop-shadow(0 4px 12px rgba(0, 40, 80, 0.3));
     
-    /* Allow images inside to receive pointer events */
+    /* nested selectors */
     img {
-        pointer-events: auto;
+        /* layout */
         display: block;
+        
+        /* spacing */
         width: auto;
         height: auto;
+        
+        /* styles */
+        pointer-events: auto;
     }
     
-    /* Desktop default sizes */
+    /* media queries */
     @media (min-width: 769px) {
         img {
             width: clamp(180px, 12vw, 360px);
@@ -2647,7 +2815,6 @@ const UnderwaterObject = styled.div`
             max-height: 360px;
         }
         
-        /* Rockpile images - larger size */
         img.rockpile-image {
             width: clamp(280px, 18vw, 360px);
             height: clamp(280px, 18vw, 360px);
@@ -2656,80 +2823,92 @@ const UnderwaterObject = styled.div`
         }
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        /* Hide all underwater objects on mobile */
         display: none;
     }
 `;
 
-// Sand Text/Icon Overlay - positioned relative to SandPlane
+/* =========  text in sand ========== */
+
+// sand text/icon overlay - positioned relative to sand plane
 const SandTextLayer = styled.div`
+    /* layout */
     position: absolute;
-    bottom: 0;                 /* Base from bottom of SandPlane */
+    bottom: 0;
     left: 0;
-    width: 100%;
     pointer-events: none;
-    height: 30vh;
-    z-index: 15;               /* above sand, below rocks */
     
-    /* mobile */
+    /* spacing */
+    width: 100%;
+    height: 30vh;
+    
+    /* styles */
+    z-index: 15;
+    
+    /* media queries */
     @media (max-width: 768px) {
-        /* Hide decorative text on mobile */
         display: none;
     }
 `;
 
-/* Reusable engraved sand text */
+// reusable engraved sand text
 const SandText = styled.div`
+    /* layout */
     position: absolute;
     white-space: nowrap;
+    
+    /* spacing */
     letter-spacing: 0.04em;
+    
+    /* styles */
     color: var(--sand-dark);
     text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.2);
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         &.contact-text {
+            top: 70% !important;
             font-size: clamp(1.2rem, 5.5vw, 1.6rem) !important;
-            top: 70% !important; /* Move down a bit */
         }
         
         &.moon-text {
+            top: 45% !important;
             font-size: clamp(0.9rem, 4vw, 1.2rem) !important;
-            top: 45% !important; /* Move down a bit */
         }
     }
 `;
 
-/* "Drawn in sand" icons */
+// "drawn in sand" icons
 const SandIconWrap = styled.div`
+    /* layout */
     position: absolute;
     transform: translateX(-50%);
     pointer-events: none;
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         svg {
             width: clamp(24px, 6vw, 30px) !important;
             height: clamp(24px, 6vw, 30px) !important;
         }
         
-        /* Space out the icons from the text */
         &:nth-of-type(1) {
-            left: 20% !important; /* Left icon - move left */
-            top: 75% !important; /* Move down */
+            left: 20% !important;
+            top: 75% !important;
         }
         
         &:nth-of-type(2) {
-            left: 80% !important; /* Right icon - move right */
-            top: 75% !important; /* Move down */
+            left: 80% !important;
+            top: 75% !important;
         }
     }
 `;
 
 const SandIcon = styled.svg`
+    /* layout */
     display: block;
+    
+    /* styles */
     fill: none;
     stroke: var(--sand-dark);
     stroke-width: 2.25;
@@ -2739,265 +2918,322 @@ const SandIcon = styled.svg`
         drop-shadow(-1px -1px 0 var(--sand-light))
         drop-shadow( 1px  1px 0 rgba(0,0,0,0.28));
     
+    /* media queries */
     @media (max-width: 700px) {
         stroke-width: 2.6;
     }
 `;
 
-// Rocket container (back to top button) - positioned relative to SandPlane
+// rocket container (back to top button)
 const RocketContainer = styled.div`
+    /* layout */
     position: absolute;
-    bottom: 0;                 /* Base from bottom of SandPlane */
-    z-index: 25;               /* Same as UnderwaterObject */
+    bottom: 0;
     overflow: visible;
     cursor: pointer;
     pointer-events: auto;
-    transform: translateX(-50%);  /* Center horizontally */
+    transform: translateX(-50%);
+    
+    /* styles */
+    z-index: 25;
     transition: transform 0.3s ease;
     
+    /* nested selectors */
     img {
+        /* layout */
         display: block;
+        
+        /* spacing */
         width: 250px;
         height: 250px;
     }
     
+    /* hover effects */
     &:hover {
-        transform: translateX(-50%) translateY(-15px);  /* Maintain centering on hover */
+        transform: translateX(-50%) translateY(-15px);
     }
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
-        /* Hide rocket on mobile */
         display: none;
     }
 `;
 
-// Made with Love container - positioned relative to SandPlane
+// made with love container
 const MadeWithLoveContainer = styled.div`
+    /* layout */
     position: absolute;
-    bottom: 1rem;                /* Position from bottom of SandPlane */
+    bottom: 1rem;
     left: 2.5%;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    z-index: 30;                /* Above everything */
     pointer-events: none;
-    color: rgba(255, 255, 255, 0.7);
+    
+    /* spacing */
+    gap: 0.3rem;
     font-size: 2rem;
     
+    /* styles */
+    z-index: 30;
+    color: rgba(255, 255, 255, 0.7);
+    
+    /* media queries */
     @media (max-width: 1200px) {
         font-size: 1.5rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
         bottom: 0.5rem;
         left: 1rem;
         right: auto;
+        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
     }
 `;
 
-// Heart emoji - stands up straight without sand effect
+// heart emoji
 const HeartEmoji = styled.span`
-    font-size: 2rem;
+    /* layout */
     display: inline-block;
+    
+    /* spacing */
+    font-size: 2rem;
+    
+    /* styles */
     animation: heartbeat 2s ease-in-out infinite;
     
+    /* keyframes */
     @keyframes heartbeat {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.1); }
     }
     
+    /* media queries */
     @media (max-width: 1200px) {
         font-size: 1.5rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(0.7rem, 2.5vw, 0.9rem);
     }
 `;
 
-// Copyright container - positioned relative to SandPlane
+// copyright container
 const CopyrightContainer = styled.div`
+    /* layout */
     position: absolute;
-    bottom: 1rem;                /* Position from bottom of SandPlane */
+    bottom: 1rem;
     right: 2.5%;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    z-index: 30;                /* Above everything */
     pointer-events: none;
+    
+    /* spacing */
+    gap: 0.3rem;
     font-size: 1.2rem;
+    
+    /* styles */
+    z-index: 30;
     color: rgba(255, 255, 255, 0.7);
     
+    /* media queries */
     @media (max-width: 1200px) {
         font-size: 1rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        font-size: clamp(0.65rem, 2.2vw, 0.8rem);
         bottom: 0.5rem;
         right: 1rem;
         left: auto;
+        font-size: clamp(0.65rem, 2.2vw, 0.8rem);
     }
 `;
 
-// Mobile Footer Container - Simple contact info and scroll button
+/* =================== mobile footer ==================== */
+
 const MobileFooterContainer = styled.div`
-    display: none; /* Hidden on desktop */
+    /* layout */
+    display: none;
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
+        /* layout */
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-end;
-        gap: 0.5rem;
-        position: absolute;
-        bottom: 1rem;
-        left: 50%;
+        pointer-events: auto;
         transform: translateX(-50%);
+        
+        /* spacing */
+        gap: 0.5rem;
         width: 90%;
         max-width: 320px;
-        z-index: 40;
-        pointer-events: auto;
         margin-bottom: 1.25rem;
+        
+        /* styles */
+        z-index: 40;
     }
 `;
 
-// Mobile Contact Row - Email and Phone side by side
 const MobileContactRow = styled.div`
-    display: none; /* Hidden on desktop */
+    /* layout */
+    display: none;
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        
+        /* spacing */
         gap: 0.5rem;
         width: 100%;
     }
 `;
 
-// Mobile Contact Item - Email and Phone
 const MobileContactItem = styled.div`
+    /* layout */
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    min-width: 0;
+    
+    /* spacing */
     flex: 1;
+    gap: 0.4rem;
     padding: 0.5rem 1rem;
+    border-radius: 10px;
+    
+    /* styles */
+    border: 1px solid rgba(255, 255, 255, 0.25);
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
     transition: all 0.3s ease;
-    min-width: 0; /* Allow flex items to shrink below content size */
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
     
+    /* hover effects */
     &:hover {
+        transform: translateY(-2px);
         background: rgba(255, 255, 255, 0.18);
         border-color: rgba(255, 255, 255, 0.35);
-        transform: translateY(-2px);
         box-shadow: 0 5px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     
+    /* active state */
     &:active {
         transform: translateY(0);
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 `;
 
-// Mobile Contact Icon
 const MobileContactIcon = styled.div`
+    /* layout */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.98);
     flex-shrink: 0;
     
+    /* styles */
+    color: rgba(255, 255, 255, 0.98);
+    
+    /* nested selectors */
     svg {
         width: 18px;
         height: 18px;
     }
 `;
 
-// Mobile Contact Text (link)
 const MobileContactText = styled.a`
-    color: rgba(255, 255, 255, 0.98);
-    font-size: clamp(0.75rem, 3vw, 0.9rem);
-    font-weight: 700;
-    text-decoration: none;
-    letter-spacing: 0.15px;
+    /* layout */
     flex: 1;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
+    
+    /* spacing */
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    letter-spacing: 0.15px;
+    
+    /* styles */
+    color: rgba(255, 255, 255, 0.98);
+    font-weight: 700;
+    text-decoration: none;
     text-overflow: ellipsis;
     
+    /* hover effects */
     &:hover {
         color: rgba(255, 255, 255, 1);
         text-decoration: none;
     }
     
+    /* active state */
     &:active {
         opacity: 0.8;
     }
 `;
 
-// Mobile Scroll Button
 const MobileScrollButton = styled.button`
+    /* layout */
     font: inherit;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    
+    /* spacing */
     gap: 0.4rem;
     width: auto;
     min-width: 120px;
     padding: 0.5rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: 10px;
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    
+    /* styles */
+    border: 1px solid rgba(255, 255, 255, 0.25);
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
     color: rgba(255, 255, 255, 0.98);
-    font-size: clamp(0.75rem, 3vw, 0.9rem);
     font-weight: 700;
-    cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 0.25rem;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
     
+    /* hover effects */
     &:hover {
+        transform: translateY(-2px);
         background: rgba(255, 255, 255, 0.18);
         border-color: rgba(255, 255, 255, 0.35);
-        transform: translateY(-2px);
         box-shadow: 0 5px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     
+    /* active state */
     &:active {
         transform: translateY(0);
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 `;
 
-// Mobile Scroll Icon
 const MobileScrollIcon = styled.div`
+    /* layout */
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    /* styles */
     color: rgba(255, 255, 255, 0.98);
     
+    /* nested selectors */
     svg {
         width: 18px;
         height: 18px;
     }
 `;
 
-// Mobile Scroll Text
 const MobileScrollText = styled.span`
+    /* styles */
     color: rgba(255, 255, 255, 0.98);
     font-weight: 700;
 `;

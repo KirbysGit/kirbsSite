@@ -20,16 +20,17 @@ import CardBase, {
   SectionLabel,
   CardFooter
 } from '../shared/CardBase';
+import WIPRibbon from '../WIPRibbon';
+import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
-import { themes } from '../shared/themes';
-import WIPRibbon from '../WIPRibbon';
 
-// import project logos and previews.
+// images.
 import centiBanner from '@/images/4projects/centi/centi_banner.png';
 import centiPreview from '@/images/4projects/centi/centiPreview.png';
 
-// main centi card component.
+/* ================== main component ================== */
+
 const CentiCard = ({ isFocused = false }) => {
   
   // the tech stack for the centi card.
@@ -53,16 +54,16 @@ const CentiCard = ({ isFocused = false }) => {
       {/* card header */}
       <CardHeader>
         <HeaderTop>
-          <ProjectInfo>
-            <ProjectName $themeColors={theme.colors}>Centi</ProjectName>
-            <ProjectSubtitle>Personal Finance Organizer</ProjectSubtitle>
-            <ProjectDate>Jun 2025 - Present</ProjectDate>
-          </ProjectInfo>
-          <CentiLogoImage src={centiBanner} alt="Centi Logo" />
+          	<ProjectInfo>
+				<ProjectName $themeColors={theme.colors}>Centi</ProjectName>
+				<ProjectSubtitle>Personal Finance Organizer</ProjectSubtitle>
+				<ProjectDate>Jun 2025 - Present</ProjectDate>
+          	</ProjectInfo>
+          	<CentiLogoImage src={centiBanner} alt="Centi Logo" />
         </HeaderTop>
         
         <ProjectDescription>
-          A friendly dashboard that actually helps you understand where your money's going. No spreadsheets, no confusion, just clear insights that make sense.
+          	A friendly dashboard that actually helps you understand where your money's going. No spreadsheets, no confusion, just clear insights that make sense.
         </ProjectDescription>
         <Divider $themeColors={theme.colors} />
       </CardHeader>
@@ -99,6 +100,8 @@ const CentiCard = ({ isFocused = false }) => {
   );
 };
 
+export default CentiCard;
+
 /* ================= centi-specific components ================= */
 
 const CentiLogoImage = styled.img`
@@ -116,41 +119,41 @@ const CentiLogoImage = styled.img`
 const LivePreviewContainer = styled.div`
     /* layout */
     display: flex;
-    align-items: center;
-    position: relative;
     overflow: hidden;
+    position: relative;
+    align-items: center;
     
     /* spacing */
     gap: 1rem;
     padding: 0.85rem;
     
     /* styles */
-    border-radius: 12px;
     cursor: pointer;
-    border: 2px solid ${({ $themeColors }) => $themeColors?.previewBorder || 'rgba(255, 180, 100, 0.3)'};
+    border-radius: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid ${({ $themeColors }) => $themeColors?.previewBorder || 'rgba(255, 180, 100, 0.3)'};
     background: ${({ $themeColors }) => $themeColors?.previewBackground || 'rgba(255, 180, 100, 0.1)'};
     
-    /* shimmer effect */
+    /* pseudo-elements */
     &::before {
         /* layout */
-        content: '';
-        position: absolute;
         top: 0;
         left: -100%;
+        position: absolute;
         
         /* spacing */
         width: 100%;
         height: 100%;
         
         /* styles */
+        content: '';
+        transition: left 0.6s ease;
         background: linear-gradient(
             90deg,
             transparent,
             rgba(255, 255, 255, 0.1),
             transparent
         );
-        transition: left 0.6s ease;
     }
     
     /* hover effects */
@@ -183,8 +186,8 @@ const PreviewImageWrapper = styled.div`
     
     /* styles */
     border-radius: 10px;
+	transition: transform 0.4s ease;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.4s ease;
     
     /* hover effects */
     ${LivePreviewContainer}:hover & {
@@ -203,10 +206,10 @@ const PreviewImage = styled.img`
 
 const PreviewTextContent = styled.div`
     /* layout */
+	flex: 1;
     display: flex;
+	position: relative;
     flex-direction: column;
-    position: relative;
-    flex: 1;
     
     /* spacing */
     gap: 0.3rem;
@@ -214,24 +217,24 @@ const PreviewTextContent = styled.div`
 
 const PreviewTitle = styled.div`
     /* styles */
-    font-size: 1.1rem;
     font-weight: 700;
+	font-size: 1.1rem;
     color: rgba(255, 255, 255, 1);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const PreviewSubtext = styled.div`
     /* styles */
+	font-weight: 500;
     font-size: 0.85rem;
-    font-weight: 500;
     color: rgba(255, 255, 255, 0.85);
 `;
 
 const PreviewArrow = styled.div`
     /* layout */
-    position: absolute;
-    right: 2.5%;
     top: 50%;
+	right: 2.5%;
+    position: absolute;
     transform: translateY(-50%);
     
     /* styles */
@@ -255,6 +258,3 @@ const PreviewArrow = styled.div`
         }
     }
 `;
-
-// export component.
-export default CentiCard;

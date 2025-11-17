@@ -22,116 +22,6 @@ const BUFFER_MS = 40;         // extra buffer for animation end
 const TYPE_SPEED = 40;        // ms/char (typing)
 const DELETE_SPEED = 30;      // ms/char (deleting)
 
-/* ================= animated frames ================= */
-
-const slideOutRight = keyframes`
-    0% { transform: translateX(0) translateZ(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateX(80%) translateZ(0); opacity: 0; }
-`;
-
-const slideOutRightVert = keyframes`
-    0% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateY(-50%) translateX(80%) translateZ(0); opacity: 0; }
-`;
-
-const slideOutLeft = keyframes`
-    0% { transform: translateX(0) translateZ(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateX(-80%) translateZ(0); opacity: 0; }
-`;
-
-const slideOutLeftVert = keyframes`
-    0% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
-    50% { opacity: 0; }
-    100% { transform: translateY(-50%) translateX(-80%) translateZ(0); opacity: 0; }
-`;
-
-const slideInRight = keyframes`
-    0% { transform: translateX(80%) translateZ(0); opacity: 0; }
-    100% { transform: translateX(0) translateZ(0); opacity: 1; }
-`;
-
-const slideInRightVert = keyframes`
-    0% { transform: translateY(-50%) translateX(80%) translateZ(0); opacity: 0; }
-    100% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
-`;
-
-const slideInLeft = keyframes`
-    0% { transform: translateX(-80%) translateZ(0); opacity: 0; }
-    100% { transform: translateX(0) translateZ(0); opacity: 1; }
-`;
-
-const slideInLeftVert = keyframes`
-    0% { transform: translateY(-50%) translateX(-80%) translateZ(0); opacity: 0; }
-    100% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
-`;
-
-const popIn = keyframes`
-    from {
-        opacity: 0;
-        transform: translateY(-8px) scale(0.9) translateZ(0);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1) translateZ(0);
-    }
-`;
-
-const blink = keyframes`
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-`;
-
-const spaceStationFloat = keyframes`
-    0%, 100% { 
-        transform: translate3d(0, 0, 0) rotate(0deg);
-    }
-    50% { 
-        transform: translate3d(0, -8px, 0) rotate(2deg);
-    }
-`;
-
-const satellite1Float = keyframes`
-    0% {
-        transform: translate3d(0, 0, 0) rotate(0deg);
-    }
-    25% {
-        transform: translate3d(calc(25vw + 40px), -30px, 0) rotate(90deg);
-    }
-    50% {
-        transform: translate3d(calc(50vw + 80px), 0, 0) rotate(180deg);
-    }
-    75% {
-        transform: translate3d(calc(75vw + 120px), 30px, 0) rotate(270deg);
-    }
-    100% {
-        transform: translate3d(calc(100vw + 160px), 0, 0) rotate(360deg);
-    }
-`;
-
-const satellite2Float = keyframes`
-    0% {
-        transform: translate3d(0, 0, 0) rotate(0deg);
-    }
-    20% {
-        transform: translate3d(calc(-20vw - 30px), -20px, 0) rotate(72deg);
-    }
-    40% {
-        transform: translate3d(calc(-40vw - 60px), 0, 0) rotate(144deg);
-    }
-    60% {
-        transform: translate3d(calc(-60vw - 90px), 20px, 0) rotate(216deg);
-    }
-    80% {
-        transform: translate3d(calc(-80vw - 120px), -10px, 0) rotate(288deg);
-    }
-    100% {
-        transform: translate3d(calc(-100vw - 150px), 0, 0) rotate(360deg);
-    }
-`;
-
 /* ================= helper functions & components ================= */
 
 const ChevronRight = () => (
@@ -502,6 +392,118 @@ const WhoIAm = memo(() => {
     );
 });
 
+export default WhoIAm;
+
+/* ================= animated frames ================= */
+
+const slideOutRight = keyframes`
+    0% { transform: translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateX(80%) translateZ(0); opacity: 0; }
+`;
+
+const slideOutRightVert = keyframes`
+    0% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateY(-50%) translateX(80%) translateZ(0); opacity: 0; }
+`;
+
+const slideOutLeft = keyframes`
+    0% { transform: translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateX(-80%) translateZ(0); opacity: 0; }
+`;
+
+const slideOutLeftVert = keyframes`
+    0% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+    50% { opacity: 0; }
+    100% { transform: translateY(-50%) translateX(-80%) translateZ(0); opacity: 0; }
+`;
+
+const slideInRight = keyframes`
+    0% { transform: translateX(80%) translateZ(0); opacity: 0; }
+    100% { transform: translateX(0) translateZ(0); opacity: 1; }
+`;
+
+const slideInRightVert = keyframes`
+    0% { transform: translateY(-50%) translateX(80%) translateZ(0); opacity: 0; }
+    100% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+`;
+
+const slideInLeft = keyframes`
+    0% { transform: translateX(-80%) translateZ(0); opacity: 0; }
+    100% { transform: translateX(0) translateZ(0); opacity: 1; }
+`;
+
+const slideInLeftVert = keyframes`
+    0% { transform: translateY(-50%) translateX(-80%) translateZ(0); opacity: 0; }
+    100% { transform: translateY(-50%) translateX(0) translateZ(0); opacity: 1; }
+`;
+
+const popIn = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.9) translateZ(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) translateZ(0);
+    }
+`;
+
+const blink = keyframes`
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+`;
+
+const spaceStationFloat = keyframes`
+    0%, 100% { 
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    50% { 
+        transform: translate3d(0, -8px, 0) rotate(2deg);
+    }
+`;
+
+const satellite1Float = keyframes`
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate3d(calc(25vw + 40px), -30px, 0) rotate(90deg);
+    }
+    50% {
+        transform: translate3d(calc(50vw + 80px), 0, 0) rotate(180deg);
+    }
+    75% {
+        transform: translate3d(calc(75vw + 120px), 30px, 0) rotate(270deg);
+    }
+    100% {
+        transform: translate3d(calc(100vw + 160px), 0, 0) rotate(360deg);
+    }
+`;
+
+const satellite2Float = keyframes`
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    20% {
+        transform: translate3d(calc(-20vw - 30px), -20px, 0) rotate(72deg);
+    }
+    40% {
+        transform: translate3d(calc(-40vw - 60px), 0, 0) rotate(144deg);
+    }
+    60% {
+        transform: translate3d(calc(-60vw - 90px), 20px, 0) rotate(216deg);
+    }
+    80% {
+        transform: translate3d(calc(-80vw - 120px), -10px, 0) rotate(288deg);
+    }
+    100% {
+        transform: translate3d(calc(-100vw - 150px), 0, 0) rotate(360deg);
+    }
+`;
+
 /* ====================== styled ====================== */
 
 const SectionWrap = styled.section`
@@ -569,7 +571,6 @@ const PageTitle = styled.div`
     -webkit-text-fill-color: transparent;
 
     /* media queries */
-
     @media (max-width: 1600px) {
         margin: 0 0 1.5rem;
     }
@@ -1036,15 +1037,15 @@ const ContentWrapper = styled.div`
     min-width: 0;
     display: grid;
     inline-size: 100%;
-    min-height: clamp(420px, 60vh, 620px);
     max-inline-size: 100%;
     box-sizing: border-box;
+    min-height: clamp(420px, 60vh, 620px);
 
     /* styles */
     opacity: 0;
+    will-change: transform, opacity;
     transform: translateY(12px) translateZ(0);
     transition: opacity 400ms ease, transform 400ms ease;
-    will-change: transform, opacity;
 
     /* child elements */
     > * {
@@ -1421,9 +1422,9 @@ const PageIndicator = styled.div`
     font-size: 1.2rem;
     border-radius: 24px;
     letter-spacing: 0.5px;
+    backdrop-filter: blur(20px);
     color: rgba(255, 255, 255, 0.95);
     background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(20px);
     border: 1.5px solid rgba(255, 255, 255, 0.4);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -1608,6 +1609,3 @@ const Satellite2 = styled.div`
         display: none;
     }
 `;
-
-// export component.
-export default WhoIAm;

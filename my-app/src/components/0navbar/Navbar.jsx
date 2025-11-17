@@ -200,7 +200,7 @@ const Navbar = ({ loadingCompleteTime = null }) => {
     	};
   	}, [lastScrollY, isMounted]);
 
-  // handle navigation click.
+    // handle navigation click.
 	const handleNavClick = useCallback((sectionId, desktopOffset, mobileOffset) => {
 		scrollToSection(sectionId, desktopOffset, mobileOffset);
 	}, []);
@@ -217,7 +217,7 @@ const Navbar = ({ loadingCompleteTime = null }) => {
 		transition: { duration: 0.4, ease: 'easeInOut' }
 	}), [isTopNavbarVisible]);
 
-  // side pill navbar animation config.
+    // side pill navbar animation config.
 	const sideNavbarConfig = useMemo(() => ({
 		initial: { x: '-100%', opacity: 0 },
 		animate: { x: isScrolledPastHero ? '0%' : '-100%', opacity: isScrolledPastHero ? 1 : 0 },
@@ -503,7 +503,6 @@ const LogoImage = styled.img`
 	transition: all 0.3s ease;
     filter: drop-shadow(0 0 10px rgba(150, 200, 255, 0.3));
     
-    /* hover styles */
     ${LogoContainer}:hover & {
         filter: drop-shadow(0 0 20px rgba(150, 200, 255, 0.8)) drop-shadow(0 0 30px rgba(100, 150, 255, 0.6));
         transform: scale(1.05);
@@ -684,7 +683,6 @@ const NavButtonWhoIAm = styled(NavButtonBase)`
         rgb(85, 60, 135) 95%,
         rgb(100, 70, 150) 100%);
     
-    /* hover effects */
     &:hover {
         border-color: rgba(100, 70, 150, 0.9);
         transform: translateZ(0) scale(1.05);
@@ -704,7 +702,6 @@ const NavButtonExperience = styled(NavButtonBase)`
         rgb(132, 127, 210) 78%,
         rgb(148, 180, 243) 100%);
     
-    /* hover effects */
     &:hover {
         border-color: rgba(148, 180, 243, 0.9);
         transform: translateZ(0) scale(1.05);
@@ -723,7 +720,6 @@ const NavButtonProjects = styled(NavButtonBase)`
         rgb(83, 158, 237) 75%,
         rgb(71, 160, 238) 100%);
     
-    /* hover effects */
     &:hover {
         border-color: rgba(120, 165, 234, 0.9);
         transform: translateZ(0) scale(1.05);
@@ -742,7 +738,6 @@ const NavButtonSkills = styled(NavButtonBase)`
         rgb(115, 205, 255) 75%,
         rgb(135, 225, 255) 100%);
     
-    /* hover effects */
     &:hover {
         border-color: rgba(135, 225, 255, 0.9);
         transform: translateZ(0) scale(1.05);
@@ -763,7 +758,6 @@ const NavButtonAbout = styled(NavButtonBase)`
         rgb(54, 146, 174) 90%,
         rgb(60, 154, 180) 100%);
     
-    /* hover effects */
     &:hover {
         border-color: rgba(60, 154, 180, 0.9);
         transform: translateZ(0) scale(1.05);
@@ -1168,7 +1162,6 @@ const SideNavButtonWrapper = styled.div`
 	position: relative;
     align-items: center;
     
-    /* hover effects */
     &:hover .tooltip {
         opacity: 1;
         visibility: visible;
@@ -1490,7 +1483,6 @@ const ToggleButton = styled.button`
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.0);
     border-left: none;
-    clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
     background: linear-gradient(
         135deg,
         rgba(13, 7, 27, 0.6) 0%,
@@ -1498,11 +1490,12 @@ const ToggleButton = styled.button`
         rgba(13, 7, 27, 0.6) 100%
     );
     backdrop-filter: blur(30px) saturate(200%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-backdrop-filter: blur(30px) saturate(200%);
     box-shadow: inset -2px 0 8px rgba(255, 255, 255, 0.1);
+    clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.04))
             drop-shadow(0 0 40px rgba(255, 255, 255, 0.02));
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
     &:hover {
         background: linear-gradient(
@@ -1541,8 +1534,8 @@ const ToggleButton = styled.button`
 // side nav icon - the emoji icon that appears on the side nav button.
 const SideNavIcon = styled.span`
     /* layout */
-    position: relative;
     z-index: 1;
+    position: relative;
     
     /* styles */
     font-size: 1.5rem;
@@ -1552,9 +1545,9 @@ const SideNavIcon = styled.span`
 // active indicator - the small line that appears when the button is active.
 const ActiveIndicator = styled.div`
     /* layout */
-    position: absolute;
-    left: -8px;
     top: 50%;
+    left: -8px;
+    position: absolute;
     transform: translateY(-50%);
     
     /* spacing */

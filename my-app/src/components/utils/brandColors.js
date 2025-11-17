@@ -1,6 +1,9 @@
 // brandColors.js
 
-// Returns brand-consistent gradient/border/shadow colors for skill pills
+// returns brand-consistent gradient/border/shadow colors for skill pills.
+
+// used ai to set this up. 
+
 export const getBrandColors = (name) => {
   const colorMap = {
     'React': {

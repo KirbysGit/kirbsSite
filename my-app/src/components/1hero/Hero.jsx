@@ -193,7 +193,7 @@ const HeroContainer = styled.div`
         transition: opacity 0.5s ease-in;
     }
     
-    /* breathing nebula effect */
+    /* pseudo-elements */
     &::after {
         /* layout */
         inset: 0;
@@ -894,9 +894,9 @@ const NavPills = styled(motion.div)`
 
     /* spacing */
     gap: 1.5rem;
+    text-align: center;
     margin: 1rem auto 0;
     width: min(80vw, 680px);
-    text-align: center;
     
     /* media queries */
     @media (max-width: 768px) {
@@ -1021,6 +1021,7 @@ const NavPillBackgroundStory = styled.div`
     background-size: 100% 100%, 100% 100%, 100% 100%;
     animation: ${starField} 8s ease-in-out infinite;
     
+    /* pseudo-elements */
     &::before,
     &::after {
         /* layout */
@@ -1078,7 +1079,7 @@ const NavPillText = styled.span`
     font-family: inherit;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     
-    /* mobile media queries */
+    /* media queries */
     @media (max-width: 768px) {
         font-size: 0.9rem;
     }
@@ -1097,7 +1098,7 @@ const NavPillIcon = styled.span`
     font-size: 1.2rem;
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
     
-    /* mobile media queries */
+    /* media queries */
     @media (max-width: 768px) {
         font-size: 1.1rem;
     }
@@ -1160,7 +1161,7 @@ const SimpleArrowSvg = styled.svg`
     display: block;
     animation: floatUpDown 3s ease-in-out infinite;
     
-    /* nested selectors */
+    /* pseudo-elements */
     .star {
         /* styles */
         fill: #fff;

@@ -171,10 +171,9 @@ export const buildingMaterialMap = {
   "Railway": "railway",
 };
 
-// ============================================
-// BUILDING CONFIGURATIONS
-// ============================================
-// Properties explained:
+//
+/* ================== building configurations ================== */
+
 //   name:      technology/skill name (must match logoMap keys)
 //   level:     building height (0.0 - 1.0, where 1.0 is tallest)
 //   depth:     distance from viewer (0.0 = far/muted, 1.0 = close/bright) - THIS controls layering!
@@ -184,6 +183,7 @@ export const buildingMaterialMap = {
 
 // all buildings in one array - organized by depth for readability
 // low depth (0.3-0.5) = background, high depth (0.8-1.0) = foreground
+
 export const buildings = [
 
 	// ===== background buildings (depth 0.3-0.5) =====
@@ -369,47 +369,22 @@ export const buildings = [
 	}
 ];
 
-// ============================================
-// helper notes
-// ============================================
+/* ================== helper notes ================== */
+
 /*
-level (height): 
-  - 0.1-0.3 	= 	short building (~110-216px)
-  - 0.4-0.6 	= 	medium building (~268-372px)
-  - 0.7-0.85 	= 	tall building (~424-502px)
-  - 0.9-1.0 	= 	skyscraper (~528-580px, uses 96% of container!)
-
-depth (distance from viewer) - this is what controls layering:
-  - 0.3-0.5 	= 	background (muted colors, slight blur, smaller scale)
-  - 0.5-0.7 	= 	middle ground (moderate colors, normal scale)
-  - 0.8-1.0 	= 	foreground (bright, sharp, larger scale, higher z-index)
-
-
-leftPos (horizontal position):
-  - 0 		= 	far left edge
-  - 50 		= 	center
-  - 100 	= 	far right edge
-
-WIDTH (w):
-  - percentage width of container (responsive)
-  - 8-10 	= 	narrow tower (~70-85px)
-  - 11-14 	= 	medium building (~95-120px)
-  - 15-18 	= 	wide building (~130-155px)
-  - 19+ 	= 	extra wide building (160px+)
-
-CAP (top decoration):
-  - "flat" 			= no decoration (clean roof)
-  - "crown" 		= stepped crown (art deco style)
-  - "peak" 			= pyramidal peak with beacon
-  - "billboard" 	= rectangular sign on posts
-  - "spire" 		= empire state building-style spire (stepped penthouse + mast with beacon)
-  - "dome" 			= textured dome with decorative spike finial (planetarium/observatory style)
-  - "gable" 		= slanted triangular roof with dual parapets and 3d perspective depth
-  - "ac" 			= rooftop ac/hvac units with vents, fans, and 3d perspective
-  - "stairwell" 	= fire exit/stairwell box with door, window, and rooftop safety barrier
-  - "radio" 		= radio/cell tower with tapered lattice structure, antenna array, and red warning lights
-  - "watertower" 	= classic nyc water tower with cylindrical tank, support legs, conical roof, and metal bands
-  - "mansard" 		= french mansard roof with steep slopes, dormer windows, flat top, and chimney
-  - "chimney" 		= two brick chimneys with mortar lines, concrete caps, and nyc rooftop styling
+  CAP (top decoration):
+    - "flat" 			= no decoration (clean roof)
+    - "crown" 		= stepped crown (art deco style)
+    - "peak" 			= pyramidal peak with beacon
+    - "billboard" 	= rectangular sign on posts
+    - "spire" 		= empire state building-style spire (stepped penthouse + mast with beacon)
+    - "dome" 			= textured dome with decorative spike finial (planetarium/observatory style)
+    - "gable" 		= slanted triangular roof with dual parapets and 3d perspective depth
+    - "ac" 			= rooftop ac/hvac units with vents, fans, and 3d perspective
+    - "stairwell" 	= fire exit/stairwell box with door, window, and rooftop safety barrier
+    - "radio" 		= radio/cell tower with tapered lattice structure, antenna array, and red warning lights
+    - "watertower" 	= classic nyc water tower with cylindrical tank, support legs, conical roof, and metal bands
+    - "mansard" 		= french mansard roof with steep slopes, dormer windows, flat top, and chimney
+    - "chimney" 		= two brick chimneys with mortar lines, concrete caps, and nyc rooftop styling  
 */
 

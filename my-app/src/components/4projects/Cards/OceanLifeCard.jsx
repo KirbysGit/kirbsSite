@@ -25,11 +25,12 @@ import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
-// import project assets.
+// images.
 import oceanlifeLogo from '@/images/4projects/ocean_life/oceanlife.png';
 import oceanlifePreview from '@/images/4projects/ocean_life/OLpreview.png';
 
-// main oceanlife card component.
+/* ================== main component ================== */
+
 const OceanLifeCard = () => {
 
 	// tech, highlights, & theme.
@@ -112,6 +113,8 @@ const OceanLifeCard = () => {
 	);
 };
 
+export default OceanLifeCard;
+
 /* ================= oceanlife-specific resource grid styles ================= */
 
 const ResourcesGrid = styled.div`
@@ -132,12 +135,12 @@ const ResourcesGrid = styled.div`
 const ResourceCard = styled.div`
     /* layout */
     display: flex;
-    flex-direction: column;
     overflow: hidden;
+    flex-direction: column;
     
     /* styles */
-    border-radius: 10px;
     cursor: pointer;
+    border-radius: 10px;
     border: 1.5px solid ${({ $themeColors }) => $themeColors?.resourceBorder || 'rgba(255,180,100,0.3)'};
     transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     background: ${({ $themeColors }) => $themeColors?.resourceBackground || 'rgba(255,180,100,0.1)'};
@@ -154,10 +157,10 @@ const ResourceCard = styled.div`
 const ResourcePreview = styled.div`
     /* layout */
     display: flex;
+    overflow: hidden;
+    position: relative;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden;
     
     /* spacing */
     width: 100%;
@@ -173,14 +176,14 @@ const ResourcePreview = styled.div`
         return 'rgba(255,255,255,0.05)';
     }};
     
-    /* overlay gradient */
+    /* pseudo-elements */
     &::before {
         /* layout */
-        content: '';
-        position: absolute;
         inset: 0;
+        position: absolute;
         
         /* styles */
+        content: '';
         background: ${({ $preview }) => 
             $preview 
                 ? 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%)'
@@ -195,8 +198,8 @@ const ResourceIcon = styled.div`
     
     /* styles */
     font-size: 2rem;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     
     /* hover effects */
     ${ResourceCard}:hover & {
@@ -213,11 +216,11 @@ const GitHubLogoIcon = styled.div`
     height: 60px;
     
     /* styles */
+    transition: all 0.3s ease;
     color: rgba(255, 255, 255, 0.95);
     filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
-    transition: all 0.3s ease;
     
-    /* svg sizing */
+    /* nested selectors */
     svg {
         width: 100%;
         height: 100%;
@@ -238,13 +241,9 @@ const ResourceCaption = styled.div`
     padding: 0.5rem;
     
     /* styles */
-    font-size: 0.8rem;
     font-weight: 600;
+    font-size: 0.8rem;
     letter-spacing: 0.3px;
     color: rgba(255,255,255,0.95);
     background: rgba(0,0,0,0.15);
 `;
-
-// export component.
-export default OceanLifeCard;
-

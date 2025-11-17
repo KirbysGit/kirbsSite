@@ -20,15 +20,15 @@ import CardBase, {
   CardBody, 
   SectionLabel 
 } from '../shared/CardBase';
-import WIPRibbon from '../WIPRibbon';
 import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
-// import logo
+// images.
 import fullLogo from '@/images/0navbar/navLogo.png';
 
-// main cksite card component.
+/* ================== main component ================== */
+
 const CKSiteCard = ({ isFocused = false }) => {
 
   // the tech stack for the cksite card.
@@ -47,52 +47,51 @@ const CKSiteCard = ({ isFocused = false }) => {
   // return the cksite card.
   return (
     <CardBase theme={true} themeName="cosmic" themeColors={theme.colors} isFocused={isFocused}>
-      {/* wip ribbon */}
-      <WIPRibbon text="IN PROGRESS" />
-      
-      {/* star field */}
-      <StarField>
-        <Star $top="15%" $left="10%" $size="2px" $delay="0s" />
-        <Star $top="25%" $left="80%" $size="1.5px" $delay="1s" />
-        <Star $top="45%" $left="20%" $size="1px" $delay="2s" />
-        <Star $top="60%" $left="90%" $size="2px" $delay="0.5s" />
-        <Star $top="75%" $left="15%" $size="1.5px" $delay="1.5s" />
-        <Star $top="35%" $left="60%" $size="1px" $delay="0.8s" />
-        <Star $top="80%" $left="70%" $size="2px" $delay="1.2s" />
-        <Star $top="20%" $left="45%" $size="1.5px" $delay="2.5s" />
-      </StarField>
+		{/* star field */}
+		<StarField>
+			<Star $top="15%" $left="10%" $size="2px" $delay="0s" />
+			<Star $top="25%" $left="80%" $size="1.5px" $delay="1s" />
+			<Star $top="45%" $left="20%" $size="1px" $delay="2s" />
+			<Star $top="60%" $left="90%" $size="2px" $delay="0.5s" />
+			<Star $top="75%" $left="15%" $size="1.5px" $delay="1.5s" />
+			<Star $top="35%" $left="60%" $size="1px" $delay="0.8s" />
+			<Star $top="80%" $left="70%" $size="2px" $delay="1.2s" />
+			<Star $top="20%" $left="45%" $size="1.5px" $delay="2.5s" />
+		</StarField>
 
-      {/* card header */}
-      <CardHeader>
-        <HeaderTop>
-          <ProjectInfo>
-            <ProjectName $themeColors={theme.colors}>CK's Site</ProjectName>
-            <ProjectSubtitle>This Portfolio · My Digital Journey</ProjectSubtitle>
-            <ProjectDate>2024 – Present</ProjectDate>
-          </ProjectInfo>
-          <LargerProjectLogo src={fullLogo} alt="CK's Site Logo" />
-        </HeaderTop>
+		{/* card header */}
+		<CardHeader>
+			<HeaderTop>
+			<ProjectInfo>
+				<ProjectName $themeColors={theme.colors}>CK's Site</ProjectName>
+				<ProjectSubtitle>This Portfolio · My Digital Journey</ProjectSubtitle>
+				<ProjectDate>2024 – Present</ProjectDate>
+			</ProjectInfo>
+			<LargerProjectLogo src={fullLogo} alt="CK's Site Logo" />
+			</HeaderTop>
 
-        <ProjectDescription>
-          This site! It's a constant work in progress, but I'm using it to showcase my projects and skills. It serves as a living document of my path through my career.
-        </ProjectDescription>
+			<ProjectDescription>
+			This site! It's a constant work in progress, but I'm using it to showcase my projects and skills. It serves as a living document of my path through my career.
+			</ProjectDescription>
 
-        <Divider $themeColors={theme.colors} />
-      </CardHeader>
+			<Divider $themeColors={theme.colors} />
+		</CardHeader>
 
-      {/* card body */}
-      <CardBody>
-        <SectionLabel $themeColors={theme.colors}>Tech Stack</SectionLabel>
-        <TechStack techs={techs} themeColors={theme.colors} />
+		{/* card body */}
+		<CardBody>
+			<SectionLabel $themeColors={theme.colors}>Tech Stack</SectionLabel>
+			<TechStack techs={techs} themeColors={theme.colors} />
 
-        <SectionLabel style={{ marginTop: '0.75rem' }} $themeColors={theme.colors}>What It Shows</SectionLabel>
-        <Highlights highlights={highlights} themeColors={theme.colors} />
-      </CardBody>
+			<SectionLabel style={{ marginTop: '0.75rem' }} $themeColors={theme.colors}>What It Shows</SectionLabel>
+			<Highlights highlights={highlights} themeColors={theme.colors} />
+		</CardBody>
 
-      {/* no footer yet */}
+		{/* no footer yet */}
     </CardBase>
   );
 };
+
+export default CKSiteCard;
 
 /* ================= cksite-specific styles ================= */
 
@@ -109,9 +108,9 @@ const twinkle = keyframes`
 
 const StarField = styled.div`
     /* layout */
-    position: absolute;
     inset: 0;
     z-index: 0;
+    position: absolute;
     
     /* styles */
     pointer-events: none;
@@ -128,8 +127,8 @@ const Star = styled.div`
     height: ${props => props.$size};
     
     /* styles */
-    border-radius: 50%;
     background: white;
+    border-radius: 50%;
     box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
     animation: ${twinkle} 3s ease-in-out infinite;
     animation-delay: ${props => props.$delay};
@@ -148,6 +147,3 @@ const LargerProjectLogo = styled(ProjectLogoImage)`
         width: 130px;
     }
 `;
-
-// export component.
-export default CKSiteCard;

@@ -22,7 +22,8 @@ const cloudImages = {
     5: cloud5
 };
 
-// main cloud component with parallax layers.
+/* ================== main component ================== */
+
 const Cloud = memo(({ top, delay, duration, layer = 'mid', type = 1, direction = 'left', isInViewport = true, isSlowDevice = false }) => {
     return (
         <CloudContainer 
@@ -49,6 +50,10 @@ const Cloud = memo(({ top, delay, duration, layer = 'mid', type = 1, direction =
 });
 
 Cloud.displayName = 'Cloud';
+
+export default Cloud;
+
+/* ================= animated frames ================= */
 
 // animation 1: horizontal drift left to right.
 const horizontalDriftLeft = keyframes`
@@ -116,6 +121,8 @@ const fadeInOut = keyframes`
     }
 `;
 
+/* ====================== styled ====================== */
+
 // main container - handles horizontal drift (main motion).
 const CloudContainer = styled.div`
     /* layout */
@@ -131,8 +138,10 @@ const CloudContainer = styled.div`
         }
     }};
     
-    /* main horizontal drift animation - depends on direction */
-    /* Animation throttling: pause when not in viewport, slower on slow devices */
+    /* styles */
+    transform: translateZ(0);
+    will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
     ${props => props.$isInViewport 
       ? css`
           animation: 
@@ -140,9 +149,6 @@ const CloudContainer = styled.div`
             ${fadeInOut} ${props.$duration * (props.$isSlowDevice ? 1.3 : 1)}s linear ${props.$delay}s infinite;
         `
       : css`animation: none;`}
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-    will-change: ${props => props.$isInViewport ? 'transform' : 'auto'};
-    transform: translateZ(0);
 `;
 
 // cloud image - handles our vertical float, scale breathing, and opacity drift.
@@ -161,7 +167,7 @@ const CloudImage = styled.img`
     object-fit: contain;
     pointer-events: none;
     
-    /* Prevent image selection and dragging */
+    /* styles */
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -171,8 +177,7 @@ const CloudImage = styled.img`
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-    
-    /* add subtle blur for more realism - reduced on slow devices */
+    transform: translateZ(0);
     filter: blur(${props => {
         const baseBlur = {
             'far': props.$isSlowDevice ? '1px' : '1.5px',
@@ -182,22 +187,21 @@ const CloudImage = styled.img`
         };
         return baseBlur[props.$layer] || baseBlur.default;
     }});
-    
-    /* GPU acceleration */
-    transform: translateZ(0);
-    
-    /* apply secondary animations - heavily reduced on slow devices */
+    will-change: ${props => {
+        if (!props.$isInViewport) return 'auto';
+        if (props.$isSlowDevice) return 'auto';
+        return 'transform, opacity';
+    }};
+    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
     ${props => {
         if (!props.$isInViewport) {
             return css`animation: none;`;
         }
         
-        // On slow devices, disable ALL secondary animations (only horizontal drift remains)
         if (props.$isSlowDevice) {
             return css`animation: none;`;
         }
         
-        // Fast devices: all animations
         const floatDuration = {
             'far': '8s',
             'mid': '7s',
@@ -226,14 +230,4 @@ const CloudImage = styled.img`
                 ${opacityDrift} ${opacityDuration[props.$layer] || opacityDuration.default} ease-in-out ${props.$delay * 0.7}s infinite;
         `;
     }}
-    animation-play-state: ${props => props.$isInViewport ? 'running' : 'paused'};
-    will-change: ${props => {
-        if (!props.$isInViewport) return 'auto';
-        // On slow devices, only will-change for horizontal drift (handled by container)
-        if (props.$isSlowDevice) return 'auto';
-        return 'transform, opacity';
-    }};
 `;
-
-// export component.
-export default Cloud;

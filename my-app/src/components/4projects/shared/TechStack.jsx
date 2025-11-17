@@ -7,31 +7,31 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getLogo } from '@/components/utils/logoMap.js';
 
-// main techstack component.
+/* ================== main component ================== */
+
 const TechStack = ({ techs, themeColors }) => {
   const [hoveredTech, setHoveredTech] = useState(null);
 
   return (
     <TechStackContainer>
-      {techs.map((tech) => (
-        <TechPillWrapper
-          key={tech}
-          onMouseEnter={() => setHoveredTech(tech)}
-          onMouseLeave={() => setHoveredTech(null)}
-        >
-          <TechPill $themeColors={themeColors}>
-            <TechLogo src={getLogo(tech)} alt={tech} />
-          </TechPill>
-          <Tooltip $visible={hoveredTech === tech} $themeColors={themeColors}>
-            {tech}
-          </Tooltip>
-        </TechPillWrapper>
-      ))}
+        {techs.map((tech) => (
+            <TechPillWrapper
+                key={tech}
+                onMouseEnter={() => setHoveredTech(tech)}
+                onMouseLeave={() => setHoveredTech(null)}
+            >
+                <TechPill $themeColors={themeColors}>
+                    <TechLogo src={getLogo(tech)} alt={tech} />
+                </TechPill>
+                <Tooltip $visible={hoveredTech === tech} $themeColors={themeColors}>
+                    {tech}
+                </Tooltip>
+            </TechPillWrapper>
+        ))}
     </TechStackContainer>
   );
 };
 
-// export component.
 export default TechStack;
 
 /* ================= styles ================= */
@@ -109,8 +109,8 @@ const TechLogo = styled.img`
     
     /* styles */
     object-fit: contain;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
     transition: filter 0.3s ease;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
     
     /* hover effects */
     ${TechPillWrapper}:hover & {
@@ -131,20 +131,20 @@ const TechLogo = styled.img`
 
 const Tooltip = styled.div`
     /* layout */
-    position: absolute;
-    bottom: calc(100% + 8px);
     left: 50%;
     z-index: 1000;
+    position: absolute;
     pointer-events: none;
+    bottom: calc(100% + 8px);
     transform: translateX(-50%) ${({ $visible }) => $visible ? 'translateY(0)' : 'translateY(4px)'};
     
     /* spacing */
     padding: 0.5rem 0.75rem;
     
     /* styles */
+    color: #fff;
     opacity: ${({ $visible }) => $visible ? 1 : 0};
     border-radius: 8px;
-    color: #fff;
     font-size: 0.75rem;
     font-weight: 700;
     white-space: nowrap;
@@ -154,13 +154,13 @@ const Tooltip = styled.div`
     box-shadow: ${({ $themeColors }) => 
         $themeColors?.tooltipShadow || '0 4px 12px rgba(255,140,60,0.4), 0 0 0 1px rgba(255,180,100,0.5)'};
     
-    /* tooltip arrow */
+    /* pseudo-elements */
     &::after {
         /* layout */
-        content: '';
-        position: absolute;
         top: 100%;
         left: 50%;
+        content: '';
+        position: absolute;
         transform: translateX(-50%);
         
         /* styles */

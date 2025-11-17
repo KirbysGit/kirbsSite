@@ -24,12 +24,13 @@ import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
-// import project assets.
+// images.
 import ucfLogo from '@/images/4projects/ucf_manager/ucflogo.png';
 import presentationPreview from '@/images/4projects/ucf_manager/ucf_preview.png';
 import figmaPreview from '@/images/4projects/ucf_manager/figmapreview.png';
 
-// main ucf club manager card component.
+/* ================== main component ================== */
+
 const UCFClubManagerCard = ({ isFocused = false }) => {
 
   // techs, highlights, & theme.
@@ -128,6 +129,8 @@ const UCFClubManagerCard = ({ isFocused = false }) => {
   );
 };
 
+export default UCFClubManagerCard;
+
 /* ================= ucf-specific resources grid styles ================= */
 
 const ResourcesGrid = styled.div`
@@ -156,12 +159,12 @@ const ResourcesGrid = styled.div`
 const ResourceCard = styled.div`
     /* layout */
     display: flex;
-    flex-direction: column;
     overflow: hidden;
+    cursor: pointer;
+    flex-direction: column;
     
     /* styles */
     border-radius: 10px;
-    cursor: pointer;
     border: 1.5px solid ${({ $themeColors }) => $themeColors?.resourceBorder || 'rgba(255,180,100,0.3)'};
     transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     background: ${({ $themeColors }) => $themeColors?.resourceBackground || 'rgba(255,180,100,0.1)'};
@@ -178,10 +181,10 @@ const ResourceCard = styled.div`
 const ResourcePreview = styled.div`
     /* layout */
     display: flex;
+    overflow: hidden;
+    position: relative;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden;
     
     /* spacing */
     width: 100%;
@@ -252,11 +255,11 @@ const GitHubLogoIcon = styled.div`
     height: 60px;
     
     /* styles */
+    transition: all 0.3s ease;
     color: rgba(255, 255, 255, 0.95);
     filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
-    transition: all 0.3s ease;
     
-    /* svg sizing */
+    /* nested selectors */
     svg {
         width: 100%;
         height: 100%;
@@ -288,8 +291,8 @@ const ResourceCaption = styled.div`
     padding: 0.5rem;
     
     /* styles */
-    font-size: 0.8rem;
     font-weight: 600;
+    font-size: 0.8rem;
     letter-spacing: 0.3px;
     color: rgba(255,255,255,0.95);
     background: rgba(0,0,0,0.15);
@@ -305,6 +308,3 @@ const ResourceCaption = styled.div`
         font-size: 0.7rem;
     }
 `;
-
-// export component.
-export default UCFClubManagerCard;

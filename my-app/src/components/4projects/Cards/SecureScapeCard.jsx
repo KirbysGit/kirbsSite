@@ -25,11 +25,12 @@ import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
-// import project assets.
+// images.
 import securescapeLogo from '@/images/4projects/secure_scape/securescape.png';
 import securescapePreview from '@/images/4projects/secure_scape/ss_preview.png';
 
-// main secure scape card component.
+/* ================== main component ================== */
+
 const SecureScapeCard = ({ isFocused = false }) => {
 
   // the tech, highlights, and theme for secure scape card.
@@ -103,14 +104,16 @@ const SecureScapeCard = ({ isFocused = false }) => {
   );
 };
 
+export default SecureScapeCard;
+
 /* ================= secure scape-specific footer components ================= */
 
 const LivePreviewContainer = styled.div`
     /* layout */
     display: flex;
-    align-items: center;
-    position: relative;
     overflow: hidden;
+    position: relative;
+    align-items: center;
     
     /* spacing */
     gap: 1rem;
@@ -124,7 +127,7 @@ const LivePreviewContainer = styled.div`
     background: ${({ $themeColors }) =>
         $themeColors?.previewBackground || 'rgba(255,180,100,0.1)'};
     
-    /* shimmer effect */
+    /* pseudo-elements */
     &::before {
         /* layout */
         content: '';
@@ -172,8 +175,8 @@ const PreviewImageWrapper = styled.div`
     
     /* styles */
     border-radius: 10px;
+	transition: transform 0.4s ease;
     box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    transition: transform 0.4s ease;
     
     /* hover effects */
     ${LivePreviewContainer}:hover & {
@@ -193,8 +196,8 @@ const PreviewImage = styled.img`
 const PreviewTextContent = styled.div`
     /* layout */
     display: flex;
-    flex-direction: column;
     position: relative;
+    flex-direction: column;
     flex: 1;
     
     /* spacing */
@@ -203,24 +206,24 @@ const PreviewTextContent = styled.div`
 
 const PreviewTitle = styled.div`
     /* styles */
-    font-size: 1.1rem;
     font-weight: 700;
-    color: #fff;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,1);
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 `;
 
 const PreviewSubtext = styled.div`
     /* styles */
-    font-size: 0.85rem;
     font-weight: 500;
+    font-size: 0.85rem;
     color: rgba(255,255,255,0.85);
 `;
 
 const PreviewArrow = styled.div`
     /* layout */
-    position: absolute;
-    right: 2.5%;
     top: 50%;
+    right: 2.5%;
+    position: absolute;
     transform: translateY(-50%);
     
     /* styles */
@@ -244,6 +247,3 @@ const PreviewArrow = styled.div`
         }
     }
 `;
-
-// export component.
-export default SecureScapeCard;

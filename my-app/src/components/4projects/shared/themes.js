@@ -1,4 +1,7 @@
-// Theme configurations for different project cards
+// themes.js
+
+// configs for diff theme cards. took logos, used chatGPT to generate gradients and specific colors, then tweaked.
+
 export const themes = {
 
   // secure scape theme.

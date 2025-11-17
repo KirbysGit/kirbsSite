@@ -17,8 +17,8 @@ import purplecoral from '@/images/5about/footer/purplecoral.png';
 import rocket from '@/images/5about/footer/rocket.png';
 
 // Interactive components
-import ShellPhoneWithTooltip from './ShellPhone';
-import MessageInBottleWithTooltip from './MessageInBottle';
+import ShellPhoneWithTooltip from '../6about/ShellPhone';
+import MessageInBottleWithTooltip from '../6about/MessageInBottle';
 
 const Footer = () => { 
     const scrollToTop = () => {

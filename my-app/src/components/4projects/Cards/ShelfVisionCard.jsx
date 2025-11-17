@@ -25,12 +25,13 @@ import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
-// import project images.
-import shelfBanner from '@/images/4projects/shelf_vision/shelfvision.png';
+// images.
 import paperPreview from '@/images/4projects/shelf_vision/SV_paper.png';
+import shelfBanner from '@/images/4projects/shelf_vision/shelfvision.png';
 import presentationPreview from '@/images/4projects/shelf_vision/SV_pres.png';
 
-// main shelf vision card component.
+/* ================== main component ================== */
+
 const ShelfVisionCard = ({ isFocused = false }) => {
 
   // techs, highlights, & theme.
@@ -124,6 +125,8 @@ const ShelfVisionCard = ({ isFocused = false }) => {
     );
 };
 
+export default ShelfVisionCard;
+
 /* ================= shelf vision-specific resources grid styles ================= */
 
 const ResourcesGrid = styled.div`
@@ -152,12 +155,12 @@ const ResourcesGrid = styled.div`
 const ResourceCard = styled.div`
     /* layout */
     display: flex;
-    flex-direction: column;
     overflow: hidden;
+    flex-direction: column;
     
     /* styles */
-    border-radius: 10px;
     cursor: pointer;
+    border-radius: 10px;
     border: 1.5px solid ${({ $themeColors }) => $themeColors?.resourceBorder || 'rgba(255,180,100,0.3)'};
     transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     background: ${({ $themeColors }) => $themeColors?.resourceBackground || 'rgba(255,180,100,0.1)'};
@@ -174,10 +177,10 @@ const ResourceCard = styled.div`
 const ResourcePreview = styled.div`
     /* layout */
     display: flex;
+    overflow: hidden;
+    position: relative;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden;
     
     /* spacing */
     width: 100%;
@@ -194,7 +197,7 @@ const ResourcePreview = styled.div`
         return 'rgba(255,255,255,0.05)';
     }};
     
-    /* overlay gradient */
+    /* pseudo-elements */
     &::before {
         /* layout */
         content: '';
@@ -225,8 +228,8 @@ const ResourceIcon = styled.div`
     
     /* styles */
     font-size: 2rem;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     
     /* hover effects */
     ${ResourceCard}:hover & {
@@ -248,11 +251,11 @@ const GitHubLogoIcon = styled.div`
     height: 60px;
     
     /* styles */
+    transition: all 0.3s ease;
     color: rgba(255, 255, 255, 0.95);
     filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
-    transition: all 0.3s ease;
     
-    /* svg sizing */
+    /* nested selectors */
     svg {
         width: 100%;
         height: 100%;
@@ -284,8 +287,8 @@ const ResourceCaption = styled.div`
     padding: 0.5rem;
     
     /* styles */
-    font-size: 0.8rem;
     font-weight: 600;
+    font-size: 0.8rem;
     letter-spacing: 0.3px;
     color: rgba(255,255,255,0.95);
     background: rgba(0,0,0,0.15);
@@ -301,6 +304,3 @@ const ResourceCaption = styled.div`
         font-size: 0.7rem;
     }
 `;
-
-// export component.
-export default ShelfVisionCard;

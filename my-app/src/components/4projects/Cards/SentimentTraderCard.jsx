@@ -26,12 +26,15 @@ import { themes } from '../shared/themes';
 import TechStack from '../shared/TechStack';
 import Highlights from '../shared/Highlights';
 
-// import project assets.
-import sentimentTraderLogo from '@/images/4projects/sentiment_trader/sentimenttrader.png';
-import lightningTalkPreview from '@/images/4projects/sentiment_trader/LT_preview.png';
+// images.
 import paperPreview from '@/images/4projects/sentiment_trader/ST_preview.png';
+import lightningTalkPreview from '@/images/4projects/sentiment_trader/LT_preview.png';
+import sentimentTraderLogo from '@/images/4projects/sentiment_trader/sentimenttrader.png';
+
+/* ================== main component ================== */
 
 const SentimentTraderCard = ({ isFocused = false }) => {
+
     // tech, highlights, & theme.
     const techs = [
         'Python',
@@ -129,6 +132,8 @@ const SentimentTraderCard = ({ isFocused = false }) => {
     );
 };
 
+export default SentimentTraderCard;
+
 /* ================= sentiment trader-specific resource grid components ================= */
 
 const ResourcesGrid = styled.div`
@@ -161,8 +166,8 @@ const ResourceCard = styled.div`
     flex-direction: column;
     
     /* styles */
-    border-radius: 10px;
     cursor: pointer;
+    border-radius: 10px;
     border: 1.5px solid ${({ $themeColors }) => $themeColors?.previewBorder || 'rgba(255,180,100,0.3)'};
     transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     background: ${({ $themeColors }) => $themeColors?.previewBackground || 'rgba(255,180,100,0.1)'};
@@ -179,10 +184,10 @@ const ResourceCard = styled.div`
 const ResourcePreview = styled.div`
     /* layout */
     display: flex;
+    overflow: hidden;
+    position: relative;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden;
     
     /* spacing */
     width: 100%;
@@ -199,7 +204,7 @@ const ResourcePreview = styled.div`
         return 'rgba(255,255,255,0.05)';
     }};
     
-    /* overlay gradient */
+    /* pseudo-elements */
     &::before {
         /* layout */
         content: '';
@@ -230,8 +235,8 @@ const ResourceIcon = styled.div`
     
     /* styles */
     font-size: 2rem;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     
     /* hover effects */
     ${ResourceCard}:hover & {
@@ -253,11 +258,11 @@ const GitHubLogoIcon = styled.div`
     height: 60px;
     
     /* styles */
+    transition: all 0.3s ease;
     color: rgba(255, 255, 255, 0.95);
     filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
-    transition: all 0.3s ease;
     
-    /* svg sizing */
+    /* nested selectors */
     svg {
         width: 100%;
         height: 100%;
@@ -289,8 +294,8 @@ const ResourceCaption = styled.div`
     padding: 0.5rem;
     
     /* styles */
-    font-size: 0.8rem;
     font-weight: 600;
+    font-size: 0.8rem;
     letter-spacing: 0.3px;
     color: rgba(255,255,255,0.95);
     background: rgba(0,0,0,0.15);
@@ -306,8 +311,3 @@ const ResourceCaption = styled.div`
         font-size: 0.7rem;
     }
 `;
-
-// export component.
-export default SentimentTraderCard;
-
-

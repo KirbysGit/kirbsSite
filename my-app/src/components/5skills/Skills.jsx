@@ -6,7 +6,6 @@
 // imports.
 import React, { memo, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // local imports.
 import SkillTower from './SkillTower';
@@ -38,11 +37,12 @@ const makeLayeredSkyline = () => {
   });
 };
 
+/* ================== main component ================== */
+
 const Skills = memo(() => {
-    // Performance monitoring
-    useComponentPerformance('Skills', process.env.NODE_ENV === 'development');
+
     
-    // Memoize layered skyline calculation
+    // memoize the skyline calculation.
     const skyline = useMemo(() => makeLayeredSkyline(), []);
 
     return (
@@ -53,7 +53,6 @@ const Skills = memo(() => {
                 <TopSeamFade />
                 
                 {/* horizontal moving clouds at the top - left to right */}
-                {/* Reduced from 10 to 7 clouds for better performance */}
                 <CloudLayer>
                     {/* far layer clouds */}
                     <Cloud top="8%" delay="0" duration="200" layer="far" type={1} direction="left" />
@@ -206,28 +205,43 @@ Skills.displayName = 'Skills';
 // export component.
 export default Skills;
 
+/* ================= animated frames ================= */
+
+// keyframes for water animations.
+const waveScroll = keyframes`
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: -140px 0, -80px 0; }
+`;
+
+// ripple pulse.
+const ripplePulse = keyframes`
+  0%   { opacity: 0.30; }
+  100% { opacity: 0.55; }
+`;
+
+
 /* ================= styles ================= */
 
 // main container - bright blue sky with grassy base and ocean.
 const SkillsContainer = styled.div`
     /* layout */
     display: flex;
-    flex-direction: column;
-    position: relative;
     overflow: hidden;
     overflow-x: hidden;
+    position: relative;
+    flex-direction: column;
     
-    /* Performance optimizations */
-    contain: layout style paint;
+    /* gpu faster! */
     transform: translateZ(0);
+    contain: layout style paint;
     
     /* spacing */
     width: 100%;
     min-height: 100vh;
-    padding: 4rem 2rem;
     padding-top: 0;
+    padding: 4rem 2rem;
     
-    /* styles - simplified gradient (reduced from 21 to 9 color stops) */
+    /* styles */
     background: linear-gradient(to bottom,
         rgb(71, 160, 238) 0%,
         rgb(90, 180, 246) 25%,
@@ -237,50 +251,43 @@ const SkillsContainer = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        padding-top: 4rem; /* More top padding to prevent title/subtitle cutoffs */
-        min-height: 95vh; /* Slightly reduce height */
+        min-height: 95vh;
+        padding-top: 4rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        padding: 2rem 1rem 0rem 1rem;
-        padding-top: 2rem;
         min-height: auto;
         overflow: visible;
         display: flex;
         flex-direction: column;
+        padding-top: 2rem;
+        padding: 2rem 1rem 0rem 1rem;
     }
 `;
 
 // atmosphere layer for visual elements.
 const AtmosphereLayer = styled.div`
     /* layout */
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     z-index: 1;
-    pointer-events: none;
     overflow: hidden;
+    position: absolute;
+    pointer-events: none;
 `;
 
 // cloud layer container for horizontal moving clouds.
 const CloudLayer = styled.div`
     /* layout */
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     z-index: 1;
-    pointer-events: none;
     overflow: hidden;
+    position: absolute;
+    pointer-events: none;
     
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
+    /* gpu faster! */
     contain: layout style;
+    will-change: transform;
+    transform: translateZ(0);
     
     /* Pause animations during loading */
     [data-loading="true"] & {
@@ -297,11 +304,11 @@ const CloudLayer = styled.div`
 // soft gradient at the top to blend the seam from projects into skills.
 const TopSeamFade = styled.div`
     /* layout */
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     z-index: 2;
+    position: absolute;
     pointer-events: none;
     
     /* spacing */
@@ -327,17 +334,17 @@ const TopSeamFade = styled.div`
 // content wrapper.
 const ContentWrapper = styled.div`
     /* layout */
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     z-index: 2;
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-direction: column;
     
     /* spacing */
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
     padding: 2rem;
+    margin: 0 auto;
+    max-width: 1400px;
     
     /* media queries */
     @media (max-width: 1600px) {
@@ -349,7 +356,6 @@ const ContentWrapper = styled.div`
         padding: 1rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         padding: 1rem 0.5rem;
         margin-top: 0;
@@ -359,8 +365,8 @@ const ContentWrapper = styled.div`
 // section title.
 const SectionTitle = styled.h1`
     /* layout */
-    text-align: center;
     margin: 0;
+    text-align: center;
     
     /* styles */
     font-size: 6rem;
@@ -379,7 +385,6 @@ const SectionTitle = styled.h1`
         font-size: 4rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(2.5rem, 8vw, 3.5rem);
     }
@@ -388,8 +393,8 @@ const SectionTitle = styled.h1`
 // section subtitle.
 const SectionSubtitle = styled.h2`
     /* layout */
-    text-align: center;
     margin: 0;
+    text-align: center;
     margin-top: 0.5rem;
     margin-bottom: 3rem;
     
@@ -406,7 +411,6 @@ const SectionSubtitle = styled.h2`
         margin-bottom: 2.5rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(0.95rem, 3vw, 1.15rem);
         margin-top: 0.5rem;
@@ -417,11 +421,11 @@ const SectionSubtitle = styled.h2`
 // road below sidewalk with perspective.
 const Road = styled.div`
     /* layout */
-    position: absolute;
-    bottom: 11.5%;
     left: 0;
-    transform: translateX(-7.5%);
     z-index: 2;
+    bottom: 11.5%;
+    position: absolute;
+    transform: translateX(-7.5%);
     
     /* spacing */
     width: 120%;
@@ -481,7 +485,6 @@ const Road = styled.div`
         height: 2.5rem; /* Slightly smaller */
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         position: relative;
         bottom: auto;
@@ -503,27 +506,26 @@ const SkylineRow = styled.div`
     left: 4%;
     z-index: 3;
     
-    /* Performance optimizations */
+    /* gpu faster! */
     contain: layout style;
     transform: translateZ(0);
     
     /* spacing */
-    width: 60%;  /* Match sidewalk width */
-    height: auto;  /* Tall enough for scaled-up buildings */
+    width: 60%;
+    height: auto;
     
     /* media queries */
     @media (max-width: 1600px) {
         left: -3.5%;
-        bottom: 18.5%; /* Move down slightly to prevent cutoffs */
-        transform: scale(0.82) translateZ(0); /* Scale both width and height proportionally to maintain aspect ratio */
-        transform-origin: bottom center; /* Scale from bottom center */
-        z-index: 3; /* Higher z-index to ensure buildings stay above foundation and water with transform stacking context */
+        bottom: 18.5%;
+        transform: scale(0.82) translateZ(0);
+        transform-origin: bottom center;
+        z-index: 3;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         position: relative;
-        width: 200%; /* Double width to account for 0.5 scale - visually appears as 100% */
+        width: 200%;
         max-width: 200%;
         left: 50%;
         transform: translateX(-50%) scale(0.5) translateZ(0);
@@ -538,11 +540,11 @@ const SkylineRow = styled.div`
 // building foundation - base for buildings to sit on.
 const BuildingFoundation = styled.div`
     /* layout */
-    position: absolute;
-    bottom: 16%;
     left: 0;
-    transform: translateX(-10.5%);
     z-index: 2;
+    bottom: 16%;
+    position: absolute;
+    transform: translateX(-10.5%);
     
     /* spacing */
     width: 59.25%;
@@ -599,11 +601,10 @@ const BuildingFoundation = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        bottom: 17.5%; /* Move down proportionally with skyline */
-        width: 40%; /* Slightly narrower */
+        bottom: 17.5%;
+        width: 40%;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         position: relative;
         left: -50%;
@@ -611,7 +612,7 @@ const BuildingFoundation = styled.div`
         transform: none;
         width: 200%;
         height: 1rem;
-        margin: -0.5rem 0 0 0; /* No gaps - directly under buildings */
+        margin: -0.5rem 0 0 0;
         z-index: 2;
     }
 `;
@@ -619,11 +620,11 @@ const BuildingFoundation = styled.div`
 // grassy base layer for buildings (shrunk for ocean).
 const GrassyBase = styled.div`
     /* layout */
-    position: absolute;
-    bottom: 7%;
     left: 0;
-    transform: translateX(-7.5%);
     z-index: 4;
+    bottom: 7%;
+    position: absolute;
+    transform: translateX(-7.5%);
     
     /* spacing */
     width: 120%;
@@ -645,7 +646,6 @@ const GrassyBase = styled.div`
         transform: perspective(150px) rotateX(15deg);
         transform-origin: bottom;
         background: 
-            /* Base color gradient */
             linear-gradient(to top,
                 rgb(34, 139, 34) 0%,      /* Forest green base */
                 rgb(50, 150, 50) 20%,    /* Medium green */
@@ -674,7 +674,6 @@ const GrassyBase = styled.div`
         transform-origin: bottom;
         mix-blend-mode: multiply;
         background: 
-            /* Fine vertical grass blades */
             repeating-linear-gradient(
                 90deg,
                 transparent 0px,
@@ -682,7 +681,6 @@ const GrassyBase = styled.div`
                 rgba(0, 80, 0, 0.15) 3px,
                 rgba(0, 80, 0, 0.15) 4px
             ),
-            /* Medium grass clumps */
             repeating-linear-gradient(
                 90deg,
                 transparent 0px,
@@ -692,7 +690,6 @@ const GrassyBase = styled.div`
                 transparent 12px,
                 transparent 24px
             ),
-            /* Diagonal grass pattern (left) */
             repeating-linear-gradient(
                 75deg,
                 transparent 0px,
@@ -700,7 +697,6 @@ const GrassyBase = styled.div`
                 rgba(20, 100, 20, 0.12) 12px,
                 rgba(20, 100, 20, 0.12) 14px
             ),
-            /* Diagonal grass pattern (right) */
             repeating-linear-gradient(
                 105deg,
                 transparent 0px,
@@ -708,7 +704,6 @@ const GrassyBase = styled.div`
                 rgba(15, 90, 15, 0.10) 10px,
                 rgba(15, 90, 15, 0.10) 12px
             ),
-            /* Shadow patches - creates depth variation */
             radial-gradient(
                 ellipse 120px 40px at 15% 45%,
                 rgba(0, 60, 0, 0.25) 0%,
@@ -729,7 +724,6 @@ const GrassyBase = styled.div`
                 rgba(0, 60, 0, 0.22) 0%,
                 transparent 70%
             ),
-            /* Light highlights - sun-touched areas */
             radial-gradient(
                 ellipse 80px 25px at 25% 55%,
                 rgba(140, 200, 100, 0.15) 0%,
@@ -744,11 +738,10 @@ const GrassyBase = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        bottom: 8%; /* Move down proportionally */
-        height: 1.75rem; /* Slightly smaller */
+        bottom: 8%;
+        height: 1.75rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         position: relative;
         bottom: auto;
@@ -756,7 +749,7 @@ const GrassyBase = styled.div`
         transform: none;
         width: 200%;
         height: 1rem;
-        margin: -0.05rem 0 0 0; /* No gaps - directly connected */
+        margin: -0.05rem 0 0 0;
         z-index: 2;
     }
 `;
@@ -764,11 +757,11 @@ const GrassyBase = styled.div`
 // upper sidewalk. (above road)
 const UpperSidewalk = styled.div`
     /* layout */
-    position: absolute;
-    bottom: 15.5%;
     left: 0;
-    transform: translateX(-10.5%);
     z-index: 2;
+    bottom: 15.5%;
+    position: absolute;
+    transform: translateX(-10.5%);
     
     /* spacing */
     width: 120%;
@@ -823,11 +816,10 @@ const UpperSidewalk = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        bottom: 16.5%; /* Move down proportionally */
-        height: 1.1rem; /* Slightly smaller */
+        bottom: 16.5%;
+        height: 1.1rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         position: relative;
         bottom: auto;
@@ -835,7 +827,7 @@ const UpperSidewalk = styled.div`
         transform: none;
         width: 200%;
         height: 0.75rem;
-        margin: -0.5rem 0 0 0; /* No gaps - directly connected */
+        margin: -0.5rem 0 0 0;
         z-index: 2;
     }
 `;
@@ -843,11 +835,11 @@ const UpperSidewalk = styled.div`
 // lower sidewalk. (below road)
 const LowerSidewalk = styled.div`
     /* layout */
-    position: absolute;
-    bottom: 10%;
     left: 0;
-    transform: translateX(-5.5%);
     z-index: 2;
+    bottom: 10%;
+    position: absolute;
+    transform: translateX(-5.5%);
     
     /* spacing */
     width: 110%;
@@ -902,11 +894,10 @@ const LowerSidewalk = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        bottom: 11%; /* Move down proportionally */
-        height: 1.1rem; /* Slightly smaller */
+        bottom: 11%;
+        height: 1.1rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         position: relative;
         bottom: auto;
@@ -914,35 +905,23 @@ const LowerSidewalk = styled.div`
         width: 200%;
         left: -50%;
         height: 0.75rem;
-        margin: -0.25rem 0 0 0; /* Negative top margin to overlap */
+        margin: -0.25rem 0 0 0;
         z-index: 2;
     }
-`;
-
-// keyframes for water animations.
-const waveScroll = keyframes`
-  0%   { background-position: 0 0, 0 0; }
-  100% { background-position: -140px 0, -80px 0; }
-`;
-
-// ripple pulse.
-const ripplePulse = keyframes`
-  0%   { opacity: 0.30; }
-  100% { opacity: 0.55; }
 `;
 
 // unified harbor water.
 const HarborWater = styled.div`
     /* layout */
-    position: absolute;
     right: -50%;
     bottom: 0;
+    z-index: 0.5;
+    overflow: hidden;
+    position: absolute;
     transform: perspective(220px) rotateX(12deg) translateZ(0);
     transform-origin: bottom right;
-    overflow: hidden;
-    z-index: 0.5; /* Lower than buildings (z-index: 1.5) and foundation (z-index: 2) */
     
-    /* Performance optimizations */
+    /* gpu faster! */
     contain: layout style paint;
     will-change: transform;
     
@@ -986,7 +965,6 @@ const HarborWater = styled.div`
             repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 42px),
             repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 66px);
         
-        /* Pause animation during loading */
         [data-loading="true"] & {
             animation-play-state: paused;
         }
@@ -997,18 +975,17 @@ const HarborWater = styled.div`
         height: 26rem; /* Slightly smaller */
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         position: absolute;
         right: 0;
-        bottom: 3rem; /* Align bottom with top of OceanWall (which is 3rem tall) */
+        bottom: 3rem;
         left: 0;
         transform: none;
         width: 100%;
         height: auto;
         min-height: 200px;
         max-height: 300px;
-        z-index: 1; /* Behind buildings (z-index: 3) but above background */
+        z-index: 1;
         transform-origin: bottom;
     }
 `;
@@ -1016,12 +993,12 @@ const HarborWater = styled.div`
 // ripple layer. (sits inside the rotated plane)
 const RippleLayer = styled.div`
     /* layout */
-    position: absolute;
     inset: 0;
+    z-index: 0.5;
+    position: absolute;
     pointer-events: none;
-    z-index: 0.5; /* Inherit from parent container context */
     
-    /* Performance optimizations */
+    /* gpu faster! */
     will-change: opacity;
     transform: translateZ(0);
     
@@ -1034,7 +1011,6 @@ const RippleLayer = styled.div`
         radial-gradient(55px 25px at 48% 50%, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.07) 40%, transparent 70%),
         radial-gradient(34px 18px at 70% 60%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.06) 30%, transparent 70%);
     
-    /* Pause animation during loading */
     [data-loading="true"] & {
         animation-play-state: paused;
     }
@@ -1043,10 +1019,10 @@ const RippleLayer = styled.div`
 // compact guardrail with posts, sharing the same slant.
 const BridgeRail = styled.div`
     /* layout */
-    position: absolute;
     right: 0%;
     bottom: 17%;
     z-index: 1;
+    position: absolute;
     
     /* spacing */
     width: 50%;
@@ -1080,23 +1056,23 @@ const BridgeRail = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        bottom: 18.5%; /* Move down proportionally */
+        bottom: 18.5%;
         width: 59%;
     }
     
     /* mobile */
     @media (max-width: 768px) {
-        display: none; /* Hide bridge rail on mobile */
+        display: none;
     }
 `;
 
 // floating text container.
 const FloatingTextContainer = styled.div`
     /* layout */
-    position: absolute;
     top: 34%;
     right: 5%;
     z-index: 5;
+    position: absolute;
     
     /* spacing */
     width: 33%;
@@ -1104,8 +1080,8 @@ const FloatingTextContainer = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        top: 34%; /* Move up slightly to prevent overlap */
-        width: 36%; /* Slightly narrower */
+        top: 34%;
+        width: 36%;
     }
     
     /* mobile */
@@ -1131,7 +1107,6 @@ const FloatingText = styled.p`
     font-size: 1.25rem;
     line-height: 1.7;
     color: rgb(255, 255, 255);
-    /* Replaced filter: drop-shadow with box-shadow for better performance */
     text-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.6),
         0 4px 8px rgba(0, 0, 0, 0.4);
@@ -1152,9 +1127,9 @@ const FloatingText = styled.p`
     
     /* media queries */
     @media (max-width: 1600px) {
-        font-size: 1.1rem; /* Reduced font size */
-        line-height: 1.6; /* Tighter line height */
-        margin: 0 0 14px 0; /* Reduced spacing */
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin: 0 0 14px 0;
     }
     
     /* mobile */
@@ -1169,12 +1144,12 @@ const FloatingText = styled.p`
 // little ps note at bottom.
 const PSNote = styled.p`
     /* layout */
-    position: absolute;
     top: 60%;
     right: 5%;
-    text-align: right;
-    z-index: 5;
     margin: 0;
+    z-index: 5;
+    text-align: right;
+    position: absolute;
     
     /* spacing */
     width: 30%;
@@ -1185,7 +1160,6 @@ const PSNote = styled.p`
     font-style: italic;
     line-height: 1.7;
     color: rgb(255, 255, 255);
-    /* Replaced filter: drop-shadow with text-shadow for better performance */
     text-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.6),
         0 4px 8px rgba(0, 0, 0, 0.4);
@@ -1202,10 +1176,10 @@ const PSNote = styled.p`
     
     /* media queries */
     @media (max-width: 1600px) {
-        top: 62%; /* Move up to prevent overlap */
-        width: 28%; /* Slightly narrower */
-        font-size: 0.9rem; /* Reduced font size */
-        line-height: 1.6; /* Tighter line height */
+        top: 62%;
+        width: 28%;
+        font-size: 0.9rem;
+        line-height: 1.6;
     }
     
     /* mobile */
@@ -1228,10 +1202,10 @@ const PSNote = styled.p`
 const BalloonsWrapper = styled.div`
     /* desktop - no wrapper needed, balloons positioned absolutely */
     @media (min-width: 769px) {
-        position: absolute;
         inset: 0;
-        pointer-events: none;
         z-index: 4;
+        position: absolute;
+        pointer-events: none;
     }
     
     /* mobile */
@@ -1247,7 +1221,7 @@ const BalloonsWrapper = styled.div`
         pointer-events: none;
         z-index: 4;
         
-        /* Scale down balloons on mobile */
+        /* scale down balloons on mobile */
         & > * {
             transform: scale(0.4) !important;
             position: relative !important;
@@ -1260,10 +1234,10 @@ const BalloonsWrapper = styled.div`
 // ocean rail at bottom of grassy area.
 const OceanRail = styled.div`
     /* layout */
-    position: absolute;
     left: 0;
     bottom: 7%;
     z-index: 4;
+    position: absolute;
     
     /* spacing */
     width: 100%;
@@ -1296,8 +1270,8 @@ const OceanRail = styled.div`
     
     /* media queries */
     @media (max-width: 1600px) {
-        bottom: 8%; /* Move down proportionally */
-        height: 1.3rem; /* Slightly smaller */
+        bottom: 8%;
+        height: 1.3rem;
     }
     
     /* mobile */
@@ -1307,7 +1281,7 @@ const OceanRail = styled.div`
         left: -50%;
         width: 200%;
         height: 1rem;
-        margin: -1rem 0 0 0; /* No gaps - directly connected */
+        margin: -1rem 0 0 0;
         z-index: 4;
     }
 `;
@@ -1315,10 +1289,10 @@ const OceanRail = styled.div`
 // stone/concrete ocean wall below rail.
 const OceanWall = styled.div`
     /* layout */
-    position: absolute;
     left: 0;
-    bottom: 0%;
     z-index: 3;
+    bottom: 0%;
+    position: absolute;
     
     /* spacing */
     width: 100%;

@@ -5,7 +5,6 @@
 // imports.
 import styled, { keyframes } from 'styled-components';
 import React, { useEffect, useMemo, useRef, useState, useCallback, memo } from 'react';
-import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
 // my project cards.
 import CentiCard from './Cards/CentiCard';
@@ -16,27 +15,24 @@ import ShelfVisionCard from './Cards/ShelfVisionCard';
 import UCFClubManagerCard from './Cards/UCFClubManagerCard';
 import SentimentTraderCard from './Cards/SentimentTraderCard';
 
-// cloud component from experience.
+// bg components.
+import Sun from './Sun';
 import Cloud from '../3experience/Cloud';
 
-// sun component from experience.
-import Sun from './Sun';
+/* ================== main component ================== */
 
-// main projects component.
 const Projects = memo(() => { 
-	// Performance monitoring
-	useComponentPerformance('Projects', process.env.NODE_ENV === 'development');
 
-	// memo for card configurations (lazy instantiation - only create JSX when visible)
+	// memo for card configurations.
 	const cardConfigs = useMemo(
 		() => [
-		{ id: 'ck', Component: CKSiteCard, theme: 'cosmic' },
-		{ id: 'centi', Component: CentiCard, theme: 'centi' },
-		{ id: 'sent', Component: SentimentTraderCard, theme: 'sentiment' },
-		{ id: 'sec', Component: SecureScapeCard, theme: 'secure' },
-		{ id: 'shelf', Component: ShelfVisionCard, theme: 'shelf' },
-		{ id: 'ucf', Component: UCFClubManagerCard, theme: 'ucf' },
-		{ id: 'ocean', Component: OceanLifeCard, theme: 'ocean' },
+            { id: 'ck', Component: CKSiteCard, theme: 'cosmic' },
+            { id: 'centi', Component: CentiCard, theme: 'centi' },
+            { id: 'sent', Component: SentimentTraderCard, theme: 'sentiment' },
+            { id: 'sec', Component: SecureScapeCard, theme: 'secure' },
+            { id: 'shelf', Component: ShelfVisionCard, theme: 'shelf' },
+            { id: 'ucf', Component: UCFClubManagerCard, theme: 'ucf' },
+            { id: 'ocean', Component: OceanLifeCard, theme: 'ocean' },
 		],
 		[]
 	);
@@ -44,31 +40,28 @@ const Projects = memo(() => {
 	// state variables.
 	const n = useMemo(() => cardConfigs.length, [cardConfigs.length]);
 	const [index, setIndex] = useState(0);
-	const [paused, setPaused] = useState(false);
 
-	// Memoized navigation functions
+	// memoized navigation functions.
 	const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
 	const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
-
-	// Memoized pause handlers
-	const handleMouseEnter = useCallback(() => setPaused(true), []);
-	const handleMouseLeave = useCallback(() => setPaused(false), []);
 
 	// keyboard navigation. (right & left arrows)
 	useEffect(() => {
 		const onKey = (e) => {
-		if (e.key === 'ArrowRight') next();
-		if (e.key === 'ArrowLeft') prev();
+            if (e.key === 'ArrowRight') next();
+            if (e.key === 'ArrowLeft') prev();
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
 	}, [next, prev]);
 
-	// simple drag / swipe - only enabled on mobile
+    /* ========== mobile swipe set up ========== */
+
+	// simple drag / swipe - only enabled on mobile.
 	const [isMobile, setIsMobile] = useState(false);
 	const drag = useRef({ x: 0, active: false });
 	
-	// Check if mobile on mount and resize
+	// check if mobile on mount and resize.
 	useEffect(() => {
 		const checkMobile = () => {
 			setIsMobile(window.innerWidth < 900);
@@ -79,20 +72,19 @@ const Projects = memo(() => {
 	}, []);
 	
 	const onPointerDown = useCallback((e) => {
-		if (!isMobile) return; // Disable swipe on desktop
+		if (!isMobile) return; // disable swipe on desktop.
 		drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
-		setPaused(true);
 	}, [isMobile]);
+
 	const onPointerUp = useCallback((e) => {
-		if (!isMobile || !drag.current.active) return; // Disable swipe on desktop
+		if (!isMobile || !drag.current.active) return; // disable swipe on desktop.
 		const upX = e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0;
 		const dx = upX - drag.current.x;
 		drag.current.active = false;
 		if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
-		setPaused(false);
 	}, [next, prev, isMobile]);
 
-	// Memoized card style calculation
+	// memoized card style calculation.
 	const getCardStyle = useCallback((cardIndex) => {
 		const distance = Math.abs(cardIndex - index);
 		
@@ -100,7 +92,7 @@ const Projects = memo(() => {
 		if (distance > 2) return null;
 		
 		return {
-			position: cardIndex - index, // -2, -1, 0, 1, 2
+			position: cardIndex - index, // -2, -1, 0, 1, 2.
 			isFocused: cardIndex === index,
 			distance: distance
 		};
@@ -148,8 +140,6 @@ const Projects = memo(() => {
 				
 				{/* stage - where the cards are displayed. */}
 				<Stage
-					onMouseEnter={handleMouseEnter}
-					onMouseLeave={handleMouseLeave}
 					{...(isMobile ? {
 						onPointerDown,
 						onPointerUp,
@@ -162,22 +152,21 @@ const Projects = memo(() => {
 					{/* track - the container for the cards. */}
 					<Track>
 						{cardConfigs.map((config, i) => {
-						const cardStyle = getCardStyle(i);
-						if (!cardStyle) return null;
-						
-						// Lazy instantiation: only create card JSX when visible
-						const { Component } = config;
-						
-						return (
-							<Slide 
-								key={config.id} 
-								$position={cardStyle.position}
-								$isFocused={cardStyle.isFocused}
-								$distance={cardStyle.distance}
-							>
-								<Component isFocused={cardStyle.isFocused} />
-							</Slide>
-						);
+                            const cardStyle = getCardStyle(i);
+                            if (!cardStyle) return null;
+                            
+                            const { Component } = config;
+                            
+                            return (
+                                <Slide 
+                                    key={config.id} 
+                                    $position={cardStyle.position}
+                                    $isFocused={cardStyle.isFocused}
+                                    $distance={cardStyle.distance}
+                                >
+                                    <Component isFocused={cardStyle.isFocused} />
+                                </Slide>
+                            );
 						})}
 					</Track>
 
@@ -193,51 +182,47 @@ const Projects = memo(() => {
 Projects.displayName = 'Projects';
 export default Projects;
 
-/* ------------------ styles ------------------ */
+/* ------------------ styled ------------------ */
 
 // main container for viewport.
 const ProjectsContainer = styled.div`
     /* layout */
     display: flex;
     overflow: hidden;
-    min-height: 100vh;
-	position: relative;
-	flex-direction: column;
-    
-    /* GPU acceleration */
-    transform: translateZ(0);
+    position: relative;
     contain: layout style;
+    flex-direction: column;
+    transform: translateZ(0);
     
     /* spacing */
     width: 100%;
     padding-top: 0;
-	padding: 4rem 2rem;
+    min-height: 100vh;
+    padding: 4rem 2rem;
     padding-bottom: 6rem;
     
     /* styles */
-    /* Simplified gradient - reduced from 11 to 3 color stops for better performance */
     background: linear-gradient(to bottom,
-        rgb(148, 180, 243) 0%,   /* Match Experience ending */
-        rgb(120, 165, 234) 50%,  /* Mid transition */
-        rgb(71, 160, 238) 100%); /* Exact match Skills start */
+        rgb(148, 180, 243) 0%,
+        rgb(120, 165, 234) 50%,
+        rgb(71, 160, 238) 100%);
 
     /* media queries */
     @supports (background: linear-gradient(in oklch, red, blue)) {
         background: linear-gradient(
             to bottom in oklch,
-            #a8c2f6 0%,  /* exact match of Experience end */
+            #a8c2f6 0%,
             #9fbaf3 25%,
             #8db2f0 50%,
             #7db5f3 75%,
-            #6eb0f2 100%  /* darker blue matching Skills start rgb(71, 160, 238) */
+            #6eb0f2 100%
         );
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        padding: 2rem 1rem;
         min-height: auto;
         overflow: visible;
+        padding: 2rem 1rem;
     }
 `;
 
@@ -259,24 +244,24 @@ const CloudLayer = styled.div`
     inset: 0;
     z-index: 1;
     overflow: hidden;
-	position: absolute;
+    position: absolute;
     
-    /* GPU acceleration and containment */
+    /* gpu faster! */
     transform: translateZ(0);
-    contain: layout style paint;
     will-change: transform;
+    contain: layout style paint;
     
-    /* Pause animations during loading */
+    /* nested selectors */
     [data-loading="true"] & {
         animation-play-state: paused;
     }
     
     /* styles */
-    pointer-events: none;
     user-select: none;
-    -webkit-user-select: none;
+    pointer-events: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    -webkit-user-select: none;
 `;
 
 // the soft gradient at the top to blend the seam better between sections.
@@ -314,9 +299,9 @@ const TopSeamFade = styled.div`
 // soft gradient at bottom to blen into skills.
 const BottomSeamFade = styled.div`
     /* layout */
-    bottom: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     z-index: 2;
 	position: absolute;
     
@@ -450,18 +435,18 @@ const SectionSubtitle = styled.h2`
 const Stage = styled.div`
     /* layout */
     display: grid;
-	overflow: visible;
+    overflow: visible;
     position: relative;
     place-items: center;
     
-    /* GPU acceleration */
+    /* gpu faster! */
+    contain: layout style;
     transform: translateZ(0);
-    contain: layout style; /* Removed paint containment to allow overflow */
     
     /* spacing */
     width: 100%;
     min-height: 72vh;
-    padding: 40px 0 60px 0; /* Extra bottom padding for card overflow */
+    padding: 40px 0 60px 0;
     
     /* media queries */
     @media (min-width: 2000px) {
@@ -479,15 +464,14 @@ const Stage = styled.div`
         padding: 20px 0;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        padding: 0.5rem 0 1rem 0;
-        min-height: auto;
         height: auto;
+        min-height: auto;
         max-width: 100%;
         overflow: visible !important;
         contain: none;
         display: block;
+        padding: 0.5rem 0 1rem 0;
     }
 `;
 
@@ -495,13 +479,13 @@ const Stage = styled.div`
 const Track = styled.div`
     /* layout */
     overflow: visible;
-	position: relative;
+    position: relative;
     perspective: 1200px;
     
-    /* GPU acceleration */
-    transform: translateZ(0);
+    /* gpu faster! */
+    contain: layout style;
     will-change: transform;
-    contain: layout style; /* Keep layout/style containment */
+    transform: translateZ(0);
     
     /* spacing */
     width: 50vw;
@@ -527,12 +511,11 @@ const Track = styled.div`
         height: clamp(400px, 50vh, 580px);
     }
     
-    /* mobile - size to biggest card, all cards at same position */
     @media (max-width: 768px) {
         width: 100%;
-        max-width: 100%;
         height: auto;
         min-height: auto;
+        max-width: 100%;
         overflow: visible !important;
         contain: none;
         display: block;
@@ -546,19 +529,19 @@ const Slide = styled.div`
     /* layout */
     top: 0;
     left: 0;
-	z-index: 1;
+    z-index: 1;
     display: grid;
+    position: absolute;
     place-items: center;
-	position: absolute;
     
     /* spacing */
     width: 100%;
     height: 100%;
     
-    /* GPU acceleration */
+    /* gpu faster! */
+    contain: layout style;
     transform: translateZ(0);
     will-change: transform, opacity;
-    contain: layout style; /* Removed paint containment for better overflow handling */
     
     /* styles */
     pointer-events: none;
@@ -566,31 +549,29 @@ const Slide = styled.div`
         transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
         opacity 200ms ease;
     
-    /* Focused card (index 0) */
+    /* nested selectors */
     ${({ $isFocused }) => $isFocused && `
-        transform: translateX(0) translateZ(0) scale(1);
         opacity: 1;
-        z-index: 100; /* Highest z-index for focused card */
+        z-index: 100;
         pointer-events: auto;
         will-change: transform;
+        transform: translateX(0) translateZ(0) scale(1);
     `}
 
-    /* Adjacent cards (distance 1) */
     ${({ $distance, $position }) => $distance === 1 && `
-        transform: translateX(${$position > 0 ? '35%' : '-35%'}) scale(0.75) translateZ(-30px);
         opacity: 0.4;
         z-index: 5;
         filter: blur(2px) saturate(0.7);
         will-change: transform, opacity;
+        transform: translateX(${$position > 0 ? '35%' : '-35%'}) scale(0.75) translateZ(-30px);
     `}
 
-    /* Far cards (distance 2) */
     ${({ $distance, $position }) => $distance === 2 && `
-        transform: translateX(${$position > 0 ? '65%' : '-65%'}) scale(0.6) translateZ(-60px);
         opacity: 0.2;
         z-index: 1;
         filter: blur(4px) saturate(0.5);
         will-change: transform, opacity;
+        transform: translateX(${$position > 0 ? '65%' : '-65%'}) scale(0.6) translateZ(-60px);
     `}
     
     /* media queries */
@@ -609,42 +590,38 @@ const Slide = styled.div`
         `}
     }
     
-    /* mobile - all cards at same position, only focused visible */
     @media (max-width: 768px) {
-        /* Reset all positioning and sizing */
+        width: 100%;
         height: auto !important;
         min-height: auto !important;
-        width: 100%;
         overflow: visible;
-        
-        /* Reset all transforms and filters */
         scale: 1 !important;
         filter: none !important;
         
         ${({ $isFocused }) => !$isFocused && `
+            top: 0 !important;
+            left: 50% !important;
             opacity: 0 !important;
             visibility: hidden;
             pointer-events: none;
             position: absolute !important;
-            left: 50% !important;
-            top: 0 !important;
             transform: translateX(-50%) !important;
         `}
         
         ${({ $isFocused }) => $isFocused && `
+            z-index: 100;
             opacity: 1 !important;
             visibility: visible;
-            z-index: 100;
             pointer-events: auto;
             contain: none;
-            position: relative !important;
             left: auto !important;
             top: auto !important;
-            transform: none !important;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
             margin: 0 auto;
+            display: flex;
+            position: relative !important;
+            transform: none !important;
+            align-items: flex-start;
+            justify-content: center;
         `}
     }
 `;
@@ -653,27 +630,27 @@ const Slide = styled.div`
 
 // bounce animations for arrows - GPU accelerated
 const leftBounce = keyframes`
-  0%, 100% {
-    transform: translateY(-50%) translateX(0) translateZ(0);
-  }
-  25% {
-    transform: translateY(-50%) translateX(-3px) translateZ(0);
-  }
-  75% {
-    transform: translateY(-50%) translateX(3px) translateZ(0);
-  }
+    0%, 100% {
+        transform: translateY(-50%) translateX(0) translateZ(0);
+    }
+    25% {
+        transform: translateY(-50%) translateX(-3px) translateZ(0);
+    }
+    75% {
+        transform: translateY(-50%) translateX(3px) translateZ(0);
+    }
 `;
 
 const rightBounce = keyframes`
-  0%, 100% {
-    transform: translateY(-50%) translateX(0) translateZ(0);
-  }
-  25% {
-    transform: translateY(-50%) translateX(3px) translateZ(0);
-  }
-  75% {
-    transform: translateY(-50%) translateX(-3px) translateZ(0);
-  }
+    0%, 100% {
+        transform: translateY(-50%) translateX(0) translateZ(0);
+    }
+    25% {
+        transform: translateY(-50%) translateX(3px) translateZ(0);
+    }
+    75% {
+        transform: translateY(-50%) translateX(-3px) translateZ(0);
+    }
 `;
 
 // base arrow button style.
@@ -682,34 +659,33 @@ const ArrowBase = styled.button`
     top: 50%;
 	z-index: 20;
     display: grid;
-    place-items: center;
 	position: absolute;
+    place-items: center;
     
     /* spacing */
     width: 56px;
     height: 56px;
     
-    /* GPU acceleration */
-    transform: translateY(-50%) translateZ(0);
+    /* gpu faster! */
     will-change: transform;
     contain: layout style paint;
+    transform: translateY(-50%) translateZ(0);
     
     /* styles */
-    cursor: pointer;
     border: 0;
-    border-radius: 16px;
+    color: #fff;
     opacity: 0.95;
-    background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+    line-height: 1;
+    font-size: 32px;
+    font-weight: bold;
+    border-radius: 16px;
     backdrop-filter: blur(12px);
     border: 2px solid rgba(255,255,255,0.3);
+    background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
     box-shadow: 
         0 4px 16px rgba(0,0,0,0.15),
         0 0 20px rgba(255,255,255,0.1),
         inset 0 1px 2px rgba(255,255,255,0.2);
-    color: #fff;
-    font-size: 32px;
-    font-weight: bold;
-    line-height: 1;
     transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1);
     
@@ -735,18 +711,18 @@ const ArrowLeft = styled(ArrowBase)`
     /* layout */
     left: max(12px, 4vw);
     
-    /* mobile - position relative to centered card */
+    /* styles */
+    animation-delay: 0.5s;
+    animation: ${leftBounce} 2s ease-in-out infinite;
+    
+    /* media queries */
     @media (max-width: 768px) {
         width: 44px;
         height: 44px;
         font-size: 28px;
         border-radius: 12px;
-        left: calc(50% - 170px - 60px); /* Center minus half card width (340px/2) minus arrow width and gap */
+        left: calc(50% - 170px - 60px);
     }
-    
-    /* styles */
-    animation: ${leftBounce} 2s ease-in-out infinite;
-    animation-delay: 0.5s;
 `;
 
 // right arrow button.
@@ -754,17 +730,17 @@ const ArrowRight = styled(ArrowBase)`
     /* layout */
     right: max(12px, 4vw);
     
-    /* mobile - position relative to centered card */
+    /* styles */
+    animation-delay: 1s;
+    animation: ${rightBounce} 2s ease-in-out infinite;
+    
+    /* media queries */
     @media (max-width: 768px) {
         width: 44px;
         height: 44px;
         font-size: 28px;
         border-radius: 12px;
         right: auto;
-        left: calc(50% + 170px + 12px); /* Center plus half card width (340px/2) plus gap */
+        left: calc(50% + 170px + 12px);
     }
-    
-    /* styles */
-    animation: ${rightBounce} 2s ease-in-out infinite;
-    animation-delay: 1s;
 `;

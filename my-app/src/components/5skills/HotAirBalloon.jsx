@@ -1,6 +1,7 @@
 // hotairballoon.jsx
 
-// this took so long, was trying to find a workaround 
+// this took so long, was trying to find a workaround, ended up with stacked ellipses.
+
 // imports.
 import React, { memo, useId, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
@@ -209,15 +210,15 @@ const float = (ms) => keyframes`
 
 const Wrap = styled.div`
     /* layout */
-    position: absolute;
     z-index: 3;
+    position: absolute;
     will-change: transform;
     
     /* spacing */
     height: auto;
     
     /* styles */
-    opacity: 0.92; /* Atmospheric perspective for distance */
+    opacity: 0.92;
     cursor: pointer;
     animation: ${({ $floatMs }) => float($floatMs)} ease-in-out infinite;
     animation-duration: ${({ $floatMs }) => `${$floatMs}ms`};
@@ -253,12 +254,12 @@ const tooltipFadeIn = keyframes`
 /* tooltip that appears on hover - positioned below basket */
 const Tooltip = styled.div`
     /* layout */
-    position: absolute;
-    top: ${({ $w }) => Math.round($w * 1.46 + 5)}px; /* Below basket */
     left: 50%;
-    transform: translateX(-50%);
     z-index: 100;
+    position: absolute;
     pointer-events: none;
+    transform: translateX(-50%);
+    top: ${({ $w }) => Math.round($w * 1.46 + 5)}px; /* Below basket */
     
     /* spacing */
     padding: 10px 18px;
@@ -266,11 +267,11 @@ const Tooltip = styled.div`
     /* styles */
     opacity: 0;
     color: white;
-    border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
-    letter-spacing: 0.3px;
+    border-radius: 12px;
     white-space: nowrap;
+    letter-spacing: 0.3px;
     background: ${({ $color }) => $color || '#1a1a1a'};
     box-shadow: 
         0 8px 20px rgba(0, 0, 0, 0.3),
@@ -323,26 +324,26 @@ const Tooltip = styled.div`
 /* svg balloon wrapper */
 const SvgWrap = styled.svg`
     /* layout */
-    position: absolute;
-    left: 50%;
     top: 0;
-    transform: translateX(-50%);
-    overflow: visible;
+    left: 50%;
     z-index: 3;
+    overflow: visible;
+    position: absolute;
+    transform: translateX(-50%);
 `;
 
 /* logo overlay on balloon */
 const LogoOverlay = styled.div`
     /* layout */
-    position: absolute;
-    left: 50%;
-    top: ${({ $w }) => Math.round($w * 0.45)}px;
-    transform: translate(-50%, -50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	left: 50%;
     z-index: 4;
-    pointer-events: none;
+	display: flex;
+	position: absolute;
+    align-items: center;
+	pointer-events: none;
+    justify-content: center;
+	transform: translate(-50%, -50%);
+	top: ${({ $w }) => Math.round($w * 0.45)}px;
     
     /* spacing */
     width: ${({ $w }) => Math.round($w * 0.65)}px;
@@ -362,33 +363,33 @@ const LogoImage = styled.img`
 /* metal attachment ring */
 const AttachmentRing = styled.div`
     /* layout */
-    position: absolute;
     left: 50%;
-    top: ${({ $w }) => Math.round($w * 0.98)}px;
-    transform: translateX(-50%);
     z-index: 4;
+    position: absolute;
+    transform: translateX(-50%);
+    top: ${({ $w }) => Math.round($w * 0.98)}px;
     
     /* spacing */
     width: ${({ $w }) => Math.round($w * 0.24)}px;
     height: ${({ $w }) => Math.round($w * 0.08)}px;
     
     /* styles */
-    border: 2px solid rgba(30, 25, 20, 0.6);
     border-radius: 50% / 45%;
+    border: 2px solid rgba(30, 25, 20, 0.6);
     background: linear-gradient(180deg, #8b7355, #6b5643, #4a3d2f);
     box-shadow: 
         0 3px 6px rgba(0, 0, 0, 0.4),
         inset 0 2px 3px rgba(255, 255, 255, 0.2),
         inset 0 -2px 3px rgba(0, 0, 0, 0.3);
     
-    /* ring texture */
+    /* pseudo-elements */
     &::before {
         /* layout */
-        content: '';
-        position: absolute;
         inset: 3px;
+        position: absolute;
         
         /* styles */
+        content: '';
         border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: 50% / 45%;
     }
@@ -397,9 +398,9 @@ const AttachmentRing = styled.div`
 /* svg rigging container */
 const RiggingSvg = styled.svg`
     /* layout */
-    position: absolute;
-    pointer-events: none;
     z-index: 1;
+	position: absolute;
+    pointer-events: none;
     
     /* spacing */
     width: 100%;
@@ -409,20 +410,20 @@ const RiggingSvg = styled.svg`
 /* wicker basket with depth */
 const Basket = styled.div`
     /* layout */
-    position: absolute;
     left: 50%;
-    top: ${({ $w }) => Math.round($w * 1.28)}px;
+	z-index: 2;
+	overflow: visible;
+    position: absolute;
     transform: translateX(-50%);
-    overflow: visible;
-    z-index: 2;
+    top: ${({ $w }) => Math.round($w * 1.28)}px;
     
     /* spacing */
     width: ${({ $w }) => Math.round($w * 0.22)}px;
     height: ${({ $w }) => Math.round($w * 0.18)}px;
     
     /* styles */
-    border: 1.5px solid rgba(35, 25, 20, 0.7);
     border-radius: 2px;
+    border: 1.5px solid rgba(35, 25, 20, 0.7);
     background: linear-gradient(180deg, 
         #8b5e3c 0%,
         #6d4a2e 60%,
@@ -433,14 +434,14 @@ const Basket = styled.div`
         inset 0 -6px 10px rgba(0, 0, 0, 0.4),
         0 6px 14px rgba(0, 0, 0, 0.4);
     
-    /* wicker weave texture */
+    /* pseudo-elements */
     &::before {
         /* layout */
-        content: "";
-        position: absolute;
         inset: 0;
+        position: absolute;
         
         /* styles */
+        content: "";
         opacity: 0.9;
         background-image:
             repeating-linear-gradient(90deg, 
@@ -457,19 +458,18 @@ const Basket = styled.div`
             );
     }
     
-    /* side depth */
     &::after {
         /* layout */
-        content: '';
-        position: absolute;
         left: -2px;
         top: 2px;
         bottom: 2px;
+        position: absolute;
         
         /* spacing */
         width: 3px;
         
         /* styles */
+        content: '';
         border-left: 1px solid rgba(25, 18, 12, 0.8);
         background: linear-gradient(180deg, #5a3d25, #3d2818);
     }
@@ -478,18 +478,18 @@ const Basket = styled.div`
 /* basket rim/lip */
 const BasketLip = styled.div`
     /* layout */
-    position: absolute;
+	top: -5px;
     left: -4px;
     right: -4px;
-    top: -5px;
+	position: absolute;
     
     /* spacing */
     height: 6px;
     
     /* styles */
-    border: 1.5px solid rgba(35, 25, 20, 0.7);
-    border-bottom: none;
+	border-bottom: none;
     border-radius: 3px 3px 0 0;
+    border: 1.5px solid rgba(35, 25, 20, 0.7);
     background: linear-gradient(180deg, #a67448, #8b5e3c, #6d4a2e);
     box-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.4),

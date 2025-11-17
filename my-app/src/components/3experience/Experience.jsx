@@ -9,56 +9,52 @@
 // imports.
 import React, { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { useComponentPerformance } from '../../hooks/useComponentPerformance';
 
-// component imports.
+// components.
 import Cloud from './Cloud';
-import AuroraLite from './AuroraLite';
+import Aurora from './Aurora';
 
-// image imports.
+// images.
 import curiousImg from '@/images/3experience/curious.jpg';
 import bitgoLogo from '@/images/3experience/bitgoSmall.jpg';
 import barLouieLogo from '@/images/3experience/blSmall.png';
 import hawkersLogo from '@/images/3experience/hawkersSmall.png';
 
-// utility imports.
+// utils.
 import { getLogo } from '@/components/utils/logoMap.js';
-import { getBrandColors } from '@/components/utils/brandColors.js';
 import { EXPERIENCE_CARDS } from '@/data/experienceData.jsx';
+import { getBrandColors } from '@/components/utils/brandColors.js';
 
-// actual experience component.
+/* ================== main component ================== */
+
 const ActualExperience = memo(() => {
-    // Performance monitoring
-    useComponentPerformance('Experience', process.env.NODE_ENV === 'development');
-    
     // state variables.
     const [index, setIndex] = useState(1);              // current card index.
-    const [paused, setPaused] = useState(false);        // whether carousel is paused.
     const [copied, setCopied] = useState(false);        // copy button feedback state.
     const drag = useRef({ x: 0, active: false });       // drag state for mobile. (expanded upon in future)
+    const [isMobile, setIsMobile] = useState(false);    // check if mobile on mount and resize.
     
     // first slide is the "hire me" card, rest are data-driven.
     const n = useMemo(() => 1 + EXPERIENCE_CARDS.length, []);
     
-    // Memoized navigation functions
+    // memoized navigation functions.
     const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
     const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
     
-    // Copy email to clipboard
+    // copy email to clipboard.
     const copyEmail = useCallback(async () => {
         const email = 'kirbycolin26@gmail.com';
         try {
-        await navigator.clipboard.writeText(email);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
-        // Silently fail - user can manually copy if needed
-      }
+            await navigator.clipboard.writeText(email);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            // silently fail - user can manually copy if needed.
+        }
     }, []);
     
-    // Check if mobile on mount and resize
-    const [isMobile, setIsMobile] = useState(false);
     
+    // check if mobile on mount and resize.
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 900);
@@ -68,11 +64,12 @@ const ActualExperience = memo(() => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
     
+    // swipe functionality for mobile.
+
     // handles pointer down event for mobile.
     const onPointerDown = useCallback((e) => {
-        if (!isMobile) return; // Disable swipe on desktop
+        if (!isMobile) return;
         drag.current = { x: e.clientX ?? e.touches?.[0]?.clientX ?? 0, active: true };
-        setPaused(true);
     }, [isMobile]);
     
     // handles pointer up event for mobile.
@@ -82,10 +79,9 @@ const ActualExperience = memo(() => {
         const dx = upX - drag.current.x;
         drag.current.active = false;
         if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
-        setPaused(false);
     }, [next, prev, isMobile]);
     
-    // Memoized card style calculation
+    // memoized card style calculation.
     const getCardStyle = useCallback((cardIndex) => {
         const distance = Math.abs(cardIndex - index);
         return {
@@ -98,9 +94,9 @@ const ActualExperience = memo(() => {
     // main return.
     return (
         <ExperienceContainer id="experience" data-section-snap>
-            {/* aurora effects at the top - lightweight version */}
+            {/* aurora effects at the top */}
             <AuroraWrapper>
-                <AuroraLite />
+                <Aurora />
             </AuroraWrapper>
             {/* parallax cloud layers - far, mid, near */}
             <CloudLayer>
@@ -133,8 +129,6 @@ const ActualExperience = memo(() => {
                 
                 {/* experience carousel */}
                 <Stage
-                    onMouseEnter={() => setPaused(true)}
-                    onMouseLeave={() => setPaused(false)}
                     {...(isMobile ? {
                         onPointerDown,
                         onPointerUp,
@@ -190,6 +184,7 @@ const ActualExperience = memo(() => {
                                 </Slide>
                             );
                         })()}
+
                         {/* data-driven experience slides (index offset +1 to account for "hire me" slide) */}
                         {EXPERIENCE_CARDS.map((card, i) => {
                             const slideIdx = i + 1;                     // get slide index.
@@ -354,32 +349,67 @@ const ActualExperience = memo(() => {
                     {index < n - 1 && <ArrowRight aria-label="Next experience" onClick={next}>›</ArrowRight>}
                 </Stage>
             </ContentWrapper>
-            {/* Bottom seam softener to blend into Projects */}
+
+            {/* helps the blend into projects */}
             <BottomSeamFade />
         </ExperienceContainer>
     );
 });
+
+ActualExperience.displayName = 'ActualExperience';
+export default ActualExperience;
+
+/* ================== animated keyframes ================== */
+
+// icon scale-in animation. (check mark)
+const iconScaleIn = keyframes`
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+`;
+
+// animation for scrolling.
+const scroll = keyframes`
+    from { transform: translateX(0) translateZ(0); }
+    to   { transform: translateX(-33.333%) translateZ(0); } /* one-third of track width = one sequence */
+`;
+
+// arrow bounce animations.
+const leftBounce = keyframes`
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    25% { transform: translateY(-50%) translateX(-3px); }
+    75% { transform: translateY(-50%) translateX(3px); }
+`;
+
+const rightBounce = keyframes`
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    25% { transform: translateY(-50%) translateX(3px); }
+    75% { transform: translateY(-50%) translateX(-3px); }
+`;
+
+/* ====================== styled ====================== */
 
 // entire container, sky gradient.
 const ExperienceContainer = styled.div`
     /* layout */
     width: 100%;
     display: flex;
-    position: relative;
     overflow: hidden;
-    flex-direction: column;
     min-height: 100vh;
-
+    position: relative;
+    flex-direction: column;
+    
     /* spacing */
     padding: 4rem 2rem;
     
-    /* mobile */
-    @media (max-width: 768px) {
-        padding: 2rem 1rem;
-        min-height: auto;
-        overflow: visible; /* Ensure card isn't clipped by container */
-    }
-
     /* styles */
     background: linear-gradient(
         to bottom,
@@ -397,6 +427,13 @@ const ExperienceContainer = styled.div`
             #a8c2f6 100%
         );
     }
+    
+    /* media queries */
+    @media (max-width: 768px) {
+        padding: 2rem 1rem;
+        min-height: auto;
+        overflow: visible;
+    }
 `;
 
 // my clouds!
@@ -405,27 +442,29 @@ const CloudLayer = styled.div`
     inset: 0;
     z-index: 1;
     position: absolute;
-
-    /* GPU acceleration and aggressive containment */
-    transform: translateZ(0);
-    contain: layout style paint;
-    content-visibility: auto;
-    will-change: auto;
-    isolation: isolate;
-
+    
     /* styles */
     overflow: hidden;
+    will-change: auto;
+    isolation: isolate;
     pointer-events: none;
+    content-visibility: auto;
+    transform: translateZ(0);
+    contain: layout style paint;
 `;
 
-// Bottom seam fade to reduce perceived cutoff against Projects
 const BottomSeamFade = styled.div`
-    position: absolute;
+    /* layout */
     left: 0;
     right: 0;
     bottom: 0;
-    height: 14vh;
     z-index: 3;
+    position: absolute;
+    
+    /* spacing */
+    height: 14vh;
+    
+    /* styles */
     pointer-events: none;
     background: linear-gradient(
         to bottom,
@@ -454,18 +493,16 @@ const ContentWrapper = styled.div`
     flex-direction: column;
 
     /* spacing */
-    margin: 0 auto;
     padding: 2rem;
+    margin: 0 auto;
     max-width: 1400px;
 
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         padding: 1.5rem;
         max-width: 1200px;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         padding: 0.5rem 0.5rem;
         max-width: 100%;
@@ -479,6 +516,8 @@ const SectionTitle = styled.h1`
     margin-top: 2rem;
 
     /* styles */
+    font-weight: 900;
+    font-size: 5.5rem;
     text-align: center;
     background: linear-gradient(135deg,
         rgba(255, 255, 255, 0.95) 0%,
@@ -487,8 +526,6 @@ const SectionTitle = styled.h1`
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-    font-weight: 900;
-    font-size: 5.5rem;
 
     /* media queries */
     @media (max-width: 1600px) {
@@ -498,7 +535,6 @@ const SectionTitle = styled.h1`
         margin-bottom: 0.25rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(2.5rem, 8vw, 3.5rem);
         margin-top: 0.5rem;
@@ -535,7 +571,6 @@ const SectionSubtitle = styled.div`
         margin-bottom: 1.25rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(0.95rem, 3vw, 1.15rem);
         margin-top: 0.25rem;
@@ -543,22 +578,6 @@ const SectionSubtitle = styled.div`
     }
 `;
 
-/* ========== animations ========== */
-
-// Icon scale-in animation (for copy button checkmark)
-const iconScaleIn = keyframes`
-    0% {
-        transform: scale(0);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-`;
 
 /* ========== experience carousel ========== */
 
@@ -567,150 +586,151 @@ const Stage = styled.div`
     /* layout */
     width: 100%;
     display: grid;
+    overflow: visible;
     position: relative;
-    overflow: visible; /* Allow cards to overflow */
     place-items: center;
-
-    /* GPU acceleration and containment */
-    transform: translateZ(0);
-    contain: layout style; /* Removed paint containment to allow overflow */
-    isolation: isolate; /* Create new stacking context for better performance */
-
+    
     /* spacing */
     margin: 0 auto;
-    padding: 40px 0 60px 0; /* Extra bottom padding for card overflow */
-    max-width: 1600px;
     min-height: 80vh;
-
+    max-width: 1600px;
+    padding: 40px 0 60px 0;
+    
+    /* styles */
+    transform: translateZ(0);
+    contain: layout style;
+    isolation: isolate;
+    
     /* media queries */
     @media (min-width: 2000px) {
-        /* spacing */
-        padding-bottom: 80px; /* More space for larger cards */
+        padding-bottom: 80px;
     }
+    
     @media (max-width: 2000px) {
-        /* spacing */
         max-width: 1400px;
     }
+    
     @media (max-width: 1600px) {
-        /* spacing */
         max-width: 100%;
-        padding: 0 0 60px 0; /* Maintain bottom padding */
+        padding: 0 0 60px 0;
         min-height: 64vh;
     }
+    
     @media (max-width: 1200px) {
-        /* spacing */
         padding: 20px 0 60px 0;
         min-height: 60vh;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        padding: 0.5rem 0 1rem 0;
-        min-height: auto;
+        display: block;
         height: auto;
         max-width: 100%;
+        min-height: auto;
         overflow: visible !important;
+        padding: 0.5rem 0 1rem 0;
         contain: none;
-        display: block;
     }
 `;
 
 // track - holds the slides.
 const Track = styled.div`
     /* layout */
-    position: relative;
-    overflow: visible; /* Allow slides to overflow */
-    perspective: 1200px;
     width: 90%;
-
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
-    contain: layout style; /* Keep layout/style containment but allow overflow */
-
+    overflow: visible;
+    position: relative;
+    perspective: 1200px;
+    
     /* spacing */
     margin: 0 auto;
     max-width: 1400px;
     height: clamp(600px, 70vh, 800px);
-    min-height: clamp(600px, 70vh, 800px); /* Ensure minimum height */
-
+    min-height: clamp(600px, 70vh, 800px);
+    
+    /* styles */
+    contain: layout style;
+    will-change: transform;
+    transform: translateZ(0);
+    
     /* media queries */
     @media (max-width: 2000px) {
-        /* layout */
         width: 85%;
-        /* spacing */
         max-width: 1200px;
     }
+    
     @media (max-width: 1600px) {
-        /* layout */
         width: 88%;
-        /* spacing */
         max-width: 980px;
         height: clamp(560px, 60vh, 680px);
     }
+    
     @media (max-width: 1200px) {
-        /* layout */
         width: 75vw;
-        /* spacing */
         height: clamp(500px, 60vh, 700px);
     }
     
-    /* mobile - size to biggest card, all cards at same position */
     @media (max-width: 768px) {
         width: 100%;
-        max-width: 100%;
         height: auto;
-        min-height: auto;
-        overflow: visible !important;
         contain: none;
         display: block;
-        position: relative;
+        max-width: 100%;
+        min-height: auto;
         perspective: none;
+        position: relative;
+        overflow: visible !important;
     }
 `;
 
 // slide - individual carousel item.
 const Slide = styled.div`
     /* layout */
-    height: 100%;
-    width: 100%;
-    left: 0;
     top: 0;
-    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: grid;
+    position: absolute;
     place-items: center;
     pointer-events: none;
-
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: ${({ $isFocused, $distance }) => 
-        ($isFocused || $distance <= 1) ? 'transform, opacity' : 'auto'};
-    contain: layout style; /* Removed paint containment to allow overflow */
     
     /* styles */
+    transform: translateZ(0);
+    contain: layout style;
+    will-change: ${({ $isFocused, $distance }) => 
+        ($isFocused || $distance <= 1) ? 'transform, opacity' : 'auto'};
     transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
                 opacity 220ms ease;
     
-    /* focused card (center) - highest z-index and allow overflow */
+    /* nested selectors */
     ${({ $isFocused }) => $isFocused && `
         transform: translateX(0) translateZ(0) scale(1);
         opacity: 1;
-        z-index: 100; /* Highest z-index to ensure it's on top */
+        z-index: 100;
         pointer-events: auto;
         will-change: transform;
-        overflow: visible; /* Allow card content to overflow */
-        contain: none; /* Remove containment for focused card to allow overflow */
+        overflow: visible;
+        contain: none;
     `}
     
-    /* adjacent card */
-        ${({ $distance, $position }) => $distance === 1 && `
+    /* adjacent cards (1 position away from focused) */
+    ${({ $distance, $position }) => $distance === 1 && `
         transform: translateX(${$position > 0 ? '28%' : '-28%'}) scale(0.8) translateZ(-30px);
         opacity: 0.5;
         z-index: 5;
         filter: blur(1.5px) saturate(0.75);
         will-change: transform, opacity;
     `}
-    /* far cards (distance > 1) - keep off-stage and fully hidden */
+
+    /* back right card */
+    ${({ $distance, $position }) => $distance === 1 && `
+        transform: translateX(${$position > 0 ? '28%' : '-28%'}) scale(0.8) translateZ(-30px);
+        opacity: 0.5;
+        z-index: 5;
+        filter: blur(1.5px) saturate(0.75);
+        will-change: transform, opacity;
+    `}
+    
+    /* far right card (future cards, MORE JOBS MORE JBOS !!! */
     ${({ $distance, $position }) => $distance > 1 && `
         transform: translateX(${$position > 0 ? '40%' : '-40%'}) scale(0.6) translateZ(-60px);
         opacity: 0;
@@ -740,15 +760,11 @@ const Slide = styled.div`
         `}
     }
     
-    /* mobile - all cards at same position, only focused visible */
     @media (max-width: 768px) {
-        /* Reset all positioning and sizing */
+        width: 100%;
         height: auto !important;
         min-height: auto !important;
-        width: 100%;
         overflow: visible;
-        
-        /* Reset all transforms and filters */
         scale: 1 !important;
         filter: none !important;
         
@@ -763,24 +779,24 @@ const Slide = styled.div`
         `}
         
         ${({ $isFocused }) => $isFocused && `
+            display: flex;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            margin: 0 auto;
             opacity: 1 !important;
             visibility: visible;
             z-index: 100;
             pointer-events: auto;
             contain: none;
-            position: relative !important;
-            left: auto !important;
-            top: auto !important;
             transform: none !important;
-            display: flex;
             justify-content: center;
             align-items: flex-start;
-            margin: 0 auto;
         `}
     }
 `;
 
-// company logo - must be defined before ExperienceCard & ServiceExperienceCard
+// company logo.
 const CompanyLogo = styled.img`
     /* layout */
     top: 5%;
@@ -788,69 +804,63 @@ const CompanyLogo = styled.img`
     position: absolute;
     width: 100px;
     height: 100px;
-
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
-    contain: layout style paint;
-
+    
     /* styles */
     cursor: pointer;
     object-fit: cover;
     border-radius: 12px;
+    will-change: transform;
+    transform: translateZ(0);
+    contain: layout style paint;
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
                 box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    
-    /* media queries */
-    @media (max-width: 1600px) {
-        width: 84px;
-        height: 84px;
-        right: 4%;
-        top: 4%;
-    }
     
     &:hover {
         transform: scale(1.1) translateY(-6px) rotate(5deg) translateZ(0);
         filter: drop-shadow(0 8px 24px ${({ $themeColor }) => $themeColor || 'rgba(13, 173, 220, 0.5)'});
     }
+    
+    /* media queries */
+    @media (max-width: 1600px) {
+        top: 4%;
+        right: 4%;
+        width: 84px;
+        height: 84px;
+    }
 `;
 
 /* ========== experience card ========== */
 
-// individual experience card - phone screen style with frosted glass
-const ExperienceCard = styled.div.attrs(props => ({
-    $isFocused: props.$isFocused || false
-}))`
+// individual experience card - phone screen style with frosted glass.
+const ExperienceCard = styled.div.attrs(props => ({ $isFocused: props.$isFocused || false }))`
     /* layout */
     width: 500px;
-    height: fit-content;
     display: flex;
+    z-index: inherit;
+    overflow: visible;
+    position: relative;
+    height: fit-content;
     flex-direction: column;
-    position: relative; /* Ensure proper stacking context */
-    z-index: inherit; /* Inherit from parent Slide */
-
+    
     /* spacing */
     padding: 1.5rem 1.5rem 0.5rem 1.5rem;
-
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: ${({ $isFocused }) => $isFocused ? 'transform' : 'auto'};
-    contain: layout style; /* Removed paint containment to allow overflow */
-    overflow: visible; /* Allow card content to overflow */
-
+    
     /* styles */
-    --theme-rgb: 13, 173, 220; /* BitGo */
+    --theme-rgb: 13, 173, 220;
+    border-radius: 24px;
+    contain: layout style;
+    transform: translateZ(0);
+    backdrop-filter: blur(20px) saturate(110%);
+    border: 1px solid rgba(13, 173, 220, 0.4);
+    -webkit-backdrop-filter: blur(20px) saturate(110%);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
+    will-change: ${({ $isFocused }) => $isFocused ? 'transform' : 'auto'};
     background: linear-gradient(135deg,
         rgba(17, 21, 75, 1.0) 0%,
         rgba(44, 49, 81, 0.98) 30%,
         rgba(68, 75, 182, 0.98) 60%,
         rgba(132, 159, 241, 0.97) 100%
     );
-    backdrop-filter: blur(20px) saturate(110%);
-    -webkit-backdrop-filter: blur(20px) saturate(110%);
-    border: 1px solid rgba(13, 173, 220, 0.4);
-    border-radius: 24px;
     box-shadow:
         0 8px 16px rgba(0, 0, 0, 0.3),
         inset 0 1px 2px rgba(13, 173, 220, 0.3),
@@ -875,7 +885,6 @@ const ExperienceCard = styled.div.attrs(props => ({
         max-width: 400px;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         width: 90%;
         max-width: 340px;
@@ -930,12 +939,12 @@ const CompanyName = styled.h3`
     margin: 0;
 
     /* styles */
-    color: rgba(255, 255, 255, 1);
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    letter-spacing: -0.5px;
+    font-size: 3rem;
     line-height: 1.2;
     font-weight: 700;
-    font-size: 3rem;
+    letter-spacing: -0.5px;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 
     /* media queries */
     @media (max-width: 1600px) {
@@ -943,7 +952,6 @@ const CompanyName = styled.h3`
         font-size: 2.2rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(1.5rem, 6vw, 2rem);
     }
@@ -952,19 +960,17 @@ const CompanyName = styled.h3`
 // date range - how long i worked there.
 const DateRange = styled.span`
     /* styles */
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.7);
-    letter-spacing: 0.5px;
-    font-weight: 500;
-    font-size: 1rem;
-
+    
     /* media queries */
     @media (max-width: 1600px) {
-        /* styles */
         font-size: 0.9rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(0.75rem, 2.5vw, 0.85rem);
     }
@@ -974,21 +980,20 @@ const DateRange = styled.span`
 const Divider = styled.div`
     /* layout */
     width: 100%;
-
+    
     /* spacing */
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
-
+    
     /* styles */
-    border-radius: 2px;
-    opacity: 0.5;
     height: 2px;
+    opacity: 0.5;
+    border-radius: 2px;
     background: ${props => props.$themeColor || 'rgba(255, 255, 255, 0.2)'};
     box-shadow: 0 0 10px ${props => props.$themeColor || 'rgba(255, 255, 255, 0.2)'};
-
+    
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         margin-top: 0.4rem;
         margin-bottom: 0.4rem;
     }
@@ -1004,11 +1009,10 @@ const CardBody = styled.div`
 // job title - gradient text based on theme.
 const JobTitle = styled.div`
     /* styles */
-    letter-spacing: 0.5px;
     font-weight: 700;
     font-size: 1.3rem;
-
-    /* theme-based gradient */
+    letter-spacing: 0.5px;
+    animation: shimmer 8s ease-in-out infinite;
     background: ${({ $theme }) => {
         if ($theme === 'barlouie') {
             return `linear-gradient(
@@ -1029,26 +1033,23 @@ const JobTitle = styled.div`
                 rgb(245, 148, 40) 100%
             )`;
         } else {
-            // Default BitGo gradient
             return `linear-gradient(
-        135deg,
-        rgb(180, 200, 230) 0%,
-        rgb(220, 230, 245) 15%,
-        rgb(140, 180, 230) 30%,
-        rgb(100, 160, 220) 45%,
-        rgb(180, 200, 230) 60%,
-        rgb(220, 235, 250) 75%,
-        rgb(160, 190, 230) 90%,
-        rgb(120, 170, 225) 100%
+                135deg,
+                rgb(180, 200, 230) 0%,
+                rgb(220, 230, 245) 15%,
+                rgb(140, 180, 230) 30%,
+                rgb(100, 160, 220) 45%,
+                rgb(180, 200, 230) 60%,
+                rgb(220, 235, 250) 75%,
+                rgb(160, 190, 230) 90%,
+                rgb(120, 170, 225) 100%
             )`;
         }
     }};
-    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
-    background-size: 200% 100%;
-    
-    /* Subtle depth with shadows */
+    -webkit-text-fill-color: transparent;
     filter: ${({ $theme }) => {
         if ($theme === 'barlouie') {
             return `drop-shadow(0 2px 4px rgba(232, 70, 90, 0.3))
@@ -1062,9 +1063,7 @@ const JobTitle = styled.div`
         }
     }};
     
-    /* Smooth animation */
-    animation: shimmer 8s ease-in-out infinite;
-    
+    /* keyframes */
     @keyframes shimmer {
         0%, 100% {
             background-position: 0% 50%;
@@ -1074,11 +1073,11 @@ const JobTitle = styled.div`
         }
     }
     
+    /* media queries */
     @media (max-width: 1600px) {
         font-size: 1.1rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(0.95rem, 3vw, 1.1rem);
     }
@@ -1086,22 +1085,25 @@ const JobTitle = styled.div`
 
 // project description - the description of the project.
 const ProjectDescription = styled.p`
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.8);
+    /* spacing */
     margin: 0;
+    
+    /* styles */
+    line-height: 1.5;
     font-weight: 400;
+    font-size: 0.95rem;
     font-style: italic;
-
+    color: rgba(255, 255, 255, 0.8);
+    
+    /* media queries */
     @media (max-width: 1600px) {
-    font-size: 0.9rem;
         line-height: 1.45;
+        font-size: 0.9rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
         line-height: 1.5;
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
     }
 `;
 
@@ -1117,7 +1119,6 @@ const AchievementsList = styled.div`
 
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         gap: 0.6rem;
     }
 `;
@@ -1138,18 +1139,17 @@ const Achievement = styled.div`
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.2)` : 'rgba(13, 173, 220, 0.2)'};
 
-    /* media queries */
-    @media (max-width: 1600px) {
-        /* spacing */
-        padding: 0.65rem;
-    }
-
     &:hover {
-        /* styles */
         transform: translateX(4px);
         background: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.1)` : 'rgba(13, 173, 220, 0.1)'};
         border-color: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.4)` : 'rgba(13, 173, 220, 0.4)'};
         box-shadow: 0 4px 12px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.2)` : 'rgba(13, 173, 220, 0.2)'};
+    }
+
+    /* media queries */
+    @media (max-width: 1600px) {
+        /* spacing */
+        padding: 0.65rem;
     }
 `;
 
@@ -1157,11 +1157,16 @@ const Achievement = styled.div`
 const AchievementIcon = styled.div`
     /* layout */
     flex-shrink: 0;
-
+    position: relative;
+    
+    /* spacing */
+    margin-top: 2px;
+    
     /* styles */
-    border-radius: 50%;
     width: 12px;
     height: 12px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
     background: ${({ $themeColor }) => {
         if ($themeColor) {
             return `linear-gradient(135deg, 
@@ -1176,26 +1181,27 @@ const AchievementIcon = styled.div`
             rgba(13, 173, 220, 0.7) 100%
         )`;
     }};
-    position: relative;
-    margin-top: 2px;
     box-shadow: 
         0 0 10px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.5)` : 'rgba(13, 173, 220, 0.5)'},
         inset 0 1px 2px rgba(255, 255, 255, 0.25);
     
+    /* pseudo-elements */
     &::before {
-        content: '';
-        position: absolute;
+        /* layout */
         top: 50%;
         left: 50%;
+        position: absolute;
         transform: translate(-50%, -50%);
+        
+        /* styles */
+        content: '';
         width: 5px;
         height: 5px;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.4);
     }
     
-    transition: all 0.3s ease;
-    
+    /* nested selectors */
     ${Achievement}:hover & {
         transform: scale(1.25);
         box-shadow: 
@@ -1214,8 +1220,8 @@ const AchievementText = styled.p`
 
     /* styles */
     font-weight: 400;
-    font-size: 0.9rem;
     line-height: 1.5;
+    font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.9);
 
     /* media queries */
@@ -1259,17 +1265,16 @@ const TechConnection = styled.div`
 const TechConnectionTitle = styled.h4`
     /* spacing */
     margin: 0;
-
+    
     /* styles */
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
-    letter-spacing: 0.8px;
     font-weight: 600;
     font-size: 0.85rem;
-
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    
     /* media queries */
     @media (max-width: 1600px) {
-        /* styles */
         font-size: 0.8rem;
         letter-spacing: 0.7px;
     }
@@ -1292,12 +1297,10 @@ const TechConnectionItem = styled.div`
 
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         padding: 0.65rem;
     }
 
     &:hover {
-        /* styles */
         transform: translateX(4px);
         background: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.1)` : 'rgba(13, 173, 220, 0.1)'};
         border-color: ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.4)` : 'rgba(13, 173, 220, 0.4)'};
@@ -1308,11 +1311,12 @@ const TechConnectionItem = styled.div`
 const TechConnectionDot = styled.div`
     /* layout */
     flex-shrink: 0;
-
+    position: relative;
+    
     /* styles */
-    border-radius: 50%;
     width: 12px;
     height: 12px;
+    border-radius: 50%;
     background: ${({ $themeColor }) => {
         if ($themeColor) {
             return `linear-gradient(135deg, 
@@ -1327,17 +1331,20 @@ const TechConnectionDot = styled.div`
             rgba(13, 173, 220, 0.7) 100%
         )`;
     }};
-    position: relative;
     box-shadow: 
         0 0 10px ${({ $themeColor }) => $themeColor ? `rgba(${$themeColor}, 0.5)` : 'rgba(13, 173, 220, 0.5)'},
         inset 0 1px 2px rgba(255, 255, 255, 0.25);
     
+    /* pseudo-elements */
     &::before {
-        content: '';
-        position: absolute;
+        /* layout */
         top: 50%;
         left: 50%;
+        position: absolute;
         transform: translate(-50%, -50%);
+        
+        /* styles */
+        content: '';
         width: 5px;
         height: 5px;
         border-radius: 50%;
@@ -1346,24 +1353,29 @@ const TechConnectionDot = styled.div`
 `;
 
 const TechConnectionText = styled.p`
+    /* layout */
+    flex: 1;
+    
+    /* spacing */
     margin: 0;
-    text-align: justify;
+    
+    /* styles */
     font-size: 0.9rem;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.88);
     font-weight: 400;
     font-style: italic;
-    flex: 1;
-
+    text-align: justify;
+    color: rgba(255, 255, 255, 0.88);
+    
+    /* media queries */
     @media (max-width: 1600px) {
-        font-size: 0.85rem;
         line-height: 1.45;
+        font-size: 0.85rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        font-size: clamp(0.8rem, 2.5vw, 0.85rem);
         line-height: 1.5;
+        font-size: clamp(0.8rem, 2.5vw, 0.85rem);
     }
 `;
 
@@ -1380,7 +1392,6 @@ const SkillsCarousel = styled.div`
 
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         gap: 0.45rem;
     }
 `;
@@ -1399,59 +1410,49 @@ const CarouselRow = styled.div`
 const RowLabel = styled.div`
     /* layout */
     flex-shrink: 0;
-
-    /* styles */
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.65);
-    letter-spacing: 0.5px;
-    font-weight: 700;
-    font-size: 0.75rem;
-
+    
     /* spacing */
     min-width: 70px;
-
+    
+    /* styles */
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+    
     /* media queries */
     @media (max-width: 1600px) {
-        /* styles */
+        min-width: 62px;
         font-size: 0.7rem;
         letter-spacing: 0.4px;
-        /* spacing */
-        min-width: 62px;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
-        font-size: clamp(0.65rem, 2vw, 0.7rem);
         min-width: 55px;
         letter-spacing: 0.3px;
+        font-size: clamp(0.65rem, 2vw, 0.7rem);
     }
 `;
 
 // viewport with soft edge fade (smooth in/out of frame)
 const RowViewport = styled.div`
     /* layout */
-    position: relative;
-    overflow: hidden;
     flex: 1;
-
+    overflow: hidden;
+    position: relative;
+    
     /* spacing */
     height: 34px;
-
+    
     /* styles */
+    mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-
+    
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         height: 30px;
     }
-`;
-
-// animation for scrolling - GPU accelerated
-const scroll = keyframes`
-    from { transform: translateX(0) translateZ(0); }
-    to   { transform: translateX(-33.333%) translateZ(0); } /* one-third of track width = one sequence */
 `;
 
 // the moving track (three identical sequences inside for almost seamless loop)
@@ -1461,41 +1462,40 @@ const RowTrack = styled.div.attrs(props => ({
     /* layout */
     display: flex;
     align-items: center;
-    width: max-content; /* shrink to content */
-
+    width: max-content;
+    
     /* spacing */
     gap: 0.4rem;
-
-    /* GPU acceleration */
+    
+    /* styles */
     transform: translateZ(0);
+    contain: layout style;
+    animation-delay: var(--delay, 0s);
     will-change: ${({ $isCardFocused }) => 
         $isCardFocused ? 'transform' : 'auto'};
-    contain: layout style;
-
-    /* styles */
+    animation-direction: ${({ $reverse }) => ($reverse ? 'reverse' : 'normal')};
+    animation-play-state: ${({ $isCardFocused }) => 
+        $isCardFocused ? 'running' : 'paused'};
     ${({ $isCardFocused }) => 
         $isCardFocused 
             ? css`animation: ${scroll} var(--dur, 20s) linear infinite;`
             : css`animation: none;`}
-    animation-delay: var(--delay, 0s);
-    animation-direction: ${({ $reverse }) => ($reverse ? 'reverse' : 'normal')};
-    animation-play-state: ${({ $isCardFocused }) => 
-        $isCardFocused ? 'running' : 'paused'};
     
-    /* Pause animations during loading */
+    /* loading states */
     [data-loading="true"] & {
         animation-play-state: paused;
     }
-
+    
+    /* nested selectors */
+    ${RowViewport}:hover & {
+        animation-play-state: paused;
+    }
+    
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         gap: 0.32rem;
     }
-
-    /* interactions */
-    ${RowViewport}:hover & { animation-play-state: paused; }
-
+    
     @media (prefers-reduced-motion: reduce) {
         animation: none !important;
         transform: none !important;
@@ -1506,8 +1506,8 @@ const RowTrack = styled.div.attrs(props => ({
 const Sequence = styled.div`
     /* layout */
     display: flex;
-    align-items: center;
     flex: 0 0 auto;
+    align-items: center;
     white-space: nowrap;
 
     /* spacing */
@@ -1515,7 +1515,6 @@ const Sequence = styled.div`
 
     /* media queries */
     @media (max-width: 1600px) {
-        /* spacing */
         gap: 0.32rem;
     }
 `;
@@ -1528,11 +1527,11 @@ const SkillPill = styled.div`
     position: relative;
     align-items: center;
     display: inline-flex;
-
+    
     /* spacing */
     gap: 0.5rem;
     padding: 0.45rem 0.85rem;
-
+    
     /* styles */
     cursor: default;
     font-weight: 600;
@@ -1541,18 +1540,14 @@ const SkillPill = styled.div`
     backdrop-filter: blur(8px);
     color: rgba(255, 255, 255, 0.95);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* brand-specific styling */
     background: ${({ $skillName }) => {
         const colors = getBrandColors($skillName);
         return colors.gradient;
     }};
-    
     border: 1.5px solid ${({ $skillName }) => {
         const colors = getBrandColors($skillName);
         return colors.border;
     }};
-    
     box-shadow:
         0 2px 8px ${({ $skillName }) => {
             const colors = getBrandColors($skillName);
@@ -1560,24 +1555,31 @@ const SkillPill = styled.div`
         }},
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
-    /* subtle shine effect */
+    /* pseudo-elements */
     &::before {
-        content: '';
-        position: absolute;
+        /* layout */
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
+        position: absolute;
+        
+        /* styles */
+        content: '';
+        transition: left 0.5s ease;
         background: linear-gradient(
             90deg,
             transparent,
             rgba(255, 255, 255, 0.1),
             transparent
         );
-        transition: left 0.5s ease;
     }
     
     &:hover {
+        border-color: ${({ $skillName }) => {
+            const colors = getBrandColors($skillName);
+            return colors.hoverBorder;
+        }};
         box-shadow: 
             0 6px 16px ${({ $skillName }) => {
                 const colors = getBrandColors($skillName);
@@ -1588,10 +1590,6 @@ const SkillPill = styled.div`
                 const colors = getBrandColors($skillName);
                 return colors.hoverGlow;
             }};
-        border-color: ${({ $skillName }) => {
-            const colors = getBrandColors($skillName);
-            return colors.hoverBorder;
-        }};
         
         &::before {
             left: 100%;
@@ -1602,45 +1600,45 @@ const SkillPill = styled.div`
         transform: translateY(-1px) scale(1);
     }
     
+    /* media queries */
     @media (max-width: 1600px) {
         padding: 0.35rem 0.7rem;
         font-size: 0.75rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
+        gap: 0.4rem;
         padding: 0.3rem 0.6rem;
         font-size: clamp(0.7rem, 2vw, 0.75rem);
-        gap: 0.4rem;
     }
 `;
 
 const SkillPillIcon = styled.img`
     /* layout */
+    display: flex;
     width: 1.05rem;
     height: 1.05rem;
-    display: flex;
     align-items: center;
-
+    
     /* styles */
     object-fit: contain;
     transition: transform 0.3s ease;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
-
+    
+    /* nested selectors */
+    ${SkillPill}:hover & {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
     /* media queries */
     @media (max-width: 1600px) {
         width: 0.95rem;
         height: 0.95rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         width: clamp(0.85rem, 2vw, 0.95rem);
         height: clamp(0.85rem, 2vw, 0.95rem);
-    }
-
-    ${SkillPill}:hover & {
-        transform: scale(1.1) rotate(5deg);
     }
 `;
 
@@ -1660,7 +1658,6 @@ const SkillPillName = styled.span`
         letter-spacing: 0.25px;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(0.7rem, 2vw, 0.75rem);
         letter-spacing: 0.2px;
@@ -1670,30 +1667,31 @@ const SkillPillName = styled.span`
 /* ========== service experience cards ========== */
 
 const ServiceExperienceCard = styled.div`
-    /* styles */
-    --theme-rgb: ${({ $theme }) =>
-        $theme === 'barlouie' ? '203, 192, 196'
-        : $theme === 'hawkers' ? '245, 148, 40'
-        : '255,255,255'};
-
     /* layout */
     width: 500px;
     display: flex;
     height: fit-content;
     flex-direction: column;
     
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
-    contain: layout style paint;
-    
-    /* optimized transition */
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-
     /* spacing */
     padding: 2rem 1.5rem 0rem 1.5rem;
-
+    
     /* styles */
+    --theme-rgb: ${({ $theme }) =>
+        $theme === 'barlouie' ? '203, 192, 196'
+        : $theme === 'hawkers' ? '245, 148, 40'
+        : '255,255,255'};
+    transform: translateZ(0);
+    border-radius: 24px;
+    will-change: transform;
+    contain: layout style paint;
+    backdrop-filter: blur(20px) saturate(110%);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid ${({ $theme }) => {
+        if ($theme === 'barlouie') return 'rgba(203, 192, 196, 0.4)';
+        if ($theme === 'hawkers') return 'rgba(245, 148, 40, 0.4)';
+        return 'rgba(255, 255, 255, 0.3)';
+    }};
     background: ${({ $theme }) => {
         if ($theme === 'barlouie') {
             return `linear-gradient(135deg,
@@ -1711,36 +1709,25 @@ const ServiceExperienceCard = styled.div`
             )`;
         }
     }};
-    backdrop-filter: blur(20px) saturate(110%);
-    border: 1px solid ${({ $theme }) => {
-        if ($theme === 'barlouie') return 'rgba(203, 192, 196, 0.4)';
-        if ($theme === 'hawkers') return 'rgba(245, 148, 40, 0.4)';
-        return 'rgba(255, 255, 255, 0.3)';
-    }};
-    border-radius: 24px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.3),
         inset 0 1px 2px rgba(255, 255, 255, 0.1);
     
+    /* media queries */
     @media (min-width: 2000px) {
         width: 500px;
     }
     
     @media (max-width: 1600px) {
-        /* layout */
         width: 450px;
-        /* spacing */
         padding: 1.5rem 1.25rem;
     }
     
     @media (max-width: 1200px) {
-        /* layout */
         width: 100%;
-        /* spacing */
         max-width: 400px;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         width: 90%;
         max-width: 340px;
@@ -1751,26 +1738,13 @@ const ServiceExperienceCard = styled.div`
 
 /* ========== nav arrows ========== */
 
-// arrow bounce animations.
-const leftBounce = keyframes`
-    0%, 100% { transform: translateY(-50%) translateX(0); }
-    25% { transform: translateY(-50%) translateX(-3px); }
-    75% { transform: translateY(-50%) translateX(3px); }
-`;
-
-const rightBounce = keyframes`
-    0%, 100% { transform: translateY(-50%) translateX(0); }
-    25% { transform: translateY(-50%) translateX(3px); }
-    75% { transform: translateY(-50%) translateX(-3px); }
-`;
-
 const ArrowBase = styled.button`
     /* layout */
-    position: absolute;
-    display: grid;
-    place-items: center;
     top: 50%;
     z-index: 20;
+    display: grid;
+    position: absolute;
+    place-items: center;
 
     /* spacing */
     width: 56px;
@@ -1823,29 +1797,29 @@ const ArrowLeft = styled(ArrowBase)`
     /* layout */
     left: max(12px, 4vw);
     
-    /* mobile - position relative to centered card */
-    @media (max-width: 768px) {
-        left: calc(50% - 170px - 60px); /* Center minus half card width (340px/2) minus arrow width and gap */
-    }
-
     /* styles */
-    animation: ${leftBounce} 2s ease-in-out infinite;
     animation-delay: 0.5s;
+    animation: ${leftBounce} 2s ease-in-out infinite;
+    
+    /* media queries */
+    @media (max-width: 768px) {
+        left: calc(50% - 170px - 60px);
+    }
 `;
 
 const ArrowRight = styled(ArrowBase)`
     /* layout */
     right: max(12px, 4vw);
     
-    /* mobile - position relative to centered card */
+    /* styles */
+    animation-delay: 1s;
+    animation: ${rightBounce} 2s ease-in-out infinite;
+    
+    /* media queries */
     @media (max-width: 768px) {
         right: auto;
-        left: calc(50% + 170px + 12px); /* Center plus half card width (340px/2) plus gap */
+        left: calc(50% + 170px + 12px);
     }
-
-    /* styles */
-    animation: ${rightBounce} 2s ease-in-out infinite;
-    animation-delay: 1s;
 `;
 
 /* ========== aurora wrapper ========== */
@@ -1859,7 +1833,7 @@ const AuroraWrapper = styled.div`
     position: absolute;
 
     /* spacing */
-    height: 42vh; /* give room so blur/overscan isn't clipped */
+    height: 42vh;
 
     /* styles */
     overflow: hidden;
@@ -1908,7 +1882,6 @@ const HireCard = styled.div`
         padding: 1rem 1rem 0.9rem 1rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         width: 90%;
         max-width: 320px;
@@ -1933,22 +1906,20 @@ const HireHeader = styled.div`
 const HireTitle = styled.h3`
     /* spacing */
     margin: 0;
-
+    
     /* styles */
-    background: linear-gradient(135deg, #fff, rgba(210,190,255,.95));
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
     font-weight: 900;
     font-size: 1.9rem;
-
+    background: linear-gradient(135deg, #fff, rgba(210,190,255,.95));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
     /* media queries */
     @media (max-width: 1600px) {
-        /* styles */
         font-size: 1.5rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         font-size: clamp(1.3rem, 5vw, 1.5rem);
     }
@@ -1959,7 +1930,7 @@ const HireSubtitle = styled.div`
     font-size: 0.95rem;
     color: rgba(255,255,255,0.78);
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         font-size: clamp(0.85rem, 2.5vw, 0.95rem);
     }
@@ -2007,10 +1978,10 @@ const HireAvatar = styled.img`
     align-self: center;
 
     /* styles */
-    object-fit: cover;
-    border-radius: 50%;
     width: 50%;
     height: 50%;
+    object-fit: cover;
+    border-radius: 50%;
     border: 2px solid rgba(230,210,255,0.7);
     box-shadow: 0 4px 14px rgba(180,160,255,0.25);
 `;
@@ -2020,25 +1991,24 @@ const HireButton = styled.button`
     padding: 0.65rem 1rem;
 
     /* styles */
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 12px;
     text-decoration: none;
     transition: all 200ms ease;
-    cursor: pointer;
+    color: rgba(255,255,255,0.98);
+    border: 1.5px solid rgba(200, 180, 255, 0.65);
     box-shadow: 0 6px 16px rgba(180, 160, 255, 0.3);
     background: linear-gradient(135deg, rgba(200,180,255,0.38), rgba(150,120,255,0.25));
-    border: 1.5px solid rgba(200, 180, 255, 0.65);
-    border-radius: 12px;
-    color: rgba(255,255,255,0.98);
-    font-weight: 700;
 
     &:hover {
-        /* styles */
         transform: translateY(-1px);
-        background: linear-gradient(135deg, rgba(210,190,255,0.5), rgba(160,130,255,0.35));
         border-color: rgba(200, 180, 255, 0.9);
         box-shadow: 0 10px 24px rgba(180, 160, 255, 0.4);
+        background: linear-gradient(135deg, rgba(210,190,255,0.5), rgba(160,130,255,0.35));
     }
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         padding: 0.55rem 0.85rem;
         font-size: clamp(0.85rem, 2.5vw, 0.95rem);
@@ -2047,34 +2017,39 @@ const HireButton = styled.button`
 
 const HireReach = styled.div`
     /* styles */
+    font-size: 0.85rem;
     letter-spacing: 0.3px;
     color: rgba(230, 220, 255, 0.9);
-    font-size: 0.85rem;
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         font-size: clamp(0.75rem, 2.5vw, 0.85rem);
     }
 `;
 
-// Email row container for email button and copy button
 const EmailRow = styled.div`
     /* layout */
     display: flex;
-    align-items: center;
     gap: 0.5rem;
     width: 100%;
+    align-items: center;
     justify-content: center;
     
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
         gap: 0.4rem;
         flex-wrap: wrap;
     }
 `;
 
-// Copy button
 const CopyButton = styled.button`
+    /* layout */
+    display: flex;
+    height: 44px;
+    min-width: 44px;
+    align-items: center;
+    justify-content: center;
+    
     /* spacing */
     padding: 0.65rem 0.85rem;
     
@@ -2084,12 +2059,12 @@ const CopyButton = styled.button`
     font-size: 1.1rem;
     border-radius: 12px;
     transition: all 200ms ease;
-    background: linear-gradient(135deg, rgba(200,180,255,0.38), rgba(150,120,255,0.25));
-    border: 1.5px solid rgba(200, 180, 255, 0.65);
     color: rgba(255,255,255,0.98);
+    border: 1.5px solid rgba(200, 180, 255, 0.65);
     box-shadow: 0 6px 16px rgba(180, 160, 255, 0.3);
+    background: linear-gradient(135deg, rgba(200,180,255,0.38), rgba(150,120,255,0.25));
     
-    /* Copy feedback state */
+    /* nested selectors */
     ${({ $copied }) => $copied && `
         background: linear-gradient(135deg, rgba(150,255,150,0.5), rgba(100,255,100,0.4));
         border-color: rgba(150, 255, 150, 0.8);
@@ -2107,33 +2082,23 @@ const CopyButton = styled.button`
         transform: translateY(0) scale(0.95);
     }
     
-    /* Ensure emoji/checkmark is centered */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    height: 44px;
-    
-    /* mobile */
+    /* media queries */
     @media (max-width: 768px) {
-        min-width: 40px;
         height: 40px;
-        padding: 0.55rem 0.75rem;
+        min-width: 40px;
         font-size: 1rem;
+        padding: 0.55rem 0.75rem;
     }
 `;
 
-// Icon wrapper for checkmark animation
 const CopyIconWrapper = styled.span`
+    /* layout */
     display: flex;
     align-items: center;
     justify-content: center;
     
+    /* nested selectors */
     ${({ $copied }) => $copied && css`
         animation: ${iconScaleIn} 0.3s ease-out;
     `}
 `;
-
-// export component.
-ActualExperience.displayName = 'ActualExperience';
-export default ActualExperience;

@@ -6,7 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// shared base.
+/* ================== main component ================== */
+
 const CardBase = ({ 
   children, 
   theme, 
@@ -22,7 +23,6 @@ const CardBase = ({
   );
 };
 
-// export component.
 export default CardBase;
 
 /* ================= styles ================= */
@@ -31,9 +31,9 @@ export default CardBase;
 const ProjectCard = styled.div`
     /* layout */
     display: flex;
-    flex-direction: column;
-    position: relative;
     overflow: hidden;
+    position: relative;
+    flex-direction: column;
     
     /* spacing */
     width: 500px;
@@ -41,25 +41,26 @@ const ProjectCard = styled.div`
     padding: 2rem 1.5rem;
     
     /* styles */
-    border: 1px solid ${({ $theme, $themeColors }) => $theme ? $themeColors.border : 'rgba(255,180,100,0.4)'};
     border-radius: 24px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     transition: all 0.4s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    backdrop-filter: blur(20px) saturate(110%);
+    -webkit-backdrop-filter: blur(20px) saturate(110%);
+    border: 1px solid ${({ $theme, $themeColors }) => $theme ? $themeColors.border : 'rgba(255,180,100,0.4)'};
     background: ${({ $theme, $themeColors, $isFocused }) => {
         if (!$theme) return 'rgba(20,20,20,0.9)';
         
         if ($isFocused) {
-            // When focused, make background fully opaque by replacing rgba alpha values with 1.0
             return $themeColors.background?.replace(/rgba\(([^,]+),([^,]+),([^,]+),([^)]+)\)/g, 'rgba($1,$2,$3,1.0)') || $themeColors.background;
         }
         
         return $themeColors.background;
     }};
-    backdrop-filter: blur(20px) saturate(110%);
-    -webkit-backdrop-filter: blur(20px) saturate(110%);
     
     /* hover effects */
     &:hover {
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        border-color: ${({ $theme, $themeColors }) => $theme ? $themeColors.hoverBorder : undefined};
         background: ${({ $theme, $themeColors, $isFocused }) => {
             if (!$theme) return undefined;
             
@@ -70,8 +71,6 @@ const ProjectCard = styled.div`
             
             return $themeColors.hoverBackground;
         }};
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        border-color: ${({ $theme, $themeColors }) => $theme ? $themeColors.hoverBorder : undefined};
     }
     
     /* media queries */
@@ -100,13 +99,12 @@ const ProjectCard = styled.div`
         padding: 1.4rem 1rem;
     }
     
-    /* mobile */
     @media (max-width: 768px) {
         width: 90%;
         max-width: 340px;
         min-height: auto;
-        padding: 1.25rem 1.25rem 0.5rem 1.25rem;
         margin: 0 auto;
+        padding: 1.25rem 1.25rem 0.5rem 1.25rem;
     }
 `;
 
@@ -114,10 +112,10 @@ const ProjectCard = styled.div`
 
 export const CardHeader = styled.div`
     /* layout */
-    display: flex;
-    flex-direction: column;
-    position: relative;
     z-index: 1;
+    display: flex;
+    position: relative;
+    flex-direction: column;
     
     /* spacing */
     gap: 0.5rem;
@@ -140,9 +138,9 @@ export const HeaderTop = styled.div`
 
 export const ProjectInfo = styled.div`
     /* layout */
+    flex: 1;
     display: flex;
     flex-direction: column;
-    flex: 1;
     
     /* spacing */
     gap: 0.5rem;
@@ -158,9 +156,9 @@ export const ProjectName = styled.h3`
     margin: 0;
     
     /* styles */
+    font-weight: 700;
     line-height: 1.2;
     font-size: 2.5rem;
-    font-weight: 700;
     letter-spacing: -0.5px;
     text-shadow: 0 2px 8px rgba(0,0,0,0.35);
     
@@ -187,16 +185,16 @@ export const ProjectSubtitle = styled.div`
     margin: 0;
     
     /* styles */
-    font-size: 1.1rem;
     font-weight: 500;
+    font-size: 1.1rem;
     font-style: italic;
     color: rgba(255,255,255,0.95);
 `;
 
 export const ProjectDate = styled.span`
     /* styles */
-    font-size: 0.9rem;
     font-weight: 500;
+    font-size: 0.9rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.9);
@@ -232,8 +230,8 @@ export const ProjectDescription = styled.p`
     
     /* styles */
     line-height: 1.6;
-    font-size: 0.95rem;
     font-weight: 400;
+    font-size: 0.95rem;
     text-align: justify;
     color: rgba(255,255,255,0.95);
     
@@ -253,11 +251,11 @@ export const ProjectDescription = styled.p`
 
 export const CardBody = styled.div`
     /* layout */
-    display: flex;
-    flex-direction: column;
-    position: relative;
     flex: 1;
     z-index: 1;
+    display: flex;
+    position: relative;
+    flex-direction: column;
     
     /* spacing */
     gap: 0.25rem;
@@ -270,8 +268,8 @@ export const CardBody = styled.div`
 
 export const SectionLabel = styled.div`
     /* styles */
-    font-size: 0.85rem;
     font-weight: 700;
+    font-size: 0.85rem;
     letter-spacing: 1px;
     text-transform: uppercase;
     
@@ -293,14 +291,14 @@ export const SectionLabel = styled.div`
 
 export const CardFooter = styled.div`
     /* layout */
-    display: flex;
-    flex-direction: column;
-    position: relative;
     z-index: 1;
+    display: flex;
+    position: relative;
+    flex-direction: column;
     
     /* spacing */
-    padding-top: 0.5rem;
     margin-top: auto;
+    padding-top: 0.5rem;
     
     /* media queries */
     @media (max-width: 1600px) {

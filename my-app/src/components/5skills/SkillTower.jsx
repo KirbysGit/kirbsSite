@@ -1,6 +1,6 @@
 // skilltower.jsx
 
-// this took so long even with mrGPT.
+// this took so long even with mrGPT. HOLY SHIT THE NOTING TOOK EVEN LONGER.
 
 // where i show off the skills i think are relevant to me. 
 // decided to make it a building skyline style to make it more interesting.
@@ -9,7 +9,8 @@
 import React, { memo, useId, useMemo } from "react";
 import styled from "styled-components";
 
-// export component.
+/* ================== main component ================== */
+
 const SkillTower = memo(function SkillTower({
   name = "React",
   logoSrc = "",
@@ -1906,7 +1907,7 @@ const Wrap = styled.div`
     align-items: center;
     z-index: ${({ $z }) => $z};
     
-    /* Performance optimizations */
+    /* gpu faster! */
     transform: translateZ(0) scale(${({ $scale }) => $scale});
     will-change: transform;
     contain: layout style;
@@ -1938,16 +1939,16 @@ const Wrap = styled.div`
             fill: rgba(40,40,40,.12);
         }
         
-        /* Target tooltip by matching data-tower-id when logo-container is hovered */
+        /* target tooltip by matching data-tower-id when logo-container is hovered */
         .logo-container:hover ~ .billboard-tooltip[data-tower-id],
-        /* Also support when they're in same SVG context - use attribute selector */
+        /* also support when they're in same SVG context - use attribute selector */
         svg:has(.logo-container:hover) .billboard-tooltip {
             opacity: 1;
             transform: translateY(-4px);
         }
     }
     
-    /* Accessibility: keyboard and touch support */
+    /* accessibility: keyboard and touch support */
     .logo-container:focus-visible ~ .billboard-tooltip[data-tower-id],
     .logo-container:active ~ .billboard-tooltip[data-tower-id],
     svg:has(.logo-container:focus-visible) .billboard-tooltip,

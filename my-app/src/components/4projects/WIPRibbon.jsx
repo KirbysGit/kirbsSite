@@ -7,7 +7,7 @@
 import React from "react";
 import styled from "styled-components";
 
-// main wipribbon component.
+/* ================== main component ================== */
 const WIPRibbon = ({ text = "WORK IN PROGRESS" }) => (
   <CornerRibbon aria-label={text}>
     <RibbonStrip />
@@ -15,10 +15,9 @@ const WIPRibbon = ({ text = "WORK IN PROGRESS" }) => (
   </CornerRibbon>
 );
 
-// export component.
 export default WIPRibbon;
 
-/* ================= styles ================= */
+/* ================== styles ================== */
 
 // main corner ribbon.
 const CornerRibbon = styled.div`
@@ -47,9 +46,9 @@ const CornerRibbon = styled.div`
 const RibbonStrip = styled.i`
     /* layout */
     top: 24px;
-    right: -64px;
     z-index: 0;
     content: "";
+	right: -64px;
     position: absolute;
     transform: rotate(var(--angle));
     
@@ -73,11 +72,11 @@ const RibbonText = styled.span`
     /* layout */
     top: 24px;        
     z-index: 2;
-    right: -5px;          
-    display: inline-flex;
+    right: -5px;
+	position: absolute;          
     white-space: nowrap;
     align-items: center;
-    position: absolute;
+	display: inline-flex;
     transform-origin: center;
     transform: rotate(var(--angle)) translateX(var(--text-offset));
     

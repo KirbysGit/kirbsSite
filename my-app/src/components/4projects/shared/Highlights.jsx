@@ -6,7 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// main highlights component.
+/* ================== main component ================== */
+
 const Highlights = ({ highlights, themeColors }) => {
   return (
     <HighlightsList>
@@ -19,7 +20,6 @@ const Highlights = ({ highlights, themeColors }) => {
   );
 };
 
-// export component.
 export default Highlights;
 
 /* ================= styles ================= */
@@ -45,9 +45,9 @@ const HighlightsList = styled.div`
 const Highlight = styled.div`
     /* layout */
     display: flex;
-    align-items: center;
-    position: relative;
     overflow: hidden;
+    position: relative;
+    align-items: center;
     
     /* spacing */
     padding: 0.625rem 1rem 0.625rem 1.25rem;
@@ -91,9 +91,9 @@ const HighlightText = styled.p`
     margin: 0;
     
     /* styles */
+    font-weight: 400;
     line-height: 1.6;
     font-size: 0.92rem;
-    font-weight: 400;
     text-align: justify;
     color: rgba(255,255,255,0.92);
     
