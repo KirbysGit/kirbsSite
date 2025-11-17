@@ -514,6 +514,13 @@ const SkylineRow = styled.div`
     width: 60%;
     height: auto;
     
+    @media (max-width: 1900px) {
+        left: 0%;
+        width: 55%;
+        transform: scale(0.92) translateZ(0);
+        transform-origin: bottom center;
+    }
+    
     /* media queries */
     @media (max-width: 1600px) {
         left: -3.5%;
