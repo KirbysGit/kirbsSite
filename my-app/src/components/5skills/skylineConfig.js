@@ -219,7 +219,7 @@ export const buildings = [
 		name: "CSS3",
 		level: 0.75,
 		depth: 0.4,
-		leftPos: 52.5,
+		leftPos: 51.5,
 		w: 17.5,
 		cap: "dome"
 	},
@@ -273,7 +273,7 @@ export const buildings = [
 		name: "JavaScript", 
 		level: 0.925,
 		depth: 0.3,
-		leftPos: 67.5,
+		leftPos: 64.5,
 		w: 15,
 		cap: "gable"
 	},

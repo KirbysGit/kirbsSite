@@ -237,7 +237,7 @@ const SkillsContainer = styled.div`
     
     /* spacing */
     width: 100%;
-    min-height: 100vh;
+    min-height: 105vh;
     padding-top: 0;
     padding: 4rem 2rem;
     
@@ -391,11 +391,11 @@ const SectionTitle = styled.h1`
 `;
 
 // section subtitle.
-const SectionSubtitle = styled.h2`
+const SectionSubtitle = styled.div`
     /* layout */
     margin: 0;
     text-align: center;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
     margin-bottom: 3rem;
     
     /* styles */
@@ -503,12 +503,12 @@ const SkylineRow = styled.div`
     /* layout */
     position: absolute;
     bottom: 17%;
-    left: 4%;
+    left: 0%;
     z-index: 3;
     
     /* gpu faster! */
     contain: layout style;
-    transform: translateZ(0);
+    transform: scale(0.97) translateZ(0);
     
     /* spacing */
     width: 60%;
